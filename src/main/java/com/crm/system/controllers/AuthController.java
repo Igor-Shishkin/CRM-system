@@ -16,6 +16,12 @@ import com.crm.system.repository.RoleRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.jwt.JwtUtils;
 import com.crm.system.security.services.UserDetailsImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 //for Angular Client (withCredentials)
 //@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials="true")
+@Tag(name = "Auth controller", description = "Auth management APIs")
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials="true")
 @RestController
 @RequestMapping("/api/auth")
@@ -54,6 +61,12 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
+
+    @Operation(summary = "Create a new Tutorial", tags = { "tutorials", "post" })
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", content = {
+                    @Content(schema = @Schema(implementation = UserInfoResponse.class), mediaType = "application/json") }),
+            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
