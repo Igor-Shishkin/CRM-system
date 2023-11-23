@@ -15,6 +15,7 @@ import { BoardUserComponent } from './board-user/board-user.component';
 
 import { httpInterceptorProviders } from './_helpers/http.interceptor';
 import { NavigationComponent } from './navigation/navigation.component';
+import { LidsComponent } from './board-user/lids/lids.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { NavigationComponent } from './navigation/navigation.component';
     BoardAdminComponent,
     BoardModeratorComponent,
     BoardUserComponent,
-    NavigationComponent
+    NavigationComponent,
+    LidsComponent
   ],
   imports: [
     BrowserModule,

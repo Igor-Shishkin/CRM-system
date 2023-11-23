@@ -8,15 +8,19 @@ import { ProfileComponent } from './profile/profile.component';
 import { BoardUserComponent } from './board-user/board-user.component';
 import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
+import { LidsComponent } from './board-user/lids/lids.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: 'user', component: BoardUserComponent },
+  { path: 'user', component: BoardUserComponent, children: [
+    { path: 'user-lid', component: LidsComponent }   
+  ]},
   { path: 'mod', component: BoardModeratorComponent },
   { path: 'admin', component: BoardAdminComponent },
+  { path: 'board-user/user-lid', component: LidsComponent},
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

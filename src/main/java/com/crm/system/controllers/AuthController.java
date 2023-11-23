@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.crm.system.models.ERole;
-import com.crm.system.models.Role;
+import com.crm.system.models.security.ERole;
+import com.crm.system.models.security.Role;
 import com.crm.system.models.User;
 import com.crm.system.playload.request.LoginRequest;
 import com.crm.system.playload.request.SignupRequest;

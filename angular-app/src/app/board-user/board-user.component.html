@@ -2,4 +2,14 @@
   <header class="jumbotron">
     <p>{{ content }}</p>
   </header>
+
+  <h3>
+    <a class="nav-link" 
+            [routerLinkActive]="'active-nav'"
+            [routerLink]="'/user/user-lid'" aria-current="page" href="#">List of LIDs</a>
+  </h3>
+
+  <div class="container">
+    <router-outlet></router-outlet>
+  </div>
 </div>
