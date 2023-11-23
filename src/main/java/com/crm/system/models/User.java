@@ -3,6 +3,8 @@ package com.crm.system.models;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.crm.system.models.security.Role;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -35,6 +37,10 @@ public class User {
     @NotBlank
     @Size(max = 120)
     private String password;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<Lid> clients = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

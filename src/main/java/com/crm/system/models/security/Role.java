@@ -1,4 +1,4 @@
-package com.crm.system.models;
+package com.crm.system.models.security;
 
 import jakarta.persistence.*;
 import lombok.Getter;

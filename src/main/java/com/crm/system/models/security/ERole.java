@@ -1,4 +1,4 @@
-package com.crm.system.models;
+package com.crm.system.models.security;
 
 public enum ERole {
     ROLE_USER,
