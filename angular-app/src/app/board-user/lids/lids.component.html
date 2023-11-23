@@ -1,0 +1,22 @@
+<div>
+  <p>lids works!</p>
+
+  <div class="container">
+        <header class="jumbotron">
+           <p>{{ content }}</p>
+      </header>
+  </div>
+
+
+  <div class="container">
+    <ul>
+      <li *ngFor="let lid of content">
+        <p>ID: {{ lid.id }}</p>
+        <p>Name: {{ lid.name }}</p>
+        <p>Surname: {{ lid.surname }}</p>
+        <p>Email: {{ lid.email }}</p>
+        <!-- Display other properties as needed -->
+      </li>
+    </ul>
+  </div>
+</div>
