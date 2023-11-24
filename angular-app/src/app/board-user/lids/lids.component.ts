@@ -49,10 +49,10 @@ constructor(private lidService: LidsService,
       }
     );
   }
-  editLid(  id : number, name : string, surname : string, email : string, phoneNumber : string)
-  {
-    this.lidService.editLidData(id, name, surname, email, phoneNumber)
-  }
+  // editLid(  id : number, name : string, surname : string, email : string, phoneNumber : string)
+  // {
+  //   this.lidService.editLidData(id, name, surname, email, phoneNumber)
+  // }
 
   updateActiveLid(id : Number) {
     this.sharedService.activeLid = this.lids.find((lid) => lid.id === id);

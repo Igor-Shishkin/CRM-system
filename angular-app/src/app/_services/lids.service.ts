@@ -25,9 +25,9 @@ export class LidsService {
   deleteLidById(id : number) {
     return this.http.get(LIDS_API + id, {responseType: 'text' })
   }
-  editLidData( id : number, name : string, surname : string, email : string, phoneNumber : string):
+  addLid(name : string, surname : string, email : string, phoneNumber : string):
     Observable<any> {
-      return this.http.post(LIDS_API + id, 
+      return this.http.post(LIDS_API, 
         {
           name,
           surname,

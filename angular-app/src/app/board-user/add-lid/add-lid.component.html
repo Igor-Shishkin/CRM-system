@@ -1,0 +1,26 @@
+<p>add-lid works!</p>
+
+<form (submit)="save(name, surname, email, phoneNumber)">
+  <div class="input-group mb-3">
+    <label for="exampleInputName" class="form-label" style="margin-top: 8px;">Name</label>
+    <input required type="text" id="disabledTextInput" class="form-control" 
+    style="margin-left: 5px;" placeholder="Enter name" #name>
+  </div>
+  <div class="input-group mb-3">
+    <label for="exampleInputName" class="form-label" style="margin-top: 8px;">Surname</label>
+    <input required type="text" id="disabledTextInput" class="form-control" 
+    style="margin-left: 5px;" placeholder="Enter surname" #surname>
+  </div>
+  <div class="input-group mb-3">
+    <label for="exampleInputEmail1" class="form-label">Email address</label>
+    <input required type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" 
+    placeholder="name@example.com" #email>
+  </div>
+  <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+  <div class="input-group mb-3">
+    <label for="exampleInputName" class="form-label" style="margin-top: 8px;">Phone number</label>
+    <input required type="text" id="disabledTextInput" class="form-control" 
+    style="margin-left: 5px;" placeholder="Enter phone number" #phoneNumber>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>

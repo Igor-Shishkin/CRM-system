@@ -10,6 +10,7 @@ import { BoardModeratorComponent } from './board-moderator/board-moderator.compo
 import { BoardAdminComponent } from './board-admin/board-admin.component';
 import { LidsComponent } from './board-user/lids/lids.component';
 import { LidWorkplaceComponent } from './board-user/lid-workplace/lid-workplace.component';
+import { AddLidComponent } from './board-user/add-lid/add-lid.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -18,7 +19,8 @@ const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
   { path: 'user', component: BoardUserComponent, children: [
     { path: 'user-lid', component: LidsComponent },
-    { path: 'user-lid-workplace', component: LidWorkplaceComponent }   
+    { path: 'user-lid-workplace', component: LidWorkplaceComponent },
+    { path: 'user-add-lid', component: AddLidComponent }
   ]},
   { path: 'mod', component: BoardModeratorComponent },
   { path: 'admin', component: BoardAdminComponent },
