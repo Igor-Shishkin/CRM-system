@@ -31,16 +31,26 @@ export class NavigationComponent {
   }
 
   logout(): void {
+    window.sessionStorage.clear;
+    window.location.reload();
     this.authService.logout().subscribe({
       next: res => {
         console.log(res);
+        this.isLoggedIn = false;
+        this.showAdminBoard = false;
+        this.showModeratorBoard = false;
         this.storageService.clean();
-
+        window.sessionStorage.clear;
         window.location.reload();
       },
       error: err => {
         console.log(err);
       }
     });
+    window.sessionStorage.clear;
+    window.location.reload();
+    this.isLoggedIn = false;
+    this.showAdminBoard = false;
+    this.showModeratorBoard = false;
   }
 }
