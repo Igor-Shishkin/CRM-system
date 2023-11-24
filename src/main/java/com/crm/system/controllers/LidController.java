@@ -5,8 +5,9 @@ import com.crm.system.models.User;
 import com.crm.system.playload.request.LidRequest;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.repository.UserRepository;
-import com.crm.system.service.ClientService;
+import com.crm.system.services.ClientService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,12 +26,15 @@ public class LidController {
         this.userRepository = userRepository;
     }
 
+
     @PostMapping()
     public ResponseEntity<?> addNewClient(@Valid @RequestBody LidRequest clientRequest) {
-        Optional<User> user = userRepository.findById(clientRequest.getUserId());
-
-        if (user.isEmpty()) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: User with this ID isn't found"));
+        Optional<User> user;
+        try {
+            user = clientService.getActiveUser();
+            if (user.isEmpty()) { return ResponseEntity.notFound().build(); }
+        } catch (ClassCastException e) {
+            return ResponseEntity.badRequest().build();
         }
         Lid client = new Lid(clientRequest.getName(),
                 clientRequest.getSurname(),
@@ -43,9 +47,14 @@ public class LidController {
     }
 
     @GetMapping()
-    public ResponseEntity<?> getAllClientsForUser() {
-        List<Lid> clients = clientService.getAllClients();
-        return ResponseEntity.ok(clients);
+    public ResponseEntity<List<Lid>> getAllClientsForUser() {
+        try {
+            List<Lid> clients = clientService.getAllClients();
+            return ResponseEntity.ok(clients);
+
+        } catch (ClassCastException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 

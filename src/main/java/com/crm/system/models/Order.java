@@ -1,5 +1,6 @@
 package com.crm.system.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -20,6 +21,7 @@ public class Order {
     private double price;
     @ManyToOne
     @JoinColumn(name = "client_id")
+    @JsonBackReference
     private Lid client;
 
     public Order(String thing, double price) {

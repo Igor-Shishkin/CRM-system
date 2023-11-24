@@ -1,6 +1,7 @@
 package com.crm.system.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -37,6 +38,7 @@ public class Lid {
         private String phoneNumber;
         private boolean isClient;
         @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+        @JsonManagedReference
         private Set<Order> orders = new HashSet<>();
         @ManyToOne
         @JoinColumn(name = "user_id")
