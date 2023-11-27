@@ -9,6 +9,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -23,5 +25,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return UserDetailsImpl.build(user);
     }
+
+    public List<User> getAllUsers() {
+        List<User> allUser = userRepository.findAll();
+        return allUser;
+    }
+
 
 }

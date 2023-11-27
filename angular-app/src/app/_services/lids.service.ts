@@ -37,7 +37,7 @@ export class LidsService {
         httpOptions );
     }
 }
-
+  
 // export interface Lid {
 //   id : number;
 //   name : string;

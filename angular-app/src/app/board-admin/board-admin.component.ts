@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../_services/user.service';
+import { AuthService } from '../_services/auth.service';
+import { User } from '../User';
 
 @Component({
   selector: 'app-board-admin',
@@ -7,25 +9,25 @@ import { UserService } from '../_services/user.service';
   styleUrls: ['./board-admin.component.css']
 })
 export class BoardAdminComponent implements OnInit {
-  content?: string;
+  users?: User[];
+  isLoaded = false;
+responseMessage = '';
+errorMessage = '';
+isError = false;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService,
+    private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.userService.getAdminBoard().subscribe({
+    this.authService.getAllUsers().subscribe({
       next: data => {
-        this.content = data;
+        this.users = data;
+        this.isLoaded = true;
       },
       error: err => {
-        if (err.error) {
-          try {
-            const res = JSON.parse(err.error);
-            this.content = res.message;
-          } catch {
-            this.content = `Error with status: ${err.status} - ${err.statusText}`;
-          }
-        } else {
-          this.content = `Error with status: ${err.status}`;
+        error: (err: any) => {
+          console.error(err); // Log the error for debugging
+          // Handle error display or any other actions as needed
         }
       }
     });

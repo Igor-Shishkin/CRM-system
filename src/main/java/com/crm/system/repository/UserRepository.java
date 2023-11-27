@@ -1,5 +1,6 @@
 package com.crm.system.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.crm.system.models.User;
@@ -17,4 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Override
     Optional<User> findById(Long aLong);
+
+    @Override
+    List<User> findAll();
 }

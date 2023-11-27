@@ -33,6 +33,9 @@ export class NavigationComponent {
   }
 
   logout(): void {
+    this.isLoggedIn = false;
+    this.showAdminBoard = false;
+    this.showModeratorBoard = false;
     this.authService.logout().subscribe({
       next: res => {
         console.log(res);

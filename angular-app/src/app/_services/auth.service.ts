@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError } from 'rxjs';
+import { User } from '../User';
 
 const AUTH_API = 'http://localhost:8080/api/auth/';
 
@@ -35,6 +36,15 @@ export class AuthService {
         password,
       },
       httpOptions
+    );
+  }
+
+  getAllUsers(): Observable<any> {
+    return this.http.get<User[]>(AUTH_API + 'users').pipe(
+      catchError((error:any) => {
+        console.error(error);
+        throw error;
+      })
     );
   }
 
