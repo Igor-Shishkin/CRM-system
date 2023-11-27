@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { StorageService } from '../_services/storage.service';
 import { AuthService } from '../_services/auth.service';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-navigation',
@@ -14,7 +15,8 @@ export class NavigationComponent {
   showModeratorBoard = false;
   username?: string;
 
-  constructor(private storageService: StorageService, private authService: AuthService) { }
+  constructor(private storageService: StorageService, private authService: AuthService,
+                      private router: Router) { }
 
   ngOnInit(): void {
     this.isLoggedIn = this.storageService.isLoggedIn();
@@ -31,26 +33,17 @@ export class NavigationComponent {
   }
 
   logout(): void {
-    window.sessionStorage.clear;
-    window.location.reload();
     this.authService.logout().subscribe({
       next: res => {
         console.log(res);
-        this.isLoggedIn = false;
-        this.showAdminBoard = false;
-        this.showModeratorBoard = false;
         this.storageService.clean();
-        window.sessionStorage.clear;
-        window.location.reload();
+        window.sessionStorage.clear();
+        this.isLoggedIn = false;
+        this.router.navigate(['/login']);
       },
       error: err => {
         console.log(err);
       }
     });
-    window.sessionStorage.clear;
-    window.location.reload();
-    this.isLoggedIn = false;
-    this.showAdminBoard = false;
-    this.showModeratorBoard = false;
   }
 }

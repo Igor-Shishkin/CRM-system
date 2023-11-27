@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -61,13 +62,8 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
-
-    @Operation(summary = "Create a new Tutorial", tags = { "tutorials", "post" })
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", content = {
-                    @Content(schema = @Schema(implementation = UserInfoResponse.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PostMapping("/signin")
+    @Operation(summary = "Login in system", tags = { "auth", "login" })
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
         Authentication authentication = authenticationManager
@@ -91,7 +87,12 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "New user registration", tags = { "auth", "registration" })
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+        for (String role : signUpRequest.getRole()) {
+            System.out.println(role);
+        }
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
         }
@@ -115,13 +116,13 @@ public class AuthController {
         } else {
             strRoles.forEach(role -> {
                 switch (role) {
-                    case "admin":
+                    case "Admin":
                         Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(adminRole);
 
                         break;
-                    case "mod":
+                    case "Moderator":
                         Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
                         roles.add(modRole);

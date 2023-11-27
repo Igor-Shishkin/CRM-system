@@ -73,17 +73,30 @@
           </div>
         </div>
       </div>
+
+      <div class="dropdown, form-group" style="margin-top: 17px; margin-bottom: 21px;">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+         {{ selectedRole ? selectedRole.toUpperCase() : 'Choose a role' }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark">
+          <li *ngFor="let role of roles">
+            <a class="dropdown-item" (click)="selectRole(role)">
+              {{ role }}
+            </a>
+          </li>
+        </ul>
+      </div>
+
       <div class="form-group">
         <button class="btn btn-primary btn-block">Sign Up</button>
       </div>
 
-      <div class="alert alert-warning" *ngIf="f.submitted && isSignUpFailed">
-        Signup failed!<br />{{ errorMessage }}
-      </div>
     </form>
 
     <div class="alert alert-success" *ngIf="isSuccessful">
       Your registration is successful!
     </div>
   </div>
+
+
 </div>
