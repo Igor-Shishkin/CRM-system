@@ -2,6 +2,8 @@
 
 <p *ngIf="isError == true" class="">{{errorMessage}}</p>
 
+<h4>{{responseMessage}}</h4>
+
 <table class="table table-striped table-hover">
   
   <thead> 
@@ -9,10 +11,9 @@
           <th>Id</th>
           <th>Name</th>
           <th>email</th>
-          <th>password</th>
-          <th>role</th>
-          <th></th>
-          <th></th>
+          <th>roles</th>
+          <th>Number of clients</th>
+          <th>Action/th>
       </tr>
   </thead>
 
@@ -22,8 +23,12 @@
           <td>{{user.id}}</td>
           <td>{{user.username}}</td>
           <td>{{user.email}}</td>
-          <td>{{user.password}}</td>
           <td>{{user.roles}}</td>
+          <td>{{user.clientsNumber}}</td>
+          <td>            
+            <button (click)="deleteUser(user.id)" type="button" 
+            class="btn btn-outline-dark" style="margin-left: 5px;">Delete</button>
+          </td>
 
           <!-- <td>
             <a 

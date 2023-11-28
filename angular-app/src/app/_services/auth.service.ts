@@ -48,7 +48,15 @@ export class AuthService {
     );
   }
 
+  deleteUser(userId: number): Observable<any> {
+    return this.http.delete(AUTH_API + `delete?userId=${userId}`, { responseType: 'text'});
+  } 
+
   logout(): Observable<any> {
     return this.http.post(AUTH_API + 'signout', { }, httpOptions);
   }
 }
+
+// getPublicContent(): Observable<any> {
+//   return this.http.get(API_URL + 'all', { responseType: 'text' });
+// }

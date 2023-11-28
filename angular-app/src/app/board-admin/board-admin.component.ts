@@ -32,4 +32,13 @@ isError = false;
       }
     });
   }
+  deleteUser(userId: number) {
+    this.authService.deleteUser(userId).subscribe({
+      next: data => {
+        this.responseMessage = data;
+      }, error: (err: any) => {
+        console.error(err);
+      } 
+    });
+  }
 }

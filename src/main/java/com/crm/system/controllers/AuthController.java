@@ -1,8 +1,6 @@
 package com.crm.system.controllers;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.crm.system.models.security.ERole;
@@ -11,22 +9,20 @@ import com.crm.system.models.User;
 import com.crm.system.playload.request.LoginRequest;
 import com.crm.system.playload.request.SignupRequest;
 import com.crm.system.playload.response.MessageResponse;
+import com.crm.system.playload.response.UserAuthInfoResponse;
 import com.crm.system.playload.response.UserInfoResponse;
 import com.crm.system.repository.RoleRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.jwt.JwtUtils;
 import com.crm.system.security.services.UserDetailsImpl;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -77,7 +73,7 @@ public class AuthController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .body(new UserInfoResponse(userDetails.getId(),
+                .body(new UserAuthInfoResponse(userDetails.getId(),
                         userDetails.getUsername(),
                         userDetails.getEmail(),
                         roles));
@@ -146,10 +142,36 @@ public class AuthController {
                 .body(new MessageResponse("You've been signed out!"));
     }
     @GetMapping("/users")
-//    @PreAuthorize("hasRole('Admin')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsers() {
         List<User> allUsers = userRepository.findAll();
-        System.out.println(allUsers.size());
-        return ResponseEntity.ok(allUsers);
+        List<UserInfoResponse> userInfoResponseList = new LinkedList<>();
+
+        for (User user : allUsers) {
+            List<String> roles = user.getRoles().stream()
+                    .map(Object::toString)
+                    .toList();
+            UserInfoResponse userInfoResponse = new UserInfoResponse(
+                    user.getId(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    roles,
+                    user.getClients().size()
+            );
+            userInfoResponseList.add(userInfoResponse);
+        }
+
+        return ResponseEntity.ok(userInfoResponseList);
+    }
+    @DeleteMapping("/delete")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> deleteUserById(@RequestParam long userId) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User isn't defined");
+        }
+        String username = user.get().getUsername();
+        userRepository.deleteById(userId);
+        return ResponseEntity.ok(new MessageResponse(String.format("User '%s' is deleted", username)));
     }
 }

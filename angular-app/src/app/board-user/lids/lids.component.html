@@ -29,10 +29,10 @@
             <td>{{lid.phoneNumber}}</td>
             <td>{{lid.orders.length}}</td>
             <td>
-              <a 
-                [routerLink]="'/user/user-lid-workplace'" 
+                <a [routerLink]="'/user/user-lid-workplace'" 
                 (click)="updateActiveLid(lid.id)"
                 class="btn btn-info">Go to LID</a>
+                
                 <button (click)="deleteLid(lid.id)" type="button" 
                 class="btn btn-danger" style="margin-left: 5px;">Delete</button>
             </td>
