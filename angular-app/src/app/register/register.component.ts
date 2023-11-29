@@ -13,17 +13,14 @@ export class RegisterComponent {
     role: [],
     password: null
   };
-  roles: string[] = ['User', 'Moderator', 'Admin'];
-  selectedRole: string | null = null;
   isSuccessful = false;
   isSignUpFailed = false;
   errorMessage = '';
 
+
   constructor(private authService: AuthService) { }
 
   onSubmit(): void {
-    if (this.selectedRole != null) {
-      this.form.role.push(this.selectedRole)
       console.log(this.form.role);
       console.log(this.form);
       const { username, email, role, password } = this.form;
@@ -35,14 +32,25 @@ export class RegisterComponent {
           this.isSignUpFailed = false;
         },
         error: err => {
+          console.log(err);
           this.errorMessage = err.error.message;
           this.isSignUpFailed = true;
         }
       });
-    }
+    
   }
-  selectRole(role: string){
-    this.selectedRole = role;
-    console.log(this.selectedRole)
-  };
+
+  updateRole(role: string) {
+    const roleIndex = this.form.role.indexOf(role);
+    if (roleIndex !== -1) {
+      this.form.role.splice(roleIndex, 1);
+    } else {
+      this.form.role.push(role);
+    }
+    console.log(this.form.role)
+  }
+  // selectRole(role: string){
+  //   this.selectedRole = role;
+  //   console.log(this.selectedRole)
+  // };
 }
