@@ -1,0 +1,15 @@
+.to-side-container {
+    display: flex;
+  }
+  
+  .left-column {
+    flex: 3; /* This will make the left column flexible */
+    background-color: lightblue; /* Just for demonstration */
+    padding: 20px;
+  }
+  
+  .right-column {
+    flex: 2; /* This will make the right column flexible */
+    background-color: lightgreen; /* Just for demonstration */
+    padding: 20px;
+  }

@@ -34,6 +34,10 @@ public class User {
     @Email
     private String email;
 
+    @Lob
+    @Column(name = "user_photo")
+    private byte[] photoOfUser;
+
     @NotBlank
     @Size(max = 120)
     private String password;

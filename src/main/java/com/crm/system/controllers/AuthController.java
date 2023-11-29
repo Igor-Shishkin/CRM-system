@@ -1,5 +1,7 @@
 package com.crm.system.controllers;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 //for Angular Client (withCredentials)
 //@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials="true")
@@ -173,5 +176,30 @@ public class AuthController {
         String username = user.get().getUsername();
         userRepository.deleteById(userId);
         return ResponseEntity.ok(new MessageResponse(String.format("User '%s' is deleted", username)));
+    }
+
+    @PostMapping("/photo")
+    public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile file) throws IOException {
+        Long userId = getActiveUserId();
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User isn't defined");}
+        byte[] bytes = file.getBytes();
+        user.get().setPhotoOfUser(bytes);
+        return ResponseEntity.ok(new MessageResponse("Photo is upload"));
+    }
+    @GetMapping("/photo")
+    public ResponseEntity<?> getPhoto(@RequestParam("file") MultipartFile file) {
+        Long userId = getActiveUserId();
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isEmpty()) {return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User isn't defined");}
+        byte[] photoOfUser = user.get().getPhotoOfUser();
+        return ResponseEntity.ok().body(photoOfUser);
+
+    }
+
+    private long getActiveUserId() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
+        return userId;
     }
 }

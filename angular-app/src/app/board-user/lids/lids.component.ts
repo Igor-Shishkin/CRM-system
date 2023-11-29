@@ -30,24 +30,22 @@ constructor(private lidService: LidsService,
         this.isLoaded = true;
       },
       error: (err: any) => {
-        console.error(err); // Log the error for debugging
-        // Handle error display or any other actions as needed
+        console.error(err); 
       }
     })
   }
   deleteLid( id : number)
   {
-    this.lidService.deleteLidById(id).subscribe(
-      (data: string) => {
+    this.lidService.deleteLidById(id).subscribe({
+      next: (data: string) => {
         this.responseMessage = data;
       },
-      (err: any) => {
+      error: (err: any) => {
         console.error(err);
         this.isError = true;
         this.errorMessage = err;
-
       }
-    );
+    });
   }
   // editLid(  id : number, name : string, surname : string, email : string, phoneNumber : string)
   // {

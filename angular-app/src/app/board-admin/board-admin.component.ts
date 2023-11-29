@@ -11,9 +11,9 @@ import { User } from '../User';
 export class BoardAdminComponent implements OnInit {
   users?: User[];
   isLoaded = false;
-responseMessage = '';
-errorMessage = '';
-isError = false;
+  responseMessage = '';
+  errorMessage = '';
+  isError = false;
 
   constructor(private userService: UserService,
     private authService: AuthService) { }
@@ -36,6 +36,7 @@ isError = false;
     this.authService.deleteUser(userId).subscribe({
       next: data => {
         this.responseMessage = data;
+        window.location.reload();
       }, error: (err: any) => {
         console.error(err);
       } 
