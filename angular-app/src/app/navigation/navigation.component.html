@@ -28,10 +28,10 @@
 
     <ul class="navbar-nav ml-auto" *ngIf="isLoggedIn">
       <li class="nav-item">
-        <a href="/profile" class="nav-link" routerLink="profile">My profile</a>
+        <img src="assets\images\profile-icon.png" alt="Profile" href="/profile" routerLink="profile"/>
       </li>
       <li class="nav-item">
-        <a class="nav-link" (click)="logout()">LogOut</a>
+        <img src="assets\images\log-out.png" alt="Log out" (click)="logout()"/>
       </li>
     </ul>
   </nav>

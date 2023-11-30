@@ -13,3 +13,7 @@
     background-color: lightgreen; /* Just for demonstration */
     padding: 20px;
   }
+  .custom-size {
+    max-width: 200px;
+    max-height: 200px;
+  }

@@ -20,8 +20,11 @@
   </div>
 
   <div class="right-column">
+    <div *ngIf="!userPhoto">
+      <img src="assets/images/anonim.jpg" class=" img-thumbnail custom-size">
+    </div>
     <div *ngIf="userPhoto">
-      <img [src]="getImageUrl()" alt="User Photo">
+      <img [src]="getImageUrl()" class="img-thumbnail custom-size">
     </div>
 
     <input type="file" (change)="onFileSelected($event)">
@@ -31,7 +34,6 @@
   </div>
 
 </div>
-
 
 
 <ng-template #loggedOut>

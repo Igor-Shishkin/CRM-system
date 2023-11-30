@@ -1,1 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
+body {
+    background-color: rgb(40, 36, 65);
+}
+.main-style{
+    background-color: rgb(40, 36, 65);
+    p {
+        color: rgb(217, 248, 207); /* Your desired text color */
+      }
+      
+    
+    h1, h2, h3 {
+      color: #d0dfee; /* Your desired text color */
+    }
+    a {
+        color: #d0dfee; /* Your desired text color */
+      }
+}
