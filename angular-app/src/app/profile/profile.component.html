@@ -20,15 +20,14 @@
   </div>
 
   <div class="right-column">
-    <div *ngIf="photo">
-      <img [src]="photo.src" alt="src\assets\anonim.jpg">
+    <div *ngIf="userPhoto">
+      <img [src]="getImageUrl()" alt="User Photo">
     </div>
 
     <input type="file" (change)="onFileSelected($event)">
     <button (click)="uploadImage()">Upload Image</button>
     
-    <p>Left Column Content</p>
-    <p>Right Column Content</p>
+    <p>{{statusMessage}}</p>
   </div>
 
 </div>

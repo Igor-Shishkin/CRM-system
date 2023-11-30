@@ -35,7 +35,7 @@ public class User {
     private String email;
 
     @Lob
-    @Column(name = "user_photo")
+    @Column(name = "user_photo",  columnDefinition="LONGBLOB")
     private byte[] photoOfUser;
 
     @NotBlank

@@ -55,9 +55,8 @@ export class AuthService {
     return this.http.get(AUTH_API + 'photo', { responseType: 'blob'})
   }
 
-  getImageUrl(): Observable<string> {
-    return this.http.get<string>(AUTH_API + 'photo');
-    // Adjust the endpoint '/image/url' according to your backend API
+  getImageUrl(): Observable<Blob> {
+    return this.http.get(AUTH_API + 'photo', { responseType: 'blob' });
   }
 
   uploadPhoto(formData: FormData): Observable<any> {

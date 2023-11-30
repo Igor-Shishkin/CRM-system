@@ -9,7 +9,7 @@ import { AuthService } from '../_services/auth.service';
 })
 export class ProfileComponent implements OnInit {
   currentUser: any;
-  photo: HTMLImageElement | undefined;
+  userPhoto: Blob | undefined;
   selectedFile: File | undefined;
   statusMessage = '';
 
@@ -20,28 +20,31 @@ export class ProfileComponent implements OnInit {
     this.currentUser = this.storageService.getUser();
     this.authService.getUserPhoto().subscribe({
       next: (imageData: Blob) => {
-        this.createImageFromBloB(imageData);
+        this.userPhoto = imageData;
+        this.statusMessage = "Photo is loaded :)"
       },
       error: (error) => {
         console.error('Error fetching image:', error);
+        this.statusMessage = "Something has gone wrong"
       }
-    }
-
-    )
+    });
   }
-  createImageFromBloB(image: Blob): void {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => {
-      this.photo = new Image();
-      if (typeof reader.result === 'string') {
-        this.photo.src = reader.result;
-      }
-    }, false);
+  getImageUrl() {
+    return this.userPhoto ? window.URL.createObjectURL(this.userPhoto) : '';
+  }
+  // createImageFromBloB(image: Blob): void {
+  //   const reader = new FileReader();
+  //   reader.addEventListener('load', () => {
+  //     this.photo = new Image();
+  //     if (typeof reader.result === 'string') {
+  //       this.photo.src = reader.result;
+  //     }
+  //   }, false);
     
-    if (image) {
-      reader.readAsDataURL(image);
-    }
-  }
+  //   if (image) {
+  //     reader.readAsDataURL(image);
+  //   }
+  // }
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
   }
@@ -52,9 +55,11 @@ export class ProfileComponent implements OnInit {
 
       this.authService.uploadPhoto(formData).subscribe({
         next: (response: any) => {
+          this.statusMessage = response;
           console.log('Image uploaded successfully!', response);
         },
         error: (error: any) => {
+          this.statusMessage = error;
           console.error(error);
         }
       })

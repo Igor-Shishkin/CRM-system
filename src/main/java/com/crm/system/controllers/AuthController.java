@@ -23,10 +23,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -177,24 +174,44 @@ public class AuthController {
         userRepository.deleteById(userId);
         return ResponseEntity.ok(new MessageResponse(String.format("User '%s' is deleted", username)));
     }
-
     @PostMapping("/photo")
     public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile file) throws IOException {
         Long userId = getActiveUserId();
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User isn't defined");}
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("User isn't defined");}
         byte[] bytes = file.getBytes();
-        user.get().setPhotoOfUser(bytes);
+        User user = optionalUser.get();
+        user.setPhotoOfUser(bytes);
+        userRepository.save(user);
         return ResponseEntity.ok(new MessageResponse("Photo is upload"));
     }
-    @GetMapping("/photo")
-    public ResponseEntity<?> getPhoto(@RequestParam("file") MultipartFile file) {
-        Long userId = getActiveUserId();
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User isn't defined");}
-        byte[] photoOfUser = user.get().getPhotoOfUser();
-        return ResponseEntity.ok().body(photoOfUser);
 
+    @GetMapping(value = "/photo", produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<?> getPhoto() {
+        Long userId = getActiveUserId();
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) {return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("User isn't defined");}
+        User user = optionalUser.get();
+        if (user.getPhotoOfUser() == null)
+            {return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("User doesn't have a photo");}
+        byte[] photoOfUser = user.getPhotoOfUser();
+        HttpHeaders headers = getHeaders(photoOfUser);
+        return new ResponseEntity<>(photoOfUser, headers, HttpStatus.OK);
+    }
+
+    private HttpHeaders getHeaders(byte[] photoOfUser) {
+        HttpHeaders headers = new HttpHeaders();
+        String imageType = getImageType(photoOfUser);
+        if (imageType == null) {
+            headers.setContentType(MediaType.IMAGE_JPEG);
+        } else {
+            headers.setContentType(MediaType.parseMediaType(imageType));
+        }
+        headers.setContentLength(photoOfUser.length);
+        return headers;
     }
 
     private long getActiveUserId() {
@@ -202,4 +219,16 @@ public class AuthController {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
         return userId;
     }
+
+    private String getImageType(byte[] imageData) {
+        if (imageData.length >= 2) {
+            if (imageData[0] == (byte) 0xFF && imageData[1] == (byte) 0xD8) {
+                return "image/jpeg";
+            } else if (imageData[0] == (byte) 0x89 && imageData[1] == (byte) 0x50) {
+                return "image/png";
+            }
+        }
+        return null;
+    }
 }
+
