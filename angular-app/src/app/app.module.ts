@@ -18,6 +18,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { LidsComponent } from './board-user/lids/lids.component';
 import { LidWorkplaceComponent } from './board-user/lid-workplace/lid-workplace.component';
 import { AddLidComponent } from './board-user/add-lid/add-lid.component';
+import { SideBarComponent } from './side-bar/side-bar.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { AddLidComponent } from './board-user/add-lid/add-lid.component';
     NavigationComponent,
     LidsComponent,
     LidWorkplaceComponent,
-    AddLidComponent
+    AddLidComponent,
+    SideBarComponent
   ],
   imports: [
     BrowserModule,
