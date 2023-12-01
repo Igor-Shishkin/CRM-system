@@ -1,0 +1,61 @@
+.side-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 18%; /* Adjust the width as needed */
+    background-color: #333;
+    padding: 20px;
+  }
+  
+  /* Style for the buttons */
+  .side-panel button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  /* Hover effect for buttons */
+  .side-panel button:hover {
+    background-color: #555;
+  }
+
+  .logo-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Styles for the colorful 3D text */
+  .colorful-text {
+    font-family: 'Arial', sans-serif;
+    font-size: 17px;
+    background-image: linear-gradient(45deg, #ff0055, #ff6600, #ffcc00, #33cc33, #0099ff, #6633ff, #cc33ff);
+    background-size: 600% 600%;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    animation: gradientAnimation 15s ease infinite;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Animation for the gradient */
+  @keyframes gradientAnimation {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 100% 50%;
+    }
+  }
+  .separator {
+    border-top: 1px solid #ccc; /* Adjust thickness, style, and color */
+    margin: 10px 0; /* Adjust margin as needed */
+  }
