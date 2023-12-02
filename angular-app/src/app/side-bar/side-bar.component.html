@@ -1,16 +1,40 @@
 
-<div class="side-panel">
-    <div class="logo-container">
-        <img src="assets\images\LOGO.png" width="75%" />
-            <p class="colorful-text" style="margin-top: 9px;">alfanamestaj.rs</p>
-        </div>
+<div class="general">
+    <div class="logo-container" style="margin-bottom: 3px;">
+        <img src="assets\images\LOGO.png" width="50%" />
+        <p class="colorful-text" style="margin-top: 9px; margin-bottom: 3px;">alfanamestaj.rs</p>
+    </div>
     <div class="separator"></div>
-    <button>LIDs</button>
-    <button>Clients</button>
-    <button>Orders</button>
-    <button>Providers</button>
-    <button>Partners</button>
-    <button>Cash</button>
-    <button>Statistics</button>
-    <button>History</button>
+    <div class="label-action" style="margin: 5px;">
+        <h5 (click)="toggleActionDropdown()">Actions</h5>
+            <div class="dropdown-content" [ngClass]="{ 'show': isDropdownActionVisible }">
+                <ul>
+
+                    <li><label>LIDs</label></li>
+                    <li><label>Clients</label></li>
+                    <li><label>Orders</label></li>
+                    <li><label>Providers</label></li>
+                    <li><label>Partners</label></li>
+                    <li><label>Cash</label></li>
+                    <li><label>Statistics</label></li>
+                    <li><label>Label 1</label></li>
+
+                </ul>
+            </div>
+        <h5 (click)="toggleHistoryDropdown()">History</h5>
+            <div class="dropdown-content" [ngClass]="{ 'show': isDropdownHistoryVisible }">
+                <ul>
+
+                    <li><label>LIDs</label></li>
+                    <li><label>Clients</label></li>
+                    <li><label>Orders</label></li>
+                    <li><label>Providers</label></li>
+                    <li><label>Partners</label></li>
+                    <li><label>Cash</label></li>
+                    <li><label>Statistics</label></li>
+                    <li><label>Label 1</label></li>
+
+                </ul>
+            </div>
+    </div>    
 </div>
