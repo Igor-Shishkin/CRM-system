@@ -1,234 +1,122 @@
 package com.crm.system.controllers;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import com.crm.system.models.security.ERole;
-import com.crm.system.models.security.Role;
-import com.crm.system.models.User;
+import com.crm.system.exception.UserAlreadyExistsException;
+import com.crm.system.exception.UserIdNotFoundException;
 import com.crm.system.playload.request.LoginRequest;
 import com.crm.system.playload.request.SignupRequest;
 import com.crm.system.playload.response.MessageResponse;
-import com.crm.system.playload.response.UserAuthInfoResponse;
 import com.crm.system.playload.response.UserInfoResponse;
-import com.crm.system.repository.RoleRepository;
-import com.crm.system.repository.UserRepository;
-import com.crm.system.security.jwt.JwtUtils;
-import com.crm.system.security.services.UserDetailsImpl;
+import com.crm.system.security.services.UserDetailsServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-//for Angular Client (withCredentials)
-//@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials="true")
+@Slf4j
 @Tag(name = "Auth controller", description = "Auth management APIs")
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials="true")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
-    @Autowired
-    AuthenticationManager authenticationManager;
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserDetailsServiceImpl userDetailsService;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    RoleRepository roleRepository;
-
-    @Autowired
-    PasswordEncoder encoder;
-
-    @Autowired
-    JwtUtils jwtUtils;
+    public AuthController(UserDetailsServiceImpl userDetailsService, AuthenticationManager authenticationManager) {
+        this.userDetailsService = userDetailsService;
+        this.authenticationManager = authenticationManager;
+    }
 
     @PostMapping("/signin")
     @Operation(summary = "Login in system", tags = { "auth", "login" })
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-
-        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
-
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .body(new UserAuthInfoResponse(userDetails.getId(),
-                        userDetails.getUsername(),
-                        userDetails.getEmail(),
-                        roles));
+        try {
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+            ResponseEntity<?> responseEntity = userDetailsService.authenticateUser(authentication);
+            log.info("User {} is logged", Objects.requireNonNull(responseEntity.getBody()).toString());
+            return responseEntity;
+        } catch (AuthenticationCredentialsNotFoundException e) {
+            log.error("Authorisation Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(new MessageResponse("Authorisation Error: " + e.getMessage()));
+        }
     }
 
     @PostMapping("/signup")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "New user registration", tags = { "auth", "registration" })
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        for (String role : signUpRequest.getRole()) {
-            System.out.println(role);
+        try {
+            userDetailsService.registerUser(signUpRequest);
+            log.info("User registered successfully!");
+            return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        } catch (UserAlreadyExistsException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        } catch (Exception e) {
+            log.error("Registration error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(new MessageResponse("Registration error: " + e.getMessage()));
         }
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
-        }
-
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
-        }
-
-        // Create new user's account
-        User user = new User(signUpRequest.getUsername(),
-                signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
-
-        Set<String> strRoles = signUpRequest.getRole();
-        Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "Admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-
-                        break;
-                    case "Moderator":
-                        Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(modRole);
-
-                        break;
-                    default:
-                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
-                }
-            });
-        }
-
-        user.setRoles(roles);
-        userRepository.save(user);
-
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
-
     @PostMapping("/signout")
     public ResponseEntity<?> logoutUser() {
-        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
+        ResponseCookie cookie = userDetailsService.logoutUser();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(new MessageResponse("You've been signed out!"));
     }
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsers() {
-        List<User> allUsers = userRepository.findAll();
-        List<UserInfoResponse> userInfoResponseList = new LinkedList<>();
-
-        for (User user : allUsers) {
-            List<String> roles = user.getRoles().stream()
-                    .map(Object::toString)
-                    .toList();
-            UserInfoResponse userInfoResponse = new UserInfoResponse(
-                    user.getId(),
-                    user.getUsername(),
-                    user.getEmail(),
-                    roles,
-                    user.getClients().size()
-            );
-            userInfoResponseList.add(userInfoResponse);
-        }
-
+        List<UserInfoResponse> userInfoResponseList = userDetailsService.getInfoAllUsers();
         return ResponseEntity.ok(userInfoResponseList);
     }
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUserById(@RequestParam long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User isn't defined");
+        String responseText;
+        try {
+            responseText = userDetailsService.deleteUserById(userId);
+            return ResponseEntity.ok(new MessageResponse(responseText));
+        } catch (UserIdNotFoundException | IllegalArgumentException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
-        String username = user.get().getUsername();
-        userRepository.deleteById(userId);
-        return ResponseEntity.ok(new MessageResponse(String.format("User '%s' is deleted", username)));
     }
     @PostMapping("/photo")
-    public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile file) throws IOException {
-        Long userId = getActiveUserId();
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("User isn't defined");}
-        byte[] bytes = file.getBytes();
-        User user = optionalUser.get();
-        user.setPhotoOfUser(bytes);
-        userRepository.save(user);
-        return ResponseEntity.ok(new MessageResponse("Photo is upload"));
+    public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile file) throws IOException, UserIdNotFoundException {
+        try {
+            String responseText = userDetailsService.uploadPhoto(file);
+            return ResponseEntity.ok(new MessageResponse(responseText));
+        }catch (UserIdNotFoundException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        } catch (IOException e) {
+            log.error("Error reading file" + e.getMessage());
+            return ResponseEntity.badRequest().body(new MessageResponse("Error reading file" + e.getMessage()));
+        }
     }
 
     @GetMapping(value = "/photo", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<?> getPhoto() {
-        Long userId = getActiveUserId();
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("User isn't defined");}
-        User user = optionalUser.get();
-        if (user.getPhotoOfUser() == null)
-            {return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("User doesn't have a photo");}
-        byte[] photoOfUser = user.getPhotoOfUser();
-        HttpHeaders headers = getHeaders(photoOfUser);
-        return new ResponseEntity<>(photoOfUser, headers, HttpStatus.OK);
-    }
-
-    private HttpHeaders getHeaders(byte[] photoOfUser) {
-        HttpHeaders headers = new HttpHeaders();
-        String imageType = getImageType(photoOfUser);
-        if (imageType == null) {
-            headers.setContentType(MediaType.IMAGE_JPEG);
-        } else {
-            headers.setContentType(MediaType.parseMediaType(imageType));
+        try {
+            return userDetailsService.getPhoto();
+        } catch (FileNotFoundException | UserIdNotFoundException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
-        headers.setContentLength(photoOfUser.length);
-        return headers;
-    }
-
-    private long getActiveUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
-        return userId;
-    }
-
-    private String getImageType(byte[] imageData) {
-        if (imageData.length >= 2) {
-            if (imageData[0] == (byte) 0xFF && imageData[1] == (byte) 0xD8) {
-                return "image/jpeg";
-            } else if (imageData[0] == (byte) 0x89 && imageData[1] == (byte) 0x50) {
-                return "image/png";
-            }
-        }
-        return null;
     }
 }
 

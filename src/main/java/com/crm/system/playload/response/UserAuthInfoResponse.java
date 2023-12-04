@@ -12,7 +12,6 @@ public class UserAuthInfoResponse {
     private String username;
     private String email;
     private List<String> roles;
-    private int clientsNumber;
 
     public UserAuthInfoResponse(Long id, String username, String email, List<String> roles) {
         this.id = id;
