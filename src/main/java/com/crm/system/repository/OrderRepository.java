@@ -1,6 +1,6 @@
 package com.crm.system.repository;
 
-import com.crm.system.models.Order;
+import com.crm.system.models.order.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

@@ -1,5 +1,6 @@
-package com.crm.system.models;
+package com.crm.system.models.order;
 
+import com.crm.system.models.Lid;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -16,18 +17,16 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
-    @Size(max = 100)
-    private String thing;
+    @Column(name = "real_need")
+    private String realNeed;
+    private double estimateBudged;
+    private boolean isProjectApproved;
+    private boolean wasMeetingInOffice;
     private double price;
     @ManyToOne
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "lid_id")
     @JsonBackReference
     private Lid client;
-
-    public Order(String thing, double price) {
-        this.thing = thing;
-        this.price = price;
-    }
     public Order() {
     }
 }
