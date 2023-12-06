@@ -14,6 +14,7 @@ export class NavigationComponent {
   showAdminBoard = false;
   showModeratorBoard = false;
   username?: string;
+  isDropdownActionVisible = false;
 
   constructor(private storageService: StorageService, private authService: AuthService,
                       private router: Router) { }
@@ -36,13 +37,13 @@ export class NavigationComponent {
     this.isLoggedIn = false;
     this.showAdminBoard = false;
     this.showModeratorBoard = false;
+    this.storageService.clean();
+    window.sessionStorage.clear();
+    this.isLoggedIn = false;
+    this.router.navigate(['/login']);
     this.authService.logout().subscribe({
       next: res => {
         console.log(res);
-        this.storageService.clean();
-        window.sessionStorage.clear();
-        this.isLoggedIn = false;
-        this.router.navigate(['/login']);
       },
       error: err => {
         console.log(err);

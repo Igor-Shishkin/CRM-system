@@ -1,28 +1,41 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark">
+  <!-- <h5 (click)="toggleActionDropdown()" style="color: aliceblue;">Actions</h5>
+  <div class="dropdown dropdown-content" style="color: aliceblue;" [ngClass]="{ 'show': isDropdownActionVisible }">
+    <ul>
+        <li><label>LIDs</label></li>
+        <li><label>Clients</label></li>
+        <li><label>Orders</label></li>
+        <li><label>Providers</label></li>
+        <li><label>Partners</label></li>
+        <li><label>Cash</label></li>
+        <li><label>Statistics</label></li>
+        <li><label>Label 1</label></li>
+
+    </ul>
+  </div> -->
+
+
+  
     <a href="#" class="navbar-brand" style="margin-left: 8px;">MARTON</a>
     <ul class="navbar-nav mr-auto" routerLinkActive="active">
       <li class="nav-item">
         <a href="/home" class="nav-link" routerLink="home">Home </a>
       </li>
-      <li class="nav-item" *ngIf="showAdminBoard">
-        <a href="/admin" class="nav-link" routerLink="admin">Admin Board</a>
-      </li>
-      <li class="nav-item" *ngIf="showModeratorBoard">
-        <a href="/mod" class="nav-link" routerLink="mod">Moderator Board</a>
-      </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a href="/user" class="nav-link" *ngIf="isLoggedIn" routerLink="user">User</a>
-      </li>
+      </li> -->
     </ul>
-
-    <ul class="navbar-nav ml-auto" *ngIf="showAdminBoard">
-      <li class="nav-item">
-        <a href="/register" class="nav-link" routerLink="register">Sign Up</a>
-      </li>
-      </ul>
     <ul class="navbar-nav ml-auto" *ngIf="!isLoggedIn">
       <li class="nav-item">
         <a href="/login" class="nav-link" routerLink="login">Login</a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item" *ngIf="showModeratorBoard">
+        <a href="/mod" class="nav-link" routerLink="mod">Moderator mode</a>
+      </li>
+      <li class="nav-item" *ngIf="showAdminBoard">
+        <a href="/admin" class="nav-link" routerLink="admin">Sign UP</a>
       </li>
     </ul>
 
