@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -38,16 +37,21 @@ public class Lid {
         private String email;
 
         @Size(max = 50)
+        @Column(name = "phone_number")
         private String phoneNumber;
 
+        @Column(name = "is_client")
         private boolean isClient;
+
+        private String address;
 
         @OneToMany(mappedBy = "lid", cascade = CascadeType.REMOVE)
         @JsonManagedReference
         private Set<Order> orders = new HashSet<>();
 
         @OneToMany(mappedBy = "lid", cascade = CascadeType.REMOVE)
-        private List<HistoryMessage> history;
+        @JsonManagedReference
+        private Set<HistoryMessage> history = new HashSet<>();
 
         @ManyToOne
         @JoinColumn(name = "user_id")
@@ -55,5 +59,13 @@ public class Lid {
         private User user;
 
         public Lid() {
+        }
+
+        public Lid(String fullName, String email, String phoneNumber, String address, User user) {
+                this.fullName = fullName;
+                this.email = email;
+                this.phoneNumber = phoneNumber;
+                this.address = address;
+                this.user = user;
         }
 }

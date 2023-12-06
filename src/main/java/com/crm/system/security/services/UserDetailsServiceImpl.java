@@ -114,16 +114,16 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         long activeUserId = getActiveUserId();
 
         for (User user : allUsers) {
-            if (user.getId()!=activeUserId) {
+            if (user.getUserId()!=activeUserId) {
                 List<String> roles = user.getRoles().stream()
                         .map(Object::toString)
                         .toList();
                 UserInfoResponse userInfoResponse = new UserInfoResponse.Builder()
-                        .withId(user.getId())
+                        .withId(user.getUserId())
                         .withUsername(user.getUsername())
                         .withEmail(user.getEmail())
                         .withRoles(roles)
-                        .withLidsNumber(user.getClients().size())
+                        .withLidsNumber(user.getLids().size())
                         .build();
                 userInfoResponseList.add(userInfoResponse);
             }

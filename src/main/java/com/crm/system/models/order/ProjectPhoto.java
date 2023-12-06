@@ -6,24 +6,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
+@Table(name = "order_photos")
 @Getter
 @Setter
-@Table(name = "item")
-public class ItemForCalcualtion {
+public class ProjectPhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
-    private Long itemId;
+    @Column(name = "photo_id")
+    private Long id;
 
-    private String thing;
-    private String material;
-    private int quantity;
+    private String path;
+    private String note;
 
-    @Column(name = "unit_price")
-    private double unitPrice;
-
-    @Column(name = "total_price")
-    private double totalPrice;
+    @Column(name = "is_user_photo")
+    private boolean isUserPhoto;
 
     @ManyToOne
     @JoinColumn(name = "order_id")

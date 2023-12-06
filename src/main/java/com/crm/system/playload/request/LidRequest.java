@@ -11,13 +11,12 @@ import lombok.Setter;
 public class LidRequest {
     @NotBlank
     @Size(max = 50)
-    private String name;
-    @Size(max = 50)
-    private String surname;
+    private String fullName;
     @Email
     @NotBlank
     @Size(max = 80)
     private String email;
     @Size(max = 50)
     private String phoneNumber;
+    private String addres;
 }

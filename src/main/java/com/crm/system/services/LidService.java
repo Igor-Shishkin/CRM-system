@@ -26,7 +26,7 @@ public class LidService {
 
     public List<Lid> getAllClients(long userId) {
         List<Lid> lids = lidRepository.findAll().stream()
-                .filter(client -> client.getUser().getId().equals(userId))
+                .filter(lid -> lid.getUser().getUserId().equals(userId))
                 .collect(Collectors.toList());
         return lids;
     }

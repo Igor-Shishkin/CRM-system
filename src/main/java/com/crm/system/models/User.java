@@ -23,7 +23,8 @@ import lombok.Setter;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "user_id")
+    private Long userId;
 
     @NotBlank
     @Size(max = 20)
@@ -44,7 +45,12 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private Set<Lid> clients = new HashSet<>();
+    private Set<Lid> lids = new HashSet<>();
+
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    @JsonManagedReference
+    private Set<HistoryMessage> history;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

@@ -31,7 +31,7 @@ public class LidController {
 
 
     @PostMapping()
-    public ResponseEntity<?> addNewClient(@Valid @RequestBody LidRequest clientRequest) {
+    public ResponseEntity<?> addNewClient(@Valid @RequestBody LidRequest lidRequest) {
         long userId = -1;
 
         try {
@@ -43,13 +43,12 @@ public class LidController {
         if (user.isEmpty()) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User isn't defined");
         }
-        Lid client = new Lid(clientRequest.getName(),
-                clientRequest.getSurname(),
-                clientRequest.getEmail(),
-                clientRequest.getPhoneNumber(),
-                false,
+        Lid lid = new Lid(lidRequest.getFullName(),
+                lidRequest.getEmail(),
+                lidRequest.getPhoneNumber(),
+                lidRequest.getAddres(),
                 user.get());
-        lidService.addClient(client);
+        lidService.addClient(lid);
         return ResponseEntity.ok(new MessageResponse("New LID is save"));
     }
 
