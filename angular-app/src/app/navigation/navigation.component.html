@@ -2,14 +2,7 @@
   <!-- <h5 (click)="toggleActionDropdown()" style="color: aliceblue;">Actions</h5>
   <div class="dropdown dropdown-content" style="color: aliceblue;" [ngClass]="{ 'show': isDropdownActionVisible }">
     <ul>
-        <li><label>LIDs</label></li>
-        <li><label>Clients</label></li>
-        <li><label>Orders</label></li>
-        <li><label>Providers</label></li>
-        <li><label>Partners</label></li>
-        <li><label>Cash</label></li>
-        <li><label>Statistics</label></li>
-        <li><label>Label 1</label></li>
+
 
     </ul>
   </div> -->
@@ -25,21 +18,38 @@
         <a href="/user" class="nav-link" *ngIf="isLoggedIn" routerLink="user">User</a>
       </li> -->
     </ul>
-    <ul class="navbar-nav ml-auto" *ngIf="!isLoggedIn">
-      <li class="nav-item">
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item" *ngIf="!isLoggedIn">
         <a href="/login" class="nav-link" routerLink="login">Login</a>
       </li>
-    </ul>
-    <ul class="navbar-nav ml-auto">
-      <li class="nav-item" *ngIf="showModeratorBoard">
-        <a href="/mod" class="nav-link" routerLink="mod">Moderator mode</a>
-      </li>
-      <li class="nav-item" *ngIf="showAdminBoard">
-        <a href="/admin" class="nav-link" routerLink="admin">Sign UP</a>
+ 
+      <li class="nav-item dropdown" *ngIf="isLoggedIn">
+        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Action
+        </a>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#">LIDs</a></li>
+          <li><a class="dropdown-item" href="#">Clients</a></li>
+          <li><a class="dropdown-item" href="#">Orders</a></li>
+          <li><a class="dropdown-item" href="#">Cash</a></li>
+
+          <li><hr class="dropdown-divider"></li>
+          <li class="nav-item" *ngIf="showModeratorBoard">
+            <a href="/mod" class="nav-link" routerLink="mod">Moderator mode</a>
+          </li>
+          <li class="nav-item" *ngIf="showAdminBoard">
+            <a href="/admin" class="nav-link" routerLink="admin">Sign UP</a>
+          </li>
+
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="#">Providers</a></li>
+          <li><a class="dropdown-item" href="#">Statistics</a></li>
+
+        </ul>
       </li>
     </ul>
 
-    <ul class="navbar-nav ml-auto" *ngIf="isLoggedIn">
+    <ul class="navbar-nav ml-auto container" *ngIf="isLoggedIn">
       <li class="nav-item">
         <img src="assets\images\profile-icon.png" alt="Profile" href="/profile" routerLink="profile"/>
       </li>

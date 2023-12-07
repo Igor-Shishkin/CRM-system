@@ -3,14 +3,14 @@
   }
   
   .left-column {
-    flex: 3; /* This will make the left column flexible */
-    background-color: lightblue; /* Just for demonstration */
+    flex: 3; 
+    background-color: lightblue; 
     padding: 20px;
   }
   
   .right-column {
-    flex: 2; /* This will make the right column flexible */
-    background-color: lightgreen; /* Just for demonstration */
+    flex: 2; 
+    background-color: lightgreen; 
     padding: 20px;
   }
   .custom-size {

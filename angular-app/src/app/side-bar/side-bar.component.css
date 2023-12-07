@@ -3,20 +3,6 @@
     padding: 10px;
     height: 100%;
   }
-  /*
-  .side-panel button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #454545;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  } */
-  
-  /* Hover effect for buttons */
   .side-panel button:hover {
     background-color: #555;
   }

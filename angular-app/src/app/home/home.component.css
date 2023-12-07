@@ -1,4 +1,4 @@
-.jumbotron {
+/* .jumbotron {
     animation: pulse 5s infinite;
     animation-direction: alternate
   }
@@ -10,9 +10,10 @@
     100% {
       background-color: #36ffb2;
     }
-  }
+  } */
 
-  html,
-body {
-  height: 100%;
+.custom-size{
+  width: 200px;
+  height: 75px;
+  margin-left: 50px;
 }
