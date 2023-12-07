@@ -9,15 +9,8 @@
 
 
   
-    <a href="#" class="navbar-brand" style="margin-left: 8px;">MARTON</a>
-    <ul class="navbar-nav mr-auto" routerLinkActive="active">
-      <li class="nav-item">
-        <a href="/home" class="nav-link" routerLink="home">Home </a>
-      </li>
-      <!-- <li class="nav-item">
-        <a href="/user" class="nav-link" *ngIf="isLoggedIn" routerLink="user">User</a>
-      </li> -->
-    </ul>
+    <a href="/home" class="navbar-brand" style="margin-left: 8px;">MARTON</a>
+
     <ul class="navbar-nav ml-auto">
       <li class="nav-item" *ngIf="!isLoggedIn">
         <a href="/login" class="nav-link" routerLink="login">Login</a>
@@ -27,18 +20,18 @@
         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
           Action
         </a>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu dropdown-menu-dark">
           <li><a class="dropdown-item" href="#">LIDs</a></li>
           <li><a class="dropdown-item" href="#">Clients</a></li>
           <li><a class="dropdown-item" href="#">Orders</a></li>
           <li><a class="dropdown-item" href="#">Cash</a></li>
 
           <li><hr class="dropdown-divider"></li>
-          <li class="nav-item" *ngIf="showModeratorBoard">
-            <a href="/mod" class="nav-link" routerLink="mod">Moderator mode</a>
+          <li *ngIf="showModeratorBoard">
+            <a href="/mod" class="dropdown-item" routerLink="mod">Moderator mode</a>
           </li>
-          <li class="nav-item" *ngIf="showAdminBoard">
-            <a href="/admin" class="nav-link" routerLink="admin">Sign UP</a>
+          <li *ngIf="showAdminBoard">
+            <a href="/admin" class="dropdown-item" routerLink="admin">Sign UP</a>
           </li>
 
           <li><hr class="dropdown-divider"></li>

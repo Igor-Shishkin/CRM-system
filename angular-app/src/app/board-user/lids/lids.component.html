@@ -1,15 +1,13 @@
 <div>
-  <p>lids works!</p>
 
   <p *ngIf="isError == true" class="">{{errorMessage}}</p>
 
-  <table class="table table-striped table-hover">
+  <table class="table table-hover custom-table" style="color: aliceblue;">
     
     <thead> 
         <tr>
             <th>Id</th>
             <th>Name</th>
-            <th>Surname</th>
             <th>email</th>
             <th>phone</th>
             <th>Orders</th>
@@ -21,10 +19,9 @@
 
 
     <tbody *ngIf="isLoaded == true">
-        <tr *ngFor="let lid of lids">
+        <tr *ngFor="let lid of lids" style="border-bottom: 1px rgb(2, 5, 75);">
             <td>{{lid.id}}</td>
-            <td>{{lid.name}}</td>
-            <td>{{lid.surname}}</td>
+            <td>{{lid.fullName}}</td>
             <td>{{lid.email}}</td>
             <td>{{lid.phoneNumber}}</td>
             <td>{{lid.orders.length}}</td>

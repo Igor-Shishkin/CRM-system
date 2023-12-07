@@ -19,6 +19,8 @@ import { LidsComponent } from './board-user/lids/lids.component';
 import { LidWorkplaceComponent } from './board-user/lid-workplace/lid-workplace.component';
 import { AddLidComponent } from './board-user/add-lid/add-lid.component';
 import { SideBarComponent } from './side-bar/side-bar.component';
+import { AllLidsComponent } from './lids/all-lids/all-lids.component';
+import { AllClientsComponent } from './lids/all-clients/all-clients.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,9 @@ import { SideBarComponent } from './side-bar/side-bar.component';
     LidsComponent,
     LidWorkplaceComponent,
     AddLidComponent,
-    SideBarComponent
+    SideBarComponent,
+    AllLidsComponent,
+    AllClientsComponent
   ],
   imports: [
     BrowserModule,

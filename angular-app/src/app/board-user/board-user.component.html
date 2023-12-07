@@ -1,13 +1,16 @@
-<div class="container">
-  <header class="jumbotron">
-    <p>{{ content }}</p>
-  </header>
+<div class="container" style="color: aliceblue;">
 
-  <h3>
-    <a class="nav-link" 
-            [routerLinkActive]="'active-nav'"
-            [routerLink]="'/user/user-lid'" aria-current="page" href="#">List of LIDs</a>
-  </h3>
+  <div style="display: flex;">
+    <button type="button" class="btn btn-secondary" style="margin-left: 10px;" 
+      [routerLinkActive]="'active-nav'"
+      [routerLink]="'/user/user-lid'" aria-current="page" href="#">LIDs
+    </button>
+    <button type="button" class="btn btn-secondary" style="margin-left: 10px;"  
+      [routerLinkActive]="'active-nav'"
+      [routerLink]="'/user/user-lid'" aria-current="page" href="#">CLIENTs
+    </button>
+  </div>
+
 
   <div class="container">
     <router-outlet></router-outlet>

@@ -57,6 +57,7 @@ CREATE TABLE orders (
     is_calculation_promised BOOLEAN,
     is_project_shown VARCHAR(20) DEFAULT 'NOT_SHOWN',
     is_calculation_shown VARCHAR(20) DEFAULT 'NOT_SHOWN',
+    data_of_creation DATETIME,
     lid_id BIGINT,
     FOREIGN KEY (lid_id) REFERENCES lids(lid_id)
 );

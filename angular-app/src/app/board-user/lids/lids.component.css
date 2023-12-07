@@ -1,0 +1,12 @@
+.custom-table {
+    background-color: transparent; 
+    /* border-collapse: collapse; */
+  }
+  
+  .custom-table thead th,
+  .custom-table tbody td {
+    background-color: transparent; 
+    color: rgb(171, 212, 248);
+    /* border-bottom: 2px rgb(194, 196, 244) ; */
+  }
+  

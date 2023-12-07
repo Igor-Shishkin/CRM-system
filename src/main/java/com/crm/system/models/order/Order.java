@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +50,9 @@ public class Order {
 
     @Column(name = "is_calculation_shown")
     private InfoIsShown isCalculationShown = InfoIsShown.NOT_SHOWN;
+
+    @Column(name = "data_of_creation")
+    private LocalDateTime dateOfCreation;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonManagedReference
