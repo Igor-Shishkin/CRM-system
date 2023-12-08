@@ -2,10 +2,10 @@ package com.crm.system.controllers;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.*;
 
 import com.crm.system.exception.UserAlreadyExistsException;
-import com.crm.system.exception.UserIdNotFoundException;
 import com.crm.system.playload.request.LoginRequest;
 import com.crm.system.playload.request.SignupRequest;
 import com.crm.system.playload.response.MessageResponse;
@@ -90,17 +90,17 @@ public class AuthController {
         try {
             responseText = userDetailsService.deleteUserById(userId);
             return ResponseEntity.ok(new MessageResponse(responseText));
-        } catch (UserIdNotFoundException | IllegalArgumentException e) {
+        } catch (UserPrincipalNotFoundException | IllegalArgumentException e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
     @PostMapping("/photo")
-    public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile file) throws IOException, UserIdNotFoundException {
+    public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile file) throws IOException, UserPrincipalNotFoundException {
         try {
             String responseText = userDetailsService.uploadPhoto(file);
             return ResponseEntity.ok(new MessageResponse(responseText));
-        }catch (UserIdNotFoundException e) {
+        }catch (UserPrincipalNotFoundException e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         } catch (IOException e) {
@@ -113,7 +113,7 @@ public class AuthController {
     public ResponseEntity<?> getPhoto() {
         try {
             return userDetailsService.getPhoto();
-        } catch (FileNotFoundException | UserIdNotFoundException e) {
+        } catch (FileNotFoundException | UserPrincipalNotFoundException e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }

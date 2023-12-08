@@ -1,7 +1,6 @@
 package com.crm.system.security.services;
 
 import com.crm.system.exception.UserAlreadyExistsException;
-import com.crm.system.exception.UserIdNotFoundException;
 import com.crm.system.models.User;
 import com.crm.system.models.security.ERole;
 import com.crm.system.models.security.Role;
@@ -29,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -134,20 +134,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
         return cookie;
     }
-    public String deleteUserById(long userId) throws UserIdNotFoundException {
+    public String deleteUserById(long userId) throws UserPrincipalNotFoundException {
         Optional<User> user = userRepository.findById(userId);
         if (user.isEmpty()) {
-            throw new UserIdNotFoundException("User with this ID doesn't exist");
+            throw new UserPrincipalNotFoundException("User with this ID doesn't exist");
         }
         String username = user.get().getUsername();
         userRepository.deleteById(userId);
         return String.format("User '%s' is deleted", user.get().getUsername());
     }
-    public String uploadPhoto(MultipartFile file) throws UserIdNotFoundException, IOException {
+    public String uploadPhoto(MultipartFile file) throws UserPrincipalNotFoundException, IOException {
         Long userId = getActiveUserId();
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
-            throw new UserIdNotFoundException("User with this ID doesn't exist");
+            throw new UserPrincipalNotFoundException("User with this ID doesn't exist");
         }
         byte[] bytes = file.getBytes();
         User user = optionalUser.get();
@@ -155,11 +155,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         userRepository.save(user);
         return "Photo is upload";
     }
-    public ResponseEntity<?> getPhoto() throws UserIdNotFoundException, FileNotFoundException {
+    public ResponseEntity<?> getPhoto() throws UserPrincipalNotFoundException, FileNotFoundException {
         Long userId = getActiveUserId();
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) {
-            throw new UserIdNotFoundException("There isn't User with this ID");
+            throw new UserPrincipalNotFoundException("There isn't User with this ID");
         }
         User user = optionalUser.get();
         if (user.getPhotoOfUser() == null) {

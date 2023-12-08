@@ -1,80 +1,84 @@
 package com.crm.system.controllers;
 
+import com.crm.system.exception.UserIdNotFoundException;
 import com.crm.system.models.Lid;
 import com.crm.system.models.User;
 import com.crm.system.playload.request.LidRequest;
+import com.crm.system.playload.response.ClientInfoResponse;
+import com.crm.system.playload.response.LidInfoResponse;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.repository.UserRepository;
-import com.crm.system.security.services.UserDetailsImpl;
 import com.crm.system.services.LidService;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("api/client")
 public class LidController {
     private final LidService lidService;
-    private final UserRepository userRepository;
 
     public LidController(LidService clientService, UserRepository userRepository) {
         this.lidService = clientService;
-        this.userRepository = userRepository;
     }
 
 
     @PostMapping()
-    public ResponseEntity<?> addNewClient(@Valid @RequestBody LidRequest lidRequest) {
-        long userId = -1;
-
+    public ResponseEntity<?> addNewLid(@Valid @RequestBody LidRequest lidRequest) {
         try {
-            userId = getActiveUserId();
-        } catch (ClassCastException e) {
-            return ResponseEntity.badRequest().build();
+            lidService.addNewLid(lidRequest);
+            return ResponseEntity.ok(new MessageResponse("New LID is save"));
+        } catch (UserPrincipalNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("User isn't defined. " + e.getMessage()));
         }
-        Optional<User> user = lidService.getActiveUser(userId);
-        if (user.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User isn't defined");
-        }
-        Lid lid = new Lid(lidRequest.getFullName(),
-                lidRequest.getEmail(),
-                lidRequest.getPhoneNumber(),
-                lidRequest.getAddres(),
-                user.get());
-        lidService.addClient(lid);
-        return ResponseEntity.ok(new MessageResponse("New LID is save"));
+
     }
 
     @DeleteMapping()
-    public ResponseEntity<?> deleteLid(long clientId) {
-        return ResponseEntity.ok(new MessageResponse("Lid is deleted"));
-    }
-
-    @GetMapping()
-    public ResponseEntity<?> getAllLidsForUser() {
-        long userId = -1;
+    public ResponseEntity<?> deleteLid(long lidId) {
         try {
-            userId = getActiveUserId();
-        } catch (ClassCastException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("User isn't defined");
+            lidService.deleteLidById(lidId);
+            log.error(String.format("Lid with %d id is deleted", lidId));
+            return ResponseEntity.ok(new MessageResponse(String.format("Lid with %d id is deleted", lidId)));
+        } catch (IllegalArgumentException e) {
+            log.error("Delete user error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("Delete user error: " + e.getMessage()));
         }
-        List<Lid> clients = lidService.getAllClients(userId);
-        return ResponseEntity.ok(clients);
     }
 
-
-    private long getActiveUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
-        return userId;
+    @GetMapping("/clients")
+    public ResponseEntity<?> getAllClientsForUser() {
+        try {
+            List<ClientInfoResponse> clients = lidService.getAllClients();
+            return ResponseEntity.ok(clients);
+        } catch (UserPrincipalNotFoundException e) {
+            log.error("Authorisation Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("User isn't defined: " + e.getMessage()));
+        }
     }
+    @GetMapping("/lids")
+    public ResponseEntity<?> getAllLidsForUser() {
+        try {
+            List<LidInfoResponse> lids = lidService.getAllLids();
+            return ResponseEntity.ok(lids);
+        } catch (UserPrincipalNotFoundException e) {
+            log.error("Authorisation Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("User isn't defined. " + e.getMessage()));
+        }
+    }
+
 
 
 }
