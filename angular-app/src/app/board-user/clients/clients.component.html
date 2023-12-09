@@ -1,0 +1,45 @@
+<div>
+
+    <p *ngIf="isError == true" class="">{{errorMessage}}</p>
+  
+    <table class="table table-hover custom-table" style="color: aliceblue;">
+      
+      <thead> 
+          <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>email</th>
+              <th>phone</th>
+              <th>Orders</th>
+              <th>Actions</th>
+              <th></th>
+              <th></th>
+          </tr>
+      </thead>
+  
+  
+      <tbody *ngIf="isLoaded == true">
+          <tr *ngFor="let client of clients" style="border-bottom: 1px rgb(2, 5, 75);">
+              <td>{{client.id}}</td>
+              <td>{{client.fullName}}</td>
+              <td>{{client.email}}</td>
+              <td>{{client.phoneNumber}}</td>
+              <td>{{client.orders.length}}</td>
+              <td>
+                  <a [routerLink]="'/user/user-lid-workplace'" 
+                  (click)="updateActiveLid(client.id)"
+                  class="btn btn-outline-info">Go to LID</a>
+                  
+                  <button (click)="deleteLid(client.id)" type="button" 
+                  class="btn btn-outline-danger" style="margin-left: 5px;">Delete</button>
+              </td>
+          </tr>
+      </tbody>
+    </table>
+  
+    <button [routerLink]="'/user/user-add-lid'" 
+     type="button" class="btn btn-outline-primary">Add LID</button>
+  
+  </div>
+  
+  
