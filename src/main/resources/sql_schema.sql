@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS history_messages;
 DROP TABLE IF EXISTS order_photos;
 DROP TABLE IF EXISTS orders;
-DROP TABLE IF EXISTS lids;
+DROP TABLE IF EXISTS clients;
 DROP TABLE IF EXISTS users;
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -34,8 +34,8 @@ CREATE TABLE user_roles (
     FOREIGN KEY (role_id) REFERENCES roles(role_id)
 );
 
-CREATE TABLE lids (
-    lid_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+CREATE TABLE clients (
+    client_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(255) NOT NULL,
     email VARCHAR(80) UNIQUE NOT NULL,
     phone_number VARCHAR(50),
@@ -58,8 +58,8 @@ CREATE TABLE orders (
     is_project_shown VARCHAR(20) DEFAULT 'NOT_SHOWN',
     is_calculation_shown VARCHAR(20) DEFAULT 'NOT_SHOWN',
     data_of_creation DATETIME,
-    lid_id BIGINT,
-    FOREIGN KEY (lid_id) REFERENCES lids(lid_id)
+    client_id BIGINT,
+    FOREIGN KEY (client_id) REFERENCES clients(client_id)
 );
 
 CREATE TABLE history_messages (
@@ -69,9 +69,9 @@ CREATE TABLE history_messages (
     is_important BOOLEAN,
     is_done BOOLEAN,
     note VARCHAR(255),
-    lid_id BIGINT,
+    client_id BIGINT,
     user_id BIGINT,
-    FOREIGN KEY (lid_id) REFERENCES lids(lid_id),
+    FOREIGN KEY (client_id) REFERENCES clients(client_id),
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
@@ -111,5 +111,14 @@ VALUES
 (1,2),
 (1,3),
 (2,1);
+
+INSERT INTO clients (full_name, email, phone_number, is_client, address, user_id)
+    VALUES
+    ('Piotr Kaczka', 'pitor@gmail.com', '555666777', false, 'Poland, Poznań', 1),
+    ('Monika Bałut', 'monika@gmail.com', '000666777', false, 'Poland, Warszawa', 1),
+    ('Sara Bernard', 'sara.b@gmail.com', '111699777', false, 'Poland, Poznań, Garbary, 64/3', 1),
+    ('Marta Czajka', 'marta@gmail.com', '000333777', true, 'Poland, Poznań', 1),
+    ('Solomon Duda', 'sol@gmail.com', '555666777', false, 'Poland, Poznań', 1),
+    ('Tacka Jakub', 'tacka@gmail.com', '004874677', false, 'Poland, Poznań', 1);
 
 COMMIT;

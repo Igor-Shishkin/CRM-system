@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Lid } from 'src/app/Lid';
-import { LidsService } from 'src/app/_services/lids.service';
+import { Lead } from 'src/app/Lid';
+import { LidsService } from 'src/app/_services/leads.service';
 import { SharedServiceService } from 'src/app/_services/shared.service';
 
 @Component({
@@ -9,7 +9,7 @@ import { SharedServiceService } from 'src/app/_services/shared.service';
   styleUrls: ['./lid-workplace.component.css']
 })
 export class LidWorkplaceComponent implements OnInit{
-  lid?: Lid;
+  lid?: Lead;
 
   constructor(private sharedService : SharedServiceService) {}
 

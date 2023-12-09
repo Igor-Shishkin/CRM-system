@@ -34,7 +34,7 @@ public class HistoryMessage {
     @ManyToOne
     @JoinColumn(name = "lid_id")
     @JsonBackReference
-    private Lid lid;
+    private Client client;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

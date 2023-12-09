@@ -1,6 +1,6 @@
 import { Order } from "./Order";
 
-export interface Lid {
+export interface Lead {
     id : number;
     fullName : string;
     email : string;

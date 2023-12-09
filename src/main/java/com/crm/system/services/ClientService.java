@@ -1,14 +1,15 @@
 package com.crm.system.services;
 
+import com.crm.system.exception.ClientAlreadyExistException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
-import com.crm.system.models.Lid;
+import com.crm.system.models.Client;
 import com.crm.system.models.User;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.request.AddLidRequest;
 import com.crm.system.playload.response.ClientInfoResponse;
-import com.crm.system.playload.response.LidInfoResponse;
-import com.crm.system.repository.LidRepository;
+import com.crm.system.playload.response.LeadInfoResponse;
+import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.services.UserDetailsImpl;
 import org.springframework.security.core.Authentication;
@@ -21,17 +22,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class LidService {
-    private final LidRepository lidRepository;
+public class ClientService {
+    private final ClientRepository clientRepository;
     private final UserRepository userRepository;
 
-    public LidService(LidRepository clientRepository, UserRepository userRepository) {
-        this.lidRepository = clientRepository;
+    public ClientService(ClientRepository clientRepository, UserRepository userRepository) {
+        this.clientRepository = clientRepository;
         this.userRepository = userRepository;
-    }
-
-    public void addClient(Lid client) {
-        lidRepository.save(client);
     }
 
     public List<ClientInfoResponse> getAllClients() throws UserPrincipalNotFoundException {
@@ -40,8 +37,8 @@ public class LidService {
             throw new UserPrincipalNotFoundException("User not found");
         }
         User user = activeUser.get();
-        List<ClientInfoResponse> infoClientResponces = new ArrayList<>(user.getLids().size() * 2);
-        for (Lid client : user.getLids()) {
+        List<ClientInfoResponse> infoClientResponses = new ArrayList<>(user.getLids().size() * 2);
+        for (com.crm.system.models.Client client : user.getLids()) {
             if (client.isClient()) {
                 int numberOfPaidOrders = 0;
                 for (Order order : client.getOrders()) {
@@ -68,22 +65,22 @@ public class LidService {
                 ClientInfoResponse clientInfoResponse = clientBuilder
                         .withNumberOfPaidOrders(numberOfPaidOrders)
                         .build();
-                infoClientResponces.add(clientInfoResponse);
+                infoClientResponses.add(clientInfoResponse);
             }
         }
-        return infoClientResponces;
+        return infoClientResponses;
     }
 
-    public List<LidInfoResponse> getAllLids() throws UserPrincipalNotFoundException {
+    public List<LeadInfoResponse> getAllLeads() throws UserPrincipalNotFoundException {
         Optional<User> activeUser = getActiveUser(getActiveUserId());
         if (activeUser.isEmpty()) {
             throw new UserPrincipalNotFoundException("User not found");
         }
         User user = activeUser.get();
-        List<LidInfoResponse> infoLidResponces = new ArrayList<>(user.getLids().size() * 2);
-        for (Lid lid : user.getLids()) {
+        List<LeadInfoResponse> infoLidResponces = new ArrayList<>(user.getLids().size() * 2);
+        for (com.crm.system.models.Client lid : user.getLids()) {
             if (!lid.isClient()) {
-                infoLidResponces.add(new LidInfoResponse.Builder()
+                infoLidResponces.add(new LeadInfoResponse.Builder()
                         .withId(lid.getId())
                         .withFullName(lid.getFullName())
                         .withAddress(lid.getAddress())
@@ -96,30 +93,33 @@ public class LidService {
         }
         return infoLidResponces;
     }
-    public void addNewLid(AddLidRequest addLidRequest) throws UserPrincipalNotFoundException {
-        Optional<User> activeUser = getActiveUser(getActiveUserId());
-        if (activeUser.isEmpty()) {
-            throw new UserPrincipalNotFoundException("User not found");
+    public void addNewLead(AddLidRequest addLidRequest) throws UserPrincipalNotFoundException {
+        if (clientRepository.existsByEmail(addLidRequest.getEmail())) {
+            throw new ClientAlreadyExistException("Lid with this email already exists");
         }
-        User user = activeUser.get();
-        Lid lid = new Lid(addLidRequest.getFullName(),
+        Optional<User> activeUser = getActiveUser(getActiveUserId());
+        Client lead = activeUser.map(user -> new Client(
+                addLidRequest.getFullName(),
                 addLidRequest.getEmail(),
                 addLidRequest.getPhoneNumber(),
                 addLidRequest.getAddres(),
-                user);
-        lidRepository.save(lid);
+                user
+        )).orElseThrow((
+        ) -> new UserPrincipalNotFoundException("User not found"));
+        clientRepository.save(lead);
     }
     public void deleteLidById(long lidId) throws UserPrincipalNotFoundException, SubjectNotBelongToActiveUser {
         long activeUserId = getActiveUserId();
-        Optional<Lid> optionalLid = lidRepository.findById(lidId);
-        if (optionalLid.isEmpty()) {
-            throw new RequestOptionalIsEmpty(String.format("Lid with %d id doesn't exist", lidId));
-        }
-        Lid requestLid = optionalLid.get();
-        if (requestLid.getUser().getUserId().equals(activeUserId)) {
-            lidRepository.deleteById(lidId);
+        Optional<Client> optionalClient = clientRepository.findById(lidId);
+        if (optionalClient.isPresent()) {
+            Client requestClient = optionalClient.get();
+            if (requestClient.getUser().getUserId().equals(activeUserId)) {
+                clientRepository.deleteById(lidId);
+            } else {
+                throw new SubjectNotBelongToActiveUser("It's not your LID. You don't have access to this LID.");
+            }
         } else {
-            throw new SubjectNotBelongToActiveUser("It's not your LID. You don't have access to this LID.");
+            throw new RequestOptionalIsEmpty(String.format("Lid with %d id doesn't exist", lidId));
         }
     }
 
@@ -133,7 +133,4 @@ public class LidService {
         System.out.println("\n" + userId + "\n");
         return userId;
     }
-
-
-
 }

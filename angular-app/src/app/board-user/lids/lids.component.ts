@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Routes } from '@angular/router';
-import { LidsService } from 'src/app/_services/lids.service';
+import { LidsService } from 'src/app/_services/leads.service';
 import { SharedServiceService } from 'src/app/_services/shared.service';
-import { Lid } from 'src/app/Lid';
+import { Lead } from 'src/app/Lid';
 
 @Component({
   selector: 'app-lids',
@@ -14,7 +14,7 @@ import { Lid } from 'src/app/Lid';
 })
 
 export class LidsComponent implements OnInit{
-lids!: Lid[]
+lids!: Lead[]
 isLoaded = false;
 responseMessage = '';
 errorMessage = '';

@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Lid } from '../Lid';
+import { Lead } from '../Lid';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SharedServiceService {
 
-  activeLid?: Lid;
+  activeLid?: Lead;
 
   constructor() {  }
 }

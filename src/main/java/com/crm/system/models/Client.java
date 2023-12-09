@@ -16,15 +16,15 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@Table(name = "lids",
+@Table(name = "clients",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email")
         })
-public class Lid {
+public class Client {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        @Column(name = "lid_id")
+        @Column(name = "client_id")
         private Long id;
 
         @NotBlank
@@ -34,6 +34,7 @@ public class Lid {
         @Email
         @NotBlank
         @Size(max = 80)
+        @Email
         private String email;
 
         @Size(max = 50)
@@ -45,11 +46,11 @@ public class Lid {
 
         private String address;
 
-        @OneToMany(mappedBy = "lid", cascade = CascadeType.REMOVE)
+        @OneToMany(mappedBy = "client", cascade = CascadeType.REMOVE)
         @JsonManagedReference
         private Set<Order> orders = new HashSet<>();
 
-        @OneToMany(mappedBy = "lid", cascade = CascadeType.REMOVE)
+        @OneToMany(mappedBy = "client", cascade = CascadeType.REMOVE)
         @JsonManagedReference
         private Set<HistoryMessage> history = new HashSet<>();
 
@@ -58,10 +59,10 @@ public class Lid {
         @JsonBackReference
         private User user;
 
-        public Lid() {
+        public Client() {
         }
 
-        public Lid(String fullName, String email, String phoneNumber, String address, User user) {
+        public Client(String fullName, String email, String phoneNumber, String address, User user) {
                 this.fullName = fullName;
                 this.email = email;
                 this.phoneNumber = phoneNumber;

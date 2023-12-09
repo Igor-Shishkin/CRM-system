@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ClientInfoResponse extends LidInfoResponse {
+public class ClientInfoResponse extends LeadInfoResponse {
     private int numberOfPaidOrders;
 
     protected ClientInfoResponse(Long id, String fullName, String email, String phoneNumber,
@@ -15,7 +15,7 @@ public class ClientInfoResponse extends LidInfoResponse {
         this.numberOfPaidOrders = numberOfPaidOrders;
     }
 
-    public static class ClientBuilder extends LidInfoResponse.Builder {
+    public static class ClientBuilder extends LeadInfoResponse.Builder {
         private int numberOfPaidOrders;
 
         public ClientBuilder withNumberOfPaidOrders(int numberOfPaidOrders) {

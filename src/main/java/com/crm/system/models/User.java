@@ -45,7 +45,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private Set<Lid> lids = new HashSet<>();
+    private Set<Client> lids = new HashSet<>();
 
     @OneToMany
     @JoinColumn(name = "user_id")

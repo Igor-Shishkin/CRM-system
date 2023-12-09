@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class LidInfoResponse {
+public class LeadInfoResponse {
     private Long id;
     private String fullName;
     private String email;
@@ -14,8 +14,8 @@ public class LidInfoResponse {
     private boolean isClient;
     private int numberOfOrders;
 
-    protected LidInfoResponse(Long id, String fullName, String email, String phoneNumber,
-                              String address, boolean isClient, int quantityOfOrders) {
+    protected LeadInfoResponse(Long id, String fullName, String email, String phoneNumber,
+                               String address, boolean isClient, int quantityOfOrders) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -60,8 +60,8 @@ public class LidInfoResponse {
             this.numberOfOrders = quantityOfOrders;
             return this;
         }
-        public LidInfoResponse build() {
-            return new LidInfoResponse(id,
+        public LeadInfoResponse build() {
+            return new LeadInfoResponse(id,
                     fullName,
                     email,
                     phoneNumber,

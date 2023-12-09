@@ -1,6 +1,6 @@
 package com.crm.system.models.order;
 
-import com.crm.system.models.Lid;
+import com.crm.system.models.Client;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -70,7 +70,7 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "lid_id")
     @JsonBackReference
-    private Lid lid;
+    private Client client;
 
     public Order() {
     }

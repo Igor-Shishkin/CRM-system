@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LidsService } from 'src/app/_services/lids.service';
+import { LidsService } from 'src/app/_services/leads.service';
 
 @Component({
   selector: 'app-add-lid',

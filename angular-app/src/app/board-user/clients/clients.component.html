@@ -1,5 +1,16 @@
 <div>
 
+    <div style="display: flex;">
+        <button type="button" class="btn btn-secondary" style="margin-left: 10px;" 
+          [routerLinkActive]="'active-nav'"
+          [routerLink]="'/user/user-lid'" aria-current="page" href="#">LIDs
+        </button>
+        <button type="button" class="btn btn-secondary" style="margin-left: 10px;"  
+          [routerLinkActive]="'active-nav'"
+          [routerLink]="'/user/user-clients'" aria-current="page" href="#">CLIENTs
+        </button>
+      </div>
+
     <p *ngIf="isError == true" class="">{{errorMessage}}</p>
   
     <table class="table table-hover custom-table" style="color: aliceblue;">
