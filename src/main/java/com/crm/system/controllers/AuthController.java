@@ -71,30 +71,33 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("Registration error: " + e.getMessage()));
         }
     }
+    @Operation(summary = "Logout", tags = { "auth", "logout" })
     @PostMapping("/signout")
     public ResponseEntity<?> logoutUser() {
         ResponseCookie cookie = userDetailsService.logoutUser();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(new MessageResponse("You've been signed out!"));
     }
+    @Operation(summary = "Get all users", tags = { "auth", "admin", "users" })
     @GetMapping("/users")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsers() {
         List<UserInfoResponse> userInfoResponseList = userDetailsService.getInfoAllUsers();
         return ResponseEntity.ok(userInfoResponseList);
     }
+    @Operation(summary = "Delete user", tags = { "auth", "admin", "delete" })
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteUserById(@RequestParam long userId) {
-        String responseText;
         try {
-            responseText = userDetailsService.deleteUserById(userId);
+            String responseText = userDetailsService.deleteUserById(userId);
             return ResponseEntity.ok(new MessageResponse(responseText));
         } catch (UserPrincipalNotFoundException | IllegalArgumentException e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
+    @Operation(summary = "Add photo to user", tags = {"user", "photo", "avatar"})
     @PostMapping("/photo")
     public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile file) throws IOException, UserPrincipalNotFoundException {
         try {
@@ -108,7 +111,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse("Error reading file" + e.getMessage()));
         }
     }
-
+    @Operation(summary = "Photo request", tags = {"user", "photo", "avatar"})
     @GetMapping(value = "/photo", produces = MediaType.IMAGE_JPEG_VALUE)
     public ResponseEntity<?> getPhoto() {
         try {

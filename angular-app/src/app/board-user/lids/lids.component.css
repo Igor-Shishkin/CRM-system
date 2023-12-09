@@ -9,4 +9,12 @@
     color: rgb(171, 212, 248);
     /* border-bottom: 2px rgb(194, 196, 244) ; */
   }
-  
+  /* .btn {
+    display: inline-block;
+    width: auto;
+} */
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}

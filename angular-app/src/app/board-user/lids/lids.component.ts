@@ -24,7 +24,7 @@ constructor(private lidService: LidsService,
             private sharedService: SharedServiceService) {}
 
   ngOnInit(): void {
-    this.lidService.getListOfClients().subscribe({
+    this.lidService.getListOfLids().subscribe({
       next: data => {
         this.lids = data;
         this.isLoaded = true;
@@ -43,17 +43,15 @@ constructor(private lidService: LidsService,
       error: (err: any) => {
         console.error(err);
         this.isError = true;
-        this.errorMessage = err;
+        if (err instanceof Object) {
+          this.errorMessage = JSON.stringify(err);
+        } else {
+          this.errorMessage = err.toString();
+        }
       }
     });
   }
-  // editLid(  id : number, name : string, surname : string, email : string, phoneNumber : string)
-  // {
-  //   this.lidService.editLidData(id, name, surname, email, phoneNumber)
-  // }
-
   updateActiveLid(id : Number) {
     this.sharedService.activeLid = this.lids.find((lid) => lid.id === id);
-  }
-  
+  } 
 }

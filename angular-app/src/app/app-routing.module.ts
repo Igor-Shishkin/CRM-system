@@ -11,8 +11,7 @@ import { BoardAdminComponent } from './board-admin/board-admin.component';
 import { LidsComponent } from './board-user/lids/lids.component';
 import { LidWorkplaceComponent } from './board-user/lid-workplace/lid-workplace.component';
 import { AddLidComponent } from './board-user/add-lid/add-lid.component';
-import { AllLidsComponent } from './lids/all-lids/all-lids.component';
-import { AllClientsComponent } from './lids/all-clients/all-clients.component';
+import { ClientsComponent } from './board-user/clients/clients.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -22,11 +21,8 @@ const routes: Routes = [
   { path: 'user', component: BoardUserComponent, children: [
     { path: 'user-lid', component: LidsComponent },
     { path: 'user-lid-workplace', component: LidWorkplaceComponent },
-    { path: 'user-add-lid', component: AddLidComponent }
-  ]},
-  { path: 'lids', component: LidsComponent, children: [
-      { path: 'all-lids', component: AllLidsComponent},
-      { path: 'all-clients', component: AllClientsComponent},
+    { path: 'user-add-lid', component: AddLidComponent },
+    { path: 'user-clients', component: ClientsComponent}
   ]},
   { path: 'mod', component: BoardModeratorComponent },
   { path: 'admin', component: BoardAdminComponent },

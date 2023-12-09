@@ -7,5 +7,6 @@ export interface Lid {
     phoneNumber : string;
     isClient : boolean;
     address: string;
+    numberOfOrders: number;
     orders: Order[];
 }

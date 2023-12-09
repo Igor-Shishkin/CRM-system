@@ -11,8 +11,8 @@ export class AddLidComponent {
 
   constructor(private lidService: LidsService){}
   
-  save(name: HTMLInputElement, surname: HTMLInputElement, email: HTMLInputElement, phoneNumber: HTMLInputElement) {
-    this.lidService.addLid(name.value, surname.value, email.value, phoneNumber.value).subscribe({
+  save(fullName: HTMLInputElement, address: HTMLInputElement, email: HTMLInputElement, phoneNumber: HTMLInputElement) {
+    this.lidService.addLid(fullName.value, address.value, email.value, phoneNumber.value).subscribe({
       next: data => {
         this.message = data;
       }, error: (err: any) => {

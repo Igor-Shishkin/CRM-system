@@ -1,18 +1,16 @@
 package com.crm.system.services;
 
-import com.crm.system.exception.UserIdNotFoundException;
+import com.crm.system.exception.RequestOptionalIsEmpty;
+import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Lid;
 import com.crm.system.models.User;
 import com.crm.system.models.order.Order;
-import com.crm.system.playload.request.LidRequest;
+import com.crm.system.playload.request.AddLidRequest;
 import com.crm.system.playload.response.ClientInfoResponse;
 import com.crm.system.playload.response.LidInfoResponse;
-import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.repository.LidRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.services.UserDetailsImpl;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -98,21 +96,31 @@ public class LidService {
         }
         return infoLidResponces;
     }
-    public void addNewLid(LidRequest lidRequest) throws UserPrincipalNotFoundException {
+    public void addNewLid(AddLidRequest addLidRequest) throws UserPrincipalNotFoundException {
         Optional<User> activeUser = getActiveUser(getActiveUserId());
         if (activeUser.isEmpty()) {
             throw new UserPrincipalNotFoundException("User not found");
         }
         User user = activeUser.get();
-        Lid lid = new Lid(lidRequest.getFullName(),
-                lidRequest.getEmail(),
-                lidRequest.getPhoneNumber(),
-                lidRequest.getAddres(),
+        Lid lid = new Lid(addLidRequest.getFullName(),
+                addLidRequest.getEmail(),
+                addLidRequest.getPhoneNumber(),
+                addLidRequest.getAddres(),
                 user);
         lidRepository.save(lid);
     }
-    public void deleteLidById(long lidId) {
-        lidRepository.deleteById(lidId);
+    public void deleteLidById(long lidId) throws UserPrincipalNotFoundException, SubjectNotBelongToActiveUser {
+        long activeUserId = getActiveUserId();
+        Optional<Lid> optionalLid = lidRepository.findById(lidId);
+        if (optionalLid.isEmpty()) {
+            throw new RequestOptionalIsEmpty(String.format("Lid with %d id doesn't exist", lidId));
+        }
+        Lid requestLid = optionalLid.get();
+        if (requestLid.getUser().getUserId().equals(activeUserId)) {
+            lidRepository.deleteById(lidId);
+        } else {
+            throw new SubjectNotBelongToActiveUser("It's not your LID. You don't have access to this LID.");
+        }
     }
 
     public Optional<User> getActiveUser(long userId) {
@@ -122,7 +130,7 @@ public class LidService {
     private long getActiveUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
-        System.out.println("\n\n" + userId + "\n\n");
+        System.out.println("\n" + userId + "\n");
         return userId;
     }
 

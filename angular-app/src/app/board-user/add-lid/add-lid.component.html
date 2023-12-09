@@ -1,26 +1,30 @@
-<p>add-lid works!</p>
 
-<form (submit)="save(name, surname, email, phoneNumber)">
-  <div class="input-group mb-3">
-    <label for="exampleInputName" class="form-label" style="margin-top: 8px;">Name</label>
-    <input required type="text" id="disabledTextInput" class="form-control" 
-    style="margin-left: 5px;" placeholder="Enter name" #name>
+<form (submit)="save(name, address, email, phoneNumber)" class="custom-form">
+
+  <!-- <label>First Name</label>
+  <input class="w3-input" type="text"> -->
+
+  <div >
+    <label for="exampleInputName" class="w3-input" style="margin-top: 8px;">Name</label>
+    <input class="w3-input" required type="text" id="disabledTextInput"  placeholder="Enter name" #name>
   </div>
-  <div class="input-group mb-3">
-    <label for="exampleInputName" class="form-label" style="margin-top: 8px;">Surname</label>
-    <input required type="text" id="disabledTextInput" class="form-control" 
-    style="margin-left: 5px;" placeholder="Enter surname" #surname>
+
+  <div>
+    <label class="w3-input" style="margin-top: 8px;">Address</label>
+    <input class="w3-input" required type="text" id="disabledTextInput" placeholder="Enter address" #address>
   </div>
-  <div class="input-group mb-3">
-    <label for="exampleInputEmail1" class="form-label">Email address</label>
-    <input required type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" 
-    placeholder="name@example.com" #email>
+
+  <div>
+    <label class="w3-input" style="margin-top: 8px;">Email address</label>
+    <input input class="w3-input" required type="email" id="disabledTextInput" placeholder="name@example.com" #email>
   </div>
-  <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-  <div class="input-group mb-3">
-    <label for="exampleInputName" class="form-label" style="margin-top: 8px;">Phone number</label>
-    <input required type="text" id="disabledTextInput" class="form-control" 
-    style="margin-left: 5px;" placeholder="Enter phone number" #phoneNumber>
+  <p style="margin-bottom: 0px;" id="emailHelp" class="form-text">We'll never share your email with anyone else.</p>
+
+  <div>
+    <label class="w3-input" style="margin-top: 0px;">Phone number</label>
+    <input class="w3-input" required type="text" id="disabledTextInput" placeholder="Enter phone number" #phoneNumber>
   </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
+
+  <button type="submit" class="btn btn-primary" style="margin-top: 8px;">Submit</button>
+
 </form>

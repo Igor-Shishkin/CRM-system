@@ -1,6 +1,18 @@
 <div>
 
-  <p *ngIf="isError == true" class="">{{errorMessage}}</p>
+  <div style="display: flex;">
+    <button type="button" class="btn btn-secondary" style="margin-left: 10px;" 
+      [routerLinkActive]="'active-nav'"
+      [routerLink]="'/user/user-lid'" aria-current="page" href="#">LIDs
+    </button>
+    <button type="button" class="btn btn-secondary" style="margin-left: 10px;"  
+      [routerLinkActive]="'active-nav'"
+      [routerLink]="'/user/user-clients'" aria-current="page" href="#">CLIENTs
+    </button>
+  </div>
+
+
+  <div *ngIf="isError == true" class="alert alert-danger" role="alert">{{errorMessage}}</div>
 
   <table class="table table-hover custom-table" style="color: aliceblue;">
     
@@ -24,14 +36,14 @@
             <td>{{lid.fullName}}</td>
             <td>{{lid.email}}</td>
             <td>{{lid.phoneNumber}}</td>
-            <td>{{lid.orders.length}}</td>
-            <td>
+            <td>{{lid.numberOfOrders}}</td>
+            <td class="clearfix">
                 <a [routerLink]="'/user/user-lid-workplace'" 
                 (click)="updateActiveLid(lid.id)"
-                class="btn btn-info">Go to LID</a>
+                class="btn btn-outline-info">Go to LID</a>
                 
                 <button (click)="deleteLid(lid.id)" type="button" 
-                class="btn btn-danger" style="margin-left: 5px;">Delete</button>
+                class="btn btn-outline-danger" style="margin-left: 5px;">Delete</button>
             </td>
         </tr>
     </tbody>

@@ -12,7 +12,10 @@
        type="button" class="btn btn-outline-secondary custom-size">LIDs</button>
     </div>
     <div class="w3-col m4 l4">
-      <button type="button" class="btn btn-outline-secondary custom-size">Clients</button>
+      <button 
+      [routerLinkActive]="'active-nav'"
+      [routerLink]="'/user/user-clients'"
+       type="button" class="btn btn-outline-secondary custom-size">Clients</button>
     </div>
     <div class="w3-col m4 l4">
       <button type="button" class="btn btn-outline-secondary custom-size">Providers</button>
@@ -36,7 +39,7 @@
   </symbol>
 </svg>
 <div *ngIf="!isLoggedIn" 
-   class="alert alert-warning d-flex align-items-center" role="alert" style="margin-top: 10px;">
+   class="alert alert-warning d-flex align-items-center" role="alert" style="margin-top: 10px;" >
       <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>
-      <h3>You are not logged</h3>  
+      <h3 style="color: black;">You are not logged</h3>  
 </div>
