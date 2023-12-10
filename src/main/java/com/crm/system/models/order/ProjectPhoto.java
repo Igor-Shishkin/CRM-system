@@ -15,6 +15,7 @@ public class ProjectPhoto {
     @Column(name = "photo_id")
     private Long id;
 
+    //TODO: change path to byte[]
     private String path;
     private String note;
 

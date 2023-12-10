@@ -19,7 +19,7 @@ export class BoardAdminComponent implements OnInit {
     private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.authService.getAllUsers().subscribe({
+    this.userService.getAllUsers().subscribe({
       next: data => {
         this.users = data;
         this.isLoaded = true;

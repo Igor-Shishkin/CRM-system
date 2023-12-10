@@ -52,7 +52,8 @@ public class Client {
 
         @OneToMany(mappedBy = "client", cascade = CascadeType.REMOVE)
         @JsonManagedReference
-        private Set<HistoryMessage> history = new HashSet<>();
+        private Set<HistoryMessage> history =
+                new HashSet<>(Set.of(new HistoryMessage(String.format("Lead '%s' is created", this.fullName))));
 
         @ManyToOne
         @JoinColumn(name = "user_id")
@@ -68,5 +69,6 @@ public class Client {
                 this.phoneNumber = phoneNumber;
                 this.address = address;
                 this.user = user;
+//                this.history.add(new HistoryMessage(String.format("Lead '%s' is created", fullName)));
         }
 }

@@ -1,6 +1,7 @@
 package com.crm.system.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -21,8 +22,9 @@ public class HistoryMessage {
     @Column(name = "text_of_message")
     private String messageText;
 
-    @Column(name = "data_of_creation")
-    private LocalDateTime dataOfCreation;
+    @Column(name = "date_of_creation")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dateOfCreation;
 
     @Column(name = "is_important")
     private boolean isImportant;
@@ -40,4 +42,11 @@ public class HistoryMessage {
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
+
+    public HistoryMessage(String messageText) {
+        this.messageText = messageText;
+        this.dateOfCreation = LocalDateTime.now();
+    }
+    public HistoryMessage() {
+    }
 }

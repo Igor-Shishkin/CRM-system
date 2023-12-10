@@ -6,22 +6,17 @@
     </div>
     <div class="separator"></div>
     <div class="label-action" style="margin: 5px;">
-        <h5 (click)="toggleActionDropdown()">Actions</h5>
-            <div class="dropdown-content" [ngClass]="{ 'show': isDropdownActionVisible }">
-                <ul>
-                    <li><label>LIDs</label></li>
-                    <li><label>Clients</label></li>
-                    <li><label>Orders</label></li>
-                    <li><label>Providers</label></li>
-                    <li><label>Partners</label></li>
-                    <li><label>Cash</label></li>
-                    <li><label>Statistics</label></li>
-                    <li><label>Label 1</label></li>
-
+        <h5 (click)="toggleHistoryDropdown()">History</h5>
+            <div  class="dropdown-content" [ngClass]="{ 'show': isDropdownHistoryVisible }">
+                <ul *ngFor="let mess of history" style="font-size: 12px;">
+                    <li>{{mess.messageText}}</li>
+                    <li>{{mess.dateOfCreation}}</li>
+                    <li>{{mess.note}}</li>
+                    <li class="separator"></li>
                 </ul>
             </div>
-        <h5 (click)="toggleHistoryDropdown()">History</h5>
-            <div class="dropdown-content" [ngClass]="{ 'show': isDropdownHistoryVisible }">
+        <h5 (click)="toggleActionDropdown()">Actions</h5>
+            <div class="dropdown-content" [ngClass]="{ 'show': isDropdownActionVisible }">
                 <ul>
 
                     <li><label>LIDs</label></li>

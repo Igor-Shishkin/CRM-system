@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, catchError } from 'rxjs';
+import { HistoryMessage } from '../HistoryMessage';
+import { User } from '../User';
 
-const API_URL = 'http://localhost:8080/api/test/';
+const API_URL = 'http://localhost:8080/api/user/';
 
 @Injectable({
   providedIn: 'root',
@@ -10,19 +12,26 @@ const API_URL = 'http://localhost:8080/api/test/';
 export class UserService {
   constructor(private http: HttpClient) {}
 
-  getPublicContent(): Observable<any> {
-    return this.http.get(API_URL + 'all', { responseType: 'text' });
+  getHistory(): Observable<any> {
+    return this.http.get<HistoryMessage[]>(API_URL + 'history').pipe(
+      catchError((error:any) => {
+        console.error(error);
+        throw error;
+      })
+    );
   }
-
-  getUserBoard(): Observable<any> {
-    return this.http.get(API_URL + 'user', { responseType: 'text' });
+  getUserPhoto(): Observable<Blob> {
+    return this.http.get(API_URL + 'photo', { responseType: 'blob'})
   }
-  
-  getModeratorBoard(): Observable<any> {
-    return this.http.get(API_URL + 'mod', { responseType: 'text' });
+  uploadPhoto(formData: FormData): Observable<any> {
+    return this.http.post(API_URL + 'photo',  formData );
   }
-
-  getAdminBoard(): Observable<any> {
-    return this.http.get(API_URL + 'admin', { responseType: 'text' });
+  getAllUsers(): Observable<any> {
+    return this.http.get<User[]>(API_URL + 'users').pipe(
+      catchError((error:any) => {
+        console.error(error);
+        throw error;
+      })
+    );
   }
 }

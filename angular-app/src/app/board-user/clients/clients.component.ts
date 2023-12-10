@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Lead } from 'src/app/Lid';
+import { Lead } from 'src/app/Lead';
 import { LidsService } from 'src/app/_services/leads.service';
 import { SharedServiceService } from 'src/app/_services/shared.service';
 

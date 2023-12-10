@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StorageService } from '../_services/storage.service';
-import { AuthService } from '../_services/auth.service';
+import { UserService } from '../_services/user.service';
 
 @Component({
   selector: 'app-profile',
@@ -13,17 +13,17 @@ export class ProfileComponent implements OnInit {
   selectedFile: File | undefined;
   statusMessage = '';
 
-  constructor(private storageService: StorageService, private authService: AuthService) { }
+  constructor(private storageService: StorageService, private userService: UserService) { }
   
 
   ngOnInit(): void {
     this.currentUser = this.storageService.getUser();
-    this.authService.getUserPhoto().subscribe({
+    this.userService.getUserPhoto().subscribe({
       next: (imageData: Blob) => {
         this.userPhoto = imageData;
         this.statusMessage = "Photo is loaded :)"
       },
-      error: (error) => {
+      error: (error: any) => {
         console.error('Error fetching image:', error);
         this.statusMessage = "Something has gone wrong"
       }
@@ -32,19 +32,7 @@ export class ProfileComponent implements OnInit {
   getImageUrl() {
     return this.userPhoto ? window.URL.createObjectURL(this.userPhoto) : '';
   }
-  // createImageFromBloB(image: Blob): void {
-  //   const reader = new FileReader();
-  //   reader.addEventListener('load', () => {
-  //     this.photo = new Image();
-  //     if (typeof reader.result === 'string') {
-  //       this.photo.src = reader.result;
-  //     }
-  //   }, false);
-    
-  //   if (image) {
-  //     reader.readAsDataURL(image);
-  //   }
-  // }
+
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
   }
@@ -53,7 +41,7 @@ export class ProfileComponent implements OnInit {
       const formData = new FormData();
       formData.append('file', this.selectedFile, this.selectedFile.name);
 
-      this.authService.uploadPhoto(formData).subscribe({
+      this.userService.uploadPhoto(formData).subscribe({
         next: (response: any) => {
           this.statusMessage = response;
           console.log('Image uploaded successfully!', response);

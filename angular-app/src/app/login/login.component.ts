@@ -3,6 +3,9 @@ import { AuthService } from '../_services/auth.service';
 import { StorageService } from '../_services/storage.service';
 import { Router } from '@angular/router';
 import { delay } from 'rxjs';
+import { SharedServiceService } from '../_services/shared.service';
+import { HistoryMessage } from '../HistoryMessage';
+import { UserService } from '../_services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -22,7 +25,9 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService, 
     private storageService: StorageService,
     private router: Router,
-    private zone: NgZone) { }
+    private zone: NgZone,
+    private sharedService: SharedServiceService,
+    private userService: UserService) { }
 
   ngOnInit(): void {
     if (this.storageService.isLoggedIn()) {
@@ -41,8 +46,8 @@ export class LoginComponent implements OnInit {
         this.isLoginFailed = false;
         this.isLoggedIn = true;
         this.roles = this.storageService.getUser().roles;
+        this.getHistoryForUser();
         this.performDelayedNavigation();
-        // this.reloadPage();
       },
       error: err => {
         this.errorMessage = err.error.message;
@@ -61,5 +66,14 @@ export class LoginComponent implements OnInit {
 
   reloadPage(): void {
     window.location.reload();
+  }
+  getHistoryForUser(){
+    this.userService.getHistory().subscribe({
+      next: data => {
+        this.sharedService.history = data;
+      }, error: err => {
+        console.log(err.toString);
+      }
+    });
   }
 }

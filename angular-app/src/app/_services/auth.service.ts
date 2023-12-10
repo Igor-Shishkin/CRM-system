@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError } from 'rxjs';
 import { User } from '../User';
+import { HistoryMessage } from '../HistoryMessage';
 
 const AUTH_API = 'http://localhost:8080/api/auth/';
 
@@ -38,36 +39,12 @@ export class AuthService {
       httpOptions
     );
   }
-
-  getAllUsers(): Observable<any> {
-    return this.http.get<User[]>(AUTH_API + 'users').pipe(
-      catchError((error:any) => {
-        console.error(error);
-        throw error;
-      })
-    );
-  }
-
   deleteUser(userId: number): Observable<any> {
     return this.http.delete(AUTH_API + `delete?userId=${userId}`, { responseType: 'text'});
   } 
-  getUserPhoto(): Observable<Blob> {
-    return this.http.get(AUTH_API + 'photo', { responseType: 'blob'})
-  }
-
-  getImageUrl(): Observable<Blob> {
-    return this.http.get(AUTH_API + 'photo', { responseType: 'blob' });
-  }
-
-  uploadPhoto(formData: FormData): Observable<any> {
-    return this.http.post(AUTH_API + 'photo',  formData );
-  }
 
   logout(): Observable<any> {
     return this.http.post(AUTH_API + 'signout', { }, httpOptions);
   }
-}
 
-// getPublicContent(): Observable<any> {
-//   return this.http.get(API_URL + 'all', { responseType: 'text' });
-// }
+}

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Lead } from '../Lid';
+import { Lead } from '../Lead';
+import { HistoryMessage } from '../HistoryMessage';
 
 @Injectable({
   providedIn: 'root'
@@ -7,6 +8,7 @@ import { Lead } from '../Lid';
 export class SharedServiceService {
 
   activeLid?: Lead;
+  history?: HistoryMessage[];
 
   constructor() {  }
 }

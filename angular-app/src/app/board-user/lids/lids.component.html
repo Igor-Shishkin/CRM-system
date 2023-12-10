@@ -31,18 +31,18 @@
 
 
     <tbody *ngIf="isLoaded == true">
-        <tr *ngFor="let lid of lids" style="border-bottom: 1px rgb(2, 5, 75);">
-            <td>{{lid.id}}</td>
-            <td>{{lid.fullName}}</td>
-            <td>{{lid.email}}</td>
-            <td>{{lid.phoneNumber}}</td>
-            <td>{{lid.numberOfOrders}}</td>
+        <tr *ngFor="let lead of leads" style="border-bottom: 1px rgb(2, 5, 75);">
+            <td>{{lead.id}}</td>
+            <td>{{lead.fullName}}</td>
+            <td>{{lead.email}}</td>
+            <td>{{lead.phoneNumber}}</td>
+            <td>{{lead.numberOfOrders}}</td>
             <td class="clearfix">
                 <a [routerLink]="'/user/user-lid-workplace'" 
-                (click)="updateActiveLid(lid.id)"
+                (click)="updateActiveLid(lead.id)"
                 class="btn btn-outline-info">Go to LID</a>
                 
-                <button (click)="deleteLid(lid.id)" type="button" 
+                <button (click)="deleteLid(lead.id)" type="button" 
                 class="btn btn-outline-danger" style="margin-left: 5px;">Delete</button>
             </td>
         </tr>

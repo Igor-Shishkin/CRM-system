@@ -49,12 +49,12 @@ CREATE TABLE orders (
     order_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     real_need VARCHAR(255) NOT NULL,
     estimate_budget DOUBLE,
-    is_project_approved BOOLEAN,
-    was_meeting_in_office BOOLEAN,
+    is_project_approved BOOLEAN DEFAULT false,
+    was_meeting_in_office BOOLEAN DEFAULT false,
     result_price DOUBLE DEFAULT 0.0,
-    has_been_paid BOOLEAN,
+    has_been_paid BOOLEAN DEFAULT false,
     address VARCHAR(255),
-    is_calculation_promised BOOLEAN,
+    is_calculation_promised BOOLEAN DEFAULT false,
     is_project_shown VARCHAR(20) DEFAULT 'NOT_SHOWN',
     is_calculation_shown VARCHAR(20) DEFAULT 'NOT_SHOWN',
     data_of_creation DATETIME,
@@ -65,9 +65,9 @@ CREATE TABLE orders (
 CREATE TABLE history_messages (
     message_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     text_of_message VARCHAR(255) NOT NULL,
-    data_of_creation DATETIME,
-    is_important BOOLEAN,
-    is_done BOOLEAN,
+    date_of_creation DATETIME,
+    is_important BOOLEAN DEFAULT false,
+    is_done BOOLEAN DEFAULT false,
     note VARCHAR(255),
     client_id BIGINT,
     user_id BIGINT,
@@ -121,4 +121,13 @@ INSERT INTO clients (full_name, email, phone_number, is_client, address, user_id
     ('Solomon Duda', 'sol@gmail.com', '555666777', false, 'Poland, Poznań', 1),
     ('Tacka Jakub', 'tacka@gmail.com', '004874677', false, 'Poland, Poznań', 1);
 
+INSERT INTO orders (real_need, estimate_budget, address, client_id)
+VALUES
+    ('install furniture in the kitchen', 3450.3, 'Poland', 3),
+    ('design a bedroom layout', 2001, 'Poznań', 3),
+    ('Order a handmade table', 5490.3, 'Warszawa', 1);
 COMMIT;
+
+
+SELECT * FROM history_messages;
+SELECT * FROM orders;

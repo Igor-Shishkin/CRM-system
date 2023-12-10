@@ -10,3 +10,4 @@ export interface Lead {
     numberOfOrders: number;
     orders: Order[];
 }
+

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Routes } from '@angular/router';
 import { LidsService } from 'src/app/_services/leads.service';
 import { SharedServiceService } from 'src/app/_services/shared.service';
-import { Lead } from 'src/app/Lid';
+import { Lead } from 'src/app/Lead';
 
 @Component({
   selector: 'app-lids',
@@ -14,7 +14,7 @@ import { Lead } from 'src/app/Lid';
 })
 
 export class LidsComponent implements OnInit{
-lids!: Lead[]
+leads!: Lead[]
 isLoaded = false;
 responseMessage = '';
 errorMessage = '';
@@ -26,7 +26,7 @@ constructor(private lidService: LidsService,
   ngOnInit(): void {
     this.lidService.getListOfLids().subscribe({
       next: data => {
-        this.lids = data;
+        this.leads = data;
         this.isLoaded = true;
       },
       error: (err: any) => {
@@ -52,6 +52,6 @@ constructor(private lidService: LidsService,
     });
   }
   updateActiveLid(id : Number) {
-    this.sharedService.activeLid = this.lids.find((lid) => lid.id === id);
+    this.sharedService.activeLid = this.leads.find((lid) => lid.id === id);
   } 
 }

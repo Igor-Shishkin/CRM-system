@@ -2,6 +2,7 @@ package com.crm.system.models.order;
 
 import com.crm.system.models.Client;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -29,29 +30,32 @@ public class Order {
     private double estimateBudged;
 
     @Column(name = "is_project_approved")
-    private boolean isProjectApproved;
+    private boolean isProjectApproved = false;
 
     @Column(name = "was_meeting_in_office")
-    private boolean wasMeetingInOffice;
+    private boolean wasMeetingInOffice = false;
 
     @Column(name = "result_price")
     private double resultPrice = 0.0;
 
     @Column(name = "has_been_paid")
-    private boolean hasBeenPaid;
+    private boolean hasBeenPaid = false;
 
     private String address;
 
     @Column(name = "is_calculation_promised")
-    private boolean isCalculationPromised;
+    private boolean isCalculationPromised = false;
 
     @Column(name = "is_project_shown")
+    @Enumerated(EnumType.STRING)
     private InfoIsShown isProjectShown = InfoIsShown.NOT_SHOWN;
 
     @Column(name = "is_calculation_shown")
+    @Enumerated(EnumType.STRING)
     private InfoIsShown isCalculationShown = InfoIsShown.NOT_SHOWN;
 
     @Column(name = "data_of_creation")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateOfCreation;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
