@@ -28,12 +28,12 @@ import java.util.Optional;
 public class ClientService {
     private final ClientRepository clientRepository;
     private final UserRepository userRepository;
-    private final HistoryMessageRepository historyMessageRepository;
+    private final HistoryMessageService historyMessageService;
 
-    public ClientService(ClientRepository clientRepository, UserRepository userRepository, HistoryMessageRepository historyMessageRepository) {
+    public ClientService(ClientRepository clientRepository, UserRepository userRepository, HistoryMessageService historyMessageService) {
         this.clientRepository = clientRepository;
         this.userRepository = userRepository;
-        this.historyMessageRepository = historyMessageRepository;
+        this.historyMessageService = historyMessageService;
     }
 
     public List<ClientInfoResponse> getAllClients() throws UserPrincipalNotFoundException {
@@ -86,6 +86,7 @@ public class ClientService {
         }
         return infoLidResponces;
     }
+
     public void addNewLead(AddLidRequest addLidRequest) throws UserPrincipalNotFoundException {
         if (clientRepository.existsByEmail(addLidRequest.getEmail())) {
             throw new ClientAlreadyExistException("Lid with this email already exists");
@@ -100,7 +101,7 @@ public class ClientService {
         )).orElseThrow((
         ) -> new UserPrincipalNotFoundException("User not found"));
 
-        generateHistoryMessageAboutCreationNewLead(lead, activeUser.get());
+        historyMessageService.createHistoryMessageAboutNewLead(lead, activeUser.get());
 
         clientRepository.save(lead);
     }
@@ -124,16 +125,11 @@ public class ClientService {
         Optional<User> user = userRepository.findById(userId);
         return user;
     }
+
     private long getActiveUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
         System.out.println("\n" + userId + "\n");
         return userId;
-    }
-    private void generateHistoryMessageAboutCreationNewLead(Client lead, User user) {
-        HistoryMessage message = new HistoryMessage(String.format("Lead %s is created", lead.getFullName()));
-        message.setDone(true);
-        message.setImportant(false);
-        message.setDateOfCreation(LocalDateTime.now());
     }
 }
