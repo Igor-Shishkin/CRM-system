@@ -38,31 +38,19 @@ public class ClientService {
         }
         User user = activeUser.get();
         List<ClientInfoResponse> infoClientResponses = new ArrayList<>(user.getLids().size() * 2);
-        for (com.crm.system.models.Client client : user.getLids()) {
+        for (Client client : user.getLids()) {
             if (client.isClient()) {
-                int numberOfPaidOrders = 0;
-                for (Order order : client.getOrders()) {
-                    if (order.isHasBeenPaid()) { numberOfPaidOrders++; }
-                }
-//                ClientInfoResponse clientInfoResponse = new ClientInfoResponse.ClientBuilder()
-//                        .withId(client.getId())
-//                        .withFullName(client.getFullName())
-//                        .withAddress(client.getAddress())
-//                        .withEmail(client.getEmail())
-//                        .withPhoneNumber(client.getPhoneNumber())
-//                        .withIsClient(true)
-//                        .withQuantityOfOrders(client.getOrders().size())
-//                        .build();
-                ClientInfoResponse.ClientBuilder clientBuilder = (ClientInfoResponse.ClientBuilder) new ClientInfoResponse.ClientBuilder()
+                int numberOfPaidOrders = (int) client.getOrders().stream()
+                        .filter(Order::isHasBeenPaid)
+                        .count();
+                ClientInfoResponse clientInfoResponse = new ClientInfoResponse.ClientBuilder()
                         .withId(client.getId())
                         .withFullName(client.getFullName())
                         .withAddress(client.getAddress())
                         .withEmail(client.getEmail())
                         .withPhoneNumber(client.getPhoneNumber())
                         .withIsClient(true)
-                        .withQuantityOfOrders(client.getOrders().size());
-
-                ClientInfoResponse clientInfoResponse = clientBuilder
+                        .withQuantityOfOrders(client.getOrders().size())
                         .withNumberOfPaidOrders(numberOfPaidOrders)
                         .build();
                 infoClientResponses.add(clientInfoResponse);

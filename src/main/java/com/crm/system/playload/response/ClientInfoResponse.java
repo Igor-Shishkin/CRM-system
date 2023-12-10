@@ -15,7 +15,7 @@ public class ClientInfoResponse extends LeadInfoResponse {
         this.numberOfPaidOrders = numberOfPaidOrders;
     }
 
-    public static class ClientBuilder extends LeadInfoResponse.Builder {
+    public static class ClientBuilder extends LeadInfoResponse.Builder<ClientBuilder> {
         private int numberOfPaidOrders;
 
         public ClientBuilder withNumberOfPaidOrders(int numberOfPaidOrders) {
@@ -23,18 +23,15 @@ public class ClientInfoResponse extends LeadInfoResponse {
             return this;
         }
 
-        @Override
         public ClientInfoResponse build() {
             return new ClientInfoResponse(
-                    this.id,
-                    this.fullName,
-                    this.email,
-                    this.phoneNumber,
-                    this.address,
-                    this.isClient,
-                    this.numberOfOrders,
-                    this.numberOfPaidOrders
+                    id, fullName, email, phoneNumber, address, isClient, numberOfOrders, numberOfPaidOrders
             );
+        }
+
+        @Override
+        protected ClientBuilder self() {
+            return this;
         }
     }
 }

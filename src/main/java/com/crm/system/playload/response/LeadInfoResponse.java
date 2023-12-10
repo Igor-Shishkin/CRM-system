@@ -24,7 +24,7 @@ public class LeadInfoResponse {
         this.isClient = isClient;
         this.numberOfOrders = quantityOfOrders;
     }
-    public  static class Builder {
+    public  static class Builder<T extends Builder<T>> {
         protected Long id;
         protected String fullName;
         protected String email;
@@ -32,33 +32,37 @@ public class LeadInfoResponse {
         protected String address;
         protected boolean isClient;
         protected int numberOfOrders;
-        public Builder withId(long id) {
+        public T withId(long id) {
             this.id = id;
-            return this;
+            return self();
         }
-        public Builder withFullName(String fullName) {
+        public T withFullName(String fullName) {
             this.fullName = fullName;
-            return this;
+            return self();
         }
-        public Builder withEmail(String email) {
+        public T withEmail(String email) {
             this.email = email;
-            return this;
+            return self();
         }
-        public Builder withPhoneNumber(String phoneNumber) {
+        public T withPhoneNumber(String phoneNumber) {
             this.phoneNumber = phoneNumber;
-            return this;
+            return self();
         }
-        public Builder withAddress(String address) {
+        public T withAddress(String address) {
             this.address = address;
-            return this;
+            return self();
         }
-        public Builder withIsClient(boolean isClient) {
+        public T withIsClient(boolean isClient) {
             this.isClient = isClient;
-            return this;
+            return self();
         }
-        public Builder withQuantityOfOrders(int quantityOfOrders) {
+        public T withQuantityOfOrders(int quantityOfOrders) {
             this.numberOfOrders = quantityOfOrders;
-            return this;
+            return self();
+        }
+
+        protected T self() {
+            return (T) this;
         }
         public LeadInfoResponse build() {
             return new LeadInfoResponse(id,
