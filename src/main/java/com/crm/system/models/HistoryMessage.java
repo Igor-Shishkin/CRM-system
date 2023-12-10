@@ -33,12 +33,12 @@ public class HistoryMessage {
     private boolean isDone;
 
     private String note;
-    @ManyToOne
-    @JoinColumn(name = "lid_id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "client_id")
     @JsonBackReference
     private Client client;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
