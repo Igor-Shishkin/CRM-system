@@ -1,6 +1,8 @@
 package com.crm.system.security.services;
 
+import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.UserAlreadyExistsException;
+import com.crm.system.models.HistoryMessage;
 import com.crm.system.models.User;
 import com.crm.system.models.security.ERole;
 import com.crm.system.models.security.Role;
@@ -107,29 +109,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         user.setRoles(roles);
         userRepository.save(user);
     }
-    public List<UserInfoResponse> getInfoAllUsers() {
-        List<User> allUsers = userRepository.findAll();
-        List<UserInfoResponse> userInfoResponseList = new LinkedList<>();
 
-        long activeUserId = getActiveUserId();
-
-        for (User user : allUsers) {
-            if (user.getUserId()!=activeUserId) {
-                List<String> roles = user.getRoles().stream()
-                        .map(Object::toString)
-                        .toList();
-                UserInfoResponse userInfoResponse = new UserInfoResponse.Builder()
-                        .withId(user.getUserId())
-                        .withUsername(user.getUsername())
-                        .withEmail(user.getEmail())
-                        .withRoles(roles)
-                        .withLidsNumber(user.getLids().size())
-                        .build();
-                userInfoResponseList.add(userInfoResponse);
-            }
-        }
-        return userInfoResponseList;
-    }
     public ResponseCookie logoutUser() {
         ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
         return cookie;
@@ -143,32 +123,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         userRepository.deleteById(userId);
         return String.format("User '%s' is deleted", user.get().getUsername());
     }
-    public String uploadPhoto(MultipartFile file) throws UserPrincipalNotFoundException, IOException {
-        Long userId = getActiveUserId();
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            throw new UserPrincipalNotFoundException("User with this ID doesn't exist");
-        }
-        byte[] bytes = file.getBytes();
-        User user = optionalUser.get();
-        user.setPhotoOfUser(bytes);
-        userRepository.save(user);
-        return "Photo is upload";
-    }
-    public ResponseEntity<?> getPhoto() throws UserPrincipalNotFoundException, FileNotFoundException {
-        Long userId = getActiveUserId();
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            throw new UserPrincipalNotFoundException("There isn't User with this ID");
-        }
-        User user = optionalUser.get();
-        if (user.getPhotoOfUser() == null) {
-            throw new FileNotFoundException("This user doesn't have a photo");
-        }
-        byte[] photoOfUser = user.getPhotoOfUser();
-        HttpHeaders headers = getHeaders(photoOfUser);
-        return new ResponseEntity<>(photoOfUser, headers, HttpStatus.OK);
-    }
+
     private Set<Role> identifyRoles(Set<String> strRoles) {
         Set<Role> roles = new HashSet<>();
 
@@ -200,31 +155,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         return roles;
     }
-
     private long getActiveUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
         return userId;
-    }
-    private HttpHeaders getHeaders(byte[] photoOfUser) {
-        HttpHeaders headers = new HttpHeaders();
-        String imageType = getImageType(photoOfUser);
-        if (imageType == null) {
-            headers.setContentType(MediaType.IMAGE_JPEG);
-        } else {
-            headers.setContentType(MediaType.parseMediaType(imageType));
-        }
-        headers.setContentLength(photoOfUser.length);
-        return headers;
-    }
-    private String getImageType(byte[] imageData) {
-        if (imageData.length >= 2) {
-            if (imageData[0] == (byte) 0xFF && imageData[1] == (byte) 0xD8) {
-                return "image/jpeg";
-            } else if (imageData[0] == (byte) 0x89 && imageData[1] == (byte) 0x50) {
-                return "image/png";
-            }
-        }
-        return null;
     }
 }

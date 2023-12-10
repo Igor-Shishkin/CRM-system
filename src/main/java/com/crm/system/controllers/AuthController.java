@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.*;
 
+import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.UserAlreadyExistsException;
+import com.crm.system.models.HistoryMessage;
 import com.crm.system.playload.request.LoginRequest;
 import com.crm.system.playload.request.SignupRequest;
 import com.crm.system.playload.response.MessageResponse;
@@ -78,13 +80,6 @@ public class AuthController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(new MessageResponse("You've been signed out!"));
     }
-    @Operation(summary = "Get all users", tags = { "auth", "admin", "users" })
-    @GetMapping("/users")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> getAllUsers() {
-        List<UserInfoResponse> userInfoResponseList = userDetailsService.getInfoAllUsers();
-        return ResponseEntity.ok(userInfoResponseList);
-    }
     @Operation(summary = "Delete user", tags = { "auth", "admin", "delete" })
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ADMIN')")
@@ -97,29 +92,9 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
-    @Operation(summary = "Add photo to user", tags = {"user", "photo", "avatar"})
-    @PostMapping("/photo")
-    public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile file) throws IOException, UserPrincipalNotFoundException {
-        try {
-            String responseText = userDetailsService.uploadPhoto(file);
-            return ResponseEntity.ok(new MessageResponse(responseText));
-        }catch (UserPrincipalNotFoundException e) {
-            log.error(e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
-        } catch (IOException e) {
-            log.error("Error reading file" + e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageResponse("Error reading file" + e.getMessage()));
-        }
-    }
-    @Operation(summary = "Photo request", tags = {"user", "photo", "avatar"})
-    @GetMapping(value = "/photo", produces = MediaType.IMAGE_JPEG_VALUE)
-    public ResponseEntity<?> getPhoto() {
-        try {
-            return userDetailsService.getPhoto();
-        } catch (FileNotFoundException | UserPrincipalNotFoundException e) {
-            log.error(e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
-        }
-    }
+
+
+
+
 }
 
