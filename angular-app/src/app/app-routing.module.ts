@@ -8,25 +8,25 @@ import { ProfileComponent } from './profile/profile.component';
 import { BoardUserComponent } from './board-user/board-user.component';
 import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
-import { LidsComponent } from './board-user/lids/lids.component';
 import { LidWorkplaceComponent } from './board-user/lid-workplace/lid-workplace.component';
-import { AddLidComponent } from './board-user/add-lid/add-lid.component';
 import { ClientsComponent } from './board-user/clients/clients.component';
+import { AddLeadComponent } from './board-user/add-lead/add-lead.component';
+import { LeadsComponent } from './board-user/leads/leads.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: 'user', component: BoardUserComponent, children: [
-    { path: 'user-lid', component: LidsComponent },
+  { path: 'user-board', component: BoardUserComponent, children: [
     { path: 'user-lid-workplace', component: LidWorkplaceComponent },
-    { path: 'user-add-lid', component: AddLidComponent },
-    { path: 'user-clients', component: ClientsComponent}
+    { path: 'leads', component: LeadsComponent},
+    { path: 'add-lead', component: AddLeadComponent },
+    { path: 'clients', component: ClientsComponent},
+    { path: ''}
   ]},
   { path: 'mod', component: BoardModeratorComponent },
   { path: 'admin', component: BoardAdminComponent },
-  { path: 'board-user/user-lid', component: LidsComponent},
   { path: '', redirectTo: 'home', pathMatch: 'full' }
 ];
 

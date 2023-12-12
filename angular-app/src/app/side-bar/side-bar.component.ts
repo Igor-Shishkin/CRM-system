@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { SharedServiceService } from '../_services/shared.service';
-import { HistoryMessage } from '../HistoryMessage';
+import { HistoryMessage } from '../../entities/HistoryMessage';
 import { UserService } from '../_services/user.service';
 
 @Component({

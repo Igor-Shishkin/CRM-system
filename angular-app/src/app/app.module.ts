@@ -15,11 +15,11 @@ import { BoardUserComponent } from './board-user/board-user.component';
 
 import { httpInterceptorProviders } from './_helpers/http.interceptor';
 import { NavigationComponent } from './navigation/navigation.component';
-import { LidsComponent } from './board-user/lids/lids.component';
 import { LidWorkplaceComponent } from './board-user/lid-workplace/lid-workplace.component';
-import { AddLidComponent } from './board-user/add-lid/add-lid.component';
 import { SideBarComponent } from './side-bar/side-bar.component';
 import { ClientsComponent } from './board-user/clients/clients.component';
+import { AddLeadComponent } from './board-user/add-lead/add-lead.component';
+import { LeadsComponent } from './board-user/leads/leads.component';
 
 
 @NgModule({
@@ -33,11 +33,11 @@ import { ClientsComponent } from './board-user/clients/clients.component';
     BoardModeratorComponent,
     BoardUserComponent,
     NavigationComponent,
-    LidsComponent,
+    LeadsComponent,
     LidWorkplaceComponent,
-    AddLidComponent,
     SideBarComponent,
-    ClientsComponent
+    ClientsComponent,
+    AddLeadComponent
   ],
   imports: [
     BrowserModule,

@@ -4,7 +4,7 @@ import { StorageService } from '../_services/storage.service';
 import { Router } from '@angular/router';
 import { delay } from 'rxjs';
 import { SharedServiceService } from '../_services/shared.service';
-import { HistoryMessage } from '../HistoryMessage';
+import { HistoryMessage } from '../../entities/HistoryMessage';
 import { UserService } from '../_services/user.service';
 
 @Component({

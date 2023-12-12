@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Lead } from 'src/app/Lead';
-import { LidsService } from 'src/app/_services/leads.service';
+import { Lead } from 'src/entities/Lead';
+import { ClientsService } from 'src/app/_services/clients.service';
 import { SharedServiceService } from 'src/app/_services/shared.service';
 
 @Component({
@@ -15,11 +15,11 @@ export class ClientsComponent {
   errorMessage = '';
   isError = false;
   
-  constructor(private lidService: LidsService,
+  constructor(private clientService: ClientsService,
               private sharedService: SharedServiceService) {}
   
     ngOnInit(): void {
-      this.lidService.getListOfClients().subscribe({
+      this.clientService.getListOfClients().subscribe({
         next: data => {
           this.clients = data;
           this.isLoaded = true;
@@ -31,7 +31,7 @@ export class ClientsComponent {
     }
     deleteLid( id : number)
     {
-      this.lidService.deleteLidById(id).subscribe({
+      this.clientService.deleteLidById(id).subscribe({
         next: (data: string) => {
           this.responseMessage = data;
         },

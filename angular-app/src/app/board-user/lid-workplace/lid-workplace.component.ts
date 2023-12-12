@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Lead } from 'src/app/Lead';
-import { LidsService } from 'src/app/_services/leads.service';
+import { Lead } from 'src/entities/Lead';
 import { SharedServiceService } from 'src/app/_services/shared.service';
 
 @Component({

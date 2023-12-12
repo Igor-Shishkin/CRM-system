@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, catchError } from 'rxjs';
-import { HistoryMessage } from '../HistoryMessage';
-import { User } from '../User';
+import { HistoryMessage } from '../../entities/HistoryMessage';
+import { User } from '../../entities/User';
 
 const API_URL = 'http://localhost:8080/api/user/';
 

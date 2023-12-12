@@ -39,7 +39,7 @@ CREATE TABLE clients (
     full_name VARCHAR(255) NOT NULL,
     email VARCHAR(80) UNIQUE NOT NULL,
     phone_number VARCHAR(50),
-    is_client BOOLEAN,
+    status VARCHAR(20) DEFAULT 'LEAD',
     address VARCHAR(255),
     user_id BIGINT,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
@@ -66,8 +66,8 @@ CREATE TABLE history_messages (
     message_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     text_of_message VARCHAR(255) NOT NULL,
     date_of_creation DATETIME,
-    is_important BOOLEAN DEFAULT false,
-    is_done BOOLEAN DEFAULT false,
+    is_important BOOLEAN,
+    is_done BOOLEAN,
     note VARCHAR(255),
     client_id BIGINT,
     user_id BIGINT,
@@ -112,14 +112,14 @@ VALUES
 (1,3),
 (2,1);
 
-INSERT INTO clients (full_name, email, phone_number, is_client, address, user_id)
+INSERT INTO clients (full_name, email, phone_number, status, address, user_id)
     VALUES
-    ('Piotr Kaczka', 'pitor@gmail.com', '555666777', false, 'Poland, Poznań', 1),
-    ('Monika Bałut', 'monika@gmail.com', '000666777', false, 'Poland, Warszawa', 1),
-    ('Sara Bernard', 'sara.b@gmail.com', '111699777', false, 'Poland, Poznań, Garbary, 64/3', 1),
-    ('Marta Czajka', 'marta@gmail.com', '000333777', true, 'Poland, Poznań', 1),
-    ('Solomon Duda', 'sol@gmail.com', '555666777', false, 'Poland, Poznań', 1),
-    ('Tacka Jakub', 'tacka@gmail.com', '004874677', false, 'Poland, Poznań', 1);
+    ('Piotr Kaczka', 'pitor@gmail.com', '555666777', 'LEAD', 'Poland, Poznań', 1),
+    ('Monika Bałut', 'monika@gmail.com', '000666777', 'LEAD', 'Poland, Warszawa', 1),
+    ('Sara Bernard', 'sara.b@gmail.com', '111699777', 'LEAD', 'Poland, Poznań, Garbary, 64/3', 1),
+    ('Marta Czajka', 'marta@gmail.com', '000333777', 'CLIENT', 'Poland, Poznań', 1),
+    ('Solomon Duda', 'sol@gmail.com', '555666777', 'LEAD', 'Poland, Poznań', 1),
+    ('Tacka Jakub', 'tacka@gmail.com', '004874677', 'LEAD', 'Poland, Poznań', 2);
 
 INSERT INTO orders (real_need, estimate_budget, address, client_id)
 VALUES

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Lead } from '../Lead';
-import { HistoryMessage } from '../HistoryMessage';
+import { Lead } from '../../entities/Lead';
+import { HistoryMessage } from '../../entities/HistoryMessage';
 
 @Injectable({
   providedIn: 'root'
