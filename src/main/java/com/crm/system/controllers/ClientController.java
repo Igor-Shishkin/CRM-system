@@ -78,7 +78,7 @@ public class ClientController {
                     .body(new MessageResponse("User isn't defined: " + e.getMessage()));
         }
     }
-    @Operation(summary = "Get all Lids", tags = { "lids", "get"})
+    @Operation(summary = "Get all Leads", tags = { "lids", "get"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
     @GetMapping("/lids")
     public ResponseEntity<?> getAllLeadsForUser() {

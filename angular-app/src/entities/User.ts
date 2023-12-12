@@ -1,4 +1,4 @@
-import { Lead } from "./Lead";
+import { Client } from "./Client";
 
 export interface User {
     id : number;

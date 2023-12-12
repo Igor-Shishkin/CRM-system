@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Lead } from 'src/entities/Lead';
+import { Client } from 'src/entities/Client';
 import { ClientsService } from 'src/app/_services/clients.service';
 import { SharedServiceService } from 'src/app/_services/shared.service';
 
@@ -9,7 +9,7 @@ import { SharedServiceService } from 'src/app/_services/shared.service';
   styleUrls: ['./clients.component.css']
 })
 export class ClientsComponent {
-  clients!: Lead[]
+  clients!: Client[]
   isSuccessLoad = false;
   isSuccessDelete = false
   responseMessage = '';

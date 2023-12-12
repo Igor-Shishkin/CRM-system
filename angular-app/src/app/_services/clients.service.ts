@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
-import { Lead } from 'src/entities/Lead';
+import { Client } from 'src/entities/Client';
 
 const CLIENTS_API = 'http://localhost:8080/api/user-board'
 const httpOptions = {
@@ -16,7 +16,7 @@ export class ClientsService {
   constructor(private http: HttpClient) { }
 
   getListOfClients(): Observable<any> {
-    return this.http.get<Lead[]>(CLIENTS_API + '/clients').pipe(
+    return this.http.get<Client[]>(CLIENTS_API + '/clients').pipe(
       catchError((error: any) => {
         console.error(error);
         throw error;
@@ -24,7 +24,7 @@ export class ClientsService {
     );
   }
   getListOfLids(): Observable<any> {
-    return this.http.get<Lead[]>(CLIENTS_API + '/lids').pipe(
+    return this.http.get<Client[]>(CLIENTS_API + '/lids').pipe(
       catchError((error: any) => {
         console.error(error);
         throw error;

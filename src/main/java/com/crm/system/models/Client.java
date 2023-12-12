@@ -47,11 +47,11 @@ public class Client {
 
         private String address;
 
-        @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+        @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
         @JsonManagedReference
         private Set<Order> orders = new HashSet<>();
 
-        @OneToMany(mappedBy = "client", cascade = CascadeType.ALL)
+        @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
         @JsonManagedReference
         private Set<HistoryMessage> history =
                 new HashSet<>(Set.of(new HistoryMessage(String.format("Lead '%s' is created", this.fullName))));

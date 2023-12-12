@@ -60,8 +60,8 @@ public class ClientInfoResponse {
             this.status = status;
             return this;
         }
-        public Builder withQuantityOfOrders(int quantityOfOrders) {
-            this.numberOfOrders = quantityOfOrders;
+        public Builder withNmberOfOrders(int numberOfOrders) {
+            this.numberOfOrders = numberOfOrders;
             return this;
         }
         public Builder withNumberOfPaidOrders(int numberOfPaidOrders) {

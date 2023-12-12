@@ -20,6 +20,7 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ClientService {
@@ -52,7 +53,7 @@ public class ClientService {
                         .withEmail(client.getEmail())
                         .withPhoneNumber(client.getPhoneNumber())
                         .withIsClient(ClientStatus.CLIENT)
-                        .withQuantityOfOrders(client.getOrders().size())
+                        .withNmberOfOrders(client.getOrders().size())
                         .withNumberOfPaidOrders(numberOfPaidOrders)
                         .build();
                 infoClientResponses.add(clientInfoResponse);
@@ -62,26 +63,38 @@ public class ClientService {
     }
 
     public List<ClientInfoResponse> getAllLeads() throws UserPrincipalNotFoundException {
-        Optional<User> activeUser = getActiveUser(getActiveUserId());
-        if (activeUser.isEmpty()) {
-            throw new UserPrincipalNotFoundException("User not found");
-        }
-        User user = activeUser.get();
-        List<ClientInfoResponse> infoLidResponces = new ArrayList<>(user.getClients().size() * 2);
-        for (Client client : user.getClients()) {
-            if (client.getStatus().equals(ClientStatus.LEAD)) {
-                infoLidResponces.add(new ClientInfoResponse.Builder()
+        long activeUserId = getActiveUserId();
+
+        return clientRepository.findAll().stream()
+                .filter(client -> client.getUser().getUserId().equals(activeUserId))
+                .filter(client -> client.getStatus().equals(ClientStatus.LEAD))
+                .map(client -> new ClientInfoResponse.Builder()
                         .withId(client.getId())
                         .withFullName(client.getFullName())
                         .withAddress(client.getAddress())
                         .withEmail(client.getEmail())
                         .withPhoneNumber(client.getPhoneNumber())
                         .withIsClient(ClientStatus.LEAD)
-                        .withQuantityOfOrders(client.getOrders().size())
-                        .build());
-            }
-        }
-        return infoLidResponces;
+                        .withNmberOfOrders(client.getOrders().size())
+                        .build())
+                .collect(Collectors.toList());
+
+//        List<ClientInfoResponse> infoLidResponces = new ArrayList<>(user.getClients().size() * 2);
+//        for (Client client : user.getClients()) {
+//            if (client.getStatus().equals(ClientStatus.LEAD)) {
+//
+//                infoLidResponces.add(new ClientInfoResponse.Builder()
+//                        .withId(client.getId())
+//                        .withFullName(client.getFullName())
+//                        .withAddress(client.getAddress())
+//                        .withEmail(client.getEmail())
+//                        .withPhoneNumber(client.getPhoneNumber())
+//                        .withIsClient(ClientStatus.LEAD)
+//                        .withNmberOfOrders(client.getOrders().size())
+//                        .build());
+//            }
+//        }
+//        return infoLidResponces;
     }
 
     public void addNewLead(AddLidRequest addLidRequest) throws UserPrincipalNotFoundException {

@@ -1,7 +1,7 @@
 import { Component, NgModule, OnInit } from '@angular/core';
 import { ClientsService } from 'src/app/_services/clients.service';
 import { SharedServiceService } from 'src/app/_services/shared.service';
-import { Lead } from 'src/entities/Lead';
+import { Client } from 'src/entities/Client';
 
 
 @Component({
@@ -11,7 +11,7 @@ import { Lead } from 'src/entities/Lead';
 })
 
 export class LeadsComponent implements OnInit{
-  leads!: Lead[]
+  leads!: Client[]
   isSuccessLoad = false;
   isSuccessDelete = false
   responseMessage = '';

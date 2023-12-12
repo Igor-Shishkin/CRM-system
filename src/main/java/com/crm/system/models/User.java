@@ -43,7 +43,7 @@ public class User {
     @Size(max = 120)
     private String password;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<Client> clients = new HashSet<>();
 

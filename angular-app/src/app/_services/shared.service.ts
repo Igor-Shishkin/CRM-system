@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Lead } from '../../entities/Lead';
+import { Client } from '../../entities/Client';
 import { HistoryMessage } from '../../entities/HistoryMessage';
 
 @Injectable({
@@ -7,7 +7,7 @@ import { HistoryMessage } from '../../entities/HistoryMessage';
 })
 export class SharedServiceService {
 
-  activeLid?: Lead;
+  activeLid?: Client;
   history?: HistoryMessage[];
 
   constructor() {  }

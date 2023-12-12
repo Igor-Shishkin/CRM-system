@@ -72,7 +72,7 @@ public class Order {
     private Set<ItemForCalcualtion> calculations = new HashSet<>();
 
     @ManyToOne
-    @JoinColumn(name = "lid_id")
+    @JoinColumn(name = "client_id")
     @JsonBackReference
     private Client client;
 
