@@ -4,14 +4,12 @@ import com.crm.system.exception.ClientAlreadyExistException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
-import com.crm.system.models.HistoryMessage;
+import com.crm.system.models.ClientStatus;
 import com.crm.system.models.User;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.request.AddLidRequest;
 import com.crm.system.playload.response.ClientInfoResponse;
-import com.crm.system.playload.response.LeadInfoResponse;
 import com.crm.system.repository.ClientRepository;
-import com.crm.system.repository.HistoryMessageRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.services.UserDetailsImpl;
 import org.springframework.security.core.Authentication;
@@ -19,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,19 +39,19 @@ public class ClientService {
             throw new UserPrincipalNotFoundException("User not found");
         }
         User user = activeUser.get();
-        List<ClientInfoResponse> infoClientResponses = new ArrayList<>(user.getLids().size() * 2);
-        for (Client client : user.getLids()) {
-            if (client.isClient()) {
+        List<ClientInfoResponse> infoClientResponses = new ArrayList<>(user.getClients().size() * 2);
+        for (Client client : user.getClients()) {
+            if (client.getStatus().equals(ClientStatus.CLIENT)) {
                 int numberOfPaidOrders = (int) client.getOrders().stream()
                         .filter(Order::isHasBeenPaid)
                         .count();
-                ClientInfoResponse clientInfoResponse = new ClientInfoResponse.ClientBuilder()
-                        .withId(client.getId())
+                ClientInfoResponse clientInfoResponse = new ClientInfoResponse.Builder()
+                        .withId (client.getId())
                         .withFullName(client.getFullName())
                         .withAddress(client.getAddress())
                         .withEmail(client.getEmail())
                         .withPhoneNumber(client.getPhoneNumber())
-                        .withIsClient(true)
+                        .withIsClient(ClientStatus.CLIENT)
                         .withQuantityOfOrders(client.getOrders().size())
                         .withNumberOfPaidOrders(numberOfPaidOrders)
                         .build();
@@ -64,23 +61,23 @@ public class ClientService {
         return infoClientResponses;
     }
 
-    public List<LeadInfoResponse> getAllLeads() throws UserPrincipalNotFoundException {
+    public List<ClientInfoResponse> getAllLeads() throws UserPrincipalNotFoundException {
         Optional<User> activeUser = getActiveUser(getActiveUserId());
         if (activeUser.isEmpty()) {
             throw new UserPrincipalNotFoundException("User not found");
         }
         User user = activeUser.get();
-        List<LeadInfoResponse> infoLidResponces = new ArrayList<>(user.getLids().size() * 2);
-        for (com.crm.system.models.Client lid : user.getLids()) {
-            if (!lid.isClient()) {
-                infoLidResponces.add(new LeadInfoResponse.Builder()
-                        .withId(lid.getId())
-                        .withFullName(lid.getFullName())
-                        .withAddress(lid.getAddress())
-                        .withEmail(lid.getEmail())
-                        .withPhoneNumber(lid.getPhoneNumber())
-                        .withIsClient(true)
-                        .withQuantityOfOrders(lid.getOrders().size())
+        List<ClientInfoResponse> infoLidResponces = new ArrayList<>(user.getClients().size() * 2);
+        for (Client client : user.getClients()) {
+            if (client.getStatus().equals(ClientStatus.LEAD)) {
+                infoLidResponces.add(new ClientInfoResponse.Builder()
+                        .withId(client.getId())
+                        .withFullName(client.getFullName())
+                        .withAddress(client.getAddress())
+                        .withEmail(client.getEmail())
+                        .withPhoneNumber(client.getPhoneNumber())
+                        .withIsClient(ClientStatus.LEAD)
+                        .withQuantityOfOrders(client.getOrders().size())
                         .build());
             }
         }

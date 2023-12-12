@@ -41,8 +41,9 @@ public class Client {
         @Column(name = "phone_number")
         private String phoneNumber;
 
-        @Column(name = "is_client")
-        private boolean isClient;
+        @Column(name = "status")
+        @Enumerated(EnumType.STRING)
+        private ClientStatus status;
 
         private String address;
 

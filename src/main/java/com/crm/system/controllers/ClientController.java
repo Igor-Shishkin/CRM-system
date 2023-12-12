@@ -4,7 +4,6 @@ import com.crm.system.exception.ClientAlreadyExistException;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.playload.request.AddLidRequest;
 import com.crm.system.playload.response.ClientInfoResponse;
-import com.crm.system.playload.response.LeadInfoResponse;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.services.ClientService;
@@ -84,7 +83,7 @@ public class ClientController {
     @GetMapping("/lids")
     public ResponseEntity<?> getAllLeadsForUser() {
         try {
-            List<LeadInfoResponse> leads = lidService.getAllLeads();
+            List<ClientInfoResponse> leads = lidService.getAllLeads();
             return ResponseEntity.ok(leads);
         } catch (UserPrincipalNotFoundException e) {
             log.error("Authorisation Error: " + e.getMessage());

@@ -1,38 +1,83 @@
 package com.crm.system.playload.response;
 
+import com.crm.system.models.ClientStatus;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ClientInfoResponse extends LeadInfoResponse {
+public class ClientInfoResponse {
+    private Long id;
+    private String fullName;
+    private String email;
+    private String phoneNumber;
+    private String address;
+    private ClientStatus status;
+    private int numberOfOrders;
     private int numberOfPaidOrders;
 
     protected ClientInfoResponse(Long id, String fullName, String email, String phoneNumber,
-                                 String address, boolean isClient, int numberOfOrders,
-                                 int numberOfPaidOrders) {
-        super(id, fullName, email, phoneNumber, address, isClient, numberOfOrders);
+                                 String address, ClientStatus status, int quantityOfOrders, int numberOfPaidOrders) {
+        this.id = id;
+        this.fullName = fullName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.status = status;
+        this.numberOfOrders = quantityOfOrders;
         this.numberOfPaidOrders = numberOfPaidOrders;
     }
-
-    public static class ClientBuilder extends LeadInfoResponse.Builder<ClientBuilder> {
+    public  static class Builder {
+        private Long id;
+        private String fullName;
+        private String email;
+        private String phoneNumber;
+        private String address;
+        private ClientStatus status;
+        private int numberOfOrders;
         private int numberOfPaidOrders;
-
-        public ClientBuilder withNumberOfPaidOrders(int numberOfPaidOrders) {
+        public Builder withId(long id) {
+            this.id = id;
+            return this;
+        }
+        public Builder withFullName(String fullName) {
+            this.fullName = fullName;
+            return this;
+        }
+        public Builder withEmail(String email) {
+            this.email = email;
+            return this;
+        }
+        public Builder withPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+            return this;
+        }
+        public Builder withAddress(String address) {
+            this.address = address;
+            return this;
+        }
+        public Builder withIsClient(ClientStatus status) {
+            this.status = status;
+            return this;
+        }
+        public Builder withQuantityOfOrders(int quantityOfOrders) {
+            this.numberOfOrders = quantityOfOrders;
+            return this;
+        }
+        public Builder withNumberOfPaidOrders(int numberOfPaidOrders) {
             this.numberOfPaidOrders = numberOfPaidOrders;
             return this;
         }
 
         public ClientInfoResponse build() {
-            return new ClientInfoResponse(
-                    id, fullName, email, phoneNumber, address, isClient, numberOfOrders, numberOfPaidOrders
-            );
-        }
-
-        @Override
-        protected ClientBuilder self() {
-            return this;
+            return new ClientInfoResponse(id,
+                    fullName,
+                    email,
+                    phoneNumber,
+                    address,
+                    status,
+                    numberOfOrders,
+                    numberOfPaidOrders);
         }
     }
 }
-
