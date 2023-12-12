@@ -1,8 +1,5 @@
 
-<form (submit)="save(name, address, email, phoneNumber)" class="custom-form">
-
-  <!-- <label>First Name</label>
-  <input class="w3-input" type="text"> -->
+<form  (submit)="save(name, address, email, phoneNumber)" class="custom-form">
 
   <div >
     <label for="exampleInputName" class="w3-input" style="margin-top: 8px;">Name</label>
@@ -25,6 +22,12 @@
     <input class="w3-input" required type="text" id="disabledTextInput" placeholder="Enter phone number" #phoneNumber>
   </div>
 
-  <button type="submit" class="btn btn-primary" style="margin-top: 8px;">Submit</button>
-
+  <button [disabled]="isAdded" type="submit" class="btn btn-primary" style="margin-top: 8px;">Submit</button>
 </form>
+
+<div *ngIf="isError" class="alert alert-danger" role="alert">
+  {{errorMessage}}
+</div>
+<div *ngIf="isAdded" class="alert alert-info" role="alert">
+  New LEAD is added
+</div>

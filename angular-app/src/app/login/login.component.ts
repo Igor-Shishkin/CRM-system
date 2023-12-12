@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
     this.zone.run(() => {
       setTimeout(() => {
         this.router.navigateByUrl('/home');
-        console.log('GO');
+        console.log('GO TO HOME');
       }, 2000);
     });
   }
