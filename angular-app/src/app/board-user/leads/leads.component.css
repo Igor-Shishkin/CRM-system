@@ -1,0 +1,15 @@
+.custom-table {
+    background-color: transparent; 
+  }
+  
+  .custom-table thead th,
+  .custom-table tbody td {
+    background-color: transparent; 
+    color: rgb(171, 212, 248);
+  }
+
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
