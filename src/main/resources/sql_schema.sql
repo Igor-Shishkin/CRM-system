@@ -71,7 +71,7 @@ CREATE TABLE history_messages (
     note VARCHAR(255),
     client_id BIGINT,
     user_id BIGINT,
-    FOREIGN KEY (client_id) REFERENCES clients(client_id),
+    FOREIGN KEY (client_id) REFERENCES clients(client_id) ON DELETE SET NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 

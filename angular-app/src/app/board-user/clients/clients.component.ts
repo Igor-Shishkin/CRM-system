@@ -10,7 +10,8 @@ import { SharedServiceService } from 'src/app/_services/shared.service';
 })
 export class ClientsComponent {
   clients!: Lead[]
-  isLoaded = false;
+  isSuccessLoad = false;
+  isSuccessDelete = false
   responseMessage = '';
   errorMessage = '';
   isError = false;
@@ -19,32 +20,44 @@ export class ClientsComponent {
               private sharedService: SharedServiceService) {}
   
     ngOnInit(): void {
-      this.clientService.getListOfClients().subscribe({
-        next: data => {
-          this.clients = data;
-          this.isLoaded = true;
-        },
-        error: (err: any) => {
-          console.error(err); 
-        }
-      })
+      this.refreshListOfLeads;
     }
-    deleteLid( id : number)
+    sentClientToBlackList( id : number)
     {
-      this.clientService.deleteLidById(id).subscribe({
-        next: (data: string) => {
+      this.clientService.sentClientToBlackList(id).subscribe({
+        next: (data: any) => {
           this.responseMessage = data;
+          this.isSuccessDelete = true;
+          this.reloadPage(1500);
         },
         error: (err: any) => {
           console.error(err);
           this.isError = true;
-          this.errorMessage = err;
+          this.errorMessage = 'Error deleting Client';
         }
       });
     }
-    updateActiveLid(id : Number) {
+    refreshListOfLeads(){
+      this.clientService.getListOfClients().subscribe({
+        next: data => {
+          this.clients = data;
+          this.isSuccessLoad = true;
+        },
+        error: (err: any) => {
+          console.error(err); 
+          this.isError = true;
+          this.errorMessage = 'Error loading data';
+        }
+      })
+    }
+    updateActiveClient(id : Number) {
       this.sharedService.activeLid = this.clients.find((lid) => lid.id === id);
     }
-    
+    reloadPage(delay: number): void {
+      setTimeout(() => {
+        this.isSuccessDelete = false;
+        this.refreshListOfLeads;
+      }, delay); 
+    }
   }
   

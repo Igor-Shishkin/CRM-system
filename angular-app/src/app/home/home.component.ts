@@ -18,17 +18,4 @@ export class HomeComponent implements OnInit {
       this.isLoggedIn = true;
     }
   }
-
-  // onFileSelected(event: any) {
-  //   const file: File = event.target.files[0];
-  //   if (file) {
-  //     this.uploadImage(file);
-  //   }
-  // }
-
-  // uploadImage(imageFile: File) {
-  //   const formData = new FormData();
-  //   formData.append('image', imageFile, imageFile.name);
-  
-  // }
 }

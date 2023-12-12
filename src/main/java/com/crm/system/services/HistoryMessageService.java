@@ -22,4 +22,13 @@ public class HistoryMessageService {
         message.setDone(true);
         historyMessageRepository.save(message);
     }
+
+    public void createHistoryMessageForClient(Client lead, User user, String messageText) {
+        HistoryMessage message = new HistoryMessage(messageText);
+        message.setClient(lead);
+        message.setUser(user);
+        message.setImportant(false);
+        message.setDone(true);
+        historyMessageRepository.save(message);
+    }
 }

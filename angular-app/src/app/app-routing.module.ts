@@ -22,8 +22,7 @@ const routes: Routes = [
     { path: 'user-lid-workplace', component: LidWorkplaceComponent },
     { path: 'leads', component: LeadsComponent},
     { path: 'add-lead', component: AddLeadComponent },
-    { path: 'clients', component: ClientsComponent},
-    { path: ''}
+    { path: 'clients', component: ClientsComponent}
   ]},
   { path: 'mod', component: BoardModeratorComponent },
   { path: 'admin', component: BoardAdminComponent },

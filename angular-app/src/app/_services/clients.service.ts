@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
 import { Lead } from 'src/entities/Lead';
 
-const LIDS_API = 'http://localhost:8080/api/user-board'
+const CLIENTS_API = 'http://localhost:8080/api/user-board'
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
@@ -16,7 +16,7 @@ export class ClientsService {
   constructor(private http: HttpClient) { }
 
   getListOfClients(): Observable<any> {
-    return this.http.get<Lead[]>(LIDS_API + '/clients').pipe(
+    return this.http.get<Lead[]>(CLIENTS_API + '/clients').pipe(
       catchError((error: any) => {
         console.error(error);
         throw error;
@@ -24,19 +24,19 @@ export class ClientsService {
     );
   }
   getListOfLids(): Observable<any> {
-    return this.http.get<Lead[]>(LIDS_API + '/lids').pipe(
+    return this.http.get<Lead[]>(CLIENTS_API + '/lids').pipe(
       catchError((error: any) => {
         console.error(error);
         throw error;
       })
     );
   }
-  deleteLidById(lidId : number) {
-    return this.http.delete(`${LIDS_API}/delete?leadId=${lidId}`, { responseType: 'text' });
+  sentClientToBlackList(clientId : number) {
+    return this.http.put(`${CLIENTS_API}/to-black-list?leadId=${clientId}`, { responseType: 'text' });
   }
   addLid(fullName : string, address : string, email : string, phoneNumber : string):
     Observable<any> {
-      return this.http.post(LIDS_API,
+      return this.http.post(CLIENTS_API,
         {
           fullName,
           address,

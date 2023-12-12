@@ -98,23 +98,31 @@ public class ClientService {
         )).orElseThrow((
         ) -> new UserPrincipalNotFoundException("User not found"));
 
-        historyMessageService.createHistoryMessageAboutNewLead(lead, activeUser.get());
+        String messageText = String.format("Lead %s is created", lead.getFullName());
+        historyMessageService.createHistoryMessageForClient(lead, activeUser.get(), messageText);
 
         clientRepository.save(lead);
     }
 
-    public void deleteLidById(long lidId) throws UserPrincipalNotFoundException, SubjectNotBelongToActiveUser {
-        long activeUserId = getActiveUserId();
-        Optional<Client> optionalClient = clientRepository.findById(lidId);
-        if (optionalClient.isPresent()) {
-            Client requestClient = optionalClient.get();
-            if (requestClient.getUser().getUserId().equals(activeUserId)) {
-                clientRepository.deleteById(lidId);
+    public void sentToBlackList(long lidId) throws UserPrincipalNotFoundException, SubjectNotBelongToActiveUser {
+        Optional<User> activeUser = getActiveUser(getActiveUserId());
+        if (activeUser.isPresent()) {
+            Optional<Client> optionalClient = clientRepository.findById(lidId);
+            if (optionalClient.isPresent()) {
+                Client requestClient = optionalClient.get();
+                if (requestClient.getUser().equals(activeUser.get())) {
+                    requestClient.setStatus(ClientStatus.BLACKLIST);
+                    clientRepository.save(requestClient);
+                    String messageText = String.format("Client %s goes to blackList", requestClient.getFullName());
+                    historyMessageService.createHistoryMessageForClient(requestClient, activeUser.get(), messageText);
+                } else {
+                    throw new SubjectNotBelongToActiveUser("It's not your Client. You don't have access to this Client.");
+                }
             } else {
-                throw new SubjectNotBelongToActiveUser("It's not your LID. You don't have access to this LID.");
+                throw new RequestOptionalIsEmpty(String.format("Client with %d id doesn't exist", lidId));
             }
         } else {
-            throw new RequestOptionalIsEmpty(String.format("Lid with %d id doesn't exist", lidId));
+            throw new UserPrincipalNotFoundException("Active User isn't found");
         }
     }
 

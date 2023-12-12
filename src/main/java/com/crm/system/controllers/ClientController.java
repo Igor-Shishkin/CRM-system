@@ -29,7 +29,7 @@ public class ClientController {
         this.lidService = clientService;
     }
 
-    @Operation(summary = "Add new LID", tags = { "Lid", "add"})
+    @Operation(summary = "Add new Lead", tags = { "Client", "add"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
     @PostMapping()
     public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLidRequest addLidRequest) {
@@ -49,17 +49,17 @@ public class ClientController {
 
     }
 
-    @Operation(summary = "Delete LID by ID", tags = { "Lid", "delete"})
+    @Operation(summary = "Sent client to blackList by ID", tags = { "client", "lead", "black list"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
-    @DeleteMapping("/delete")
+    @PutMapping("/to-black-list")
     public ResponseEntity<?> deleteClientById(@RequestParam long leadId) {
         System.out.println("\n" + leadId + "\n");
         try {
-            lidService.deleteLidById(leadId);
-            log.info(String.format("Lead with %d id is deleted", leadId));
+            lidService.sentToBlackList(leadId);
+            log.info(String.format("Client with %d id on the black list", leadId));
             return ResponseEntity.ok(new MessageResponse(String.format("Lead with %d id is deleted", leadId)));
         } catch (IllegalArgumentException | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
-            log.error("Delete user error: " + e.getMessage());
+            log.error("Delete user error: " + e.toString());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Delete user error: " + e.getMessage()));
         }
