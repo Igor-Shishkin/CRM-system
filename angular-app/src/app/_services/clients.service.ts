@@ -23,7 +23,7 @@ export class ClientsService {
       })
     );
   }
-  getListOfLids(): Observable<any> {
+  getListOfLeads(): Observable<any> {
     return this.http.get<Client[]>(CLIENTS_API + '/lids').pipe(
       catchError((error: any) => {
         console.error(error);
@@ -45,4 +45,12 @@ export class ClientsService {
         },
         httpOptions );
     }
+  getClientInformarion(clientId: number): Observable<Client> {
+    return this.http.get<Client>(`${CLIENTS_API}/client-info?clientId=${clientId}`).pipe(
+      catchError((error: any) => {
+        console.error(error);
+        throw error;
+      })
+    );
+  }
 }

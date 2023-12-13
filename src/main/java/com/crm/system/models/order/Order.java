@@ -21,7 +21,8 @@ import java.util.Set;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long order_id;
+    @Column(name = "order_id")
+    private Long orderId;
     @NotBlank
     @Column(name = "real_need")
     private String realNeed;
@@ -43,6 +44,12 @@ public class Order {
 
     private String address;
 
+    @Column(name = "measurements_taken")
+    private boolean measurementsTaken = false;
+
+    @Column(name = "measurement_offered")
+    private boolean measurementOffered;
+
     @Column(name = "is_calculation_promised")
     private boolean isCalculationPromised = false;
 
@@ -53,6 +60,9 @@ public class Order {
     @Column(name = "is_calculation_shown")
     @Enumerated(EnumType.STRING)
     private InfoIsShown isCalculationShown = InfoIsShown.NOT_SHOWN;
+
+    @Column(name = "has_agreement_prepared")
+    private boolean hasAgreementPrepared;
 
     @Column(name = "data_of_creation")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

@@ -27,7 +27,7 @@ export class LeadsComponent implements OnInit{
     }
     refreshListOfLeads(){
       this.isRequestSent = true;
-      this.clientService.getListOfLids().subscribe({
+      this.clientService.getListOfLeads().subscribe({
         next: data => {
           this.leads = data;
           this.isSuccessLoad = true;

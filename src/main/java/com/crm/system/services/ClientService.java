@@ -139,6 +139,20 @@ public class ClientService {
         }
     }
 
+    public Client getClient(long clientId) {
+        long activeUserId = getActiveUserId();
+        Optional<Client> optionalClient = clientRepository.findById(clientId);
+        if (optionalClient.isPresent()) {
+            if (optionalClient.get().getUser().getUserId().equals(activeUserId)) {
+                return optionalClient.get();
+            } else  {
+                throw new SubjectNotBelongToActiveUser("It's not you client!");
+            }
+        } else {
+            throw new RequestOptionalIsEmpty("Client isn't found");
+        }
+    }
+
     public Optional<User> getActiveUser(long userId) {
         Optional<User> user = userRepository.findById(userId);
         return user;
@@ -147,7 +161,8 @@ public class ClientService {
     private long getActiveUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
-        System.out.println("\n" + userId + "\n");
         return userId;
     }
+
+
 }

@@ -1,0 +1,48 @@
+
+
+<div class="d-inline-flex gap-1">
+    <p>Create reminder</p>
+    <p style="margin-left: 10px">Edit data</p>
+  </div>
+  
+    <div class="container">
+      <ul>
+          <li>ID: {{ client?.id }}</li>
+          <li>Name: {{ client?.fullName }}</li>
+          <li>Email: {{ client?.email }}</li>
+          <li>Phone: {{ client?.phoneNumber }}</li>  
+        </ul>
+    </div>
+  
+    <h2>Orders</h2>
+  
+    <table *ngIf="client && client.orders && client.orders.length > 0" 
+      class="table table-striped table-hover">
+      
+      <thead>
+          <tr>
+              <th>what</th>
+              <th>price</th>
+              <th></th>
+          </tr>
+      </thead>
+  
+  
+      <tbody >
+          <tr *ngFor="let order of client.orders">
+              <td>{{order.realNeed}}</td>
+              <td>{{order.estimateBudged}}</td>
+              <td>{{order.resultPrice}}</td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <button [disabled]="isRequestSent" (click)="sentClientToBlackList()" type="button" 
+    class="btn btn-outline-danger" style="margin-left: 5px;">
+      <span *ngIf="isRequestSent" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      <span role="status">To black list</span>  
+    </button>
+  
+  
+  

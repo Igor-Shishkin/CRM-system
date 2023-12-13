@@ -50,6 +50,9 @@ CREATE TABLE orders (
     real_need VARCHAR(255) NOT NULL,
     estimate_budget DOUBLE,
     is_project_approved BOOLEAN DEFAULT false,
+    measurements_taken BOOLEAN DEFAULT false,
+    measurement_offered BOOLEAN DEFAULT false,
+    has_agreement_prepared BOOLEAN DEFAULT false,
     was_meeting_in_office BOOLEAN DEFAULT false,
     result_price DOUBLE DEFAULT 0.0,
     has_been_paid BOOLEAN DEFAULT false,
@@ -121,11 +124,12 @@ INSERT INTO clients (full_name, email, phone_number, status, address, user_id)
     ('Solomon Duda', 'sol@gmail.com', '555666777', 'LEAD', 'Poland, Poznań', 1),
     ('Tacka Jakub', 'tacka@gmail.com', '004874677', 'LEAD', 'Poland, Poznań', 2);
 
-INSERT INTO orders (real_need, estimate_budget, address, client_id)
+INSERT INTO orders (real_need, estimate_budget, address, measurement_offered, was_meeting_in_office, is_calculation_promised,  is_calculation_shown, client_id)
 VALUES
-    ('install furniture in the kitchen', 3450.3, 'Poland', 3),
-    ('design a bedroom layout', 2001, 'Poznań', 3),
-    ('Order a handmade table', 5490.3, 'Warszawa', 1);
+    ('install furniture in the kitchen', 3450.3, 'Poland', true, true, 'SHOWN_ONLINE', 3),
+    ('install furniture in the bedroom', 2150.0, 'Poland, Warszawa', false, true, 'SHOWN_ONLINE', 3),
+    ('design a bedroom layout', 2001, 'Poznań', false, false, 'NOT_SHOWN', 3),
+    ('Order a handmade table', 5490.3, 'Warszawa', false, true, 'SHOWN_ONLINE', 1);
 COMMIT;
 
 

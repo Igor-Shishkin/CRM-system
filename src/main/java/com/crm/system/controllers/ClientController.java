@@ -1,7 +1,9 @@
 package com.crm.system.controllers;
 
 import com.crm.system.exception.ClientAlreadyExistException;
+import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
+import com.crm.system.models.Client;
 import com.crm.system.playload.request.AddLidRequest;
 import com.crm.system.playload.response.ClientInfoResponse;
 import com.crm.system.playload.response.MessageResponse;
@@ -78,7 +80,7 @@ public class ClientController {
                     .body(new MessageResponse("User isn't defined: " + e.getMessage()));
         }
     }
-    @Operation(summary = "Get all Leads", tags = { "lids", "get"})
+    @Operation(summary = "Get all Leads", tags = { "leads", "get"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
     @GetMapping("/lids")
     public ResponseEntity<?> getAllLeadsForUser() {
@@ -91,4 +93,20 @@ public class ClientController {
                     .body(new MessageResponse("User isn't defined. " + e.getMessage()));
         }
     }
+    @Operation(summary = "Get Client's info", tags = { "client", "info"})
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @GetMapping("/client-info")
+    public ResponseEntity<?> getClientInfo(@RequestParam long clientId) {
+        try {
+            Client client = lidService.getClient(clientId);
+            return ResponseEntity.ok(client);
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser e) {
+            log.error(e.getMessage() + ". Error: " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse(e.getMessage() + ". Error: " + e));
+        }
+    }
+
+
+
 }

@@ -15,7 +15,6 @@ import { BoardUserComponent } from './board-user/board-user.component';
 
 import { httpInterceptorProviders } from './_helpers/http.interceptor';
 import { NavigationComponent } from './navigation/navigation.component';
-import { LidWorkplaceComponent } from './board-user/lid-workplace/lid-workplace.component';
 import { SideBarComponent } from './side-bar/side-bar.component';
 import { ClientsComponent } from './board-user/clients/clients.component';
 import { AddLeadComponent } from './board-user/add-lead/add-lead.component';
@@ -35,7 +34,6 @@ import { ClientWorkplaceComponent } from './board-user/client-workplace/client-w
     BoardUserComponent,
     NavigationComponent,
     LeadsComponent,
-    LidWorkplaceComponent,
     SideBarComponent,
     ClientsComponent,
     AddLeadComponent,

@@ -29,7 +29,10 @@
       <button type="button" class="btn btn-outline-secondary custom-size">Statistic</button>
     </div>
     <div class="w3-col m4 l4">
-      <button type="button" class="btn btn-outline-secondary custom-size">Administration</button>
+      <button type="button" class="btn btn-outline-secondary custom-size"
+      [routerLinkActive]="'active-nav'"
+      [routerLink]="'/admin'"
+      >Administration</button>
     </div>
   </div>
 </div>

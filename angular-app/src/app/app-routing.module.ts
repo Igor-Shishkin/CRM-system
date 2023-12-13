@@ -8,10 +8,10 @@ import { ProfileComponent } from './profile/profile.component';
 import { BoardUserComponent } from './board-user/board-user.component';
 import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
-import { LidWorkplaceComponent } from './board-user/lid-workplace/lid-workplace.component';
 import { ClientsComponent } from './board-user/clients/clients.component';
 import { AddLeadComponent } from './board-user/add-lead/add-lead.component';
 import { LeadsComponent } from './board-user/leads/leads.component';
+import { ClientWorkplaceComponent } from './board-user/client-workplace/client-workplace.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -19,10 +19,10 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'user-board', component: BoardUserComponent, children: [
-    { path: 'user-lid-workplace', component: LidWorkplaceComponent },
     { path: 'leads', component: LeadsComponent},
     { path: 'add-lead', component: AddLeadComponent },
-    { path: 'clients', component: ClientsComponent}
+    { path: 'clients', component: ClientsComponent},
+    { path: 'client-workplace', component: ClientWorkplaceComponent}
   ]},
   { path: 'mod', component: BoardModeratorComponent },
   { path: 'admin', component: BoardAdminComponent },

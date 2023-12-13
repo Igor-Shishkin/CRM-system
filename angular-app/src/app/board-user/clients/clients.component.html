@@ -3,11 +3,11 @@
     <div style="display: flex;">
         <button type="button" class="btn btn-secondary" style="margin-left: 10px;" 
           [routerLinkActive]="'active-nav'"
-          [routerLink]="'/board-user/user-lid'" aria-current="page" href="#">LIDs
+          [routerLink]="'/user-board/leads'" aria-current="page" href="#">LIDs
         </button>
         <button type="button" class="btn btn-secondary" style="margin-left: 10px;"  
           [routerLinkActive]="'active-nav'"
-          [routerLink]="'/board-user/clients'" aria-current="page" href="#">CLIENTs
+          [routerLink]="'/user-board/clients'" aria-current="page" href="#">CLIENTs
         </button>
       </div>
 
@@ -42,14 +42,10 @@
               <td>{{client.phoneNumber}}</td>
               <td>{{client.orders.length}}</td>
               <td>
-                  <button [disabled]="isRequestSent" [routerLink]="'/board-user/user-lid-workplace'" 
+                  <button [disabled]="isRequestSent" 
+                  [routerLinkActive]="'active-nav'"
+                  [routerLink]="'/user-board/client-workplace'" 
                   (click)="updateActiveClient(client.id)" class="btn btn-outline-info">Go to Client</button>
-                  
-                  <button (click)="sentClientToBlackList(client.id)" type="button" 
-                  class="btn btn-outline-danger" style="margin-left: 5px;">
-                  <span *ngIf="isRequestSent" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                  <span role="status">To black list</span>  
-                  </button>
               </td>
           </tr>
       </tbody>
