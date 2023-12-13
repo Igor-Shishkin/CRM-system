@@ -15,6 +15,7 @@ export class ClientsComponent {
   responseMessage = '';
   errorMessage = '';
   isError = false;
+  isRequestSent = false;
   
   constructor(private clientService: ClientsService,
               private sharedService: SharedServiceService) {}
@@ -22,8 +23,8 @@ export class ClientsComponent {
     ngOnInit(): void {
       this.refreshListOfLeads;
     }
-    sentClientToBlackList( id : number)
-    {
+    sentClientToBlackList( id : number) {
+      this.isRequestSent = true;
       this.clientService.sentClientToBlackList(id).subscribe({
         next: (data: any) => {
           this.responseMessage = data;
@@ -34,19 +35,23 @@ export class ClientsComponent {
           console.error(err);
           this.isError = true;
           this.errorMessage = 'Error deleting Client';
+          this.isRequestSent = false;
         }
       });
     }
     refreshListOfLeads(){
+      this.isRequestSent = false;
       this.clientService.getListOfClients().subscribe({
         next: data => {
           this.clients = data;
           this.isSuccessLoad = true;
+          this.isRequestSent = false;
         },
         error: (err: any) => {
           console.error(err); 
           this.isError = true;
           this.errorMessage = 'Error loading data';
+          this.isRequestSent = false;
         }
       })
     }

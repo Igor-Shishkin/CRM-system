@@ -42,19 +42,21 @@
               <td>{{client.phoneNumber}}</td>
               <td>{{client.orders.length}}</td>
               <td>
-                  <a [routerLink]="'/board-user/user-lid-workplace'" 
-                  (click)="updateActiveClient(client.id)"
-                  class="btn btn-outline-info">Go to LID</a>
+                  <button [disabled]="isRequestSent" [routerLink]="'/board-user/user-lid-workplace'" 
+                  (click)="updateActiveClient(client.id)" class="btn btn-outline-info">Go to Client</button>
                   
                   <button (click)="sentClientToBlackList(client.id)" type="button" 
-                  class="btn btn-outline-danger" style="margin-left: 5px;">To black list</button>
+                  class="btn btn-outline-danger" style="margin-left: 5px;">
+                  <span *ngIf="isRequestSent" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  <span role="status">To black list</span>  
+                  </button>
               </td>
           </tr>
       </tbody>
     </table>
   
     <button [routerLink]="'/user/user-add-lid'" 
-     type="button" class="btn btn-outline-primary">Add LID</button>
+     type="button" class="btn btn-outline-primary">Add LEAD</button>
   
   </div>
   

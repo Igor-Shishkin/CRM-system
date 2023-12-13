@@ -20,6 +20,7 @@ import { SideBarComponent } from './side-bar/side-bar.component';
 import { ClientsComponent } from './board-user/clients/clients.component';
 import { AddLeadComponent } from './board-user/add-lead/add-lead.component';
 import { LeadsComponent } from './board-user/leads/leads.component';
+import { ClientWorkplaceComponent } from './board-user/client-workplace/client-workplace.component';
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import { LeadsComponent } from './board-user/leads/leads.component';
     LidWorkplaceComponent,
     SideBarComponent,
     ClientsComponent,
-    AddLeadComponent
+    AddLeadComponent,
+    ClientWorkplaceComponent
   ],
   imports: [
     BrowserModule,

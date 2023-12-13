@@ -17,6 +17,7 @@ export class LeadsComponent implements OnInit{
   responseMessage = '';
   errorMessage = '';
   isError = false;
+  isRequestSent = false;
   
   constructor(private clientService: ClientsService,
               private sharedService: SharedServiceService) {}
@@ -25,19 +26,23 @@ export class LeadsComponent implements OnInit{
       this.refreshListOfLeads();
     }
     refreshListOfLeads(){
+      this.isRequestSent = true;
       this.clientService.getListOfLids().subscribe({
         next: data => {
           this.leads = data;
           this.isSuccessLoad = true;
+          this.isRequestSent = false;
         },
         error: (err: any) => {
           console.error(err); 
           this.isError = true;
           this.errorMessage = 'Error loading data';
+          this.isRequestSent = false;
         }
       })
     }
     sentClientToBlackList(id: number) {
+      this.isRequestSent = true;
       this.clientService.sentClientToBlackList(id).subscribe({
         next: (data: any) => { // Specify the type of 'data' as string
           this.responseMessage = data;
@@ -48,6 +53,7 @@ export class LeadsComponent implements OnInit{
           console.error(err);
           this.isError = true;
           this.errorMessage = 'Error deleting Lead';
+          this.isRequestSent = false;
         }
       });
     }
