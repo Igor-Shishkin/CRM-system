@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ClientsService } from 'src/app/_services/clients.service';
 import { SharedServiceService } from 'src/app/_services/shared.service';
 import { Client } from 'src/entities/Client';
+import { Order } from 'src/entities/Order';
 
 @Component({
   selector: 'app-client-workplace',
@@ -16,6 +17,7 @@ export class ClientWorkplaceComponent {
   responseMessage = '';
   errorMessage = '';
   isError = false;
+  progress = 0;
 
   constructor(private clientService: ClientsService, 
       private sharedService : SharedServiceService,
@@ -52,6 +54,21 @@ export class ClientWorkplaceComponent {
     setTimeout(() => {
       this.router.navigateByUrl('/home');
     }, delay); 
+  }
+
+  calculateOrderProgress(order: Order): string{
+    let counter = 1;
+    if (order.isCalculationPromised) { counter++; }
+    if (order.isCalculationShown != 'NOT_SHOWN') { counter++; }
+    if (order.isProjectShown != 'NOT_SHOWN') { counter++; }
+    if (order.isProjectApproved) { counter++; }
+    if (order.estimateBudged != 0) { counter++; }
+    if (order.measurementsTaken) { counter++; }
+    if (order.measurementOffered) { counter++; }
+    if (order.hasAgreementPrepared) { counter++; }
+    counter = Math.floor( (counter/9) *100 );
+    return `${counter}%`;
+    
   }
 }
 
