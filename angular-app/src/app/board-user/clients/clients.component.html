@@ -43,9 +43,7 @@
               <td>{{client.orders.length}}</td>
               <td>
                   <button [disabled]="isRequestSent" 
-                  [routerLinkActive]="'active-nav'"
-                  [routerLink]="'/user-board/client-workplace'" 
-                  (click)="updateActiveClient(client.id)" class="btn btn-outline-info">Go to Client</button>
+                  (click)="goToClientDetail(client.id)" class="btn btn-outline-info">Go to Client</button>
               </td>
           </tr>
       </tbody>

@@ -1,4 +1,5 @@
 import { Component, NgModule, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ClientsService } from 'src/app/_services/clients.service';
 import { SharedServiceService } from 'src/app/_services/shared.service';
 import { Client } from 'src/entities/Client';
@@ -18,9 +19,10 @@ export class LeadsComponent implements OnInit{
   errorMessage = '';
   isError = false;
   isRequestSent = false;
+
   
   constructor(private clientService: ClientsService,
-              private sharedService: SharedServiceService) {}
+              private router: Router) {}
   
     ngOnInit(): void {
       this.refreshListOfLeads();
@@ -56,14 +58,14 @@ export class LeadsComponent implements OnInit{
           this.isRequestSent = false;
         }
       });
-    }
-    updateActiveClient(id : Number) {
-      this.sharedService.activeLid = this.leads.find((lid) => lid.id === id);
     } 
     reloadPage(delay: number): void {
       setTimeout(() => {
         this.isSuccessDelete = false;
         this.refreshListOfLeads();
       }, delay); 
+    }
+    goToClientDetail(clientId: number) {
+      this.router.navigate(['/user-board/client-workplace', clientId]);
     }
 }

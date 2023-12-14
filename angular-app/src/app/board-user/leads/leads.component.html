@@ -43,8 +43,8 @@
               <td>{{lead.phoneNumber}}</td>
               <td>{{lead.numberOfOrders}}</td>
               <td class="clearfix">
-                  <button [disabled]="isRequestSent" [routerLink]="'/user-board/client-workplace'" 
-                  (click)="updateActiveClient(lead.id)" class="btn btn-outline-info">
+                  <button [disabled]="isRequestSent" 
+                  (click)="goToClientDetail(lead.id)" class="btn btn-outline-info">
                   Go to LID
                   </button>
               </td>

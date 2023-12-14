@@ -20,8 +20,8 @@
     <div *ngFor="let order of client?.orders"
     style="border: 2px solid rgb(152, 245, 151); color: greenyellow;">
         Real need: {{order.realNeed}}
-        <div class="progress" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-            <div class="progress-bar bg-warning" [style.width]="calculateOrderProgress(order)">{{calculateOrderProgress(order)}}</div>
+        <div class="progress text-bg-dark" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
+            <div class="progress-bar bg-primary" [style.width]="calculateOrderProgress(order)">{{calculateOrderProgress(order)}}</div>
           </div> 
         <div style="display: flex;">
             <div>

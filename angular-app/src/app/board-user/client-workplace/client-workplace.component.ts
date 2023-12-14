@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ClientsService } from 'src/app/_services/clients.service';
 import { SharedServiceService } from 'src/app/_services/shared.service';
 import { Client } from 'src/entities/Client';
@@ -18,13 +18,17 @@ export class ClientWorkplaceComponent {
   errorMessage = '';
   isError = false;
   progress = 0;
+  clientId = -1;
 
   constructor(private clientService: ClientsService, 
-      private sharedService : SharedServiceService,
-      private router: Router ) {}
+      private router: Router ,
+      private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.clientService.getClientInformarion(this.sharedService.activeLid?.id || -1).subscribe({
+    this.route.params.subscribe(params => {
+      this.clientId = +params['id'];
+    });
+    this.clientService.getClientInformarion(this.clientId).subscribe({
       next: data => {
         this.client = data;
       }, error: err => {

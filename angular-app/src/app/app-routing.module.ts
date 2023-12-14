@@ -22,7 +22,7 @@ const routes: Routes = [
     { path: 'leads', component: LeadsComponent},
     { path: 'add-lead', component: AddLeadComponent },
     { path: 'clients', component: ClientsComponent},
-    { path: 'client-workplace', component: ClientWorkplaceComponent}
+    { path: 'client-workplace/:id', component: ClientWorkplaceComponent}
   ]},
   { path: 'mod', component: BoardModeratorComponent },
   { path: 'admin', component: BoardAdminComponent },

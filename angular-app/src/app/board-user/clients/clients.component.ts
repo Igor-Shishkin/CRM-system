@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Client } from 'src/entities/Client';
 import { ClientsService } from 'src/app/_services/clients.service';
 import { SharedServiceService } from 'src/app/_services/shared.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-clients',
@@ -18,7 +19,7 @@ export class ClientsComponent {
   isRequestSent = false;
   
   constructor(private clientService: ClientsService,
-              private sharedService: SharedServiceService) {}
+              private router: Router) {}
   
     ngOnInit(): void {
       this.refreshListOfLeads;
@@ -55,14 +56,14 @@ export class ClientsComponent {
         }
       })
     }
-    updateActiveClient(id : Number) {
-      this.sharedService.activeLid = this.clients.find((lid) => lid.id === id);
-    }
     reloadPage(delay: number): void {
       setTimeout(() => {
         this.isSuccessDelete = false;
         this.refreshListOfLeads;
       }, delay); 
+    }
+    goToClientDetail(clientId: number) {
+      this.router.navigate(['/user-board/client-workplace', clientId]);
     }
   }
   
