@@ -9,13 +9,11 @@ import { StorageService } from '../_services/storage.service';
 })
 export class HomeComponent implements OnInit {
   content?: string;
-  isLoggedIn = false;
+  isLoggedIn?: boolean;
 
   constructor(private userService: UserService, private storageService: StorageService) { }
 
   ngOnInit(): void {
-    if (this.storageService.isLoggedIn()) {
-      this.isLoggedIn = true;
-    }
+    this.isLoggedIn = this.storageService.isLoggedIn();
   }
 }

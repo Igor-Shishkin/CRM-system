@@ -70,6 +70,7 @@ public class Client {
                 this.phoneNumber = phoneNumber;
                 this.address = address;
                 this.user = user;
+                this.status = ClientStatus.LEAD;
 //                this.history.add(new HistoryMessage(String.format("Lead '%s' is created", fullName)));
         }
 }

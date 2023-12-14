@@ -1,4 +1,4 @@
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component, Input, NgModule, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ClientsService } from 'src/app/_services/clients.service';
 import { SharedServiceService } from 'src/app/_services/shared.service';
@@ -8,7 +8,7 @@ import { Client } from 'src/entities/Client';
 @Component({
   selector: 'app-leads',
   templateUrl: './leads.component.html',
-  styleUrls: ['./leads.component.css']
+  styleUrls: ['./leads.component.css'],
 })
 
 export class LeadsComponent implements OnInit{
@@ -20,7 +20,6 @@ export class LeadsComponent implements OnInit{
   isError = false;
   isRequestSent = false;
 
-  
   constructor(private clientService: ClientsService,
               private router: Router) {}
   

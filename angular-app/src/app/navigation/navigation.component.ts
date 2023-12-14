@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { StorageService } from '../_services/storage.service';
 import { AuthService } from '../_services/auth.service';
 import { Router, RouterLink } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-navigation',
@@ -10,17 +11,24 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class NavigationComponent {
   private roles: string[] = [];
-  isLoggedIn = false;
+  isLoggedIn = this.storageService.isLoggedIn();
   showAdminBoard = false;
   showModeratorBoard = false;
   username?: string;
   isDropdownActionVisible = false;
+  private isLoggedInSubscription: Subscription;
 
-  constructor(private storageService: StorageService, private authService: AuthService,
-                      private router: Router) { }
+  constructor(private storageService: StorageService, private authService: AuthService, private router: Router) {
+    this.isLoggedInSubscription = this.storageService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
+      this.isLoggedIn = isLoggedIn;
+    });
+   }
 
   ngOnInit(): void {
-    this.isLoggedIn = this.storageService.isLoggedIn();
+
+    this.storageService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
+      this.isLoggedIn = isLoggedIn;
+    });
 
     if (this.isLoggedIn) {
       const user = this.storageService.getUser();
@@ -31,6 +39,15 @@ export class NavigationComponent {
 
       this.username = user.username;
     }
+  }
+  ngOnDestroy(): void {
+    this.isLoggedInSubscription.unsubscribe();
+  }
+
+  login(){
+    this.storageService.clean();
+    window.sessionStorage.clear();
+    this.router.navigate(['/login']);
   }
 
   logout(): void {
@@ -50,4 +67,5 @@ export class NavigationComponent {
       }
     });
   }
+
 }
