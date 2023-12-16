@@ -4,6 +4,9 @@ import { HistoryMessage } from '../../entities/HistoryMessage';
 import { UserService } from '../_services/user.service';
 import { StorageService } from '../_services/storage.service';
 import { BehaviorSubject, Subscription, combineLatest } from 'rxjs';
+import { MatDialog } from '@angular/material/dialog';
+import { MessageDialogComponent } from './message-dialog/message-dialog.component';
+
 // import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
@@ -27,6 +30,7 @@ export class SideBarComponent implements OnInit{
   constructor(private sharedService: SharedServiceService,
       private userService: UserService,
       private storageService: StorageService,
+      public dialog: MatDialog
       // private _snackBar: MatSnackBar
       ) {
         this.historySubscription = this.storageService.history$.subscribe((userHistory: HistoryMessage[]) => {
@@ -46,6 +50,16 @@ export class SideBarComponent implements OnInit{
     });
 
     console.log('message from side-bar - onInit')
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(MessageDialogComponent);
+
+    // Optional: Subscribe to the afterClosed() event to handle dialog closure
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Dialog was closed');
+      // Handle any data or actions after dialog closure
+    });
   }
 
   showAllHistory(){

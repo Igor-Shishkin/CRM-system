@@ -12,6 +12,8 @@ import { ClientsComponent } from './board-user/clients/clients.component';
 import { AddLeadComponent } from './board-user/add-lead/add-lead.component';
 import { LeadsComponent } from './board-user/leads/leads.component';
 import { ClientWorkplaceComponent } from './board-user/client-workplace/client-workplace.component';
+import { SideBarComponent } from './side-bar/side-bar.component';
+import { MessageDialogComponent } from './side-bar/message-dialog/message-dialog.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -26,7 +28,10 @@ const routes: Routes = [
   ]},
   { path: 'mod', component: BoardModeratorComponent },
   { path: 'admin', component: BoardAdminComponent },
-  { path: '', redirectTo: 'home', pathMatch: 'full' }
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'side-bar', component: SideBarComponent, children: [
+    { path: 'message-dialog', component: MessageDialogComponent}
+  ]}
 ];
 
 @NgModule({
