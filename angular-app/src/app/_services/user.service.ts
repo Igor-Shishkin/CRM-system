@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, catchError } from 'rxjs';
+import { Observable, catchError, map } from 'rxjs';
 import { HistoryMessage } from '../../entities/HistoryMessage';
 import { User } from '../../entities/User';
 
@@ -12,9 +12,17 @@ const API_URL = 'http://localhost:8080/api/user/';
 export class UserService {
   constructor(private http: HttpClient) {}
 
-  getHistory(): Observable<any> {
-    return this.http.get<HistoryMessage[]>(API_URL + 'history').pipe(
-      catchError((error:any) => {
+  getHistory(): Observable<HistoryMessage[]> {
+    return this.http.get<any[]>(API_URL + 'history').pipe(
+      map((data: any[]) => {
+        return data.map((item: any) => {
+          return {
+            ...item,
+            dateOfCreation: new Date(item.dateOfCreation.replace(' ', 'T'))
+          } as HistoryMessage;
+        });
+      }),
+      catchError((error: any) => {
         console.error(error);
         throw error;
       })

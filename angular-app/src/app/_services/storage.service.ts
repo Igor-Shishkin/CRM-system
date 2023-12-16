@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { HistoryMessage } from 'src/entities/HistoryMessage';
 
 const USER_KEY = 'auth-user';
 
@@ -9,10 +10,19 @@ const USER_KEY = 'auth-user';
 export class StorageService {
   private isLoggedInSubject: BehaviorSubject<boolean>;
   public isLoggedIn$: Observable<boolean>;
+  private getActiveClientIdSubject: BehaviorSubject<number>;
+  public activeClientId$: Observable<number>;
+  private historySubject: Subject<HistoryMessage[]> = new Subject<HistoryMessage[]>();
+  history$ = this.historySubject.asObservable();
+  private userHistory: HistoryMessage[] = [];
+  clientID = -1;
+
 
   constructor() {
     this.isLoggedInSubject = new BehaviorSubject<boolean>(this.getLoggedInStatus());
     this.isLoggedIn$ = this.isLoggedInSubject.asObservable();
+    this.getActiveClientIdSubject = new BehaviorSubject<number>(this.getActiveClientId());
+    this.activeClientId$ = this.getActiveClientIdSubject.asObservable();
   }
 
   private getLoggedInStatusFromStorage(): boolean {
@@ -51,5 +61,20 @@ export class StorageService {
   setLoggedInStatus(isLoggedIn: boolean): void {
     localStorage.setItem('isLoggedIn', isLoggedIn ? 'true' : 'false');
     this.isLoggedInSubject.next(isLoggedIn);
+  }
+  getActiveClientId(): number {
+    return this.clientID;
+  }
+  setActiveClientId(id: number) {
+    this.clientID = id;
+    this.getActiveClientIdSubject.next(id);
+  }
+  getHistory(): HistoryMessage[] {
+    return this.userHistory;
+  }
+
+  setHistory(history: HistoryMessage[]) {
+    this.userHistory = history;
+    this.historySubject.next(history); 
   }
 }

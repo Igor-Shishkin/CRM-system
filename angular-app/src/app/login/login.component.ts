@@ -68,12 +68,18 @@ export class LoginComponent implements OnInit {
     window.location.reload();
   }
   getHistoryForUser(){
+
     this.userService.getHistory().subscribe({
       next: data => {
-        this.sharedService.history = data;
-      }, error: err => {
-        console.log(err.toString);
+        this.updateHistory(data);
+        console.log('message from log');
+      },
+      error: err => {
+        console.log(err.toString());
       }
     });
+  }
+  updateHistory(newHistory: HistoryMessage[]) {
+    this.storageService.setHistory(newHistory);
   }
 }

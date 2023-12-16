@@ -68,6 +68,10 @@ public class Order {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateOfCreation;
 
+    @Column(name = "data_of_last_change")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime dateOfLastChange;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<ProjectPhoto> lidPhotos = new HashSet<>();

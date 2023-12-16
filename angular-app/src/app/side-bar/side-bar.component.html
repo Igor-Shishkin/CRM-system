@@ -1,34 +1,30 @@
 
 <div class="general">
     <div class="logo-container" style="margin-bottom: 3px;">
-        <img src="assets\images\LOGO.png" width="50%" />
+        <button (click)="refreshHistory()" style="background-color: transparent; border: none;">
+            <img src="assets\images\LOGO.png" width="30%" />
+        </button>
         <p class="colorful-text" style="margin-top: 9px; margin-bottom: 3px;">alfanamestaj.rs</p>
     </div>
     <div class="separator"></div>
-    <div class="label-action" style="margin: 5px;">
-        <h5 (click)="toggleHistoryDropdown()">History</h5>
-            <div  class="dropdown-content" [ngClass]="{ 'show': isDropdownHistoryVisible }">
-                <ul *ngFor="let mess of history" style="font-size: 12px;">
-                    <li>{{mess.messageText}}</li>
-                    <li>{{mess.dateOfCreation}}</li>
-                    <li>{{mess.note}}</li>
-                    <li class="separator"></li>
-                </ul>
-            </div>
-        <h5 (click)="toggleActionDropdown()">Actions</h5>
-            <div class="dropdown-content" [ngClass]="{ 'show': isDropdownActionVisible }">
-                <ul>
 
-                    <li><label>LIDs</label></li>
-                    <li><label>Clients</label></li>
-                    <li><label>Orders</label></li>
-                    <li><label>Providers</label></li>
-                    <li><label>Partners</label></li>
-                    <li><label>Cash</label></li>
-                    <li><label>Statistics</label></li>
-                    <li><label>Label 1</label></li>
+    <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+      <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
+      <label class="btn btn-outline-primary" for="btnradio1" (click)="showAllHistory()">
+        All history</label>
 
-                </ul>
-            </div>
-    </div>    
+      <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
+      <label class="btn btn-outline-primary" for="btnradio3" (click)="showActiveClientHistory()"> 
+        Active client</label>
+    </div>
+
+    <div *ngFor="let message of filteredHistory" style="padding: 6px, 4px;">
+        <div class="label-action " style="margin: 10px;">
+            <p style="margin: 0px;"><strong>{{message.messageText}}</strong></p>
+            <p style="margin: 0px;">{{message.dateOfCreation | date: 'medium'}}</p>
+            <p style="margin: 0px;">{{message.note}}</p>
+            <p style="margin: 0px;" class="separator" style="margin: 5px;"></p>
+        </div>    
+    </div>
+    <!-- <button type="button" (click)="showToast()">Show Toast</button> -->
 </div>

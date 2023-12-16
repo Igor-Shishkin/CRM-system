@@ -20,6 +20,8 @@ import { ClientsComponent } from './board-user/clients/clients.component';
 import { AddLeadComponent } from './board-user/add-lead/add-lead.component';
 import { LeadsComponent } from './board-user/leads/leads.component';
 import { ClientWorkplaceComponent } from './board-user/client-workplace/client-workplace.component';
+import { OrderComponent } from './board-user/order/order.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -37,13 +39,15 @@ import { ClientWorkplaceComponent } from './board-user/client-workplace/client-w
     SideBarComponent,
     ClientsComponent,
     AddLeadComponent,
-    ClientWorkplaceComponent
+    ClientWorkplaceComponent,
+    OrderComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule
   ],
   providers: [httpInterceptorProviders],
   bootstrap: [AppComponent]

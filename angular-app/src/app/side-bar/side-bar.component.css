@@ -1,7 +1,7 @@
  .general {
     background-color: #333;
     padding: 10px;
-    height: 100%;
+    height: 900%;
   }
   .side-panel button:hover {
     background-color: #555;
@@ -67,13 +67,24 @@
     -webkit-background-clip: text; 
     background-clip: text;
     font-family: 'Nova Square', sans-serif;
-    font-size: 18px;
+    font-size: 12px;
     font-weight: 60;
     letter-spacing: 2px;
   }
-  .label-action label:hover{
+  .label-action:hover{
     text-shadow: 0 0 7px #ffffff; 
     color: rgb(11, 7, 241);
     cursor: pointer;
   }
+  .history-button{
+    background-color: transparent; 
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px;
+  }
+  .history-button:hover {
+    color: rgb(209, 212, 12); 
+    background-color: aqua;
+  }
+
   

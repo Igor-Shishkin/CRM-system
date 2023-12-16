@@ -41,6 +41,8 @@ CREATE TABLE clients (
     phone_number VARCHAR(50),
     status VARCHAR(20) DEFAULT 'LEAD',
     address VARCHAR(255),
+    data_of_last_change DATETIME,
+    data_of_creation DATETIME,
     user_id BIGINT,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
@@ -56,10 +58,11 @@ CREATE TABLE orders (
     was_meeting_in_office BOOLEAN DEFAULT false,
     result_price DOUBLE DEFAULT 0.0,
     has_been_paid BOOLEAN DEFAULT false,
-    address VARCHAR(255),
+    address TEXT,
     is_calculation_promised BOOLEAN DEFAULT false,
     is_project_shown VARCHAR(20) DEFAULT 'NOT_SHOWN',
     is_calculation_shown VARCHAR(20) DEFAULT 'NOT_SHOWN',
+    data_of_last_change DATETIME,
     data_of_creation DATETIME,
     client_id BIGINT,
     FOREIGN KEY (client_id) REFERENCES clients(client_id)
@@ -124,25 +127,27 @@ INSERT INTO clients (full_name, email, phone_number, status, address, user_id)
     ('Solomon Duda', 'sol@gmail.com', '555666777', 'LEAD', 'Poland, Poznań', 1),
     ('Tacka Jakub', 'tacka@gmail.com', '004874677', 'LEAD', 'Poland, Poznań', 2);
 
-INSERT INTO orders (real_need, estimate_budget, address, measurement_offered, was_meeting_in_office, is_calculation_promised,  is_calculation_shown, client_id)
+INSERT INTO orders (real_need, estimate_budget, address, measurement_offered, was_meeting_in_office, is_calculation_promised,  is_calculation_shown, data_of_last_change, client_id)
 VALUES
-    ('install furniture in the kitchen', 3450.3, 'Poland', true, true, true, 'SHOWN_ONLINE', 3),
-    ('install furniture in the bedroom', 2150.0, 'Poland, Warszawa', false, true, false, 'SHOWN_ONLINE', 3),
-    ('design a bedroom layout', 2001, 'Poznań', false, false, true, 'NOT_SHOWN', 3),
-    ('Order a handmade table', 5490.3, 'Warszawa', false, true, true, 'SHOWN_ONLINE', 1);
+    ('install furniture in the kitchen', 3450.3, 'Poland', true, true, true, 'SHOWN_ONLINE', '2023-12-01', 3),
+    ('install furniture in the bedroom', 2150.0, 'Poland, Warszawa', false, true, false, 'SHOWN_ONLINE', '2023-12-02', 3),
+    ('design a bedroom layout', 2001, 'Poznań', false, false, true, 'NOT_SHOWN', '2023-11-30', 3),
+    ('Order a handmade table', 5490.3, 'Warszawa', false, true, true, 'SHOWN_ONLINE', '2023-12-05', 3),
+    ('Order a handmade table', 2190.3, 'Poznań', false, true, true, 'SHOWN_ONLINE', '2023-12-01', 1);
+
 
 INSERT INTO history_messages(text_of_message, date_of_creation, is_important, is_done, note, client_id, user_id)
     VALUES
-        ('Regarding installation date change', '2023-12-14', 1, 0, 'Client requested reschedule', 1, 3),
-        ('Payment reminder for pending order', '2023-12-10', 1, 0, 'Second reminder sent', 2, 5),
-        ('Confirmation for furniture delivery', '2023-12-12', 1, 1, 'Client confirmed delivery details', 3, 2),
-        ('Follow-up on customization options', '2023-12-08', 0, 0, 'Awaiting client response', 1, 4),
-        ('Meeting scheduled for next week', '2023-12-20', 1, 0, 'Confirmation pending', 5, 7),
-        ('Regarding project specifications', '2023-12-18', 0, 0, 'Waiting for client feedback', 3, 9),
-        ('Urgent request for additional fittings', '2023-12-14', 1, 1, 'Confirmed by the client', 2, 5),
-        ('Completion of assembly instructions sent', '2023-12-13', 1, 1, 'Client acknowledged', 4, 8),
-        ('Query regarding material quality', '2023-12-12', 0, 0, 'Waiting for supplier response', 1, 6),
-        ('Issue resolved with the installation team', '2023-12-11', 1, 1, 'Closed ticket', 3, 7);
+        ('Regarding installation date change', '2023-12-14', 1, 0, 'Client requested reschedule', 1, 1),
+        ('Payment reminder for pending order', '2023-12-10', 1, 0, 'Second reminder sent', 3, 1),
+        ('Confirmation for furniture delivery', '2023-12-12', 1, 1, 'Client confirmed delivery details', 3, 1),
+        ('Follow-up on customization options', '2023-12-08', 0, 0, 'Awaiting client response', 1, 1),
+        ('Meeting scheduled for next week', '2023-12-20', 1, 0, 'Confirmation pending', 3, 2),
+        ('Regarding project specifications', '2023-12-18', 0, 0, 'Waiting for client feedback', 3, 1),
+        ('Urgent request for additional fittings', '2023-12-14', 1, 1, 'Confirmed by the client', 3, 1),
+        ('Completion of assembly instructions sent', '2023-12-13', 1, 1, 'Client acknowledged', 1, 2),
+        ('Query regarding material quality', '2023-12-12', 0, 0, 'Waiting for supplier response', 2, 1),
+        ('Issue resolved with the installation team', '2023-12-11', 1, 1, 'Closed ticket', 3, 1);
 
 COMMIT;
 

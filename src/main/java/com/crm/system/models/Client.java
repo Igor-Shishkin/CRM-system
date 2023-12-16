@@ -2,6 +2,7 @@ package com.crm.system.models;
 
 import com.crm.system.models.order.Order;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -10,6 +11,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -47,6 +49,14 @@ public class Client {
 
         private String address;
 
+        @Column(name = "data_of_creation")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime dateOfCreation;
+
+        @Column(name = "data_of_last_change")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private LocalDateTime dateOfLastChange;
+
         @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
         @JsonManagedReference
         private Set<Order> orders = new HashSet<>();
@@ -70,7 +80,8 @@ public class Client {
                 this.phoneNumber = phoneNumber;
                 this.address = address;
                 this.user = user;
+                this.dateOfLastChange = LocalDateTime.now();
+                this.dateOfCreation = LocalDateTime.now();
                 this.status = ClientStatus.LEAD;
-//                this.history.add(new HistoryMessage(String.format("Lead '%s' is created", fullName)));
         }
 }

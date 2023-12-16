@@ -59,7 +59,7 @@ export class LeadsComponent implements OnInit{
       });
     } 
     reloadPage(delay: number): void {
-      setTimeout(() => {
+      setTimeout(() => { 
         this.isSuccessDelete = false;
         this.refreshListOfLeads();
       }, delay); 
