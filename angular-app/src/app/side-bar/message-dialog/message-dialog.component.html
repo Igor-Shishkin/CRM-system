@@ -1,7 +1,27 @@
-<p>message-dialog works!</p>
-<h2 mat-dialog-title>Dialog Title</h2>
+<h2 mat-dialog-title>Create history note</h2>
 <mat-dialog-content>
-  <p>This is the dialog content.</p>
+  <form>
+    <div class="mb-3">
+      <label for="exampleFormControlTextarea1" class="form-label">History message</label>
+      <textarea class="form-control custom-textarea" id="exampleFormControlTextarea1" rows="3" placeholder="Message"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="exampleFormControlInput1" class="form-label">Note</label>
+      <input type="text" class="form-control" id="exampleFormControlInput1" placeholder="note">
+    </div>
+
+    <div style="display: flex; margin: 15px;" >
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+        <label class="form-check-label" for="flexSwitchCheckDefault">Import</label>
+      </div>
+      <div class="form-check form-switch" style="display: flex; margin-left: 15px; height: 70px;">
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+        <label class="form-check-label" for="flexSwitchCheckDefault">Done</label>
+      </div>
+    </div>
+    <button type="submit" style="margin: 0px;" class="btn btn-primary">Submit</button>
+  </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Close</button>

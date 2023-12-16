@@ -4,7 +4,7 @@ import { HistoryMessage } from '../../entities/HistoryMessage';
 import { UserService } from '../_services/user.service';
 import { StorageService } from '../_services/storage.service';
 import { BehaviorSubject, Subscription, combineLatest } from 'rxjs';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 
 // import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -53,7 +53,13 @@ export class SideBarComponent implements OnInit{
   }
 
   openDialog(): void {
+
+    // const dialogConfig = new MatDialogConfig();
+    // dialogConfig.width = '800px'; 
+    // dialogConfig.height = '900px'; 
+
     const dialogRef = this.dialog.open(MessageDialogComponent);
+
 
     // Optional: Subscribe to the afterClosed() event to handle dialog closure
     dialogRef.afterClosed().subscribe(result => {
