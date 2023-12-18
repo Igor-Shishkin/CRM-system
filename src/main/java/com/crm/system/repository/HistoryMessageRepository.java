@@ -1,7 +1,6 @@
 package com.crm.system.repository;
 
-import com.crm.system.models.Client;
-import com.crm.system.models.HistoryMessage;
+import com.crm.system.models.history.HistoryMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

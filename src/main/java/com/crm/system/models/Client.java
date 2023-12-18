@@ -1,5 +1,6 @@
 package com.crm.system.models;
 
+import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.models.order.Order;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -60,12 +61,7 @@ public class Client {
         @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
         @JsonManagedReference
         private Set<Order> orders = new HashSet<>();
-
-        @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-        @JsonManagedReference
-        private Set<HistoryMessage> history =
-                new HashSet<>(Set.of(new HistoryMessage(String.format("Lead '%s' is created", this.fullName))));
-
+        
         @ManyToOne
         @JoinColumn(name = "user_id")
         @JsonBackReference

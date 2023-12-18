@@ -10,9 +10,9 @@ const USER_KEY = 'auth-user';
 export class StorageService {
   private isLoggedInSubject: BehaviorSubject<boolean>;
   public isLoggedIn$: Observable<boolean>;
-  private getActiveClientIdSubject: BehaviorSubject<number>;
-  public activeClientId$: Observable<number>;
+  private activeClientIdSubject: Subject<number> = new Subject<number>();
   private historySubject: Subject<HistoryMessage[]> = new Subject<HistoryMessage[]>();
+  activeClientId$ = this.activeClientIdSubject.asObservable(); 
   history$ = this.historySubject.asObservable();
   private userHistory: HistoryMessage[] = [];
   clientID = -1;
@@ -21,8 +21,6 @@ export class StorageService {
   constructor() {
     this.isLoggedInSubject = new BehaviorSubject<boolean>(this.getLoggedInStatus());
     this.isLoggedIn$ = this.isLoggedInSubject.asObservable();
-    this.getActiveClientIdSubject = new BehaviorSubject<number>(this.getActiveClientId());
-    this.activeClientId$ = this.getActiveClientIdSubject.asObservable();
   }
 
   private getLoggedInStatusFromStorage(): boolean {
@@ -67,7 +65,7 @@ export class StorageService {
   }
   setActiveClientId(id: number) {
     this.clientID = id;
-    this.getActiveClientIdSubject.next(id);
+    this.activeClientIdSubject.next(id);
   }
   getHistory(): HistoryMessage[] {
     return this.userHistory;

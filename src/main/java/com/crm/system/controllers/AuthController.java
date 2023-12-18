@@ -1,17 +1,12 @@
 package com.crm.system.controllers;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.*;
 
-import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.UserAlreadyExistsException;
-import com.crm.system.models.HistoryMessage;
 import com.crm.system.playload.request.LoginRequest;
 import com.crm.system.playload.request.SignupRequest;
 import com.crm.system.playload.response.MessageResponse;
-import com.crm.system.playload.response.UserInfoResponse;
 import com.crm.system.security.services.UserDetailsServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,7 +20,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @Tag(name = "Auth controller", description = "Auth management APIs")

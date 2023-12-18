@@ -3,6 +3,7 @@ package com.crm.system.models;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.models.security.Role;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;

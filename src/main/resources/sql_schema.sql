@@ -74,10 +74,10 @@ CREATE TABLE history_messages (
     date_of_creation DATETIME,
     is_important BOOLEAN,
     is_done BOOLEAN,
-    note VARCHAR(255),
-    client_id BIGINT,
+    note TEXT,
+    tag_name VARCHAR(30),
+    tag_id BIGINT,
     user_id BIGINT,
-    FOREIGN KEY (client_id) REFERENCES clients(client_id) ON DELETE SET NULL,
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
@@ -136,18 +136,18 @@ VALUES
     ('Order a handmade table', 2190.3, 'Poznań', false, true, true, 'SHOWN_ONLINE', '2023-12-01', 1);
 
 
-INSERT INTO history_messages(text_of_message, date_of_creation, is_important, is_done, note, client_id, user_id)
+INSERT INTO history_messages(text_of_message, date_of_creation, is_important, is_done, note, tag_name, tag_id, user_id)
     VALUES
-        ('Regarding installation date change', '2023-12-14', 1, 0, 'Client requested reschedule', 1, 1),
-        ('Payment reminder for pending order', '2023-12-10', 1, 0, 'Second reminder sent', 3, 1),
-        ('Confirmation for furniture delivery', '2023-12-12', 1, 1, 'Client confirmed delivery details', 3, 1),
-        ('Follow-up on customization options', '2023-12-08', 0, 0, 'Awaiting client response', 1, 1),
-        ('Meeting scheduled for next week', '2023-12-20', 1, 0, 'Confirmation pending', 3, 2),
-        ('Regarding project specifications', '2023-12-18', 0, 0, 'Waiting for client feedback', 3, 1),
-        ('Urgent request for additional fittings', '2023-12-14', 1, 1, 'Confirmed by the client', 3, 1),
-        ('Completion of assembly instructions sent', '2023-12-13', 1, 1, 'Client acknowledged', 1, 2),
-        ('Query regarding material quality', '2023-12-12', 0, 0, 'Waiting for supplier response', 2, 1),
-        ('Issue resolved with the installation team', '2023-12-11', 1, 1, 'Closed ticket', 3, 1);
+        ('Regarding installation date change', '2023-12-14', 1, 0, 'Client requested reschedule', 'CLIENT', 3, 1),
+        ('Payment reminder for pending order', '2023-12-10', 1, 0, 'Second reminder sent', 'CLIENT', 3, 1),
+        ('Confirmation for furniture delivery', '2023-12-12', 1, 1, 'Client confirmed delivery details', 'CLIENT', 3, 1),
+        ('Follow-up on customization options', '2023-12-08', 0, 0, 'Awaiting client response', 'CLIENT', 1, 1),
+        ('Meeting scheduled for next week', '2023-12-20', 1, 0, 'Confirmation pending', 'CLIENT', 3, 2),
+        ('Regarding project specifications', '2023-12-18', 0, 0, 'Waiting for client feedback', 'CLIENT', 3, 1),
+        ('Urgent request for additional fittings', '2023-12-14', 1, 1, 'Confirmed by the client', 'CLIENT', 3, 1),
+        ('Completion of assembly instructions sent', '2023-12-13', 1, 1, 'Client acknowledged', 'CLIENT', 1, 2),
+        ('Query regarding material quality', '2023-12-12', 0, 0, 'Waiting for supplier response', 'CLIENT', 2, 1),
+        ('Issue resolved with the installation team', '2023-12-11', 1, 1, 'Closed ticket', 'CLIENT', 3, 1);
 
 COMMIT;
 

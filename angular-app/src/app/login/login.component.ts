@@ -6,6 +6,7 @@ import { delay } from 'rxjs';
 import { SharedServiceService } from '../_services/shared.service';
 import { HistoryMessage } from '../../entities/HistoryMessage';
 import { UserService } from '../_services/user.service';
+import { HistoryService } from '../_services/history.service';
 
 @Component({
   selector: 'app-login',
@@ -27,7 +28,7 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private zone: NgZone,
     private sharedService: SharedServiceService,
-    private userService: UserService) { }
+    private historyService: HistoryService) { }
 
   ngOnInit(): void {
     if (this.storageService.isLoggedIn()) {
@@ -69,7 +70,7 @@ export class LoginComponent implements OnInit {
   }
   getHistoryForUser(){
 
-    this.userService.getHistory().subscribe({
+    this.historyService.getHistory().subscribe({
       next: data => {
         this.updateHistory(data);
         console.log('message from log');

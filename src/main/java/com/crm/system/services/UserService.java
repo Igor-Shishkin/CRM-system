@@ -1,7 +1,7 @@
 package com.crm.system.services;
 
 import com.crm.system.exception.RequestOptionalIsEmpty;
-import com.crm.system.models.HistoryMessage;
+import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.models.User;
 import com.crm.system.playload.response.UserInfoResponse;
 import com.crm.system.repository.UserRepository;
@@ -29,17 +29,6 @@ public class UserService {
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-    }
-
-    public Set<HistoryMessage> getUserHistory() {
-        long activeUserId = getActiveUserId();
-        Optional<User> optionalUser = userRepository.findById(activeUserId);
-        Optional<Set<HistoryMessage>> optionalHistoryMessages = optionalUser.map(User::getHistory);
-        if (optionalHistoryMessages.isPresent()) {
-            return optionalHistoryMessages.get();
-        } else {
-            throw new RequestOptionalIsEmpty("History is not found");
-        }
     }
     public ResponseEntity<?> getPhoto() throws UserPrincipalNotFoundException, FileNotFoundException {
         Long userId = getActiveUserId();

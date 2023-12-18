@@ -6,6 +6,7 @@ import { StorageService } from '../_services/storage.service';
 import { BehaviorSubject, Subscription, combineLatest } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MessageDialogComponent } from './message-dialog/message-dialog.component';
+import { HistoryService } from '../_services/history.service';
 
 // import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -23,18 +24,21 @@ export class SideBarComponent implements OnInit{
     history$: BehaviorSubject<HistoryMessage[]> = new BehaviorSubject<HistoryMessage[]>([]);
     history: HistoryMessage[] = [];
     filteredHistory?: HistoryMessage[];
-    activeClientId?: number;
+    activeClientId = -1;
     private historySubscription: Subscription;
+    private activeClientIdSubscription: Subscription;
     content?: string;
 
   constructor(private sharedService: SharedServiceService,
       private userService: UserService,
       private storageService: StorageService,
-      public dialog: MatDialog
-      // private _snackBar: MatSnackBar
-      ) {
+      public dialog: MatDialog,
+      private historyService: HistoryService) {
         this.historySubscription = this.storageService.history$.subscribe((userHistory: HistoryMessage[]) => {
           this.history = userHistory;
+        });
+        this.activeClientIdSubscription = this.storageService.activeClientId$.subscribe((activeClientId: number) => {
+          this.activeClientId = activeClientId;
         });
   }
 
@@ -44,9 +48,6 @@ export class SideBarComponent implements OnInit{
     this.storageService.history$.subscribe((history: HistoryMessage[]) => {
       this.history = history;
       this.filteredHistory = this.history.sort((a, b) => b.dateOfCreation.getTime() - a.dateOfCreation.getTime());
-    });
-    this.storageService.activeClientId$.subscribe((id: number) => {
-      this.activeClientId = id;
     });
 
     console.log('message from side-bar - onInit')
@@ -61,10 +62,8 @@ export class SideBarComponent implements OnInit{
     const dialogRef = this.dialog.open(MessageDialogComponent);
 
 
-    // Optional: Subscribe to the afterClosed() event to handle dialog closure
     dialogRef.afterClosed().subscribe(result => {
       console.log('Dialog was closed');
-      // Handle any data or actions after dialog closure
     });
   }
 
@@ -72,11 +71,11 @@ export class SideBarComponent implements OnInit{
     this.filteredHistory = this.history;
   }
   showActiveClientHistory(){
-    this.filteredHistory = this.history?.filter(message => message.lidId === this.activeClientId);
+    this.filteredHistory = this.history?.filter(message => message.tagId === this.activeClientId);
     console.log(this.activeClientId);
   }
   refreshHistory(){
-    this.userService.getHistory().subscribe({
+    this.historyService.getHistory().subscribe({
       next: data => {
         this.updateHistory(data);
         console.log('message from log');
@@ -89,13 +88,4 @@ export class SideBarComponent implements OnInit{
   updateHistory(newHistory: HistoryMessage[]) {
     this.storageService.setHistory(newHistory);
   }
-  // openSnackBar(message: string, action: string) {
-  //   this._snackBar.open(message, action, {
-  //     duration: 2000, // Duration in milliseconds for the toast to be shown
-  //   });
-  // }
-
-  // showToast() {
-  //   this.openSnackBar('Hello, world!', 'Close');
-  // }
 }

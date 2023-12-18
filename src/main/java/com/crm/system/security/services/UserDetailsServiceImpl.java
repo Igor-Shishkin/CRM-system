@@ -1,12 +1,9 @@
 package com.crm.system.security.services;
 
-import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.UserAlreadyExistsException;
-import com.crm.system.models.HistoryMessage;
 import com.crm.system.models.User;
 import com.crm.system.models.security.ERole;
 import com.crm.system.models.security.Role;
-import com.crm.system.playload.request.LoginRequest;
 import com.crm.system.playload.request.SignupRequest;
 import com.crm.system.playload.response.UserInfoResponse;
 import com.crm.system.repository.RoleRepository;
@@ -15,21 +12,15 @@ import com.crm.system.security.PasswordConfig;
 import com.crm.system.security.jwt.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;

@@ -2,6 +2,7 @@ import { Component, Input, NgModule, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ClientsService } from 'src/app/_services/clients.service';
 import { SharedServiceService } from 'src/app/_services/shared.service';
+import { StorageService } from 'src/app/_services/storage.service';
 import { Client } from 'src/entities/Client';
 
 
@@ -21,7 +22,8 @@ export class LeadsComponent implements OnInit{
   isRequestSent = false;
 
   constructor(private clientService: ClientsService,
-              private router: Router) {}
+              private router: Router,
+              private storageService: StorageService) {}
   
     ngOnInit(): void {
       this.refreshListOfLeads();
@@ -65,6 +67,7 @@ export class LeadsComponent implements OnInit{
       }, delay); 
     }
     goToClientDetail(clientId: number) {
+      this.storageService.setActiveClientId(clientId);
       this.router.navigate(['/user-board/client-workplace', clientId]);
     }
 }

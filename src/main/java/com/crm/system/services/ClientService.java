@@ -78,23 +78,6 @@ public class ClientService {
                         .withNmberOfOrders(client.getOrders().size())
                         .build())
                 .collect(Collectors.toList());
-
-//        List<ClientInfoResponse> infoLidResponces = new ArrayList<>(user.getClients().size() * 2);
-//        for (Client client : user.getClients()) {
-//            if (client.getStatus().equals(ClientStatus.LEAD)) {
-//
-//                infoLidResponces.add(new ClientInfoResponse.Builder()
-//                        .withId(client.getId())
-//                        .withFullName(client.getFullName())
-//                        .withAddress(client.getAddress())
-//                        .withEmail(client.getEmail())
-//                        .withPhoneNumber(client.getPhoneNumber())
-//                        .withIsClient(ClientStatus.LEAD)
-//                        .withNmberOfOrders(client.getOrders().size())
-//                        .build());
-//            }
-//        }
-//        return infoLidResponces;
     }
 
     public void addNewLead(AddLidRequest addLidRequest) throws UserPrincipalNotFoundException {
@@ -152,7 +135,6 @@ public class ClientService {
             throw new RequestOptionalIsEmpty("Client isn't found");
         }
     }
-
     public Optional<User> getActiveUser(long userId) {
         Optional<User> user = userRepository.findById(userId);
         return user;
@@ -163,6 +145,4 @@ public class ClientService {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
         return userId;
     }
-
-
 }

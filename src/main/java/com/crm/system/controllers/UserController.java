@@ -1,7 +1,7 @@
 package com.crm.system.controllers;
 
 import com.crm.system.exception.RequestOptionalIsEmpty;
-import com.crm.system.models.HistoryMessage;
+import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.playload.response.UserInfoResponse;
 import com.crm.system.services.UserService;
@@ -64,16 +64,5 @@ public class UserController {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
-    @Operation(summary = "Get user's history", tags = {"user", "history"})
-    @GetMapping("/history")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> getUserHistory(){
-        try {
-            Set<HistoryMessage> history = userService.getUserHistory();
-            return ResponseEntity.ok(history);
-        } catch (RequestOptionalIsEmpty e) {
-            log.error(e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
-        }
-    }
+
 }

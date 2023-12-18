@@ -1,13 +1,17 @@
-package com.crm.system.models;
+package com.crm.system.models.history;
 
+import com.crm.system.models.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.util.Pair;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Table(name = "history_messages")
@@ -33,10 +37,13 @@ public class HistoryMessage {
     private boolean isDone;
 
     private String note;
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "client_id")
-    @JsonBackReference
-    private Client client;
+
+    @Column(name = "tag_name")
+    @Enumerated(EnumType.STRING)
+    private TagName tagName;
+
+    @Column(name = "tag_id")
+    private long tagId;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "user_id")

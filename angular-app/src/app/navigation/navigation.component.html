@@ -1,6 +1,9 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark">
 
-    <a href="/home" class="navbar-brand" style="margin-left: 8px;">MARTON</a>
+    <a 
+      [routerLinkActive]="'active-nav'"
+      [routerLink]="'/home'"
+      class="navbar-brand" style="margin-left: 8px;">MARTON</a>
 
     <ul class="navbar-nav ml-auto">
       <li class="nav-item" *ngIf="!isLoggedIn">
@@ -12,17 +15,29 @@
           Action
         </a>
         <ul class="dropdown-menu dropdown-menu-dark">
-          <li><a class="dropdown-item" href="#">LIDs</a></li>
-          <li><a class="dropdown-item" href="#">Clients</a></li>
+          <li><a
+            [routerLinkActive]="'active-nav'"
+            [routerLink]="'/user-board/leads'"
+            class="dropdown-item" href="#">LEADs</a></li>
+          <li><a
+            [routerLinkActive]="'active-nav'"
+            [routerLink]="'/user-board/clients'"
+            class="dropdown-item" href="#">Clients</a></li>
           <li><a class="dropdown-item" href="#">Orders</a></li>
           <li><a class="dropdown-item" href="#">Cash</a></li>
 
           <li><hr class="dropdown-divider"></li>
           <li *ngIf="showModeratorBoard">
-            <a href="/mod" class="dropdown-item" routerLink="mod">Moderator mode</a>
+            <a 
+            [routerLinkActive]="'active-nav'"
+            [routerLink]="'/mod'"
+            class="dropdown-item" routerLink="mod">Moderator mode</a>
           </li>
           <li *ngIf="showAdminBoard">
-            <a href="/admin" class="dropdown-item" routerLink="admin">Sign UP</a>
+            <a       
+            [routerLinkActive]="'active-nav'"
+            [routerLink]="'/admin'"
+             class="dropdown-item" routerLink="admin">Admin mode</a>
           </li>
 
           <li><hr class="dropdown-divider"></li>
