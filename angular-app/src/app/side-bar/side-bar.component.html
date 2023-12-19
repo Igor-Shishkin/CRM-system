@@ -8,7 +8,7 @@
     </div>
     <div class="separator"></div>
 
-    <button mat-button (click)="openDialog()">Open Dialog</button>
+    <!-- <button mat-button (click)="openDialog()">Open Dialog</button> -->
 
     <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
       <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
@@ -21,7 +21,8 @@
     </div>
 
     <div *ngFor="let message of filteredHistory" style="padding: 6px, 4px;">
-        <div class="label-action " style="margin: 10px;">
+        <div class="label-action " style="margin: 10px;"
+            (click)="editMessage(message)">
             <p style="margin: 0px;"><strong>{{message.messageText}}</strong></p>
             <p style="margin: 0px;">{{message.dateOfCreation | date: 'medium'}}</p>
             <p style="margin: 0px;">{{message.note}}</p>

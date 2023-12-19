@@ -3,6 +3,7 @@ package com.crm.system.controllers;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.playload.response.MessageResponse;
+import com.crm.system.playload.response.TagForHistoryMessageResponse;
 import com.crm.system.services.HistoryMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -36,6 +40,19 @@ public class HistoryMessageController {
         } catch (RequestOptionalIsEmpty e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
+    }
+    @Operation(summary = "Get tags for new history message", tags = {"histiry", "tags", "new message"})
+    @GetMapping("tags")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> getTagsForNewHistoryMessage() {
+        try {
+            List<TagForHistoryMessageResponse> tags = historyMessageService.getListOfTags();
+            return ResponseEntity.ok(tags);
+        } catch (UserPrincipalNotFoundException e) {
+            log.error("History Service, sending tags. Error: " + e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("History Service, sending tags. Error: " + e.getMessage()));
         }
     }
 }

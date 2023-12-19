@@ -3,6 +3,7 @@ package com.crm.system.models.history;
 import com.crm.system.models.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -30,10 +31,15 @@ public class HistoryMessage {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateOfCreation;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime deadline;
+
     @Column(name = "is_important")
+    @JsonProperty("isImportant")
     private boolean isImportant;
 
     @Column(name = "is_done")
+    @JsonProperty("isDone")
     private boolean isDone;
 
     private String note;

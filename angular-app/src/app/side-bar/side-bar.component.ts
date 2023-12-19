@@ -50,21 +50,26 @@ export class SideBarComponent implements OnInit{
       this.filteredHistory = this.history.sort((a, b) => b.dateOfCreation.getTime() - a.dateOfCreation.getTime());
     });
 
-    console.log('message from side-bar - onInit')
+    if (this.history.length == 0) {
+      this.refreshHistory();
+    }
   }
 
-  openDialog(): void {
 
-    // const dialogConfig = new MatDialogConfig();
-    // dialogConfig.width = '800px'; 
+  openDialog(messageToEdit: HistoryMessage): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '400px'; 
+    dialogConfig.data = { message: messageToEdit };
     // dialogConfig.height = '900px'; 
-
-    const dialogRef = this.dialog.open(MessageDialogComponent);
-
+    const dialogRef = this.dialog.open(MessageDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {
       console.log('Dialog was closed');
+      this.refreshHistory();
     });
+  }
+  editMessage(selectedMessage: HistoryMessage): void {
+    this.openDialog(selectedMessage);
   }
 
   showAllHistory(){

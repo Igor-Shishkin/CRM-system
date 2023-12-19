@@ -5,15 +5,17 @@ import com.crm.system.models.Client;
 import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.models.User;
 import com.crm.system.models.history.TagName;
-import com.crm.system.repository.ClientRepository;
+import com.crm.system.playload.response.TagForHistoryMessageResponse;
 import com.crm.system.repository.HistoryMessageRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.services.UserDetailsImpl;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,12 +23,12 @@ import java.util.Set;
 public class HistoryMessageService {
 
     private final HistoryMessageRepository historyMessageRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     public HistoryMessageService(HistoryMessageRepository historyMessageRepository,
-                                 UserRepository userRepository) {
+                                 UserRepository userRepository, UserService userService) {
         this.historyMessageRepository = historyMessageRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     public void createHistoryMessageForClient(Client client, User user, String messageText) {
@@ -39,8 +41,7 @@ public class HistoryMessageService {
         historyMessageRepository.save(message);
     }
     public Set<HistoryMessage> getUserHistory() {
-        long activeUserId = getActiveUserId();
-        Optional<User> optionalUser = userRepository.findById(activeUserId);
+        Optional<User> optionalUser = userService.getActiveUser();
         Optional<Set<HistoryMessage>> optionalHistoryMessages = optionalUser.map(User::getHistory);
         if (optionalHistoryMessages.isPresent()) {
             return optionalHistoryMessages.get();
@@ -48,11 +49,23 @@ public class HistoryMessageService {
             throw new RequestOptionalIsEmpty("History is not found");
         }
     }
-    public Optional<User> getActiveUser(long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        return user;
+    public List<TagForHistoryMessageResponse> getListOfTags() throws UserPrincipalNotFoundException {
+        Optional<User> optionalUser = userService.getActiveUser();
+        if (optionalUser.isPresent()) {
+            Set<Client> clients = optionalUser.get().getClients();
+            List<TagForHistoryMessageResponse> tags = new ArrayList<>(clients.size() * 2);
+            for (Client client : clients) {
+                TagForHistoryMessageResponse tag = new TagForHistoryMessageResponse();
+                tag.setTagName(TagName.CLIENT);
+                tag.setEntityName(client.getFullName());
+                tag.setEntityId(client.getId());
+                tags.add(tag);
+            }
+            return tags;
+        } else {
+            throw new UserPrincipalNotFoundException("User not found exception");
+        }
     }
-
     private long getActiveUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();

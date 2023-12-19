@@ -79,7 +79,11 @@ public class UserService {
         }
         return userInfoResponseList;
     }
-
+    public Optional<User> getActiveUser() {
+        long activeUserId = getActiveUserId();
+        Optional<User> optionalUser = userRepository.findById(activeUserId);
+        return optionalUser;
+    }
 
 
     private long getActiveUserId() {
@@ -108,4 +112,5 @@ public class UserService {
         }
         return null;
     }
+
 }

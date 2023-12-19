@@ -72,6 +72,7 @@ CREATE TABLE history_messages (
     message_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     text_of_message VARCHAR(255) NOT NULL,
     date_of_creation DATETIME,
+    deadline DATETIME,
     is_important BOOLEAN,
     is_done BOOLEAN,
     note TEXT,
