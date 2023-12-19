@@ -35,12 +35,14 @@ export class MessageDialogComponent implements OnInit{
             ?.filter(tag => tag.entityId == this.message?.tagId)
             .filter(tag => tag.tagName == this.message?.tagName)
             ?.map(tag => tag.entityName)[0];
+          this.filteredHistoryTags = this.historyTags?.filter(tag => tag.tagName == this.message?.tagName);
         }
+
       }, error(err) {
         console.log('loading history tags error: ' + err);
       }
     });
-    if (this.message) {
+    if (this.message && this.message.tagName) {
       this.initiallyTagName = this.message?.tagName;
     }
     

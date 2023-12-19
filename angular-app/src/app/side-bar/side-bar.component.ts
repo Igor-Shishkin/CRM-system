@@ -47,8 +47,12 @@ export class SideBarComponent implements OnInit{
 
     this.storageService.history$.subscribe((history: HistoryMessage[]) => {
       this.history = history;
-      this.filteredHistory = this.history.sort((a, b) => b.dateOfCreation.getTime() - a.dateOfCreation.getTime());
-    });
+      this.filteredHistory = this.history.sort((a, b) => {
+        if (a.dateOfCreation && b.dateOfCreation) {
+          return b.dateOfCreation.getTime() - a.dateOfCreation.getTime();
+        }
+        return 0;
+      })});
 
     if (this.history.length == 0) {
       this.refreshHistory();
@@ -60,16 +64,19 @@ export class SideBarComponent implements OnInit{
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '400px'; 
     dialogConfig.data = { message: messageToEdit };
-    // dialogConfig.height = '900px'; 
     const dialogRef = this.dialog.open(MessageDialogComponent, dialogConfig);
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('Dialog was closed');
       this.refreshHistory();
     });
   }
   editMessage(selectedMessage: HistoryMessage): void {
     this.openDialog(selectedMessage);
+  }
+  createNewMessage() {
+    const message = new HistoryMessage;
+    message.tagName = this.history[0].tagName;
+    this.openDialog(message);
   }
 
   showAllHistory(){
