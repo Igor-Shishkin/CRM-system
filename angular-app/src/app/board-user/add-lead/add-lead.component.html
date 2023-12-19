@@ -1,5 +1,6 @@
 
-<form  (submit)="save(name, address, email, phoneNumber)" class="custom-form">
+<form  (submit)="save(name, address, email, phoneNumber)" class="custom-form"
+    style="margin-right: 20%;">
 
     <div >
       <label for="exampleInputName" class="w3-input" style="margin-top: 8px;">Name</label>
@@ -15,7 +16,8 @@
       <label class="w3-input" style="margin-top: 8px;">Email address</label>
       <input class="w3-input custom-form" required type="email" id="disabledTextInput" placeholder="name@example.com" #email>
     </div>
-    <p style="margin-bottom: 0px; color: rgb(240, 240, 211, 0.5);" id="emailHelp" class="form-text" >
+    <p style="margin-bottom: 0px; color: rgb(240, 240, 211, 0.5); font-size: 10px; font-weight: 60;" 
+    id="emailHelp" class="form-text" >
       We'll never share your email with anyone else.
     </p>
   

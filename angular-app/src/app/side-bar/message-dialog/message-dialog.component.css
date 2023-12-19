@@ -2,3 +2,7 @@
     height: 90px;  
     width: 330px;
 }
+.custom-input-area{
+    background-color: rgb(48, 48, 48);
+    color: rgb(204, 204, 204);
+}

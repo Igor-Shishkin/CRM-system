@@ -8,8 +8,6 @@
     </div>
     <div class="separator"></div>
 
-    <!-- <button mat-button (click)="openDialog()">Open Dialog</button> -->
-
     <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
       <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
       <label class="btn btn-outline-primary" for="btnradio1" (click)="showAllHistory()">
@@ -24,9 +22,9 @@
         <div class="label-action " style="margin: 10px;"
             (click)="editMessage(message)">
             <p style="margin: 0px;"><strong>{{message.messageText}}</strong></p>
-            <p style="margin: 0px;">{{message.dateOfCreation | date: 'medium'}}</p>
-            <p style="margin: 0px;">{{message.note}}</p>
-            <p style="margin: 0px;" class="separator" style="margin: 5px;"></p>
+            <p style="margin: 0px; color: rgb(181, 181, 181);">{{message.dateOfCreation | date: 'medium'}}</p>
+            <p style="margin: 0px; color: rgb(181, 181, 181);">{{message.note}}</p>
+            <p style="margin: 0px; color: rgb(181, 181, 181);" class="separator" style="margin: 5px;"></p>
         </div>    
     </div>
     <!-- <button type="button" (click)="showToast()">Show Toast</button> -->
