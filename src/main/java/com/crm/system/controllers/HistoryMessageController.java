@@ -1,6 +1,7 @@
 package com.crm.system.controllers;
 
 import com.crm.system.exception.RequestOptionalIsEmpty;
+import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.playload.response.TagForHistoryMessageResponse;
@@ -9,10 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
@@ -42,7 +40,7 @@ public class HistoryMessageController {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
-    @Operation(summary = "Get tags for new history message", tags = {"histiry", "tags", "new message"})
+    @Operation(summary = "Get tags for new history message", tags = {"history", "tags", "new message"})
     @GetMapping("tags")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getTagsForNewHistoryMessage() {
@@ -53,6 +51,32 @@ public class HistoryMessageController {
             log.error("History Service, sending tags. Error: " + e.getMessage());
             return ResponseEntity.badRequest()
                     .body(new MessageResponse("History Service, sending tags. Error: " + e.getMessage()));
+        }
+    }
+    @Operation(summary = "Save new history message", tags = {"history", "new message"})
+    @PostMapping()
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> saveMessage(@RequestBody HistoryMessage message) {
+        try {
+            historyMessageService.saveMessage(message);
+            return ResponseEntity.ok(new MessageResponse("Message is saved"));
+        } catch (UserPrincipalNotFoundException | SubjectNotBelongToActiveUser e) {
+            log.error("History Service, saving message. Error: " + e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("History Service, saving message. Error: " + e.getMessage()));
+        }
+    }
+    @Operation(summary = "Save new history message", tags = {"history", "new message"})
+    @DeleteMapping()
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> deleteMessage(@RequestParam long messageId) {
+        try {
+            historyMessageService.deleteMessage(messageId);
+            return ResponseEntity.ok(new MessageResponse("Message is saved"));
+        } catch (UserPrincipalNotFoundException | SubjectNotBelongToActiveUser e) {
+            log.error("History Service, deleting message. Error: " + e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("History Service, deleting message. Error: " + e.getMessage()));
         }
     }
 }

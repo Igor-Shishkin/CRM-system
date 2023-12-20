@@ -1,16 +1,17 @@
 <h2 mat-dialog-title>Create history note</h2>
 <mat-dialog-content>
-  <form>
+  <form (submit)="saveMessage()">
     <div class="mb-3">
       <label for="exampleFormControlTextarea1" class="form-label">History message</label>
       <textarea style="width: 100%;" class="form-control custom-textarea custom-input-area" 
-        id="exampleFormControlTextarea1" rows="3" 
-        >{{message?.messageText}}
+        rows="3" [(ngModel)]="message!.messageText"
+        [ngModelOptions]="{ standalone: true }">
       </textarea>
     </div>
     <div class="mb-3">
       <label for="exampleFormControlInput1" class="form-label">Note</label>
-      <input type="text" class="form-control custom-input-area" id="exampleFormControlInput1" value="{{message?.note}}">
+      <input type="text" class="form-control custom-input-area" [(ngModel)]="message!.note"
+      [ngModelOptions]="{ standalone: true }">
     </div>
 
     <div class="mb-3" style="display: flex;">
@@ -39,18 +40,19 @@
 
     <div style="display: flex; margin: 15px;" >
       <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"
-        [checked]="message?.isImportant" style="margin-bottom: 7px;">
-        <label class="form-check-label" for="flexSwitchCheckDefault">Import</label>
+        <input class="form-check-input" type="checkbox" role="switch"
+        [(ngModel)]="message!.isImportant" style="margin-bottom: 7px;" [ngModelOptions]="{ standalone: true }">
+        <label class="form-check-label">Import</label>
       </div>
       <div class="form-check form-switch" style="display: flex; margin-left: 20px;">
-        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault"
-         [checked]="message?.isDone" style="margin-bottom: 7px;">
-        <label class="form-check-label" for="flexSwitchCheckDefault">Done</label>
+        <input class="form-check-input" type="checkbox" role="switch"
+        [(ngModel)]="message!.isDone" style="margin-bottom: 7px;" [ngModelOptions]="{ standalone: true }">
+        <label class="form-check-label">Done</label>
       </div>
     </div>
-    <mat-form-field>
-      <input matInput [matDatepicker]="picker" placeholder="Select Date">
+    <mat-form-field style="background-color: rgba(165, 165, 165, 0.1);">
+      <input matInput [matDatepicker]="picker" placeholder="Select Date " 
+      (dateChange)="updateDate($event)">
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>

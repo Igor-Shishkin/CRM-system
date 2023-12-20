@@ -4,6 +4,8 @@ import com.crm.system.models.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -21,17 +23,20 @@ import java.util.Map;
 public class HistoryMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long message_id;
+    @Column(name = "message_id")
+    private Long messageId;
 
     @NotBlank
     @Column(name = "text_of_message")
     private String messageText;
 
     @Column(name = "date_of_creation")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime dateOfCreation;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime deadline;
 
     @Column(name = "is_important")
@@ -46,6 +51,7 @@ public class HistoryMessage {
 
     @Column(name = "tag_name")
     @Enumerated(EnumType.STRING)
+    @JsonDeserialize(using = TagNameDeserializer.class)
     private TagName tagName;
 
     @Column(name = "tag_id")

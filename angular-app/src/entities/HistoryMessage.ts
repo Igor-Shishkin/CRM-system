@@ -1,8 +1,9 @@
 
 export class HistoryMessage {
+    messageId: number | undefined;
    messageText: string | undefined;
-    dateOfCreation: Date | undefined;
-    deadline: Date | undefined;
+    dateOfCreation: string | undefined;
+    deadline: string | undefined;
     isImportant: boolean | undefined;
     isDone: boolean | undefined;
     note: string | undefined;

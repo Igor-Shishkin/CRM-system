@@ -49,7 +49,13 @@ export class SideBarComponent implements OnInit{
       this.history = history;
       this.filteredHistory = this.history.sort((a, b) => {
         if (a.dateOfCreation && b.dateOfCreation) {
-          return b.dateOfCreation.getTime() - a.dateOfCreation.getTime();
+
+          const dateA = new Date(a.dateOfCreation);
+          const dateB = new Date(b.dateOfCreation);
+          
+          if (!isNaN(dateA.getTime()) && !isNaN(dateB.getTime())) {
+            return dateB.getTime() - dateA.getTime();
+          }
         }
         return 0;
       })});
@@ -76,6 +82,9 @@ export class SideBarComponent implements OnInit{
   createNewMessage() {
     const message = new HistoryMessage;
     message.tagName = this.history[0].tagName;
+    if (this.activeClientId != -1) {
+      message.tagId = this.activeClientId;
+    }
     this.openDialog(message);
   }
 

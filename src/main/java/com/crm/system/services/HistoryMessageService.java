@@ -1,6 +1,7 @@
 package com.crm.system.services;
 
 import com.crm.system.exception.RequestOptionalIsEmpty;
+import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
 import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.models.User;
@@ -14,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +42,7 @@ public class HistoryMessageService {
         message.setDone(true);
         historyMessageRepository.save(message);
     }
+
     public Set<HistoryMessage> getUserHistory() {
         Optional<User> optionalUser = userService.getActiveUser();
         Optional<Set<HistoryMessage>> optionalHistoryMessages = optionalUser.map(User::getHistory);
@@ -49,6 +52,7 @@ public class HistoryMessageService {
             throw new RequestOptionalIsEmpty("History is not found");
         }
     }
+
     public List<TagForHistoryMessageResponse> getListOfTags() throws UserPrincipalNotFoundException {
         Optional<User> optionalUser = userService.getActiveUser();
         if (optionalUser.isPresent()) {
@@ -66,9 +70,51 @@ public class HistoryMessageService {
             throw new UserPrincipalNotFoundException("User not found exception");
         }
     }
+
+    public void saveMessage(HistoryMessage message) throws UserPrincipalNotFoundException {
+        Optional<User> optionalUser = userService.getActiveUser();
+        if (optionalUser.isPresent()) {
+            if (message.getMessageId() == -1) {
+                message.setMessageId(null);
+                message.setUser(optionalUser.get());
+                message.setDateOfCreation(LocalDateTime.now());
+                historyMessageRepository.save(message);
+                return;
+            } else {
+                if (optionalUser.get().getHistory().stream()
+                        .anyMatch(m -> m.getMessageId().equals(message.getMessageId()))) {
+                    message.setUser(optionalUser.get());
+                    historyMessageRepository.save(message);
+                } else {
+                    throw new SubjectNotBelongToActiveUser("It's not your history message");
+                }
+            }
+        } else {
+            throw new UserPrincipalNotFoundException("User not found exception");
+        }
+    }
+
+    public void deleteMessage(long messageId) throws UserPrincipalNotFoundException {
+        Optional<User> optionalUser = userService.getActiveUser();
+        if (optionalUser.isPresent()) {
+
+            if (optionalUser.get().getHistory().stream()
+                    .anyMatch(m -> m.getMessageId().equals(messageId))) {
+                historyMessageRepository.deleteById(messageId);
+            } else {
+                throw new SubjectNotBelongToActiveUser("It's not your history message");
+            }
+
+        } else {
+            throw new UserPrincipalNotFoundException("User not found exception");
+        }
+    }
+
     private long getActiveUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
         return userId;
     }
+
+
 }

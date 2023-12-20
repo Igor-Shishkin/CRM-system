@@ -1,4 +1,5 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HistoryService } from 'src/app/_services/history.service';
 import { HistoryMessage } from 'src/entities/HistoryMessage';
@@ -53,6 +54,7 @@ export class MessageDialogComponent implements OnInit{
     const category = target.value;
     if (this.message) {
       this.message.tagName = category;
+      this.message.tagId = -1;
     }
     this.initiallyTagName = ' ';
     this.filteredHistoryTags = this.historyTags?.filter(tag => tag.tagName === category);
@@ -67,5 +69,22 @@ export class MessageDialogComponent implements OnInit{
       this.message.tagId = parseInt(entityId, 10);
     }
     console.log(entityId);
+  }
+  updateDate(event: MatDatepickerInputEvent<Date>) {
+    if (event.value !== null) {
+      this.message!.deadline = event.value.toString();
+    }
+  }
+
+  saveMessage() {
+    if (this.message) {
+      this.historyService.saveNewHistoryMessage(this.message).subscribe({
+        next: (response) => {
+          console.log(response);
+        }, error:(err) => {
+          console.log(err);
+        }
+      })
+    };
   }
 }
