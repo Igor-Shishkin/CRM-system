@@ -52,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "New user registration", tags = { "auth", "registration" })
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         try {
@@ -76,7 +76,7 @@ public class AuthController {
     }
     @Operation(summary = "Delete user", tags = { "auth", "admin", "delete" })
     @DeleteMapping("/delete")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteUserById(@RequestParam long userId) {
         try {
             String responseText = userDetailsService.deleteUserById(userId);
@@ -86,9 +86,29 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
-
-
-
-
+    @Operation(summary = "checkAuthorization", tags = { "auth", "check" })
+    @GetMapping("/check/user-role")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<?> checkAuthorizationForUserRole() {
+        return ResponseEntity.ok(true);
+    }
+    @Operation(summary = "checkAuthorization", tags = { "auth", "check" })
+    @GetMapping("/check/moderator-role")
+    @PreAuthorize("hasRole('ROLE_MODERATOR')")
+    public ResponseEntity<?> checkAuthorizationForModeratorRole() {
+        return ResponseEntity.ok(true);
+    }
+    @Operation(summary = "check authorization", tags = { "auth", "check" })
+    @GetMapping("/check/admin-role")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> checkAuthorizationForAdminRole() {
+        return ResponseEntity.ok(true);
+    }
+    @Operation(summary = "check authorization", tags = { "auth", "check" })
+    @GetMapping("/check")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> checkAuthorization() {
+        return ResponseEntity.ok(true);
+    }
 }
 

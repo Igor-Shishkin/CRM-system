@@ -1,5 +1,7 @@
 import { Component, NgZone } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthService } from 'src/app/_services/auth.service';
 import { ClientsService } from 'src/app/_services/clients.service';
 
 @Component({
@@ -7,13 +9,31 @@ import { ClientsService } from 'src/app/_services/clients.service';
   templateUrl: './add-lead.component.html',
   styleUrls: ['./add-lead.component.css']
 })
-export class AddLeadComponent {
+export class AddLeadComponent{
   errorMessage = '';
   isAdded = false;
   isError = false;
 
-  constructor(private clientsService: ClientsService, private router: Router, private zone: NgZone){}
-  
+  constructor(
+    private clientsService: ClientsService, 
+    private router: Router, private zone: NgZone,
+    private authService: AuthService
+    ){}
+
+    // canActivate(
+    //   next: ActivatedRouteSnapshot,
+    //   state?: RouterStateSnapshot 
+    // ): boolean {
+    //   if (this.authService.isAuthenticatedAsUser()) {
+    //     console.log('authorization confirmed')
+    //     return true;
+    //   } else {
+    //     console.log('Please login')
+    //     this.router.navigate(['/login']);
+    //     return false;
+    //   }
+    // }
+
   save(fullName: HTMLInputElement, address: HTMLInputElement, email: HTMLInputElement, phoneNumber: HTMLInputElement) {
     this.clientsService.addLid(fullName.value, address.value, email.value, phoneNumber.value).subscribe({
       next: data => { 

@@ -14,15 +14,16 @@ import { LeadsComponent } from './board-user/leads/leads.component';
 import { ClientWorkplaceComponent } from './board-user/client-workplace/client-workplace.component';
 import { SideBarComponent } from './side-bar/side-bar.component';
 import { MessageDialogComponent } from './side-bar/message-dialog/message-dialog.component';
+import { authGuard } from './_guard/auth.guard';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'profile', component: ProfileComponent },
-  { path: 'user-board', component: BoardUserComponent, children: [
+  { path: 'user-board', component: BoardUserComponent, canActivate: [authGuard] ,  children: [
     { path: 'leads', component: LeadsComponent},
-    { path: 'add-lead', component: AddLeadComponent },
+    { path: 'add-lead', component: AddLeadComponent, canActivate: [authGuard] },
     { path: 'clients', component: ClientsComponent},
     { path: 'client-workplace/:id', component: ClientWorkplaceComponent}
   ]},

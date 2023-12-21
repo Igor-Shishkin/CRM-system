@@ -1,6 +1,8 @@
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { AuthService } from 'src/app/_services/auth.service';
 import { HistoryService } from 'src/app/_services/history.service';
 import { HistoryMessage } from 'src/entities/HistoryMessage';
 import { HistoryTag } from 'src/entities/HistoryTag';
@@ -23,10 +25,14 @@ export class MessageDialogComponent implements OnInit{
     public dialogRef: MatDialogRef<MessageDialogComponent>,
     private cdr: ChangeDetectorRef,
     private historyService: HistoryService,
+    private router: Router,
+    private authService: AuthService,
     @Inject(MAT_DIALOG_DATA) public data: { message: HistoryMessage }
   ) {
     this.message = this.data.message;
   }
+
+
   ngOnInit(): void {
     this.historyService.getTagsForNewHistoryMessage().subscribe({
       next: data => {

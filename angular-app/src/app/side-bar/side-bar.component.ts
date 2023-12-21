@@ -7,6 +7,8 @@ import { BehaviorSubject, Subscription, combineLatest } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 import { HistoryService } from '../_services/history.service';
+import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
+import { AuthService } from '../_services/auth.service';
 
 // import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -18,22 +20,18 @@ import { HistoryService } from '../_services/history.service';
 })
 export class SideBarComponent implements OnInit{
 
+history$: BehaviorSubject<HistoryMessage[]> = new BehaviorSubject<HistoryMessage[]>([]);
+history: HistoryMessage[] = [];
+filteredHistory?: HistoryMessage[];
+activeClientId = -1;
+private historySubscription: Subscription;
+private activeClientIdSubscription: Subscription;
+content?: string;
 
-    isDropdownActionVisible = true;
-    isDropdownHistoryVisible = true;
-    history$: BehaviorSubject<HistoryMessage[]> = new BehaviorSubject<HistoryMessage[]>([]);
-    history: HistoryMessage[] = [];
-    filteredHistory?: HistoryMessage[];
-    activeClientId = -1;
-    private historySubscription: Subscription;
-    private activeClientIdSubscription: Subscription;
-    content?: string;
-
-  constructor(private sharedService: SharedServiceService,
-      private userService: UserService,
+  constructor(
       private storageService: StorageService,
       public dialog: MatDialog,
-      private historyService: HistoryService) {
+      private historyService: HistoryService,) {
         this.historySubscription = this.storageService.history$.subscribe((userHistory: HistoryMessage[]) => {
           this.history = userHistory;
         });
@@ -41,7 +39,6 @@ export class SideBarComponent implements OnInit{
           this.activeClientId = activeClientId;
         });
   }
-
 
   ngOnInit(){
 

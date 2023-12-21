@@ -47,4 +47,17 @@ export class AuthService {
     return this.http.post(AUTH_API + 'signout', { }, httpOptions);
   }
 
+  isAuthenticatedAsUser(): Observable<any> {
+    return this.http.get(AUTH_API + 'check/user-role', { responseType: 'text' });
+  }
+  isAuthenticatedAsModerator(): Observable<any> {
+    return this.http.get(AUTH_API + 'check/moderator-role', { responseType: 'text' });
+  }
+  isAuthenticatedAsAdmin(): Observable<any> {
+    return this.http.get(AUTH_API + 'check/admin-role', { responseType: 'text' });
+  }
+  isAuthenticated(): Observable<boolean> {
+    return this.http.get<boolean>(AUTH_API + 'check', { });
+  }
+
 }
