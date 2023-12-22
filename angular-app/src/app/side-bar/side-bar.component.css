@@ -1,7 +1,7 @@
  .general {
     background-color: #333;
     padding: 10px;
-    height: 900%;
+    height: 100%;
   }
   .side-panel button:hover {
     background-color: #555;
@@ -28,7 +28,6 @@
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
   }
   
-  /* Animation for the gradient */
   @keyframes gradientAnimation {
     0% {
       background-position: 0% 50%;
@@ -39,7 +38,7 @@
   }
   .separator {
     border-top: 1px solid #ccc; 
-    margin-bottom: 5px; 
+    margin: 9px; 
   }
   
   button {
@@ -51,7 +50,7 @@
     color: rgb(255, 255, 255);
     background-clip: text;
     font-family: 'Nova Square', sans-serif;
-    font-size: 12px;
+    font-size: 8px;
     font-weight: 80;
     letter-spacing: 2px;
   }
@@ -60,6 +59,26 @@
     color: rgb(208, 210, 252);
     cursor: pointer;
   }
+  .custom-scrollbar {
 
-
+    height: 81%;
+    overflow-y: auto;
+    scrollbar-track-color: #333; 
+    scrollbar-thumb-color: #666; 
+    scrollbar-width: thin; /* Thin scrollbar */
+    scrollbar-thumb-radius: 5px; /* Roundness of the thumb */
+  }
   
+  /* For Webkit browsers (Chrome, Safari) */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px; /* Width of the scrollbar */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background-color: #333; 
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #666; 
+    border-radius: 5px;
+  }

@@ -74,7 +74,7 @@ public class HistoryMessageService {
     public void saveMessage(HistoryMessage message) throws UserPrincipalNotFoundException {
         Optional<User> optionalUser = userService.getActiveUser();
         if (optionalUser.isPresent()) {
-            if (message.getMessageId() == -1) {
+            if (message.getMessageId().equals(-1L)) {
                 message.setMessageId(null);
                 message.setUser(optionalUser.get());
                 message.setDateOfCreation(LocalDateTime.now());

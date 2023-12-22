@@ -13,6 +13,7 @@ export const authUserGuard: CanActivateFn = (route, state) => {
   authService.isAuthenticatedAsUser().subscribe({
     next: data => {
       if (data) {
+        console.log('good connection')
         storageService.setLoggedInStatus(true);
         return true;
       } else {

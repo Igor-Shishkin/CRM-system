@@ -88,8 +88,8 @@ public class AuthController {
     }
     @Operation(summary = "checkAuthorization", tags = { "auth", "check" })
     @GetMapping("/check/user-role")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<?> checkAuthorizationForUserRole() {
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    public ResponseEntity<?> checkAuthorizationForUserRole()  {
         return ResponseEntity.ok(true);
     }
     @Operation(summary = "checkAuthorization", tags = { "auth", "check" })

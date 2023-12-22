@@ -1,9 +1,12 @@
-<nav class="navbar navbar-expand navbar-dark bg-dark">
+<nav class="navbar navbar-expand navbar-dark bg-dark" style="height: 60px;">
 
-    <a 
+    <div class="logo-container" style="margin: 15px 0px;" >
+      <button style="background-color: transparent; border: none;"
       [routerLinkActive]="'active-nav'"
-      [routerLink]="'/home'"
-      class="navbar-brand" style="margin-left: 8px;">MARTON</a>
+      [routerLink]="'/home'">
+          <img src="assets\images\LOGO.png" width="40px" />
+      </button>
+    </div>
 
     <ul class="navbar-nav ml-auto">
       <li class="nav-item" *ngIf="!isLoggedIn">
@@ -48,12 +51,12 @@
       </li>
     </ul>
 
-    <ul class="navbar-nav ml-auto container" *ngIf="isLoggedIn">
-      <li class="nav-item">
-        <img src="assets\images\profile-icon.png" alt="Profile" href="/profile" routerLink="profile"/>
-      </li>
-      <li class="nav-item">
-        <img src="assets\images\log-out.png" alt="Log out" (click)="logout()"/>
-      </li>
-    </ul>
+    <div class="navbar-nav ml-auto container" *ngIf="isLoggedIn">
+      <div class="nav-item">
+        <img src="assets\images\profile-icon.png" alt="Profile" width="40px" routerLink="profile"/>
+      </div>
+      <div class="nav-item">
+        <img src="assets\images\log-out.png" alt="Log out" width="40px" (click)="logout()"/>
+      </div>
+    </div>
   </nav>

@@ -1,38 +1,45 @@
 
-<div class="general">
+<div class="general ">
+
     <div class="logo-container" style="margin-bottom: 3px;">
-        <button (click)="refreshHistory()" style="background-color: transparent; border: none;">
-            <img src="assets\images\LOGO.png" width="30%" />
-        </button>
         <p class="colorful-text" style="margin-top: 9px; margin-bottom: 3px;">alfanamestaj.rs</p>
     </div>
+
     <div class="separator"></div>
 
-    <div style="display: flex; display: flex; justify-content: space-between; align-items: center;">
-        <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-          <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked>
-          <label class="btn btn-outline-primary" for="btnradio1" (click)="showAllHistory()">
+    <div class="btn-toolbar" *ngIf="!isLoadFailing" >
+        <div class="btn-group me-2" role="group" style="max-height: 35px;" >
+          <input type="radio" class="btn-check"  autocomplete="off" checked>
+          <label class="btn btn-outline-primary" (click)="showAllHistory()">
             All history</label>
 
-          <input type="radio" class="btn-check" name="btnradio" id="btnradio3" autocomplete="off">
-          <label class="btn btn-outline-primary" for="btnradio3" (click)="showActiveClientHistory()"> 
+          <input type="radio" class="btn-check"  autocomplete="off">
+          <label class="btn btn-outline-primary"  (click)="showActiveClientHistory()"> 
             Active client</label>
         </div>
-        <div> 
-            <button type="button" class="btn btn-outline-primary"
-            style="margin-top: 2px;" (click)="createNewMessage()"
+        <div class="btn-group" role="group"> 
+            <button type="button" class="btn btn-outline-primary "
+             (click)="createNewMessage()"
             >New message</button>
         </div>
     </div>
 
-    <div *ngFor="let message of filteredHistory" style="padding: 6px, 4px;">
-        <div class="label-action " style="margin: 10px;"
-            (click)="editMessage(message)">
-            <p style="margin: 0px;"><strong>{{message.messageText}}</strong></p>
-            <p style="margin: 0px; color: rgb(181, 181, 181);">{{message.dateOfCreation | date: 'medium'}}</p>
-            <p style="margin: 0px; color: rgb(181, 181, 181);">{{message.note}}</p>
-            <p style="margin: 0px; color: rgb(181, 181, 181);" class="separator" style="margin: 5px;"></p>
-        </div>    
+    <div class="separator"></div>
+
+    <div style="padding: 6px, 4px;" id="list" class="custom-scrollbar">
+        <div  *ngFor="let message of filteredHistory" >
+            <div class="label-action " style="margin: 8px;"
+                (click)="editMessage(message)">
+                <p style="margin: 0px; font-size: 13px;">{{message.messageText}}</p>
+                <p style="margin: 0px; color: rgb(201, 95, 95);">{{message.deadline | date: 'shortDate'}}</p>
+                <p style="margin: 0px; color: rgb(181, 181, 181); font-size: 11px;" >{{message.note}}</p>
+                <div style="display: flex;">
+                    <p *ngIf="message.isImportant" style="margin: 0px; color: rgb(201, 95, 95);">IMPORTANT</p>
+                    <p *ngIf="message.isDone" style="margin: 0px 0px 0px 10px; color: rgb(128, 247, 128);">DONE</p>
+                </div>
+                <p style="margin: 0px; color: rgb(181, 181, 181);">{{message.dateOfCreation | date: 'medium'}}</p>
+                <p style="margin: 0px; color: rgb(181, 181, 181);" class="separator" style="margin: 5px;"></p>
+            </div>    
+        </div>
     </div>
-    <!-- <button type="button" (click)="showToast()">Show Toast</button> -->
 </div>

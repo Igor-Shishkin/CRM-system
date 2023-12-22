@@ -27,6 +27,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NotPermissionComponent } from './home/not-permission/not-permission.component';
+import { DatePipe } from '@angular/common';
 
 
 @NgModule({
@@ -62,7 +63,7 @@ import { NotPermissionComponent } from './home/not-permission/not-permission.com
     ReactiveFormsModule,
     MatNativeDateModule
   ],
-  providers: [httpInterceptorProviders],
+  providers: [httpInterceptorProviders, DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

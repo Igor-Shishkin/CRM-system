@@ -27,6 +27,7 @@ activeClientId = -1;
 private historySubscription: Subscription;
 private activeClientIdSubscription: Subscription;
 content?: string;
+isLoadFailing = false;
 
   constructor(
       private storageService: StorageService,
@@ -78,6 +79,7 @@ content?: string;
   }
   createNewMessage() {
     const message = new HistoryMessage;
+    message.messageId = -1;
     message.tagName = this.history[0].tagName;
     if (this.activeClientId != -1) {
       message.tagId = this.activeClientId;
@@ -96,9 +98,10 @@ content?: string;
     this.historyService.getHistory().subscribe({
       next: data => {
         this.updateHistory(data);
-        console.log('message from log');
+        this.isLoadFailing = false;
       },
       error: err => {
+        this.isLoadFailing = true;
         console.log(err.toString());
       }
     });

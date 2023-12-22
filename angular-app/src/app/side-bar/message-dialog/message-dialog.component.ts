@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -27,6 +28,7 @@ export class MessageDialogComponent implements OnInit{
     private historyService: HistoryService,
     private router: Router,
     private authService: AuthService,
+    private datePipe: DatePipe,
     @Inject(MAT_DIALOG_DATA) public data: { message: HistoryMessage }
   ) {
     this.message = this.data.message;
@@ -78,7 +80,9 @@ export class MessageDialogComponent implements OnInit{
   }
   updateDate(event: MatDatepickerInputEvent<Date>) {
     if (event.value !== null) {
-      this.message!.deadline = event.value.toString();
+      const pattern = 'yyyy-MM-dd\'T\'HH:mm:ss';
+      const formattedDate = this.datePipe.transform(event.value, pattern) || '';
+      this.message!.deadline = formattedDate.toString();
     }
   }
 
