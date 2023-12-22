@@ -26,6 +26,7 @@ import { MessageDialogComponent } from './side-bar/message-dialog/message-dialog
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
+import { NotPermissionComponent } from './home/not-permission/not-permission.component';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { MatNativeDateModule } from '@angular/material/core';
     AddLeadComponent,
     ClientWorkplaceComponent,
     OrderComponent,
-    MessageDialogComponent
+    MessageDialogComponent,
+    NotPermissionComponent
   ],
   imports: [
     BrowserModule,

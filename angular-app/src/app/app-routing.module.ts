@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
 import { RegisterComponent } from './register/register.component';
 import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
@@ -15,20 +14,26 @@ import { ClientWorkplaceComponent } from './board-user/client-workplace/client-w
 import { SideBarComponent } from './side-bar/side-bar.component';
 import { MessageDialogComponent } from './side-bar/message-dialog/message-dialog.component';
 import { authGuard } from './_guard/auth.guard';
+import { NotPermissionComponent } from './home/not-permission/not-permission.component';
+import { authUserGuard } from './_guard/auth-user.guard';
+import { authAdminGuard } from './_guard/auth-admin.guard';
+import { authModeratorGuard } from './_guard/auth-moderator.guard';
 
 const routes: Routes = [
-  { path: 'home', component: HomeComponent },
+  { path: 'home', component: HomeComponent, canActivate: [authGuard], children: [
+    {path: 'not-permission', component: NotPermissionComponent}
+  ] },
   { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: 'user-board', component: BoardUserComponent, canActivate: [authGuard] ,  children: [
-    { path: 'leads', component: LeadsComponent},
-    { path: 'add-lead', component: AddLeadComponent, canActivate: [authGuard] },
-    { path: 'clients', component: ClientsComponent},
-    { path: 'client-workplace/:id', component: ClientWorkplaceComponent}
+  { path: 'register', component: RegisterComponent, canActivate: [authAdminGuard] },
+  { path: 'profile', component: ProfileComponent, canActivate: [authGuard] },
+  { path: 'user-board', component: BoardUserComponent, canActivate: [authUserGuard] ,  children: [
+    { path: 'leads', component: LeadsComponent, canActivate: [authUserGuard]},
+    { path: 'add-lead', component: AddLeadComponent, canActivate: [authUserGuard] },
+    { path: 'clients', component: ClientsComponent, canActivate: [authUserGuard]},
+    { path: 'client-workplace/:id', component: ClientWorkplaceComponent, canActivate: [authUserGuard]}
   ]},
-  { path: 'mod', component: BoardModeratorComponent },
-  { path: 'admin', component: BoardAdminComponent },
+  { path: 'mod', component: BoardModeratorComponent, canActivate: [authModeratorGuard] },
+  { path: 'admin', component: BoardAdminComponent, canActivate: [authAdminGuard]  },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'side-bar', component: SideBarComponent, children: [
     { path: 'message-dialog', component: MessageDialogComponent}
