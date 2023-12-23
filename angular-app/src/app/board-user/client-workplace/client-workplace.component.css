@@ -1,0 +1,42 @@
+.vertical-item {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .horizontal-checkboxes {
+    display: flex;
+  }
+  
+  .vertical-text {
+    writing-mode: vertical-rl;
+    transform: rotate(200deg);
+
+  }
+
+  .check-box-margin{
+    margin-left: -50px;
+    width: 90px;
+  }
+  .order-container {
+    position: relative; 
+    border: 2px solid rgb(152, 245, 151); 
+    color: rgb(191, 226, 138); 
+    margin-bottom: 20px; padding: 12px;
+    font-weight: 80px;
+  }
+  
+  .paid-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 130px;
+    z-index: -1;
+    
+    
+  }
+  #paid-label{
+    color: #410164;
+    text-align: center;
+    font-size: 230px;
+  }
