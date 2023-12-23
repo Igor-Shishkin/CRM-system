@@ -1,10 +1,12 @@
 package com.crm.system.controllers;
 
 import com.crm.system.exception.ClientAlreadyExistException;
+import com.crm.system.exception.NameOrEmailIsEmptyException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
 import com.crm.system.playload.request.AddLidRequest;
+import com.crm.system.playload.request.EditClientDataRequest;
 import com.crm.system.playload.response.ClientInfoResponse;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.repository.UserRepository;
@@ -25,10 +27,10 @@ import java.util.List;
 @RestController
 @RequestMapping("api/user-board")
 public class ClientController {
-    private final ClientService lidService;
+    private final ClientService clientService;
 
     public ClientController(ClientService clientService, UserRepository userRepository) {
-        this.lidService = clientService;
+        this.clientService = clientService;
     }
 
     @Operation(summary = "Add new Lead", tags = { "Client", "add"})
@@ -36,7 +38,7 @@ public class ClientController {
     @PostMapping()
     public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLidRequest addLidRequest) {
         try {
-            lidService.addNewLead(addLidRequest);
+            clientService.addNewLead(addLidRequest);
             log.info(String.format("Lid %s is added", addLidRequest.getFullName()));
             return ResponseEntity.ok(new MessageResponse("New LEAD is save"));
         } catch (UserPrincipalNotFoundException e) {
@@ -57,7 +59,7 @@ public class ClientController {
     public ResponseEntity<?> deleteClientById(@RequestParam long leadId) {
         System.out.println("\n" + leadId + "\n");
         try {
-            lidService.sentToBlackList(leadId);
+            clientService.sentToBlackList(leadId);
             log.info(String.format("Client with %d id on the black list", leadId));
             return ResponseEntity.ok(new MessageResponse(String.format("Lead with %d id is deleted", leadId)));
         } catch (IllegalArgumentException | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
@@ -72,7 +74,7 @@ public class ClientController {
     @GetMapping("/clients")
     public ResponseEntity<?> getAllClientsForUser() {
         try {
-            List<ClientInfoResponse> clients = lidService.getAllClients();
+            List<ClientInfoResponse> clients = clientService.getAllClients();
             return ResponseEntity.ok(clients);
         } catch (UserPrincipalNotFoundException e) {
             log.error("Authorisation Error: " + e.getMessage());
@@ -85,7 +87,7 @@ public class ClientController {
     @GetMapping("/lids")
     public ResponseEntity<?> getAllLeadsForUser() {
         try {
-            List<ClientInfoResponse> leads = lidService.getAllLeads();
+            List<ClientInfoResponse> leads = clientService.getAllLeads();
             return ResponseEntity.ok(leads);
         } catch (UserPrincipalNotFoundException e) {
             log.error("Authorisation Error: " + e.getMessage());
@@ -98,12 +100,26 @@ public class ClientController {
     @GetMapping("/client-info")
     public ResponseEntity<?> getClientInfo(@RequestParam long clientId) {
         try {
-            Client client = lidService.getClient(clientId);
+            Client client = clientService.getClient(clientId);
             return ResponseEntity.ok(client);
         } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser e) {
             log.error(e.getMessage() + ". Error: " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse(e.getMessage() + ". Error: " + e));
+        }
+    }
+
+    @Operation(summary = "Get Client's info", tags = { "client", "info"})
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PutMapping("edit-client-data")
+    public ResponseEntity<?> getClientInfo(@RequestBody EditClientDataRequest request) {
+        try {
+            clientService.editClientData(request);
+            return ResponseEntity.ok(new MessageResponse("Changes are saved!"));
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser | NameOrEmailIsEmptyException e) {
+            log.error("Save client data error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("Save client data error: " + e.getMessage()));
         }
     }
 

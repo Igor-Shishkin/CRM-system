@@ -53,4 +53,18 @@ export class ClientsService {
       })
     );
   }
+  editClientData(clientId: number, fullName: string, email: string, 
+    address: string, phoneNumber: string): Observable<string> {
+    return this.http.put<string>(
+      CLIENTS_API + '/edit-client-data',
+      {
+        clientId,
+        fullName,
+        email,
+        address,
+        phoneNumber,
+      },
+      httpOptions
+    );
+  }
 }
