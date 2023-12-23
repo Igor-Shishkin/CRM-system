@@ -40,3 +40,25 @@
     text-align: center;
     font-size: 230px;
   }
+
+  .field-margin{
+    margin: 10px;
+  }
+  .field-description{
+    width: 130px;
+  }
+  .field-design{
+    background-color: rgb(25, 26, 50, 0.2);
+    color: rgb(163, 207, 193);
+    width: 550px;
+    cursor: vertical;
+  }
+
+  .floating-buttons {
+    position: fixed;
+    bottom: 10px; 
+    right: 10px; 
+    width: 135px;
+    cursor: pointer;
+    z-index: 10;
+  }

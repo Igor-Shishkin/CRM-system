@@ -74,7 +74,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonManagedReference
-    private Set<ProjectPhoto> lidPhotos = new HashSet<>();
+    private Set<ProjectPhoto> clientPhotos = new HashSet<>();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonManagedReference

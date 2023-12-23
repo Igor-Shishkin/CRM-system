@@ -35,7 +35,7 @@ export class AddLeadComponent{
     // }
 
   save(fullName: HTMLInputElement, address: HTMLInputElement, email: HTMLInputElement, phoneNumber: HTMLInputElement) {
-    this.clientsService.addLid(fullName.value, address.value, email.value, phoneNumber.value).subscribe({
+    this.clientsService.addLead(fullName.value, address.value, email.value, phoneNumber.value).subscribe({
       next: data => { 
         this.isAdded = true;
         this.isError = false;

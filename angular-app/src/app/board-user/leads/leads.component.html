@@ -43,7 +43,7 @@
               <td>{{lead.numberOfOrders}}</td>
               <td class="clearfix">
                   <button [disabled]="isRequestSent" 
-                  (click)="goToClientDetail(lead.id)" class="btn btn-outline-info">
+                  (click)="goToClientDetail(lead.id || -1)" class="btn btn-outline-info">
                   Go to LID
                   </button>
               </td>

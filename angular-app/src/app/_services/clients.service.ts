@@ -24,7 +24,7 @@ export class ClientsService {
     );
   }
   getListOfLeads(): Observable<any> {
-    return this.http.get<Client[]>(CLIENTS_API + '/lids').pipe(
+    return this.http.get<Client[]>(CLIENTS_API + '/leads').pipe(
       catchError((error: any) => {
         console.error(error);
         throw error;
@@ -34,7 +34,7 @@ export class ClientsService {
   sentClientToBlackList(clientId : number) {
     return this.http.put(`${CLIENTS_API}/to-black-list?leadId=${clientId}`, { responseType: 'text' });
   }
-  addLid(fullName : string, address : string, email : string, phoneNumber : string):
+  addLead(fullName : string, address : string, email : string, phoneNumber : string):
     Observable<any> {
       return this.http.post(CLIENTS_API,
         {
@@ -51,6 +51,20 @@ export class ClientsService {
         console.error(error);
         throw error;
       })
+    );
+  }
+  editClientData(clientId: number, fullName: string, email: string, 
+    address: string, phoneNumber: string): Observable<string> {
+    return this.http.put<string>(
+      CLIENTS_API + '/edit-client-data',
+      {
+        clientId,
+        fullName,
+        email,
+        address,
+        phoneNumber,
+      },
+      httpOptions
     );
   }
 }

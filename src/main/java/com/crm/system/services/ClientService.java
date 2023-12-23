@@ -1,6 +1,7 @@
 package com.crm.system.services;
 
 import com.crm.system.exception.ClientAlreadyExistException;
+import com.crm.system.exception.NameOrEmailIsEmptyException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
@@ -8,6 +9,7 @@ import com.crm.system.models.ClientStatus;
 import com.crm.system.models.User;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.request.AddLidRequest;
+import com.crm.system.playload.request.EditClientDataRequest;
 import com.crm.system.playload.response.ClientInfoResponse;
 import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.UserRepository;
@@ -127,7 +129,13 @@ public class ClientService {
         Optional<Client> optionalClient = clientRepository.findById(clientId);
         if (optionalClient.isPresent()) {
             if (optionalClient.get().getUser().getUserId().equals(activeUserId)) {
-                return optionalClient.get();
+                Client client = optionalClient.get();
+                for (Order order: client.getOrders()) {
+                    order.setUserPhotos(null);
+                    order.setClientPhotos(null);
+                    order.setCalculations(null);
+                }
+                return client;
             } else  {
                 throw new SubjectNotBelongToActiveUser("It's not you client!");
             }
@@ -135,7 +143,27 @@ public class ClientService {
             throw new RequestOptionalIsEmpty("Client isn't found");
         }
     }
-    public Optional<User> getActiveUser(long userId) {
+    public void editClientData(EditClientDataRequest request) {
+        Optional<Client> optionalClient = clientRepository.findById(request.getClientId());
+        if (optionalClient.isEmpty()) {
+            throw new RequestOptionalIsEmpty("Client not found");
+        }
+        Client client = optionalClient.get();
+        if (!client.getUser().getUserId().equals(getActiveUserId())) {
+            throw new SubjectNotBelongToActiveUser("It's not your client!");
+        }
+        if (request.getFullName().isBlank() ||
+                request.getEmail().isBlank()) {
+            throw new NameOrEmailIsEmptyException("Name and email can't be empty!");
+        }
+        client.setFullName(request.getFullName());
+        client.setEmail(request.getEmail());
+        client.setPhoneNumber(request.getPhoneNumber());
+        client.setAddress(request.getAddress());
+
+        clientRepository.save(client);
+    }
+    private Optional<User> getActiveUser(long userId) {
         Optional<User> user = userRepository.findById(userId);
         return user;
     }
@@ -145,4 +173,6 @@ public class ClientService {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
         return userId;
     }
+
+
 }

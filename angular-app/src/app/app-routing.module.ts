@@ -18,6 +18,7 @@ import { NotPermissionComponent } from './home/not-permission/not-permission.com
 import { authUserGuard } from './_guard/auth-user.guard';
 import { authAdminGuard } from './_guard/auth-admin.guard';
 import { authModeratorGuard } from './_guard/auth-moderator.guard';
+import { OrderComponent } from './board-user/order/order.component';
 
 const routes: Routes = [
   { path: 'home', component: HomeComponent, canActivate: [authGuard], children: [
@@ -30,7 +31,8 @@ const routes: Routes = [
     { path: 'leads', component: LeadsComponent, canActivate: [authUserGuard]},
     { path: 'add-lead', component: AddLeadComponent, canActivate: [authUserGuard] },
     { path: 'clients', component: ClientsComponent, canActivate: [authUserGuard]},
-    { path: 'client-workplace/:id', component: ClientWorkplaceComponent, canActivate: [authUserGuard]}
+    { path: 'client-workplace/:id', component: ClientWorkplaceComponent, canActivate: [authUserGuard]},
+    { path: 'order-workplace/:id', component: OrderComponent, canActivate: [authUserGuard]}
   ]},
   { path: 'mod', component: BoardModeratorComponent, canActivate: [authModeratorGuard] },
   { path: 'admin', component: BoardAdminComponent, canActivate: [authAdminGuard]  },

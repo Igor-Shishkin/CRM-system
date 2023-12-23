@@ -11,7 +11,7 @@ import { Order } from 'src/entities/Order';
   styleUrls: ['./client-workplace.component.css']
 })
 export class ClientWorkplaceComponent {
-  client?: Client;
+  client!: Client;
   isRequestSent = false;
   isSuccessLoad = false;
   responseMessage = '';
@@ -19,6 +19,10 @@ export class ClientWorkplaceComponent {
   isError = false;
   progress = 0;
   clientId = -1;
+  canEdit = false;
+  isResultOfSavedShown = false;
+  serverAnswer = '';
+  filteredOrders?: Order[];
 
   constructor(private clientService: ClientsService, 
       private router: Router ,
@@ -31,6 +35,12 @@ export class ClientWorkplaceComponent {
     this.clientService.getClientInformarion(this.clientId).subscribe({
       next: data => {
         this.client = data;
+        this.filteredOrders = this.client.orders?.sort((a, b) => {
+          if (a.dateOfCreation && b.dateOfCreation) {
+            return a.dateOfCreation.getTime()-a.dateOfCreation.getTime();
+          }
+          return 0;
+        })
       }, error: err => {
         console.log(err);
         this.isError = true;
@@ -73,6 +83,41 @@ export class ClientWorkplaceComponent {
     counter = Math.floor( (counter/9) *100 );
     return `${counter}%`;
     
+  }
+  changeEditably(){
+    this.canEdit = !this.canEdit;
+  }
+  calculateNumberOfOrdders(){
+    if (this.client.orders){
+      return this.client.orders.length;
+    } 
+    return 0;
+  }
+  editClientData(){
+    if (this.client.id && this.client.fullName && this.client.email && this.client.address && this.client.phoneNumber) {
+      this.clientService.editClientData(this.client.id, this.client.fullName, 
+        this.client.email, this.client.address, this.client.phoneNumber).subscribe({
+          next: data => {
+            this.isResultOfSavedShown = true;
+            this.serverAnswer = data;
+            this.performDelayedHidingAlert();
+          }, error: err => {
+            this.isResultOfSavedShown = true;
+            this.serverAnswer = 'Unfortunately, an error occurred while saving data. Please try again later.';
+            this.performDelayedHidingAlert();
+          }
+        })
+    }
+  }
+  performDelayedHidingAlert() {
+      setTimeout(() => {
+        this.isResultOfSavedShown = false;
+        this.serverAnswer = '';
+      }, 4000);
+  }
+  goToTheOrder(orderId: number) {
+    console.log('id: ' + orderId);
+    this.router.navigate(['/user-board/order-workplace', orderId]);
   }
 }
 

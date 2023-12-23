@@ -40,10 +40,10 @@
               <td>{{client.fullName}}</td>
               <td>{{client.email}}</td>
               <td>{{client.phoneNumber}}</td>
-              <td>{{client.orders.length}}</td>
+              <td>{{(client.orders) ? client.orders.length : 0}}</td>
               <td>
                   <button [disabled]="isRequestSent" 
-                  (click)="goToClientDetail(client.id)" class="btn btn-outline-info">Go to Client</button>
+                  (click)="goToClientDetail(client.id || -1)" class="btn btn-outline-info">Go to Client</button>
               </td>
           </tr>
       </tbody>

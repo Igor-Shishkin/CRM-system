@@ -40,6 +40,7 @@ public class HistoryMessageService {
         message.setUser(user);
         message.setImportant(false);
         message.setDone(true);
+        message.setDateOfCreation(LocalDateTime.now());
         historyMessageRepository.save(message);
     }
 
