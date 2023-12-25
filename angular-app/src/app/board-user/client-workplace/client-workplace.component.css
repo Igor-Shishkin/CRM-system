@@ -10,6 +10,7 @@
   .vertical-text {
     writing-mode: vertical-rl;
     transform: rotate(200deg);
+    cursor: pointer;
 
   }
 
@@ -23,6 +24,7 @@
     color: rgb(191, 226, 138); 
     margin-bottom: 20px; padding: 12px;
     font-weight: 80px;
+    cursor: pointer;
   }
   
   .paid-container {

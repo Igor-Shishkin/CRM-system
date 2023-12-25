@@ -61,9 +61,10 @@
 </div>
 
 <footer class="d-inline-flex gap-1">
-  <button type="button" class="btn btn-outline-success" style="margin-left: 15px;"
-  (click)="changeEditably()">Edit data</button>
-  <button type="button" class="btn btn-outline-success" style="margin-left: 15px;"
+  <input type="checkbox" class="btn-check" id="btn-edit" autocomplete="off" (click)="changeEditably()">
+  <label class="btn btn-outline-success" for="btn-edit" style="height: 35px;">Edit data</label>
+ 
+  <button type="button" class="btn btn-outline-success" style="margin-left: 15px; height: 35px;"
   (click)="editClientData()">Save</button>
 </footer>
 
@@ -75,8 +76,7 @@
 
 <h2>Orders</h2>
 
-<section *ngFor="let order of client?.orders" class="order-container" (click)="goToTheOrder(order.orderId)"
-style="cursor: pointer;">
+<section *ngFor="let order of client?.orders" class="order-container" (click)="goToTheOrder(order.orderId || -1)">
 
     <div class="progress text-bg-dark" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
         <div class="progress-bar bg-primary" [style.width]="calculateOrderProgress(order)">

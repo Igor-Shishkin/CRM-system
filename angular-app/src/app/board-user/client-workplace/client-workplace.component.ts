@@ -11,7 +11,7 @@ import { Order } from 'src/entities/Order';
   styleUrls: ['./client-workplace.component.css']
 })
 export class ClientWorkplaceComponent {
-  client!: Client;
+  client: Client = new Client;
   isRequestSent = false;
   isSuccessLoad = false;
   responseMessage = '';
@@ -94,7 +94,8 @@ export class ClientWorkplaceComponent {
     return 0;
   }
   editClientData(){
-    if (this.client.id && this.client.fullName && this.client.email && this.client.address && this.client.phoneNumber) {
+    if (this.client.id && this.client.fullName && this.client.email && 
+      this.client.address && this.client.phoneNumber) {
       this.clientService.editClientData(this.client.id, this.client.fullName, 
         this.client.email, this.client.address, this.client.phoneNumber).subscribe({
           next: data => {
