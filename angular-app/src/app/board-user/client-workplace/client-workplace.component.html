@@ -1,7 +1,7 @@
 
 
   <button type="button" class="btn btn-outline-warning floating-buttons" >Create reminder</button>
-  <button type="button" class="btn btn-outline-warning floating-buttons" 
+  <button type="button" class="btn btn-outline-warning floating-buttons"
   style="bottom: 51px;">New order</button>
 
 
@@ -10,7 +10,7 @@
     <label class="col-form-label ">Full name</label>
   </div>
   <div class="col-auto">
-    <input class="form-control field-design" type="text" 
+    <input class="form-control field-design" type="text"
     [(ngModel)]="client.fullName" [ngModelOptions]="{ standalone: true }"
     [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
   </div>
@@ -21,10 +21,10 @@
     <label class="col-form-label">Email </label>
   </div>
   <div class="col-auto">
-    <input class="form-control field-design" type="text" 
+    <input class="form-control field-design" type="text"
     [(ngModel)]="client.email" [ngModelOptions]="{ standalone: true }"
     [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
-  </div>  
+  </div>
 </div>
 
 <div class="row g-2 field-margin">
@@ -32,7 +32,7 @@
     <label class="col-form-label">Phone number</label>
   </div>
   <div class="col-auto">
-      <input class="form-control field-design" type="text" 
+      <input class="form-control field-design" type="text"
       [(ngModel)]="client.phoneNumber" [ngModelOptions]="{ standalone: true }"
       [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
   </div>
@@ -43,7 +43,7 @@
     <label class="col-form-label">Address</label>
   </div>
   <div class="col-auto">
-      <input class="form-control field-design" type="text" 
+      <input class="form-control field-design" type="text"
       [(ngModel)]="client.address" [ngModelOptions]="{ standalone: true }"
       [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
   </div>
@@ -61,9 +61,9 @@
 </div>
 
 <footer class="d-inline-flex gap-1">
-  <button type="button" class="btn btn-outline-success" style="margin-left: 15px;" 
+  <button type="button" class="btn btn-outline-success" style="margin-left: 15px;"
   (click)="changeEditably()">Edit data</button>
-  <button type="button" class="btn btn-outline-success" style="margin-left: 15px;" 
+  <button type="button" class="btn btn-outline-success" style="margin-left: 15px;"
   (click)="editClientData()">Save</button>
 </footer>
 
@@ -74,14 +74,14 @@
 <div class="separator" style="margin: 15px;"></div>
 
 <h2>Orders</h2>
-  
+
 <section *ngFor="let order of client?.orders" class="order-container" (click)="goToTheOrder(order.orderId)"
 style="cursor: pointer;">
-    
+
     <div class="progress text-bg-dark" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
         <div class="progress-bar bg-primary" [style.width]="calculateOrderProgress(order)">
           {{calculateOrderProgress(order)}}</div>
-        </div> 
+        </div>
 
     <h4>Real need: {{order.realNeed}}</h4>
     <div style="display: flex; ">
@@ -91,7 +91,7 @@ style="cursor: pointer;">
             <p style="margin: 0;">Address: {{order.address}}</p>
             <p style="margin: 0;">Result price {{order.resultPrice}}</p>
         </div>
-        <aside class="horizontal-checkboxes " 
+        <aside class="horizontal-checkboxes "
         style="color: rgb(215, 216, 212); font-weight: 65px; justify-items: end;">
 
           <div class="align-top " style="width: 90px;">
@@ -105,7 +105,7 @@ style="cursor: pointer;">
           <div class="align-top check-box-margin" >
             <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
                 Project is shown
-                <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked" 
+                <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked"
                 [checked]="order.isProjectShown != 'NOT_SHOWN'"  disabled>
             </label>
           </div>
@@ -113,7 +113,7 @@ style="cursor: pointer;">
           <div class="align-top check-box-margin" >
             <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
                 Calculation is promised
-                <input class="form-check-input align-top" type="checkbox" role="switch" id="flexSwitchCheckChecked" 
+                <input class="form-check-input align-top" type="checkbox" role="switch" id="flexSwitchCheckChecked"
                 [checked]="order.isCalculationPromised" disabled>
             </label>
           </div>
@@ -121,7 +121,7 @@ style="cursor: pointer;">
           <div class="align-top check-box-margin" >
             <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
                 Calculation is shown
-                <input class="form-check-input align-top" type="checkbox" role="switch" id="flexSwitchCheckChecked" 
+                <input class="form-check-input align-top" type="checkbox" role="switch" id="flexSwitchCheckChecked"
                 [checked]="order.isCalculationShown != 'NOT_SHOWN'" disabled>
             </label>
           </div>
@@ -129,14 +129,14 @@ style="cursor: pointer;">
           <div class="align-top check-box-margin">
             <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
                 Meeting in office
-                <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked" 
+                <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked"
                 [checked]="order.wasMeetingInOffice" disabled>
             </label>
           </div>
 
           <div class="align-top check-box-margin">
             <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
-                Measurement is offered 
+                Measurement is offered
                 <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked"
                 [checked]="order.measurementOffered" disabled>
             </label>
@@ -164,8 +164,8 @@ style="cursor: pointer;">
                 <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked"
                 [checked]="order.hasAgreementPrepared" disabled>
             </label>
-          </div> 
- 
+          </div>
+
         </aside>
     </div>
     <div *ngIf="order.hasBeenPaid" class="paid-container">
@@ -173,11 +173,10 @@ style="cursor: pointer;">
     </div>
 </section>
 
-<button [disabled]="isRequestSent" (click)="sentClientToBlackList()" type="button" 
+<button [disabled]="isRequestSent" (click)="sentClientToBlackList()" type="button"
 class="btn btn-outline-danger" style="margin-left: 5px;">
   <span *ngIf="isRequestSent" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-  <span role="status">To black list</span>  
+  <span role="status">To black list</span>
 </button>
-  
-  
-  
+
+
