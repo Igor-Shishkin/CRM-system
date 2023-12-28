@@ -1,16 +1,15 @@
 <nav class="navbar navbar-expand navbar-dark bg-dark" style="height: 60px;">
 
-    <div class="logo-container" style="margin: 15px 0px;" >
-      <button style="background-color: transparent; border: none;"
-      [routerLinkActive]="'active-nav'"
-      [routerLink]="'/home'">
-          <img src="assets\images\LOGO.png" width="40px" />
-      </button>
-    </div>
-
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item" *ngIf="!isLoggedIn">
-        <a (click)="login()" class="nav-link" routerLink="login">Login</a>
+      <li class="nav-item" *ngIf="!isLoggedIn" routerLink="login">
+        <a class="nav-link" (click)="login()">Login</a>
+      </li>
+
+      <li class="nav-item" *ngIf="isLoggedIn">
+        <a  class="nav-link" 
+        [routerLinkActive]="'active-nav'"
+        [routerLink]="'/home'"
+        >Home</a>
       </li>
  
       <li class="nav-item dropdown" *ngIf="isLoggedIn">

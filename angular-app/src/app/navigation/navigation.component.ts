@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { StorageService } from '../_services/storage.service';
 import { AuthService } from '../_services/auth.service';
 import { Router, RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
+import { HistoryMessage } from 'src/entities/HistoryMessage';
 
 @Component({
   selector: 'app-navigation',
@@ -11,12 +12,14 @@ import { Subscription } from 'rxjs';
 })
 export class NavigationComponent {
   private roles: string[] = [];
-  isLoggedIn = this.storageService.isLoggedIn();
   showAdminBoard = false;
   showModeratorBoard = false;
   username?: string;
   isDropdownActionVisible = false;
   private isLoggedInSubscription: Subscription;
+
+  isLoggedIn$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  isLoggedIn?: boolean;
 
   constructor(private storageService: StorageService, private authService: AuthService, private router: Router) {
     this.isLoggedInSubscription = this.storageService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
@@ -55,6 +58,8 @@ export class NavigationComponent {
     this.showAdminBoard = false;
     this.showModeratorBoard = false;
     this.storageService.clean();
+    this.storageService.setHistory([new HistoryMessage()]);
+    this.storageService.setLoggedInStatus(false);
     window.sessionStorage.clear();
     this.isLoggedIn = false;
     this.router.navigate(['/login']);

@@ -49,8 +49,4 @@ export class RegisterComponent {
     }
     console.log(this.form.role)
   }
-  // selectRole(role: string){
-  //   this.selectedRole = role;
-  //   console.log(this.selectedRole)
-  // };
 }

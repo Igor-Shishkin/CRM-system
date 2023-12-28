@@ -13,14 +13,16 @@ public class ProjectPhoto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "photo_id")
-    private Long id;
+    private Long photoId;
 
-    //TODO: change path to byte[]
-    private String path;
+    @Lob
+    @Column(name = "photo_data", columnDefinition = "LONGBLOB")
+    private byte[] photoData;
+
     private String note;
 
-    @Column(name = "is_user_photo")
-    private boolean isUserPhoto;
+    @Column(name = "is_client_photo")
+    private boolean isClientPhoto;
 
     @ManyToOne
     @JoinColumn(name = "order_id")

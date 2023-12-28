@@ -131,9 +131,9 @@ public class ClientService {
             if (optionalClient.get().getUser().getUserId().equals(activeUserId)) {
                 Client client = optionalClient.get();
                 for (Order order: client.getOrders()) {
-                    order.setUserPhotos(null);
-                    order.setClientPhotos(null);
+                    order.setProjectPhotos(null);
                     order.setCalculations(null);
+                    order.setClient(null);
                 }
                 return client;
             } else  {

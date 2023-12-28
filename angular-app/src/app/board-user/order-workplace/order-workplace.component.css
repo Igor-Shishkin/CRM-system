@@ -1,0 +1,10 @@
+.field-description{
+    width: 270px;
+}
+.field-margin{
+    margin: 10px;
+}
+.separator {
+    border-top: 2px solid #ccc; 
+    margin: 15px 15px 25px 15px; 
+  }

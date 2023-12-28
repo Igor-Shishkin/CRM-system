@@ -4,6 +4,7 @@ import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.User;
 import com.crm.system.models.order.Order;
+import com.crm.system.playload.response.OrderInfoResponse;
 import com.crm.system.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,7 @@ public class OrderService {
     }
 
 
-    public Order getOrder(long orderId) throws UserPrincipalNotFoundException {
+    public OrderInfoResponse getOrder(long orderId) throws UserPrincipalNotFoundException {
         Optional<User> optionalUser = userService.getActiveUser();
         if (optionalUser.isEmpty()) {
             throw new UserPrincipalNotFoundException("I can't found active user");
@@ -36,7 +37,8 @@ public class OrderService {
         if (activeUser.getClients().stream()
                         .anyMatch(client -> client.getId().equals(order.getClient().getId()))
         ) {
-            return order;
+            OrderInfoResponse orderInfoResponse = new OrderInfoResponse(order);
+            return orderInfoResponse;
         } else {
             throw new SubjectNotBelongToActiveUser("It's not your order");
         }

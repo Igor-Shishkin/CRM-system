@@ -4,6 +4,7 @@ import com.crm.system.models.Client;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -31,6 +32,7 @@ public class Order {
     private double estimateBudged;
 
     @Column(name = "is_project_approved")
+    @JsonProperty("isProjectApproved")
     private boolean isProjectApproved = false;
 
     @Column(name = "was_meeting_in_office")
@@ -44,42 +46,41 @@ public class Order {
 
     private String address;
 
-    @Column(name = "measurements_taken")
-    private boolean measurementsTaken = false;
+    @Column(name = "is_measurements_taken")
+    private boolean isMeasurementsTaken = false;
 
-    @Column(name = "measurement_offered")
-    private boolean measurementOffered;
+    @Column(name = "is_measurement_offered")
+    private boolean isMeasurementOffered = false;
 
     @Column(name = "is_calculation_promised")
+    @JsonProperty("isCalculationPromised")
     private boolean isCalculationPromised = false;
 
     @Column(name = "is_project_shown")
     @Enumerated(EnumType.STRING)
+    @JsonProperty("isProjectShown")
     private InfoIsShown isProjectShown = InfoIsShown.NOT_SHOWN;
 
     @Column(name = "is_calculation_shown")
     @Enumerated(EnumType.STRING)
+    @JsonProperty("isCalculationShown")
     private InfoIsShown isCalculationShown = InfoIsShown.NOT_SHOWN;
 
     @Column(name = "has_agreement_prepared")
-    private boolean hasAgreementPrepared;
+    private boolean hasAgreementPrepared = false;
 
     @Column(name = "data_of_creation")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime dateOfCreation;
+    private LocalDateTime dateOfCreation = LocalDateTime.now();
 
     @Column(name = "data_of_last_change")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateOfLastChange;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private Set<ProjectPhoto> clientPhotos = new HashSet<>();
-
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    @JsonManagedReference
-    @Where(clause = "is_user_photo = true")
-    private Set<ProjectPhoto> userPhotos = new HashSet<>();
+    @Column(name = "project_photos")
+    private Set<ProjectPhoto> projectPhotos = new HashSet<>();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
     @JsonManagedReference

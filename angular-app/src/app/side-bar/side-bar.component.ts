@@ -29,6 +29,10 @@ private activeClientIdSubscription: Subscription;
 content?: string;
 isLoadFailing = false;
 
+isLoggedIn$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+isLoggedIn?: boolean;
+private isLoggedInSubscription: Subscription;
+
   constructor(
       private storageService: StorageService,
       public dialog: MatDialog,
@@ -38,6 +42,9 @@ isLoadFailing = false;
         });
         this.activeClientIdSubscription = this.storageService.activeClientId$.subscribe((activeClientId: number) => {
           this.activeClientId = activeClientId;
+        });
+        this.isLoggedInSubscription = this.storageService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
+          this.isLoggedIn = isLoggedIn;
         });
   }
 

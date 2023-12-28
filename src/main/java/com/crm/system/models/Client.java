@@ -52,7 +52,7 @@ public class Client {
 
         @Column(name = "data_of_creation")
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        private LocalDateTime dateOfCreation;
+        private final LocalDateTime dateOfCreation = LocalDateTime.now();
 
         @Column(name = "data_of_last_change")
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -77,7 +77,6 @@ public class Client {
                 this.address = address;
                 this.user = user;
                 this.dateOfLastChange = LocalDateTime.now();
-                this.dateOfCreation = LocalDateTime.now();
                 this.status = ClientStatus.LEAD;
         }
 }

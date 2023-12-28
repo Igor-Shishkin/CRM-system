@@ -5,6 +5,7 @@ import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.response.MessageResponse;
+import com.crm.system.playload.response.OrderInfoResponse;
 import com.crm.system.services.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
@@ -32,8 +33,8 @@ public class OrderController {
     @GetMapping()
     public ResponseEntity<?> getOrder(@RequestParam long orderId) {
         try {
-            Order order = orderService.getOrder(orderId);
-            return ResponseEntity.ok(order);
+            OrderInfoResponse orderInfoResponse = orderService.getOrder(orderId);
+            return ResponseEntity.ok(orderInfoResponse);
         } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
             log.error("Order controller: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

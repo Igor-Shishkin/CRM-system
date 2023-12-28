@@ -52,8 +52,8 @@ CREATE TABLE orders (
     real_need VARCHAR(255) NOT NULL,
     estimate_budget DOUBLE,
     is_project_approved BOOLEAN DEFAULT false,
-    measurements_taken BOOLEAN DEFAULT false,
-    measurement_offered BOOLEAN DEFAULT false,
+    is_measurements_taken BOOLEAN DEFAULT false,
+    is_measurement_offered BOOLEAN DEFAULT false,
     has_agreement_prepared BOOLEAN DEFAULT false,
     was_meeting_in_office BOOLEAN DEFAULT false,
     result_price DOUBLE DEFAULT 0.0,
@@ -95,9 +95,9 @@ CREATE TABLE item (
 
 CREATE TABLE order_photos (
     photo_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    path VARCHAR(255),
+    photo_data LONGBLOB,
     note VARCHAR(255),
-    is_user_photo BOOLEAN,
+    is_client_photo BOOLEAN,
     order_id BIGINT,
     FOREIGN KEY (order_id) REFERENCES orders(order_id)
 );
@@ -128,7 +128,7 @@ INSERT INTO clients (full_name, email, phone_number, status, address, user_id)
     ('Solomon Duda', 'sol@gmail.com', '555666777', 'LEAD', 'Poland, Poznań', 1),
     ('Tacka Jakub', 'tacka@gmail.com', '004874677', 'LEAD', 'Poland, Poznań', 2);
 
-INSERT INTO orders (real_need, estimate_budget, address, measurement_offered, was_meeting_in_office, is_calculation_promised,  is_calculation_shown, data_of_last_change, client_id)
+INSERT INTO orders (real_need, estimate_budget, address, is_measurement_offered, was_meeting_in_office, is_calculation_promised,  is_calculation_shown, data_of_last_change, client_id)
 VALUES
     ('install furniture in the kitchen', 3450.3, 'Poland', true, true, true, 'SHOWN_ONLINE', '2023-12-01', 3),
     ('install furniture in the bedroom', 2150.0, 'Poland, Warszawa', false, true, false, 'SHOWN_ONLINE', '2023-12-02', 3),

@@ -2,12 +2,19 @@
 <div class="general ">
 
     <div class="logo-container" style="margin-bottom: 3px;">
+        
+        <button style="background-color: transparent; border: none;"
+        [routerLinkActive]="'active-nav'"
+        [routerLink]="'/home'">
+            <img src="assets\images\LOGO.png" width="40px" />
+        </button>
+
         <p class="colorful-text" style="margin-top: 9px; margin-bottom: 3px;">alfanamestaj.rs</p>
     </div>
 
     <div class="separator"></div>
 
-    <div class="btn-toolbar" *ngIf="!isLoadFailing" >
+    <div class="btn-toolbar" *ngIf="!isLoadFailing || isLoggedIn" >
         <div class="btn-group me-2" role="group" style="max-height: 35px;" >
           <input type="radio" class="btn-check"  autocomplete="off" checked>
           <label class="btn btn-outline-primary" (click)="showAllHistory()">
@@ -24,7 +31,7 @@
         </div>
     </div>
 
-    <div class="separator"></div>
+    <div class="separator" *ngIf="!isLoadFailing || isLoggedIn"></div>
 
     <div style="padding: 6px, 4px;" id="list" class="custom-scrollbar">
         <div  *ngFor="let message of filteredHistory" >

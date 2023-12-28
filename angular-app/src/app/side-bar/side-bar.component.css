@@ -61,7 +61,7 @@
   }
   .custom-scrollbar {
 
-    height: 81%;
+    height: 70%;
     overflow-y: auto;
     scrollbar-track-color: #333; 
     scrollbar-thumb-color: #666; 

@@ -21,7 +21,7 @@ export class ClientWorkplaceComponent {
   clientId = -1;
   canEdit = false;
   isResultOfSavedShown = false;
-  serverAnswer = '';
+  responceMessage = '';
   filteredOrders?: Order[];
 
   constructor(private clientService: ClientsService, 
@@ -72,17 +72,20 @@ export class ClientWorkplaceComponent {
 
   calculateOrderProgress(order: Order): string{
     let counter = 1;
+    if (order.wasMeetingInOffice) { counter++; }
     if (order.isCalculationPromised) { counter++; }
     if (order.isCalculationShown != 'NOT_SHOWN') { counter++; }
     if (order.isProjectShown != 'NOT_SHOWN') { counter++; }
     if (order.isProjectApproved) { counter++; }
     if (order.estimateBudged != 0) { counter++; }
-    if (order.measurementsTaken) { counter++; }
-    if (order.measurementOffered) { counter++; }
+    if (order.isMeasurementsTaken) { counter++; }
+    if (order.isMeasurementOffered) { counter++; }
     if (order.hasAgreementPrepared) { counter++; }
-    counter = Math.floor( (counter/9) *100 );
-    return `${counter}%`;
+    if (order.resultPrice && order.resultPrice > 0) { counter++; }
+    if (order.hasBeenPaid) { counter++; }
     
+    counter = Math.floor( (counter/12) *100 );
+    return `${counter}%`; 
   }
   changeEditably(){
     this.canEdit = !this.canEdit;
@@ -100,11 +103,11 @@ export class ClientWorkplaceComponent {
         this.client.email, this.client.address, this.client.phoneNumber).subscribe({
           next: data => {
             this.isResultOfSavedShown = true;
-            this.serverAnswer = data;
+            this.responceMessage = "Changes are sucsessfully saved";
             this.performDelayedHidingAlert();
           }, error: err => {
             this.isResultOfSavedShown = true;
-            this.serverAnswer = 'Unfortunately, an error occurred while saving data. Please try again later.';
+            this.responceMessage = 'Unfortunately, an error occurred while saving data. Please try again later.';
             this.performDelayedHidingAlert();
           }
         })
@@ -113,11 +116,10 @@ export class ClientWorkplaceComponent {
   performDelayedHidingAlert() {
       setTimeout(() => {
         this.isResultOfSavedShown = false;
-        this.serverAnswer = '';
+        this.responceMessage = '';
       }, 4000);
   }
   goToTheOrder(orderId: number) {
-    console.log('id: ' + orderId);
     this.router.navigate(['/user-board/order-workplace', orderId]);
   }
 }
