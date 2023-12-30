@@ -47,9 +47,11 @@ public class Order {
     private String address;
 
     @Column(name = "is_measurements_taken")
+    @JsonProperty("isMeasurementsTaken")
     private boolean isMeasurementsTaken = false;
 
     @Column(name = "is_measurement_offered")
+    @JsonProperty("isMeasurementOffered")
     private boolean isMeasurementOffered = false;
 
     @Column(name = "is_calculation_promised")

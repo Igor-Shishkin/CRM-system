@@ -82,10 +82,9 @@ CREATE TABLE history_messages (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE item (
+CREATE TABLE items (
     item_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    thing VARCHAR(255),
-    material VARCHAR(255),
+    thing TEXT,
     quantity INT,
     unit_price DOUBLE,
     total_price DOUBLE,
@@ -136,6 +135,12 @@ VALUES
     ('Order a handmade table', 5490.3, 'Warszawa', false, true, true, 'SHOWN_ONLINE', '2023-12-05', 3),
     ('Order a handmade table', 2190.3, 'Poznań', false, true, true, 'SHOWN_ONLINE', '2023-12-01', 1);
 
+INSERT INTO items (thing, quantity, unit_price, total_price, order_id)
+VALUES
+    ('chipboard sheet 400*200', 3, 231.5, 717,65, 1),
+    ('chipboard sheet 100*150', 5, 100, 550, 1),
+    ('white kitchen countertop 80*300', 1, 450, 495, 1),
+    ('door hinge without closer', 10, 12, 132, 1);
 
 INSERT INTO history_messages(text_of_message, date_of_creation, is_important, is_done, note, tag_name, tag_id, user_id)
     VALUES

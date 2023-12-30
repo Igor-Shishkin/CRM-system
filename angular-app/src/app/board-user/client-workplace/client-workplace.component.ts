@@ -72,18 +72,17 @@ export class ClientWorkplaceComponent {
 
   calculateOrderProgress(order: Order): string{
     let counter = 1;
-    if (order.wasMeetingInOffice) { counter++; }
-    if (order.isCalculationPromised) { counter++; }
-    if (order.isCalculationShown != 'NOT_SHOWN') { counter++; }
-    if (order.isProjectShown != 'NOT_SHOWN') { counter++; }
-    if (order.isProjectApproved) { counter++; }
-    if (order.estimateBudged != 0) { counter++; }
-    if (order.isMeasurementsTaken) { counter++; }
-    if (order.isMeasurementOffered) { counter++; }
-    if (order.hasAgreementPrepared) { counter++; }
+    if (order.wasMeetingInOffice === true) { counter++; }
+    if (order.isCalculationPromised === true) { counter++; }
+    if (order.isCalculationShown !== 'NOT_SHOWN') { counter++; }
+    if (order.isProjectShown !== 'NOT_SHOWN') { counter++; }
+    if (order.isProjectApproved === true) { counter++; }
+    if (order.estimateBudged !== 0) { counter++; }
+    if (order.isMeasurementsTaken === true) { counter++; }
+    if (order.isMeasurementOffered === true) { counter++; }
+    if (order.hasAgreementPrepared === true) { counter++; }
     if (order.resultPrice && order.resultPrice > 0) { counter++; }
-    if (order.hasBeenPaid) { counter++; }
-    
+    if (order.hasBeenPaid === true) { counter++; }
     counter = Math.floor( (counter/12) *100 );
     return `${counter}%`; 
   }

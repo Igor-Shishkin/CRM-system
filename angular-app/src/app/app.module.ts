@@ -29,6 +29,10 @@ import { NotPermissionComponent } from './home/not-permission/not-permission.com
 import { DatePipe } from '@angular/common';
 import { OrderWorkplaceComponent } from './board-user/order-workplace/order-workplace.component';
 import { ItemCalculationComponent } from './board-user/order-workplace/item-calculation/item-calculation.component';
+import { PhotosComponent } from './board-user/order-workplace/photos/photos.component';
+import { SendEmailComponent } from './board-user/order-workplace/send-email/send-email.component';
+import { ConfirmSigningContractComponent } from './board-user/order-workplace/confirm-signing-contract/confirm-signing-contract.component';
+import { ConfirmPainmentComponent } from './board-user/order-workplace/confirm-painment/confirm-painment.component';
 
 
 @NgModule({
@@ -50,7 +54,11 @@ import { ItemCalculationComponent } from './board-user/order-workplace/item-calc
     MessageDialogComponent,
     NotPermissionComponent,
     OrderWorkplaceComponent,
-    ItemCalculationComponent
+    ItemCalculationComponent,
+    PhotosComponent,
+    SendEmailComponent,
+    ConfirmSigningContractComponent,
+    ConfirmPainmentComponent
   ],
   imports: [
     BrowserModule,

@@ -1,1 +1,38 @@
-<p>item-calculation works!</p>
+<h2 mat-dialog-title>Items for order</h2>
+<mat-dialog-content>
+    <table class="table table-hover custom-input-form" style="color: aliceblue;">
+
+        <thead> 
+            <tr class="custom-input-form">
+                <th  class="custom-input-form">Thing</th>
+                <th  class="custom-input-form">Quantity</th>
+                <th class="custom-input-form">Unit price</th>
+                <th  class="custom-input-form">Total price</th>
+            </tr>
+        </thead>    
+
+        <tbody>
+            <tr *ngFor="let item of items" style="border-bottom: 1px rgb(2, 5, 75);" >
+                <td class="custom-input-form" style="width: 410px;">
+                    <input class="form-control custom-input-form" type="text"
+                    [value]="item.thing" [(ngModel)]="item.thing">
+                </td>
+                <td class="custom-input-form">
+                    <input class="form-control custom-input-form" type="text"
+                    [value]="item.quantity" [(ngModel)]="item.quantity">
+                </td>
+                <td class="custom-input-form">
+                    <input class="form-control custom-input-form" type="text"
+                    [value]="item.unitPrice" [(ngModel)]="item.unitPrice">
+                </td>
+                <td class="custom-input-form">
+                    <input class="form-control custom-input-form" type="text"
+                    [value]="item.totalPrice" [(ngModel)]="item.totalPrice">
+                </td>
+            </tr>
+        </tbody>
+      </table>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

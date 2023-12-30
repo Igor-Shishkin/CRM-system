@@ -1,10 +1,28 @@
 .field-description{
-    width: 270px;
+    width: 180px;
 }
 .field-margin{
-    margin: 10px;
+    margin: 1px;
 }
 .separator {
     border-top: 2px solid #ccc; 
     margin: 15px 15px 25px 15px; 
+}
+.form-control{
+    width: 100%;
+}
+.custom-input-form{
+    background-color: transparent;
+    color: white;
+}
+.grid-container {
+    display: grid;
+    grid-template-areas:
+      'description value range range range range range range range range  range range range';
+    margin: 11px 0px;
+}
+.outer-div {
+    display: flex;
+    align-items: center; 
+    height: 35px; 
   }

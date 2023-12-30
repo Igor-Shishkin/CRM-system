@@ -76,7 +76,7 @@ private isLoggedInSubscription: Subscription;
     dialogConfig.width = '400px'; 
     dialogConfig.data = { message: messageToEdit };
     const dialogRef = this.dialog.open(MessageDialogComponent, dialogConfig);
-
+ 
     dialogRef.afterClosed().subscribe(result => {
       this.refreshHistory();
     });

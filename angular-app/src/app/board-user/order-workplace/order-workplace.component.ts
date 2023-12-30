@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { timer } from 'rxjs';
 import { OrderService } from 'src/app/_services/order.service';
 import { Order } from 'src/entities/Order';
+import { ItemCalculationComponent } from './item-calculation/item-calculation.component';
 
 @Component({
   selector: 'app-order-workplace',
@@ -19,7 +21,8 @@ export class OrderWorkplaceComponent implements OnInit{
   constructor(
     private router: Router ,
     private route: ActivatedRoute,
-    private orderService: OrderService
+    private orderService: OrderService,
+    public dialog: MatDialog
   ) {}
   
     ngOnInit(): void {
@@ -61,5 +64,15 @@ export class OrderWorkplaceComponent implements OnInit{
       setTimeout(() => {
         this.calculateOrderProgress();
       }, 500);
+    }
+    openCalculationDialog(): void {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.width = '700px'; 
+      dialogConfig.data = { items: this.order.calculations };
+      const dialogRef = this.dialog.open(ItemCalculationComponent, dialogConfig);
+  
+      dialogRef.afterClosed().subscribe(result => {
+        
+      });
     }
   }

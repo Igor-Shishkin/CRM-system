@@ -22,6 +22,7 @@ export class Order {
     clientFullName: string | undefined;
     clientPhoneNumber: string | undefined;
     clientId: number | undefined;
+    clientEmail:string | undefined;
 
     projectPhotos: ProjectPhoto[] | undefined;
     calculations: ItemForCalculation[] | undefined;

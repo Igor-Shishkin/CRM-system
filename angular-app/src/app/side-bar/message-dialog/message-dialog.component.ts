@@ -34,7 +34,7 @@ export class MessageDialogComponent implements OnInit{
     this.message = this.data.message;
   }
 
-
+ 
   ngOnInit(): void {
     this.historyService.getTagsForNewHistoryMessage().subscribe({
       next: data => {

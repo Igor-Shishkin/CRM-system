@@ -10,6 +10,7 @@ public class OrderInfoResponse extends Order {
 
     private String clientFullName;
     private String clientPhoneNumber;
+    private String clientEmail;
     private long clientId;
 
     public OrderInfoResponse(Order order) {
@@ -38,5 +39,6 @@ public class OrderInfoResponse extends Order {
         this.setClientFullName(order.getClient().getFullName());
         this.setClientPhoneNumber(order.getClient().getPhoneNumber());
         this.setClientId(order.getClient().getId());
+        this.setClientEmail(order.getClient().getEmail());
     }
 }
