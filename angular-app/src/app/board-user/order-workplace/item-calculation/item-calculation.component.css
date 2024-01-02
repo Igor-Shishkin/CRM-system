@@ -2,3 +2,12 @@
     background-color: transparent;
     color: white;
 }
+.grid-container {
+    display: grid;
+    grid-template-areas:
+      'button space space space space space label sum';
+    margin: 11px 0px;
+}
+.wrong-input {
+    border: 2px solid red;
+}

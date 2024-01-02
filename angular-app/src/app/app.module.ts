@@ -71,7 +71,8 @@ import { ConfirmPainmentComponent } from './board-user/order-workplace/confirm-p
     MatDatepickerModule,
     MatInputModule,
     ReactiveFormsModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    ReactiveFormsModule
   ],
   providers: [httpInterceptorProviders, DatePipe],
   bootstrap: [AppComponent]

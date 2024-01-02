@@ -39,7 +39,7 @@
             </div>
             <div class="centered-element" style="grid-area: value;">
                 <input class="form-control custom-input-form" type="text"  style="grid-area: value; width: 90px;"
-                [value]="order.estimateBudged" [(ngModel)]="order.estimateBudged">
+                [value]="order.estimateBudged" [(ngModel)]="order.estimateBudged" (change)="delayCalculateProgress()">
             </div>
             <div class="outer-div" style="grid-area: range;">
                 <input type="range" class="form-range centered-element" min="0" max="10000" step="100" 

@@ -13,25 +13,37 @@
 
         <tbody>
             <tr *ngFor="let item of items" style="border-bottom: 1px rgb(2, 5, 75);" >
-                <td class="custom-input-form" style="width: 410px;">
+                <td class="custom-input-form" [class.wrong-input]="isEmptyThing(item.thing || '')"
+                 style="width: 410px;">
                     <input class="form-control custom-input-form" type="text"
                     [value]="item.thing" [(ngModel)]="item.thing">
                 </td>
-                <td class="custom-input-form">
-                    <input class="form-control custom-input-form" type="text"
-                    [value]="item.quantity" [(ngModel)]="item.quantity">
+                <td class="custom-input-form" style="width: 90px;"> 
+                    <input class="form-control custom-input-form" [class.wrong-input]="!isPositiveInteger(item.quantity || 0)"
+                    [value]="item.quantity" [(ngModel)]="item.quantity"
+                    type="number"
+                    (change)="calcilateTotalPriceForItem(item)">
                 </td>
-                <td class="custom-input-form">
-                    <input class="form-control custom-input-form" type="text"
-                    [value]="item.unitPrice" [(ngModel)]="item.unitPrice">
+                <td class="custom-input-form" [class.wrong-input]="isNegativeNumber(item.unitPrice || 0)"
+                style="width: 90px;">
+                    <input class="form-control custom-input-form" 
+                    [value]="item.unitPrice" [(ngModel)]="item.unitPrice" 
+                    type="number" 
+                    (change)="calcilateTotalPriceForItem(item)">
                 </td>
-                <td class="custom-input-form">
+                <td class="custom-input-form" style="width: 90px;">
                     <input class="form-control custom-input-form" type="text"
-                    [value]="item.totalPrice" [(ngModel)]="item.totalPrice">
+                    [value]="item.totalPrice" [(ngModel)]="item.totalPrice" disabled>
                 </td>
             </tr>
         </tbody>
       </table>
+      <section class="grid-container">
+        <button type="button" class="btn btn-outline-light" style="grid-area: button;" 
+        (click)="addItem()">Add item</button>
+        <label style="grid-area: label;">Result: </label>
+        <label style="grid-area: sum;">{{resultPrice}}</label>
+      </section>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Close</button>
