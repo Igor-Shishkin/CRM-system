@@ -2,9 +2,8 @@ package com.crm.system.controllers;
 
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
-import com.crm.system.models.Client;
-import com.crm.system.models.order.Order;
 import com.crm.system.playload.response.MessageResponse;
+import com.crm.system.playload.response.NewCalculationsForOrderResponse;
 import com.crm.system.playload.response.OrderInfoResponse;
 import com.crm.system.services.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,8 +32,21 @@ public class OrderController {
     @GetMapping()
     public ResponseEntity<?> getOrder(@RequestParam long orderId) {
         try {
-            OrderInfoResponse orderInfoResponse = orderService.getOrder(orderId);
+            OrderInfoResponse orderInfoResponse = orderService.getOrderInfoResponce(orderId);
             return ResponseEntity.ok(orderInfoResponse);
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
+            log.error("Order controller: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("Order controller: " + e.getMessage()));
+        }
+    }
+    @Operation(summary = "Get order", tags = { "Order", "get"})
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @GetMapping("/new-calculations")
+    public ResponseEntity<?> getNewCalculations(@RequestParam long orderId) {
+        try {
+            NewCalculationsForOrderResponse newCalculations = orderService.getNewCalculations(orderId);
+            return ResponseEntity.ok(newCalculations);
         } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
             log.error("Order controller: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

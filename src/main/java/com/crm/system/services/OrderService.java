@@ -4,6 +4,7 @@ import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.User;
 import com.crm.system.models.order.Order;
+import com.crm.system.playload.response.NewCalculationsForOrderResponse;
 import com.crm.system.playload.response.OrderInfoResponse;
 import com.crm.system.repository.OrderRepository;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class OrderService {
     }
 
 
-    public OrderInfoResponse getOrder(long orderId) throws UserPrincipalNotFoundException {
+    public OrderInfoResponse getOrderInfoResponce(long orderId) throws UserPrincipalNotFoundException {
         Optional<User> optionalUser = userService.getActiveUser();
         if (optionalUser.isEmpty()) {
             throw new UserPrincipalNotFoundException("I can't found active user");
@@ -39,6 +40,42 @@ public class OrderService {
         ) {
             OrderInfoResponse orderInfoResponse = new OrderInfoResponse(order);
             return orderInfoResponse;
+        } else {
+            throw new SubjectNotBelongToActiveUser("It's not your order");
+        }
+    }
+    public Order getOrder(long orderId) throws UserPrincipalNotFoundException {
+        Optional<User> optionalUser = userService.getActiveUser();
+        if (optionalUser.isEmpty()){
+            throw new UserPrincipalNotFoundException("I can't found active user");
+        }
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isEmpty()) {
+            throw new RequestOptionalIsEmpty("There isn't order with this ID");
+        }
+        Order order = optionalOrder.get();
+        if (order.getClient().getUser().equals(optionalUser.get())) {
+            return order;
+        } else {
+            throw new SubjectNotBelongToActiveUser("It's not your order");
+        }
+    }
+
+    public NewCalculationsForOrderResponse getNewCalculations(long orderId) throws UserPrincipalNotFoundException {
+        Optional<User> optionalUser = userService.getActiveUser();
+        if (optionalUser.isEmpty()){
+            throw new UserPrincipalNotFoundException("I can't found active user");
+        }
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isEmpty()) {
+            throw new RequestOptionalIsEmpty("There isn't order with this ID");
+        }
+        Order order = optionalOrder.get();
+        if (order.getClient().getUser().equals(optionalUser.get())) {
+            NewCalculationsForOrderResponse newCalculations = new NewCalculationsForOrderResponse();
+            newCalculations.setItems(order.getCalculations());
+            newCalculations.setResultPrice(order.getResultPrice());
+            return newCalculations;
         } else {
             throw new SubjectNotBelongToActiveUser("It's not your order");
         }

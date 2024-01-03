@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
+import { NewCalculations } from 'src/entities/NewCalculations';
 import { Order } from 'src/entities/Order';
 
 const ORDER_API = 'http://localhost:8080/api/user-board/order'
@@ -16,6 +17,14 @@ export class OrderService {
 
   getOrder(orderId: number):Observable<Order>{
     return this.http.get<Order>(`${ORDER_API}?orderId=${orderId}`).pipe(
+      catchError((error: any) => {
+        console.log(error);
+        throw error;
+      })
+    )
+  }
+  getNewCalculations(orderId: number):Observable<NewCalculations>{
+    return this.http.get<NewCalculations>(`${ORDER_API}/new-calculations?orderId=${orderId}`).pipe(
       catchError((error: any) => {
         console.log(error);
         throw error;

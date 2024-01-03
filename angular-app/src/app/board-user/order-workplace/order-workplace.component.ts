@@ -72,7 +72,16 @@ export class OrderWorkplaceComponent implements OnInit{
       const dialogRef = this.dialog.open(ItemCalculationComponent, dialogConfig);
   
       dialogRef.afterClosed().subscribe(result => {
-        
+        this.orderService.getNewCalculations(this.order.orderId || -1).subscribe({
+          next: data => {
+            this.order.calculations = data.items;
+            this.order.resultPrice = data.resultPrice;
+            console.log(this.order.calculations);
+            console.log(this.order.resultPrice);
+          }, error: err => {
+            console.log(err)
+          }
+        })
       });
     }
   }

@@ -1,9 +1,13 @@
 <h2 mat-dialog-title style="margin-bottom: 8px;">Items for order</h2>
 <mat-dialog-content>
+    <div *ngIf="isSavingWasFail" class="alert alert-danger" role="alert">
+        {{errorMessage}}
+    </div>
+    <div *ngIf="isItemsSaved" class="alert alert-success" role="alert">
+        Your changes are saved
+      </div>
     <div class="custom-scrollbar" style="background-color: transparent;">
     <table class="table table-hover custom-input-form">
-
-        
             <thead > 
                 <tr class="custom-input-form">
                     <th  class="custom-input-form">Thing</th>
@@ -57,7 +61,7 @@
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <div style="display: flex;">
-        <button mat-button (click)="saveItems()">Close</button>
+        <button mat-button style="color: green;" (click)="saveItems()">Save</button>
         <button mat-button mat-dialog-close>Close</button>
     </div>
 </mat-dialog-actions>
