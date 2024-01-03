@@ -1,7 +1,7 @@
 import { Component, Inject, numberAttribute } from '@angular/core';
 import { FormControl, ValidatorFn, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { ItemForCalculation } from 'src/entities/Calculation';
+import { ItemForCalculation } from 'src/entities/ItemForCalculation';
 
 @Component({
   selector: 'app-item-calculation',
@@ -9,6 +9,9 @@ import { ItemForCalculation } from 'src/entities/Calculation';
   styleUrls: ['./item-calculation.component.css']
 })
 export class ItemCalculationComponent {
+saveItems() {
+throw new Error('Method not implemented.');
+}
 
   items: ItemForCalculation[];
   resultPrice = 0;
@@ -17,21 +20,20 @@ export class ItemCalculationComponent {
     @Inject(MAT_DIALOG_DATA) public data: { items: ItemForCalculation[] }
   ) {
     this.items = this.data.items;
+    this.calculateResultPrice();
   }
-
-  positiveIntegerFormControl = new FormControl('', [
-    Validators.required,
-    Validators.pattern(/^[1-9][0-9]*$/)
-  ]);
-  positiveNumberFormControl = new FormControl('', [
-    Validators.required,
-    Validators.min(0.1) // Adjust the minimum value as needed
-  ]);
-  
 
   calculateResultPrice() {
     this.resultPrice = 0;
     for (let item of this.items) {
+      if (
+          ((!item.unitPrice || item.unitPrice < 0) || 
+          (!item.quantity || item.quantity < 0)) && 
+          item.thing && item.thing.length > 0
+        ) {
+        this.resultPrice = -1;
+        return;
+      }
       this.resultPrice += item.totalPrice || 0;
     }
     this.resultPrice = +this.resultPrice.toFixed(2);
@@ -41,18 +43,38 @@ export class ItemCalculationComponent {
       item.totalPrice = item.unitPrice * item.quantity * 1.1;
       item.totalPrice = +item.totalPrice.toFixed(2);
       this.calculateResultPrice();
+    } else {
+      this.resultPrice = -1;
     }
+    this.isEmptyThing(item);
   }
-  isNegativeNumber(price: number) {
-    return price < 0;
+  isNonPositiveNumber(price: number) {
+    return price <= 0;
   }
   isPositiveInteger(quantity: number) {
-    return quantity >= 0 && Number.isInteger(quantity);
+    return quantity > 0 && Number.isInteger(quantity);
   }
   addItem() {
     this.items.push(new ItemForCalculation);
   }
-  isEmptyThing(thing: string) {
-    return thing.length == 0;
+  isEmptyThing(item: ItemForCalculation) {
+    if (item.thing && item.thing.trim().length >0) {
+      if (
+        (!item.totalPrice || item.totalPrice < 0) && 
+        (!item.quantity || item.quantity < 0)
+      ) {
+        this.resultPrice = -1;
+      }
+      return false;
+    } else {
+      return true;
+    }
+  }
+  deleteItem(item: ItemForCalculation) {
+    if (this.resultPrice != -1 && item.totalPrice) {
+      this.resultPrice = this.resultPrice - item.totalPrice;
+      this.resultPrice = +this.resultPrice.toFixed(2);
+    }
+    this.items = this.items.filter((i: ItemForCalculation) => i !== item);
   }
 } 

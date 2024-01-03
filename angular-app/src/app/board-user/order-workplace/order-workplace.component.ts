@@ -67,8 +67,8 @@ export class OrderWorkplaceComponent implements OnInit{
     }
     openCalculationDialog(): void {
       const dialogConfig = new MatDialogConfig();
-      dialogConfig.width = '800px'; 
-      dialogConfig.data = { items: this.order.calculations };
+      dialogConfig.width = '870px'; 
+      dialogConfig.data = { items: this.order.calculations, orderId: this.order.orderId };
       const dialogRef = this.dialog.open(ItemCalculationComponent, dialogConfig);
   
       dialogRef.afterClosed().subscribe(result => {

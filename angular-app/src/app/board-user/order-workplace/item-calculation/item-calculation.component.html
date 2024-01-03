@@ -1,50 +1,63 @@
-<h2 mat-dialog-title>Items for order</h2>
+<h2 mat-dialog-title style="margin-bottom: 8px;">Items for order</h2>
 <mat-dialog-content>
-    <table class="table table-hover custom-input-form" style="color: aliceblue;">
+    <div class="custom-scrollbar" style="background-color: transparent;">
+    <table class="table table-hover custom-input-form">
 
-        <thead> 
-            <tr class="custom-input-form">
-                <th  class="custom-input-form">Thing</th>
-                <th  class="custom-input-form">Quantity</th>
-                <th class="custom-input-form">Unit price</th>
-                <th  class="custom-input-form">Total price</th>
-            </tr>
-        </thead>    
+        
+            <thead > 
+                <tr class="custom-input-form">
+                    <th  class="custom-input-form">Thing</th>
+                    <th  class="custom-input-form">Quantity</th>
+                    <th class="custom-input-form">Unit price</th>
+                    <th  class="custom-input-form">Total price</th>
+                    <th  class="custom-input-form"></th>
+                </tr>
+            </thead>    
 
-        <tbody>
-            <tr *ngFor="let item of items" style="border-bottom: 1px rgb(2, 5, 75);" >
-                <td class="custom-input-form" [class.wrong-input]="isEmptyThing(item.thing || '')"
-                 style="width: 410px;">
-                    <input class="form-control custom-input-form" type="text"
-                    [value]="item.thing" [(ngModel)]="item.thing">
-                </td>
-                <td class="custom-input-form" style="width: 90px;"> 
-                    <input class="form-control custom-input-form" [class.wrong-input]="!isPositiveInteger(item.quantity || 0)"
-                    [value]="item.quantity" [(ngModel)]="item.quantity"
-                    type="number"
-                    (change)="calcilateTotalPriceForItem(item)">
-                </td>
-                <td class="custom-input-form" [class.wrong-input]="isNegativeNumber(item.unitPrice || 0)"
-                style="width: 90px;">
-                    <input class="form-control custom-input-form" 
-                    [value]="item.unitPrice" [(ngModel)]="item.unitPrice" 
-                    type="number" 
-                    (change)="calcilateTotalPriceForItem(item)">
-                </td>
-                <td class="custom-input-form" style="width: 90px;">
-                    <input class="form-control custom-input-form" type="text"
-                    [value]="item.totalPrice" [(ngModel)]="item.totalPrice" disabled>
-                </td>
-            </tr>
-        </tbody>
+            <tbody >
+                <tr *ngFor="let item of items" style="border-bottom: 1px rgb(2, 5, 75);" >
+                    <td class="custom-input-form"  style="width: 410px;">
+                        <input class="form-control custom-input-form" type="text"
+                        [ngClass]="{ 'wrong-input': isEmptyThing(item) && (item.quantity && item.quantity > 0) }"
+                        [value]="item.thing" [(ngModel)]="item.thing">
+                    </td>
+                    <td class="custom-input-form" style="width: 90px;"> 
+                        <input class="form-control custom-input-form" 
+                        [ngClass]="{ 'wrong-input': !isPositiveInteger(item.quantity || 0) &&  !isEmptyThing(item) }"
+                        [value]="item.quantity" [(ngModel)]="item.quantity"
+                        type="number"
+                        (change)="calcilateTotalPriceForItem(item)">
+                    </td>
+                    <td class="custom-input-form" style="width: 110px;">
+                        <input class="form-control custom-input-form"  type="number" 
+                        [ngClass]="{ 'wrong-input': isNonPositiveNumber(item.unitPrice || 0) &&  !isEmptyThing(item) }"
+                        [value]="item.unitPrice" [(ngModel)]="item.unitPrice" 
+                        (change)="calcilateTotalPriceForItem(item)">
+                    </td>
+                    <td class="custom-input-form" style="width: 110px;">
+                        <input class="form-control custom-input-form" type="text"
+                        [value]="item.totalPrice" [(ngModel)]="item.totalPrice" disabled>
+                    </td>
+                    <td class="custom-input-form"> 
+                        <button type="button" class="btn btn-outline-danger"
+                        (click)="deleteItem(item)"
+                        >Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+
       </table>
+    </div>
       <section class="grid-container">
         <button type="button" class="btn btn-outline-light" style="grid-area: button;" 
         (click)="addItem()">Add item</button>
         <label style="grid-area: label;">Result: </label>
-        <label style="grid-area: sum;">{{resultPrice}}</label>
+        <label style="grid-area: sum;">{{ resultPrice === -1 ? 'Error' : resultPrice }}</label>
       </section>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Close</button>
+    <div style="display: flex;">
+        <button mat-button (click)="saveItems()">Close</button>
+        <button mat-button mat-dialog-close>Close</button>
+    </div>
 </mat-dialog-actions>

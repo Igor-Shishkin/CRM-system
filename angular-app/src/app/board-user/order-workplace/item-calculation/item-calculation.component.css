@@ -11,3 +11,21 @@
 .wrong-input {
     border: 2px solid red;
 }
+.custom-scrollbar {
+    height: 250px;
+    overflow-y: auto;
+    scrollbar-track-color: #333; 
+    scrollbar-thumb-color: #666; 
+    scrollbar-width: thin; 
+    scrollbar-thumb-radius: 5px; 
+  }
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px; 
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background-color: #333; 
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #666; 
+    border-radius: 5px;
+  }

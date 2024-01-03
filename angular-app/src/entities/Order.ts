@@ -1,4 +1,4 @@
-import { ItemForCalculation } from "./Calculation";
+import { ItemForCalculation } from "./ItemForCalculation";
 import { ProjectPhoto } from "./ProjectPhoto";
 
 export class Order {
