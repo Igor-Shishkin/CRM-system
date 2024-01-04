@@ -12,6 +12,7 @@ import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.services.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 
 @Slf4j
+@Tag(name = "Client controller", description = "Client management APIs")
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("api/user-board")
@@ -102,7 +104,7 @@ public class ClientController {
         try {
             Client client = clientService.getClient(clientId);
             return ResponseEntity.ok(client);
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser e) {
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
             log.error(e.getMessage() + ". Error: " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse(e.getMessage() + ". Error: " + e));
@@ -116,7 +118,8 @@ public class ClientController {
         try {
             clientService.editClientData(request);
             return ResponseEntity.ok(new MessageResponse("Changes are saved!"));
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser | NameOrEmailIsEmptyException e) {
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
+                 NameOrEmailIsEmptyException | UserPrincipalNotFoundException e) {
             log.error("Save client data error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Save client data error: " + e.getMessage()));

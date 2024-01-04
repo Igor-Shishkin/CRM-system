@@ -7,6 +7,7 @@ import com.crm.system.models.order.ItemForCalcualtion;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.services.ItemsForCalculationService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +17,7 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.Set;
 
 @Slf4j
+@Tag(name = "Calculations controller", description = "Items for calculation management APIs")
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("api/items-for-calculation")

@@ -115,7 +115,6 @@ export class ItemCalculationComponent {
           return false;
         }
       }
-      console.log(this.itemsForSaving)
       return true;
   }
   delayHidingFailingMessages() {

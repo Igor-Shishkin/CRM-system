@@ -7,6 +7,7 @@ import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.playload.response.TagForHistoryMessageResponse;
 import com.crm.system.services.HistoryMessageService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 @Slf4j
+@Tag(name = "Client controller", description = "Client management APIs")
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("api/history-message")
@@ -35,7 +37,7 @@ public class HistoryMessageController {
         try {
             Set<HistoryMessage> history = historyMessageService.getUserHistory();
             return ResponseEntity.ok(history);
-        } catch (RequestOptionalIsEmpty e) {
+        } catch (RequestOptionalIsEmpty | UserPrincipalNotFoundException e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }

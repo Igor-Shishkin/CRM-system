@@ -108,7 +108,7 @@ public class HistoryMessageService {
     }
     private boolean isMessageBelongsToActiveUser(User activeUser, long messageId) {
         return activeUser.getHistory().stream()
-                .anyMatch(m -> m.getMessageId().equals(messageId);
+                .anyMatch(m -> m.getMessageId().equals(messageId));
     }
 
 
