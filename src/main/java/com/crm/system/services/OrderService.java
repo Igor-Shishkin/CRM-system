@@ -24,60 +24,49 @@ public class OrderService {
 
 
     public OrderInfoResponse getOrderInfoResponce(long orderId) throws UserPrincipalNotFoundException {
-        Optional<User> optionalUser = userService.getActiveUser();
-        if (optionalUser.isEmpty()) {
-            throw new UserPrincipalNotFoundException("I can't found active user");
-        }
+        Order order = getOrderById(orderId);
+        OrderInfoResponse orderInfoResponse = new OrderInfoResponse(order);
+        return orderInfoResponse;
+    }
+
+
+
+    public Order getOrder(long orderId) throws UserPrincipalNotFoundException {
+        Order order = getOrderById(orderId);
+        return order;
+    }
+
+    public NewCalculationsForOrderResponse getNewCalculations(long orderId) throws UserPrincipalNotFoundException {
+        Order order = getOrderById(orderId);
+        NewCalculationsForOrderResponse newCalculations = new NewCalculationsForOrderResponse();
+        newCalculations.setItems(order.getCalculations());
+        newCalculations.setResultPrice(order.getResultPrice());
+        return newCalculations;
+    }
+
+    public void changeOrder(Order order) {
+        orderRepository.save(order);
+    }
+    private Order getOrderById(long orderId) throws UserPrincipalNotFoundException {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isEmpty()){
             throw new RequestOptionalIsEmpty("There isn't order with this ID");
         }
         Order order = optionalOrder.get();
-        User activeUser = optionalUser.get();
-
-        if (activeUser.getClients().stream()
-                        .anyMatch(client -> client.getId().equals(order.getClient().getId()))
-        ) {
-            OrderInfoResponse orderInfoResponse = new OrderInfoResponse(order);
-            return orderInfoResponse;
-        } else {
-            throw new SubjectNotBelongToActiveUser("It's not your order");
-        }
-    }
-    public Order getOrder(long orderId) throws UserPrincipalNotFoundException {
-        Optional<User> optionalUser = userService.getActiveUser();
-        if (optionalUser.isEmpty()){
-            throw new UserPrincipalNotFoundException("I can't found active user");
-        }
-        Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        if (optionalOrder.isEmpty()) {
-            throw new RequestOptionalIsEmpty("There isn't order with this ID");
-        }
-        Order order = optionalOrder.get();
-        if (order.getClient().getUser().equals(optionalUser.get())) {
+        if (isOrderBelongsActiveUser(order) ) {
             return order;
         } else {
             throw new SubjectNotBelongToActiveUser("It's not your order");
         }
     }
 
-    public NewCalculationsForOrderResponse getNewCalculations(long orderId) throws UserPrincipalNotFoundException {
+    private boolean isOrderBelongsActiveUser(Order order) throws UserPrincipalNotFoundException {
         Optional<User> optionalUser = userService.getActiveUser();
-        if (optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             throw new UserPrincipalNotFoundException("I can't found active user");
         }
-        Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        if (optionalOrder.isEmpty()) {
-            throw new RequestOptionalIsEmpty("There isn't order with this ID");
-        }
-        Order order = optionalOrder.get();
-        if (order.getClient().getUser().equals(optionalUser.get())) {
-            NewCalculationsForOrderResponse newCalculations = new NewCalculationsForOrderResponse();
-            newCalculations.setItems(order.getCalculations());
-            newCalculations.setResultPrice(order.getResultPrice());
-            return newCalculations;
-        } else {
-            throw new SubjectNotBelongToActiveUser("It's not your order");
-        }
+        User activeUser = optionalUser.get();
+        return activeUser.getClients().stream()
+                .anyMatch(client -> client.getId().equals(order.getClient().getId()));
     }
 }

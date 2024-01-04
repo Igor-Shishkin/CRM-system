@@ -5,7 +5,7 @@ import com.crm.system.exception.NameOrEmailIsEmptyException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
-import com.crm.system.playload.request.AddLidRequest;
+import com.crm.system.playload.request.AddLeadRequest;
 import com.crm.system.playload.request.EditClientDataRequest;
 import com.crm.system.playload.response.ClientInfoResponse;
 import com.crm.system.playload.response.MessageResponse;
@@ -36,7 +36,7 @@ public class ClientController {
     @Operation(summary = "Add new Lead", tags = { "Client", "add"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
     @PostMapping()
-    public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLidRequest addLidRequest) {
+    public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLeadRequest addLidRequest) {
         try {
             clientService.addNewLead(addLidRequest);
             log.info(String.format("Lid %s is added", addLidRequest.getFullName()));

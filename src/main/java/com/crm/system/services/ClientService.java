@@ -8,7 +8,7 @@ import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
 import com.crm.system.models.User;
 import com.crm.system.models.order.Order;
-import com.crm.system.playload.request.AddLidRequest;
+import com.crm.system.playload.request.AddLeadRequest;
 import com.crm.system.playload.request.EditClientDataRequest;
 import com.crm.system.playload.response.ClientInfoResponse;
 import com.crm.system.repository.ClientRepository;
@@ -37,11 +37,7 @@ public class ClientService {
     }
 
     public List<ClientInfoResponse> getAllClients() throws UserPrincipalNotFoundException {
-        Optional<User> activeUser = getActiveUser(getActiveUserId());
-        if (activeUser.isEmpty()) {
-            throw new UserPrincipalNotFoundException("User not found");
-        }
-        User user = activeUser.get();
+        User user = getActiveUser();
         List<ClientInfoResponse> infoClientResponses = new ArrayList<>(user.getClients().size() * 2);
         for (Client client : user.getClients()) {
             if (client.getStatus().equals(ClientStatus.CLIENT)) {
@@ -65,10 +61,8 @@ public class ClientService {
     }
 
     public List<ClientInfoResponse> getAllLeads() throws UserPrincipalNotFoundException {
-        long activeUserId = getActiveUserId();
-
-        return clientRepository.findAll().stream()
-                .filter(client -> client.getUser().getUserId().equals(activeUserId))
+        User user = getActiveUser();
+        return user.getClients().stream()
                 .filter(client -> client.getStatus().equals(ClientStatus.LEAD))
                 .map(client -> new ClientInfoResponse.Builder()
                         .withId(client.getId())
@@ -82,80 +76,55 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
-    public void addNewLead(AddLidRequest addLidRequest) throws UserPrincipalNotFoundException {
-        if (clientRepository.existsByEmail(addLidRequest.getEmail())) {
+    public void addNewLead(AddLeadRequest addLeadRequest) throws UserPrincipalNotFoundException {
+        if (clientRepository.existsByEmail(addLeadRequest.getEmail())) {
             throw new ClientAlreadyExistException("Lid with this email already exists");
         }
-        Optional<User> activeUser = getActiveUser(getActiveUserId());
-        Client lead = activeUser.map(user -> new Client(
-                addLidRequest.getFullName(),
-                addLidRequest.getEmail(),
-                addLidRequest.getPhoneNumber(),
-                addLidRequest.getAddres(),
-                user
-        )).orElseThrow((
-        ) -> new UserPrincipalNotFoundException("User not found"));
+        User activeUser = getActiveUser();
+        Client newLead = new Client(
+                addLeadRequest.getFullName(),
+                addLeadRequest.getEmail(),
+                addLeadRequest.getPhoneNumber(),
+                addLeadRequest.getAddres(),
+                activeUser);
 
-        String messageText = String.format("Lead %s is created", lead.getFullName());
-        historyMessageService.createHistoryMessageForClient(lead, activeUser.get(), messageText);
+        String messageText = String.format("Lead %s is created", newLead.getFullName());
+        historyMessageService.createHistoryMessageForClient(newLead, activeUser, messageText);
 
-        clientRepository.save(lead);
+        clientRepository.save(newLead);
     }
 
-    public void sentToBlackList(long lidId) throws UserPrincipalNotFoundException, SubjectNotBelongToActiveUser {
-        Optional<User> activeUser = getActiveUser(getActiveUserId());
-        if (activeUser.isPresent()) {
-            Optional<Client> optionalClient = clientRepository.findById(lidId);
-            if (optionalClient.isPresent()) {
-                Client requestClient = optionalClient.get();
-                if (requestClient.getUser().equals(activeUser.get())) {
-                    requestClient.setStatus(ClientStatus.BLACKLIST);
-                    clientRepository.save(requestClient);
-                    String messageText = String.format("Client %s goes to blackList", requestClient.getFullName());
-                    historyMessageService.createHistoryMessageForClient(requestClient, activeUser.get(), messageText);
-                } else {
-                    throw new SubjectNotBelongToActiveUser("It's not your Client. You don't have access to this Client.");
-                }
-            } else {
-                throw new RequestOptionalIsEmpty(String.format("Client with %d id doesn't exist", lidId));
-            }
-        } else {
-            throw new UserPrincipalNotFoundException("Active User isn't found");
-        }
+    public void sentToBlackList(long clientId) throws UserPrincipalNotFoundException, SubjectNotBelongToActiveUser {
+
+        Client client = getClientById(clientId);
+
+        client.setStatus(ClientStatus.BLACKLIST);
+        clientRepository.save(client);
+
+        String messageText = String.format("Client %s goes to blackList", client.getFullName());
+        historyMessageService.createHistoryMessageForClient(client, client.getUser(), messageText);
     }
 
-    public Client getClient(long clientId) {
-        long activeUserId = getActiveUserId();
-        Optional<Client> optionalClient = clientRepository.findById(clientId);
-        if (optionalClient.isPresent()) {
-            if (optionalClient.get().getUser().getUserId().equals(activeUserId)) {
-                Client client = optionalClient.get();
-                for (Order order: client.getOrders()) {
-                    order.setProjectPhotos(null);
-                    order.setCalculations(null);
-                    order.setClient(null);
-                }
-                return client;
-            } else  {
-                throw new SubjectNotBelongToActiveUser("It's not you client!");
-            }
-        } else {
-            throw new RequestOptionalIsEmpty("Client isn't found");
+
+
+    public Client getClient(long clientId) throws UserPrincipalNotFoundException {
+        Client client = getClientById(clientId);
+
+        for (Order order: client.getOrders()) {
+            order.setProjectPhotos(null);
+            order.setCalculations(null);
+            order.setClient(null);
         }
+        return client;
     }
-    public void editClientData(EditClientDataRequest request) {
-        Optional<Client> optionalClient = clientRepository.findById(request.getClientId());
-        if (optionalClient.isEmpty()) {
-            throw new RequestOptionalIsEmpty("Client not found");
-        }
-        Client client = optionalClient.get();
-        if (!client.getUser().getUserId().equals(getActiveUserId())) {
-            throw new SubjectNotBelongToActiveUser("It's not your client!");
-        }
+    public void editClientData(EditClientDataRequest request) throws UserPrincipalNotFoundException {
         if (request.getFullName().isBlank() ||
                 request.getEmail().isBlank()) {
             throw new NameOrEmailIsEmptyException("Name and email can't be empty!");
         }
+
+        Client client = getClientById(request.getClientId());
+
         client.setFullName(request.getFullName());
         client.setEmail(request.getEmail());
         client.setPhoneNumber(request.getPhoneNumber());
@@ -163,9 +132,12 @@ public class ClientService {
 
         clientRepository.save(client);
     }
-    private Optional<User> getActiveUser(long userId) {
-        Optional<User> user = userRepository.findById(userId);
-        return user;
+    private User getActiveUser() throws UserPrincipalNotFoundException {
+        Optional<User> optionalUser = userRepository.findById(getActiveUserId());
+        if (optionalUser.isEmpty()) {
+            throw new UserPrincipalNotFoundException("User not found");
+        }
+        return optionalUser.get();
     }
 
     private long getActiveUserId() {
@@ -173,6 +145,20 @@ public class ClientService {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
         return userId;
     }
-
-
+    private Client getClientById(long clientId) throws UserPrincipalNotFoundException {
+        Optional<Client> optionalClient = clientRepository.findById(clientId);
+        if (optionalClient.isEmpty()) {
+            throw new RequestOptionalIsEmpty(String.format("Client with %d id doesn't exist", clientId));
+        }
+        Client client = optionalClient.get();
+        if (isClientBelongsToActiveUser(client)){
+            return client;
+        } else {
+            throw new SubjectNotBelongToActiveUser("It's not your Client. You don't have access to this Client.");
+        }
+    }
+    private boolean isClientBelongsToActiveUser(Client client) throws UserPrincipalNotFoundException {
+        User activeUser = getActiveUser();
+        return (client.getUser().equals(activeUser));
+    }
 }

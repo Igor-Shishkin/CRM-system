@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AddLidRequest {
+public class AddLeadRequest {
     @NotBlank
     @Size(max = 50)
     private String fullName;

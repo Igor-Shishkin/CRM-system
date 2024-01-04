@@ -44,14 +44,10 @@ public class HistoryMessageService {
         historyMessageRepository.save(message);
     }
 
-    public Set<HistoryMessage> getUserHistory() {
-        Optional<User> optionalUser = userService.getActiveUser();
-        Optional<Set<HistoryMessage>> optionalHistoryMessages = optionalUser.map(User::getHistory);
-        if (optionalHistoryMessages.isPresent()) {
-            return optionalHistoryMessages.get();
-        } else {
-            throw new RequestOptionalIsEmpty("History is not found");
-        }
+    public Set<HistoryMessage> getUserHistory() throws UserPrincipalNotFoundException {
+        User activeUser = getActiveUser();
+        Set<HistoryMessage> historyMessages = activeUser.getHistory();
+        return historyMessages;
     }
 
     public List<TagForHistoryMessageResponse> getListOfTags() throws UserPrincipalNotFoundException {
@@ -73,48 +69,46 @@ public class HistoryMessageService {
     }
 
     public void saveMessage(HistoryMessage message) throws UserPrincipalNotFoundException {
-        Optional<User> optionalUser = userService.getActiveUser();
-        if (optionalUser.isPresent()) {
-            if (message.getMessageId().equals(-1L)) {
-                message.setMessageId(null);
-                message.setUser(optionalUser.get());
-                message.setDateOfCreation(LocalDateTime.now());
-                historyMessageRepository.save(message);
-                return;
-            } else {
-                if (optionalUser.get().getHistory().stream()
-                        .anyMatch(m -> m.getMessageId().equals(message.getMessageId()))) {
-                    message.setUser(optionalUser.get());
-                    historyMessageRepository.save(message);
-                } else {
-                    throw new SubjectNotBelongToActiveUser("It's not your history message");
-                }
-            }
+        User activeUser = getActiveUser();
+
+        if (message.getMessageId().equals(-1L)) {
+            message.setMessageId(null);
+            message.setUser(activeUser);
+            message.setDateOfCreation(LocalDateTime.now());
+            historyMessageRepository.save(message);
         } else {
-            throw new UserPrincipalNotFoundException("User not found exception");
-        }
-    }
-
-    public void deleteMessage(long messageId) throws UserPrincipalNotFoundException {
-        Optional<User> optionalUser = userService.getActiveUser();
-        if (optionalUser.isPresent()) {
-
-            if (optionalUser.get().getHistory().stream()
-                    .anyMatch(m -> m.getMessageId().equals(messageId))) {
-                historyMessageRepository.deleteById(messageId);
+            if (isMessageBelongsToActiveUser(activeUser, message.getMessageId())) {
+                message.setUser(activeUser);
+                historyMessageRepository.save(message);
             } else {
                 throw new SubjectNotBelongToActiveUser("It's not your history message");
             }
-
-        } else {
-            throw new UserPrincipalNotFoundException("User not found exception");
         }
     }
-
+    public void deleteMessage(long messageId) throws UserPrincipalNotFoundException {
+        User activeUser = getActiveUser();
+        if (isMessageBelongsToActiveUser(activeUser, messageId)) {
+            historyMessageRepository.deleteById(messageId);
+        } else {
+            throw new SubjectNotBelongToActiveUser("It's not your history message");
+        }
+    }
     private long getActiveUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
         return userId;
+    }
+    private User getActiveUser() throws UserPrincipalNotFoundException {
+        Optional<User> optionalUser = userService.getActiveUser();
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        } else {
+            throw new UserPrincipalNotFoundException("User not found exception");
+        }
+    }
+    private boolean isMessageBelongsToActiveUser(User activeUser, long messageId) {
+        return activeUser.getHistory().stream()
+                .anyMatch(m -> m.getMessageId().equals(messageId);
     }
 
 

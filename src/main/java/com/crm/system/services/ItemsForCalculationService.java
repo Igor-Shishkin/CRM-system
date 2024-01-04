@@ -19,33 +19,39 @@ public class ItemsForCalculationService {
         this.orderService = orderService;
     }
 
-
     public void saveItems(Set<ItemForCalcualtion> items, long orderId) throws UserPrincipalNotFoundException {
-        Optional<User> optionalUser = userService.getActiveUser();
-        if (optionalUser.isEmpty()) {
-            throw new UserPrincipalNotFoundException("I can't found active user");
-        }
         Order order = orderService.getOrder(orderId);
         order.setCalculations(null);
+
         Set<ItemForCalcualtion> calcualtionSet = new HashSet<>();
-        for (ItemForCalcualtion item : items) {
-            if (!item.getThing().isEmpty() &&
-                item.getQuantity()>=0 &&
-                item.getUnitPrice()>=0) {
-                item.setTotalPrice(item.getQuantity() * item.getUnitPrice() * 1.1);
-                calcualtionSet.add(item);
-            }
-        }
+        calculateTotalPrice(items, calcualtionSet);
+
+        double sum = calcualteResultSum(calcualtionSet);
+
+        order.setCalculations(calcualtionSet);
+        order.setResultPrice(sum);
+        orderService.changeOrder(order);
+    }
+    private double calcualteResultSum(Set<ItemForCalcualtion> calcualtionSet) {
         double sum = 0;
         for (ItemForCalcualtion item: calcualtionSet) {
             if (item.getTotalPrice()>0) {
                 sum += item.getTotalPrice();
             } else {
-                sum = 0;
-                break;
+                return  0;
             }
         }
-        order.setCalculations(calcualtionSet);
-        order.setResultPrice(sum);
+        return sum;
+    }
+    private void calculateTotalPrice(Set<ItemForCalcualtion> items, Set<ItemForCalcualtion> calcualtionSet) {
+        for (ItemForCalcualtion item : items) {
+            if (!item.getThing().isEmpty() &&
+                    item.getQuantity()>=0 &&
+                    item.getUnitPrice()>=0) {
+                item.setTotalPrice(item.getQuantity() * item.getUnitPrice() * 1.1);
+                calcualtionSet.add(item);
+            }
+        }
+
     }
 }
