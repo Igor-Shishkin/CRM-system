@@ -4,12 +4,14 @@ import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.User;
 import com.crm.system.models.order.Order;
+import com.crm.system.playload.request.ChangeAgreementStatusRequest;
 import com.crm.system.playload.response.NewCalculationsForOrderResponse;
 import com.crm.system.playload.response.OrderInfoResponse;
 import com.crm.system.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -47,6 +49,12 @@ public class OrderService {
     public void changeOrder(Order order) {
         orderRepository.save(order);
     }
+    public void setAgreementStatus(ChangeAgreementStatusRequest request) throws UserPrincipalNotFoundException {
+        Order order = getOrderById(request.getOrderId());
+        order.setAgreementSigned(request.isAgreementSigned());
+        order.setDateOfLastChange(LocalDateTime.now());
+        orderRepository.save(order);
+    }
     private Order getOrderById(long orderId) throws UserPrincipalNotFoundException {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isEmpty()){
@@ -69,4 +77,6 @@ public class OrderService {
         return activeUser.getClients().stream()
                 .anyMatch(client -> client.getId().equals(order.getClient().getId()));
     }
+
+
 }

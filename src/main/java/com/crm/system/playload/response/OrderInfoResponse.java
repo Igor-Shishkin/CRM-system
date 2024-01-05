@@ -22,7 +22,8 @@ public class OrderInfoResponse extends Order {
         this.setProjectApproved(order.isProjectApproved());
         this.setMeasurementsTaken(order.isMeasurementsTaken());
         this.setMeasurementOffered(order.isMeasurementOffered());
-        this.setHasAgreementPrepared(order.isHasAgreementPrepared());
+        this.setAgreementPrepared(order.isAgreementPrepared());
+        this.setAgreementSigned(order.isAgreementSigned());
         this.setWasMeetingInOffice(order.isWasMeetingInOffice());
         this.setAddress(order.getAddress());
         this.setCalculationPromised(order.isCalculationPromised());

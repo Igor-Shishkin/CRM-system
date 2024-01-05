@@ -31,4 +31,18 @@ export class OrderService {
       })
     )
   }
+  saveAgreementStatus(isAgreementSigned: boolean, orderId: number) {
+    console.log(isAgreementSigned);
+    return this.http.post(ORDER_API + '/sign-agreement',
+    {
+      isAgreementSigned: isAgreementSigned,
+      orderId: orderId
+    }, httpOptions
+  ).pipe(
+      catchError((error: any) => {
+        console.log(error);
+        throw error;
+      })
+    )
+  }
 }

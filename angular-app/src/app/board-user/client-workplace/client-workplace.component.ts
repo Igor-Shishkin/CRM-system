@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClientsService } from 'src/app/_services/clients.service';
-import { SharedServiceService } from 'src/app/_services/shared.service';
 import { Client } from 'src/entities/Client';
 import { Order } from 'src/entities/Order';
 
@@ -80,7 +79,7 @@ export class ClientWorkplaceComponent {
     if (order.estimateBudged !== 0) { counter++; }
     if (order.isMeasurementsTaken === true) { counter++; }
     if (order.isMeasurementOffered === true) { counter++; }
-    if (order.hasAgreementPrepared === true) { counter++; }
+    if (order.isAgreementPrepared === true) { counter++; }
     if (order.resultPrice && order.resultPrice > 0) { counter++; }
     if (order.hasBeenPaid === true) { counter++; }
     counter = Math.floor( (counter/12) *100 );

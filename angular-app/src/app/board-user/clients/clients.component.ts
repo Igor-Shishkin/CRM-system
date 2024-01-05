@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { Client } from 'src/entities/Client';
 import { ClientsService } from 'src/app/_services/clients.service';
-import { SharedServiceService } from 'src/app/_services/shared.service';
 import { Router } from '@angular/router';
 
 @Component({

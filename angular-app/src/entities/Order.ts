@@ -17,7 +17,8 @@ export class Order {
     dateOfLastChange: Date | undefined;
     isMeasurementsTaken: boolean | undefined;
     isMeasurementOffered: boolean | undefined;
-    hasAgreementPrepared: boolean | undefined;
+    isAgreementPrepared: boolean | undefined;
+    isAgreementSigned: boolean | undefined;
 
     clientFullName: string | undefined;
     clientPhoneNumber: string | undefined;

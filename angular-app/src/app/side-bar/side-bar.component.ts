@@ -1,5 +1,4 @@
 import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
-import { SharedServiceService } from '../_services/shared.service';
 import { HistoryMessage } from '../../entities/HistoryMessage';
 import { UserService } from '../_services/user.service';
 import { StorageService } from '../_services/storage.service';

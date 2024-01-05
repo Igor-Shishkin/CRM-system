@@ -9,7 +9,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Where;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -68,8 +67,13 @@ public class Order {
     @JsonProperty("isCalculationShown")
     private InfoIsShown isCalculationShown = InfoIsShown.NOT_SHOWN;
 
-    @Column(name = "has_agreement_prepared")
-    private boolean hasAgreementPrepared = false;
+    @Column(name = "is_agreement_prepared")
+    @JsonProperty("isAgreementPrepared")
+    private boolean isAgreementPrepared = false;
+
+    @Column(name = "is_agreement_signed")
+    @JsonProperty("isAgreementSigned")
+    private boolean isAgreementSigned = false;
 
     @Column(name = "data_of_creation")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

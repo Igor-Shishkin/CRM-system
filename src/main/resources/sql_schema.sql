@@ -3,7 +3,7 @@ USE marton_db;
 
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS user_roles;
-DROP TABLE IF EXISTS item;
+DROP TABLE IF EXISTS items;
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS history_messages;
 DROP TABLE IF EXISTS order_photos;
@@ -54,7 +54,8 @@ CREATE TABLE orders (
     is_project_approved BOOLEAN DEFAULT false,
     is_measurements_taken BOOLEAN DEFAULT false,
     is_measurement_offered BOOLEAN DEFAULT false,
-    has_agreement_prepared BOOLEAN DEFAULT false,
+    is_agreement_prepared BOOLEAN DEFAULT false,
+    is_agreement_signed BOOLEAN DEFAULT false,
     was_meeting_in_office BOOLEAN DEFAULT false,
     result_price DOUBLE DEFAULT 0.0,
     has_been_paid BOOLEAN DEFAULT false,
@@ -137,7 +138,7 @@ VALUES
 
 INSERT INTO items (thing, quantity, unit_price, total_price, order_id)
 VALUES
-    ('chipboard sheet 400*200', 3, 231.5, 717,65, 1),
+    ('chipboard sheet 400*200', 3, 231.5, 717.65, 1),
     ('chipboard sheet 100*150', 5, 100, 550, 1),
     ('white kitchen countertop 80*300', 1, 450, 495, 1),
     ('door hinge without closer', 10, 12, 132, 1);

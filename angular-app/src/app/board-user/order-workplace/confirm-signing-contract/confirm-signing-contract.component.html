@@ -1,0 +1,28 @@
+
+<mat-dialog-content>
+
+    <div *ngIf="!isAgreementSigned && !isFailed && !isSuccess" >
+        <button type="button" class="btn btn-success"
+        style="width: 235px; height: 55px; font-size: 30px;"
+        (click)="signAgreement()"
+        >Sing agreement</button>
+    </div>
+    <div *ngIf="isAgreementSigned && !isFailed && !isSuccess" class="d-grid gap-2 col-6 mx-auto">
+        <h2>The agreement has already been signed. Do you want to cancel it?</h2>
+        <button type="button" class="btn btn-outline-warning"
+        (click)="cancelAgreement()"
+        >Cancel the agreement</button>
+    </div>
+    <div *ngIf="isFailed" class="d-grid gap-2 col-6 mx-auto alert alert-danger">
+        <h2>Error sending data to server</h2>
+    </div>
+    <div *ngIf="isSuccess" class="d-grid gap-2 col-6 mx-auto alert alert-info">
+        <h2>{{successMessage}}</h2>
+    </div>
+    
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <div style="display: flex;">
+        <button mat-button mat-dialog-close>Close without save</button>
+    </div>
+</mat-dialog-actions>

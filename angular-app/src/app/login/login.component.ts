@@ -3,7 +3,6 @@ import { AuthService } from '../_services/auth.service';
 import { StorageService } from '../_services/storage.service';
 import { Router } from '@angular/router';
 import { delay } from 'rxjs';
-import { SharedServiceService } from '../_services/shared.service';
 import { HistoryMessage } from '../../entities/HistoryMessage';
 import { UserService } from '../_services/user.service';
 import { HistoryService } from '../_services/history.service';
@@ -27,7 +26,6 @@ export class LoginComponent implements OnInit {
     private storageService: StorageService,
     private router: Router,
     private zone: NgZone,
-    private sharedService: SharedServiceService,
     private historyService: HistoryService) { }
 
   ngOnInit(): void {

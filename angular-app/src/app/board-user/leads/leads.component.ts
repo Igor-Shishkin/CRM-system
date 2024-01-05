@@ -1,7 +1,6 @@
 import { Component, Input, NgModule, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ClientsService } from 'src/app/_services/clients.service';
-import { SharedServiceService } from 'src/app/_services/shared.service';
 import { StorageService } from 'src/app/_services/storage.service';
 import { Client } from 'src/entities/Client';
 

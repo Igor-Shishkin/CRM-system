@@ -5,6 +5,7 @@ import { timer } from 'rxjs';
 import { OrderService } from 'src/app/_services/order.service';
 import { Order } from 'src/entities/Order';
 import { ItemCalculationComponent } from './item-calculation/item-calculation.component';
+import { ConfirmSigningContractComponent } from './confirm-signing-contract/confirm-signing-contract.component';
 
 @Component({
   selector: 'app-order-workplace',
@@ -17,6 +18,7 @@ export class OrderWorkplaceComponent implements OnInit{
   counter = 1;
   orderProgress = '';
   orderInstance: any;
+  unableToSignAgreement = false;
   
   constructor(
     private router: Router ,
@@ -54,7 +56,7 @@ export class OrderWorkplaceComponent implements OnInit{
     if (this.order.estimateBudged !== 0) { this.counter++; }
     if (this.order.isMeasurementsTaken === true) { this.counter++; }
     if (this.order.isMeasurementOffered === true) { this.counter++; }
-    if (this.order.hasAgreementPrepared === true) { this.counter++; }
+    if (this.order.isAgreementPrepared === true) { this.counter++; }
     if (this.order.resultPrice && this.order.resultPrice > 0) { this.counter++; }
     if (this.order.hasBeenPaid === true) { this.counter++; }
       this.counter = Math.floor( (this.counter/12) *100 );
@@ -81,12 +83,33 @@ export class OrderWorkplaceComponent implements OnInit{
             this.order.resultPrice = data.resultPrice;
             if (this.order.resultPrice) {
               this.order.resultPrice = +this.order.resultPrice.toFixed(2);
-            }
+            } else { this.order.resultPrice = -1 }
             this.calculateOrderProgress();
           }, error: err => {
             console.log(err)
           }
         })
+        this.unableToSignAgreement = false;
       });
+    }
+    openConfirmSingingDialog(): void {
+      if (this.order.calculations && this.order.calculations.length>0 &&
+        this.order.resultPrice && this.order.resultPrice>0) 
+      {
+        console.log(this.order.isAgreementSigned)
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = { 
+          isAgreementSigned: this.order.isAgreementSigned, 
+          orderId: this.order.orderId
+        };
+        console.log(dialogConfig.data);
+        const dialogRef = this.dialog.open(ConfirmSigningContractComponent, dialogConfig);
+          
+        dialogRef.afterClosed().subscribe(result => {
+          this.unableToSignAgreement = false;
+        });
+      } else {
+        this.unableToSignAgreement = true;
+      }
     }
   }

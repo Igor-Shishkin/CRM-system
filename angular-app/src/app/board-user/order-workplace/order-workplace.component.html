@@ -50,7 +50,7 @@
         </div>
 </section>
 
-<section style="display: flex; width: 800px;">
+<section style="display: flex;">
     <section style="width: 430px;">
 
         <div class="row g-3 field-margin">
@@ -220,13 +220,13 @@
             <div class="col-auto">
                 <div class="btn-group" role="group-agreement-prepared" aria-label="Basic radio toggle button group">
                     <input type="radio" class="btn-check" name="agreem-prep" id="agreem-prep1" 
-                    autocomplete="off" [(ngModel)]="order.hasAgreementPrepared" [value]="false">
+                    autocomplete="off" [(ngModel)]="order.isAgreementPrepared" [value]="false">
                     <label class="btn btn-outline-primary" for="agreem-prep1"
                     (click)="delayCalculateProgress()"
                     >NO</label>
                 
                     <input type="radio" class="btn-check" name="agreem-prep" id="agreem-prep2" 
-                    autocomplete="off" [(ngModel)]="order.hasAgreementPrepared" [value]="true">
+                    autocomplete="off" [(ngModel)]="order.isAgreementPrepared" [value]="true">
                     <label class="btn btn-outline-primary" for="agreem-prep2"
                     (click)="delayCalculateProgress()"
                     >YES</label>
@@ -236,14 +236,17 @@
 
     </section>
 
-    <aside style="margin-left: 3%; margin-top: 25px;">
+    <aside style="margin-left: 11%; margin-top: 25px">
       <div class="d-flex flex-column align-items-end">
-        <div class="d-grid gap-2 col-12 col-md-6 justify-content-end">
-          <button type="button" class="btn btn-outline-success" (click)="openCalculationDialog()">Edit items</button>
-          <button type="button" class="btn btn-outline-success">Confirm the signing of the contract</button>
+        <div class="d-grid gap-2 col-12 col-md-10 justify-content-end">
+          <button type="button" class="btn btn-outline-success" 
+          [ngClass]="{ 'wrong-input': unableToSignAgreement }"
+            (click)="openCalculationDialog()">Edit items</button>
+          <button type="button" class="btn btn-outline-success" 
+            (click)="openConfirmSingingDialog()">Confirm the signing of the contract</button>
           <button type="button" class="btn btn-outline-success">Confirm payment by the customer for the order</button>
           <button type="button" class="btn btn-outline-success">Sent email</button>
-          <h2 >Result price: {{order.resultPrice}}</h2>
+          <h2 >Result price: {{order.resultPrice === -1 || order.resultPrice === 0 ? '' : order.resultPrice}}</h2>
         </div>
       </div>
 
