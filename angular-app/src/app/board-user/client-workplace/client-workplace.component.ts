@@ -36,8 +36,8 @@ export class ClientWorkplaceComponent {
       next: data => {
         this.client = data;
         this.filteredOrders = this.client.orders?.sort((a, b) => {
-          if (a.dateOfCreation && b.dateOfCreation) {
-            return a.dateOfCreation.getTime()-a.dateOfCreation.getTime();
+          if (a.dateOfLastChange && b.dateOfLastChange) {
+            return a.dateOfLastChange.getTime()-a.dateOfLastChange.getTime();
           }
           return 0;
         })

@@ -102,9 +102,7 @@ export class ItemCalculationComponent {
   checkItems() {
       for (let item of this.items) {
         if (
-          item.thing && item.thing.trim().length > 0 &&
-          item.quantity && item.quantity>0 && Number.isInteger(item.quantity) &&
-          item.unitPrice && item.unitPrice>0
+          item.thing && item.thing.trim().length > 0
         ) {
           this.itemsForSaving.push(item);
         } else {

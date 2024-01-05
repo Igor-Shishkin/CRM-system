@@ -84,7 +84,7 @@ public class Order {
     @Column(name = "project_photos")
     private Set<ProjectPhoto> projectPhotos = new HashSet<>();
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<ItemForCalcualtion> calculations = new HashSet<>();
 

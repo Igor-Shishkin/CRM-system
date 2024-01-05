@@ -237,11 +237,14 @@
     </section>
 
     <aside style="margin-left: 3%; margin-top: 25px;">
-      <div class="d-grid gap-2 col-6 mx-auto">
-        <button type="button" class="btn btn-outline-success" (click)="openCalculationDialog()">Edit items</button>
-        <button type="button" class="btn btn-outline-success">Confirm the signing of the contract</button>
-        <button type="button" class="btn btn-outline-success">Confirm payment by the customer for the order</button>
-        <button type="button" class="btn btn-outline-success">Sent email</button>
+      <div class="d-flex flex-column align-items-end">
+        <div class="d-grid gap-2 col-12 col-md-6 justify-content-end">
+          <button type="button" class="btn btn-outline-success" (click)="openCalculationDialog()">Edit items</button>
+          <button type="button" class="btn btn-outline-success">Confirm the signing of the contract</button>
+          <button type="button" class="btn btn-outline-success">Confirm payment by the customer for the order</button>
+          <button type="button" class="btn btn-outline-success">Sent email</button>
+          <h2 >Result price: {{order.resultPrice}}</h2>
+        </div>
       </div>
 
     </aside>

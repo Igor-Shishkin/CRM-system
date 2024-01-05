@@ -33,6 +33,9 @@ export class OrderWorkplaceComponent implements OnInit{
         next: data => {
           this.order = data;
           this.calculateOrderProgress();
+          if (this.order.resultPrice) {
+            this.order.resultPrice = +this.order.resultPrice.toFixed(2);
+          }
         }, error: err => {
           console.log(err)
         }
@@ -76,8 +79,10 @@ export class OrderWorkplaceComponent implements OnInit{
           next: data => {
             this.order.calculations = data.items;
             this.order.resultPrice = data.resultPrice;
-            console.log(this.order.calculations);
-            console.log(this.order.resultPrice);
+            if (this.order.resultPrice) {
+              this.order.resultPrice = +this.order.resultPrice.toFixed(2);
+            }
+            this.calculateOrderProgress();
           }, error: err => {
             console.log(err)
           }

@@ -31,6 +31,7 @@ public class OrderInfoResponse extends Order {
         this.setDateOfLastChange(order.getDateOfLastChange());
         this.setHasBeenPaid(order.isHasBeenPaid());
         this.setDateOfCreation(order.getDateOfCreation());
+        this.setResultPrice(order.getResultPrice());
 
         this.setClient(null);
         this.setProjectPhotos(order.getProjectPhotos());
