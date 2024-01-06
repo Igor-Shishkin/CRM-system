@@ -3,7 +3,9 @@ package com.crm.system.services;
 import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
+import com.crm.system.models.ClientStatus;
 import com.crm.system.models.User;
+import com.crm.system.models.order.InfoIsShown;
 import com.crm.system.models.order.ItemForCalcualtion;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.response.NewCalculationsForOrderResponse;
@@ -36,7 +38,6 @@ public class OrderService {
     }
 
 
-
     public Order getOrder(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
         return order;
@@ -53,11 +54,14 @@ public class OrderService {
     public void changeOrder(Order order) {
         orderRepository.save(order);
     }
+
     public void signAgreement(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
-        if (order.isAgreementSigned()) { return; }
+        if (order.isAgreementSigned()) {
+            return;
+        }
 
-        if (checkIfCalculationIsRight(order)) {
+        if (checkIfCalculationIsRight(order) && checkIfCalculationIsShownToClient(order)) {
             order.setAgreementSigned(true);
             order.setAgreementPrepared(true);
             order.setDateOfLastChange(LocalDateTime.now());
@@ -70,9 +74,12 @@ public class OrderService {
                     ("To sign the contract, you must fill out the calculations correctly.");
         }
     }
+
     public void cancelAgreement(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
-        if (!order.isAgreementSigned()) { return; }
+        if (!order.isAgreementSigned()) {
+            return;
+        }
 
         if (!order.isHasBeenPaid()) {
             order.setAgreementSigned(false);
@@ -86,23 +93,65 @@ public class OrderService {
         }
     }
 
+    public void confirmPayment(long orderId) throws UserPrincipalNotFoundException {
+        Order order = getOrderById(orderId);
+        if (order.isHasBeenPaid()) {
+            return;
+        }
+        if (order.isAgreementSigned()) {
+            order.setHasBeenPaid(true);
+            order.setDateOfLastChange(LocalDateTime.now());
+            order.getClient().setStatus(ClientStatus.CLIENT);
+            order.getClient().setDateOfLastChange(LocalDateTime.now());
+            orderRepository.save(order);
+
+            historyMessageService.createHistoryMessageForClientWithNote(order.getClient(), order.getClient().getUser(),
+                    String.format("'You have confirmed payment by %s", order.getClient().getFullName()),
+                    "Congratulations on the successful completion of your order!");
+        } else {
+            throw new MismanagementOfTheClientException("Agreement is not signed");
+        }
+    }
+
+    public void cancelPayment(long orderId) throws UserPrincipalNotFoundException {
+        Order order = getOrderById(orderId);
+        if (!order.isHasBeenPaid()) {
+            return;
+        }
+
+        order.setHasBeenPaid(false);
+        order.setDateOfLastChange(LocalDateTime.now());
+//        order.getClient().setStatus(ClientStatus.CLIENT);
+        order.getClient().setDateOfLastChange(LocalDateTime.now());
+
+        historyMessageService.createHistoryMessageForClient(order.getClient(), order.getClient().getUser(),
+                String.format("'You have canceled payment by %s", order.getClient().getFullName()));
+    }
+
+    private boolean checkIfCalculationIsShownToClient(Order order) {
+        if (!order.getIsCalculationShown().equals(InfoIsShown.NOT_SHOWN)) {
+            return true;
+        }
+        throw new MismanagementOfTheClientException("You must show calculation to the client");
+    }
+
     private boolean checkIfCalculationIsRight(Order order) {
         Predicate<ItemForCalcualtion> isValidItem = item ->
-                item.getThing()!=null && !item.getThing().isEmpty() &&
-                item.getUnitPrice()>0 &&
-                item.getTotalPrice()>0 &&
-                item.getQuantity()>0;
+                item.getThing() != null && !item.getThing().isEmpty() &&
+                        item.getUnitPrice() > 0 &&
+                        item.getTotalPrice() > 0 &&
+                        item.getQuantity() > 0;
         boolean isValidItems = order.getCalculations().stream().allMatch(isValidItem);
-        return isValidItems && order.getResultPrice()>0;
+        return isValidItems && order.getResultPrice() > 0;
     }
 
     private Order getOrderById(long orderId) throws UserPrincipalNotFoundException {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        if (optionalOrder.isEmpty()){
+        if (optionalOrder.isEmpty()) {
             throw new RequestOptionalIsEmpty("There isn't order with this ID");
         }
         Order order = optionalOrder.get();
-        if (isOrderBelongsActiveUser(order) ) {
+        if (isOrderBelongsActiveUser(order)) {
             return order;
         } else {
             throw new SubjectNotBelongToActiveUser("It's not your order");
@@ -118,4 +167,6 @@ public class OrderService {
         return activeUser.getClients().stream()
                 .anyMatch(client -> client.getId().equals(order.getClient().getId()));
     }
+
+
 }

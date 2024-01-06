@@ -43,6 +43,18 @@ public class HistoryMessageService {
         message.setDateOfCreation(LocalDateTime.now());
         historyMessageRepository.save(message);
     }
+    public void createHistoryMessageForClientWithNote(Client client, User user,
+                                                      String messageText, String note) {
+        HistoryMessage message = new HistoryMessage(messageText);
+        message.setTagName(TagName.CLIENT);
+        message.setTagId(client.getId());
+        message.setUser(user);
+        message.setImportant(false);
+        message.setDone(true);
+        message.setNote(note);
+        message.setDateOfCreation(LocalDateTime.now());
+        historyMessageRepository.save(message);
+    }
 
     public Set<HistoryMessage> getUserHistory() throws UserPrincipalNotFoundException {
         User activeUser = getActiveUser();

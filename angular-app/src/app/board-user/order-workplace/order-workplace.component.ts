@@ -110,6 +110,7 @@ export class OrderWorkplaceComponent implements OnInit{
           
         dialogRef.afterClosed().subscribe(result => {
           this.refreshHistoryMessages();
+          this.calculateOrderProgress();
         });
       } else {
         this.unableToSignAgreement = true;
@@ -125,7 +126,7 @@ export class OrderWorkplaceComponent implements OnInit{
         const dialogRef = this.dialog.open(ConfirmPainmentComponent, dialogConfig);
           
         dialogRef.afterClosed().subscribe(result => {
-          this.unableToSignAgreement = false;
+          this.calculateOrderProgress();
         });
       } else {
         this.unableToPainment = true;

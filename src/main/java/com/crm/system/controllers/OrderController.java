@@ -88,4 +88,32 @@ public class OrderController {
                     .body(new MessageResponse("Order controller: " + e.getMessage()));
         }
     }
+    @Operation(summary = "Cancel payment", tags = { "Order", "payment"})
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PostMapping("/cancel-payment")
+    public ResponseEntity<?> cancelPayment(@Valid  @RequestParam long orderId) {
+        try {
+            orderService.cancelPayment(orderId);
+            return ResponseEntity.ok(new MessageResponse("Agreement's status is canceled"));
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
+                 UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
+            log.error("Order controller: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("Order controller: " + e.getMessage()));
+        }
+    }
+    @Operation(summary = "Confirm payment", tags = { "Order", "payment"})
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PostMapping("/confirm-payment")
+    public ResponseEntity<?> confirmPayment(@Valid  @RequestParam long orderId) {
+        try {
+            orderService.confirmPayment(orderId);
+            return ResponseEntity.ok(new MessageResponse("Payment is confirm"));
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
+                 UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
+            log.error("Order controller: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("Order controller: " + e.getMessage()));
+        }
+    }
 }

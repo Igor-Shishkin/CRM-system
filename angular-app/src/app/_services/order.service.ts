@@ -47,28 +47,16 @@ export class OrderService {
       })
     )
   }
-
-
-  saveAgreementStatus(isAgreementSigned: boolean, orderId: number) {
-    return this.http.post(ORDER_API + '/sign-agreement',
-    {
-      isAgreementSigned: isAgreementSigned,
-      orderId: orderId
-    }, httpOptions
-  ).pipe(
+  confirmPayment(orderId: number) {
+    return this.http.post<any>(`${ORDER_API}/confirm-payment?orderId=${orderId}`, { responseType: 'text' }).pipe(
       catchError((error: any) => {
         console.log(error);
         throw error;
       })
     )
   }
-  savePainmentStatus(isPaid: boolean, orderId: number) {
-    return this.http.post(ORDER_API + '/painment-status',
-    {
-      isPaid: isPaid,
-      orderId: orderId
-    }, httpOptions
-  ).pipe(
+  cancelPayment(orderId: number) {
+    return this.http.post<any>(`${ORDER_API}/cancel-payment?orderId=${orderId}`, { responseType: 'text' }).pipe(
       catchError((error: any) => {
         console.log(error);
         throw error;
