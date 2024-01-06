@@ -7,6 +7,8 @@ import { Order } from 'src/entities/Order';
 import { ItemCalculationComponent } from './item-calculation/item-calculation.component';
 import { ConfirmSigningContractComponent } from './confirm-signing-contract/confirm-signing-contract.component';
 import { ConfirmPainmentComponent } from './confirm-painment/confirm-painment.component';
+import { StorageService } from 'src/app/_services/storage.service';
+import { HistoryService } from 'src/app/_services/history.service';
 
 @Component({
   selector: 'app-order-workplace',
@@ -26,7 +28,9 @@ export class OrderWorkplaceComponent implements OnInit{
     private router: Router ,
     private route: ActivatedRoute,
     private orderService: OrderService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private storageService: StorageService,
+    private historyService: HistoryService
   ) {}
   
     ngOnInit(): void {
@@ -105,7 +109,7 @@ export class OrderWorkplaceComponent implements OnInit{
         const dialogRef = this.dialog.open(ConfirmSigningContractComponent, dialogConfig);
           
         dialogRef.afterClosed().subscribe(result => {
-          this.unableToSignAgreement = false;
+          this.refreshHistoryMessages();
         });
       } else {
         this.unableToSignAgreement = true;
@@ -116,8 +120,7 @@ export class OrderWorkplaceComponent implements OnInit{
       {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = { 
-          hasBeenPaid: this.order.hasBeenPaid, 
-          orderId: this.order.orderId
+          order: this.order
         };
         const dialogRef = this.dialog.open(ConfirmPainmentComponent, dialogConfig);
           
@@ -127,5 +130,14 @@ export class OrderWorkplaceComponent implements OnInit{
       } else {
         this.unableToPainment = true;
       }
+    }
+    refreshHistoryMessages() {
+      this.historyService.getHistory().subscribe({
+        next: data => {
+          this.storageService.setHistory(data);
+        }, error: err => {
+          console.log(err);
+        }
+      })
     }
   }

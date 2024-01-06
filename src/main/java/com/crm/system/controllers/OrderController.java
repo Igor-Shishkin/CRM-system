@@ -1,5 +1,6 @@
 package com.crm.system.controllers;
 
+import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.playload.request.ChangeAgreementStatusRequest;
@@ -52,21 +53,36 @@ public class OrderController {
         try {
             NewCalculationsForOrderResponse newCalculations = orderService.getNewCalculations(orderId);
             return ResponseEntity.ok(newCalculations);
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
+                 UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
             log.error("Order controller: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Order controller: " + e.getMessage()));
         }
     }
-    @Operation(summary = "Set signing agreement", tags = { "Order", "agreement"})
+    @Operation(summary = "Sign agreement", tags = { "Order", "agreement"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
     @PostMapping("/sign-agreement")
-    public ResponseEntity<?> setSigningAgreement(@Valid  @RequestBody ChangeAgreementStatusRequest request) {
-        System.out.println(request.isAgreementSigned() + " " + request.getOrderId());
+    public ResponseEntity<?> signAgreement(@Valid  @RequestParam long orderId) {
         try {
-            orderService.setAgreementStatus(request);
-            return ResponseEntity.ok(new MessageResponse("Agreement's status is changed"));
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
+            orderService.signAgreement(orderId);
+            return ResponseEntity.ok(new MessageResponse("Agreement's signed"));
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
+                 UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
+            log.error("Order controller: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("Order controller: " + e.getMessage()));
+        }
+    }
+    @Operation(summary = "Cancel agreement", tags = { "Order", "agreement"})
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PostMapping("/cancel-agreement")
+    public ResponseEntity<?> cancelAgreement(@Valid  @RequestParam long orderId) {
+        try {
+            orderService.cancelAgreement(orderId);
+            return ResponseEntity.ok(new MessageResponse("Agreement's status is canceled"));
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
+                 UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
             log.error("Order controller: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Order controller: " + e.getMessage()));

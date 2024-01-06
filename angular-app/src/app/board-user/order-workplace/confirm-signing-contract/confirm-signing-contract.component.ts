@@ -27,9 +27,10 @@ export class ConfirmSigningContractComponent {
   }
 
   signAgreement(){
-    this.orderService.saveAgreementStatus(true, this.orderId).subscribe({
+    this.orderService.signAgreement(this.orderId).subscribe({
       next: () => {
         this.data.order.isAgreementSigned = true;
+        this.data.order.isAgreementPrepared = true;
         this.isSuccess = true;
         this.successMessage = 'You have signed a contract, congratulations!';
         this.delayHidingCloseDialoge();
@@ -40,7 +41,7 @@ export class ConfirmSigningContractComponent {
     })
   }
   cancelAgreement(){
-    this.orderService.saveAgreementStatus(false, this.orderId).subscribe({
+    this.orderService.cancelAgreement(this.orderId).subscribe({
       next: () => {
         this.data.order.isAgreementSigned = false;
         this.isSuccess = true;

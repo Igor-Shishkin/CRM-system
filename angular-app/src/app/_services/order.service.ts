@@ -31,11 +31,41 @@ export class OrderService {
       })
     )
   }
+  signAgreement(orderId: number) {
+    return this.http.post<any>(`${ORDER_API}/sign-agreement?orderId=${orderId}`, { responseType: 'text' }).pipe(
+      catchError((error: any) => {
+        console.log(error);
+        throw error;
+      })
+    )
+  }
+  cancelAgreement(orderId: number) {
+    return this.http.post<any>(`${ORDER_API}/cancel-agreement?orderId=${orderId}`, { responseType: 'text' }).pipe(
+      catchError((error: any) => {
+        console.log(error);
+        throw error;
+      })
+    )
+  }
+
+
   saveAgreementStatus(isAgreementSigned: boolean, orderId: number) {
-    console.log(isAgreementSigned);
     return this.http.post(ORDER_API + '/sign-agreement',
     {
       isAgreementSigned: isAgreementSigned,
+      orderId: orderId
+    }, httpOptions
+  ).pipe(
+      catchError((error: any) => {
+        console.log(error);
+        throw error;
+      })
+    )
+  }
+  savePainmentStatus(isPaid: boolean, orderId: number) {
+    return this.http.post(ORDER_API + '/painment-status',
+    {
+      isPaid: isPaid,
       orderId: orderId
     }, httpOptions
   ).pipe(

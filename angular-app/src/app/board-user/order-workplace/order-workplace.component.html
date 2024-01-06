@@ -246,13 +246,15 @@
             <span *ngIf="order.calculations?.length==0 || order.resultPrice!<=0">⚠️</span>
           </button>
           <button type="button" class="btn btn-outline-success" 
-            (click)="openConfirmSingingDialog()">
+            (click)="openConfirmSingingDialog()" 
+            [disabled]="order.hasBeenPaid || order.calculations?.length==0 || order.resultPrice!<=0">
             Confirm the signing of the contract
             <span *ngIf="order.isAgreementSigned">✅</span>
           </button>
           <button type="button" class="btn btn-outline-success"
-          (click)="openConfirmPaidDialog()">
-            Confirm payment by the customer for the order
+          (click)="openConfirmPaidDialog()"
+          [disabled]="!order.isAgreementSigned">
+            Confirm payment by the client
             <span *ngIf="order.hasBeenPaid">✅</span>
           </button>
           <button type="button" class="btn btn-outline-success">Sent email</button>

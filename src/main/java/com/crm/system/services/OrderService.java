@@ -1,10 +1,11 @@
 package com.crm.system.services;
 
+import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.User;
+import com.crm.system.models.order.ItemForCalcualtion;
 import com.crm.system.models.order.Order;
-import com.crm.system.playload.request.ChangeAgreementStatusRequest;
 import com.crm.system.playload.response.NewCalculationsForOrderResponse;
 import com.crm.system.playload.response.OrderInfoResponse;
 import com.crm.system.repository.OrderRepository;
@@ -13,15 +14,18 @@ import org.springframework.stereotype.Service;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 @Service
 public class OrderService {
     private final OrderRepository orderRepository;
     private final UserService userService;
+    private final HistoryMessageService historyMessageService;
 
-    public OrderService(OrderRepository orderRepository, UserService userService) {
+    public OrderService(OrderRepository orderRepository, UserService userService, HistoryMessageService historyMessageService) {
         this.orderRepository = orderRepository;
         this.userService = userService;
+        this.historyMessageService = historyMessageService;
     }
 
 
@@ -49,12 +53,49 @@ public class OrderService {
     public void changeOrder(Order order) {
         orderRepository.save(order);
     }
-    public void setAgreementStatus(ChangeAgreementStatusRequest request) throws UserPrincipalNotFoundException {
-        Order order = getOrderById(request.getOrderId());
-        order.setAgreementSigned(request.isAgreementSigned());
-        order.setDateOfLastChange(LocalDateTime.now());
-        orderRepository.save(order);
+    public void signAgreement(long orderId) throws UserPrincipalNotFoundException {
+        Order order = getOrderById(orderId);
+        if (order.isAgreementSigned()) { return; }
+
+        if (checkIfCalculationIsRight(order)) {
+            order.setAgreementSigned(true);
+            order.setAgreementPrepared(true);
+            order.setDateOfLastChange(LocalDateTime.now());
+            orderRepository.save(order);
+
+            historyMessageService.createHistoryMessageForClient(order.getClient(), order.getClient().getUser(),
+                    "Signed an agreement with ".concat(order.getClient().getFullName()));
+        } else {
+            throw new MismanagementOfTheClientException
+                    ("To sign the contract, you must fill out the calculations correctly.");
+        }
     }
+    public void cancelAgreement(long orderId) throws UserPrincipalNotFoundException {
+        Order order = getOrderById(orderId);
+        if (!order.isAgreementSigned()) { return; }
+
+        if (!order.isHasBeenPaid()) {
+            order.setAgreementSigned(false);
+            order.setDateOfLastChange(LocalDateTime.now());
+            orderRepository.save(order);
+
+            historyMessageService.createHistoryMessageForClient(order.getClient(), order.getClient().getUser(),
+                    String.format("The contract with %s was canceled", order.getClient().getFullName()));
+        } else {
+            throw new MismanagementOfTheClientException("Order is already paid");
+        }
+    }
+
+    private boolean checkIfCalculationIsRight(Order order) {
+        Predicate<ItemForCalcualtion> isValidItem = item ->
+                item.getThing()!=null && !item.getThing().isEmpty() &&
+                item.getUnitPrice()>0 &&
+                item.getTotalPrice()>0 &&
+                item.getQuantity()>0;
+        boolean isValidItems = order.getCalculations().stream().allMatch(isValidItem);
+        return isValidItems && order.getResultPrice()>0;
+    }
+
     private Order getOrderById(long orderId) throws UserPrincipalNotFoundException {
         Optional<Order> optionalOrder = orderRepository.findById(orderId);
         if (optionalOrder.isEmpty()){
@@ -77,6 +118,4 @@ public class OrderService {
         return activeUser.getClients().stream()
                 .anyMatch(client -> client.getId().equals(order.getClient().getId()));
     }
-
-
 }
