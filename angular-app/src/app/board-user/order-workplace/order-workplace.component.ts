@@ -6,6 +6,7 @@ import { OrderService } from 'src/app/_services/order.service';
 import { Order } from 'src/entities/Order';
 import { ItemCalculationComponent } from './item-calculation/item-calculation.component';
 import { ConfirmSigningContractComponent } from './confirm-signing-contract/confirm-signing-contract.component';
+import { ConfirmPainmentComponent } from './confirm-painment/confirm-painment.component';
 
 @Component({
   selector: 'app-order-workplace',
@@ -19,6 +20,7 @@ export class OrderWorkplaceComponent implements OnInit{
   orderProgress = '';
   orderInstance: any;
   unableToSignAgreement = false;
+  unableToPainment = false;
   
   constructor(
     private router: Router ,
@@ -96,13 +98,10 @@ export class OrderWorkplaceComponent implements OnInit{
       if (this.order.calculations && this.order.calculations.length>0 &&
         this.order.resultPrice && this.order.resultPrice>0) 
       {
-        console.log(this.order.isAgreementSigned)
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = { 
-          isAgreementSigned: this.order.isAgreementSigned, 
-          orderId: this.order.orderId
+          order: this.order
         };
-        console.log(dialogConfig.data);
         const dialogRef = this.dialog.open(ConfirmSigningContractComponent, dialogConfig);
           
         dialogRef.afterClosed().subscribe(result => {
@@ -110,6 +109,23 @@ export class OrderWorkplaceComponent implements OnInit{
         });
       } else {
         this.unableToSignAgreement = true;
+      }
+    }
+    openConfirmPaidDialog(): void {
+      if (this.order.isAgreementSigned) 
+      {
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = { 
+          hasBeenPaid: this.order.hasBeenPaid, 
+          orderId: this.order.orderId
+        };
+        const dialogRef = this.dialog.open(ConfirmPainmentComponent, dialogConfig);
+          
+        dialogRef.afterClosed().subscribe(result => {
+          this.unableToSignAgreement = false;
+        });
+      } else {
+        this.unableToPainment = true;
       }
     }
   }

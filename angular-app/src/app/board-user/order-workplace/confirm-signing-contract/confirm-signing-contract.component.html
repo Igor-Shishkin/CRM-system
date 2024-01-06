@@ -13,16 +13,16 @@
         (click)="cancelAgreement()"
         >Cancel the agreement</button>
     </div>
-    <div *ngIf="isFailed" class="d-grid gap-2 col-6 mx-auto alert alert-danger">
-        <h2>Error sending data to server</h2>
+    <div *ngIf="isFailed" class="d-grid gap-2 col-6 mx-auto alert alert-danger" >
+        <h2 style="color: darkblue">Error sending data to server</h2>
     </div>
-    <div *ngIf="isSuccess" class="d-grid gap-2 col-6 mx-auto alert alert-info">
-        <h2>{{successMessage}}</h2>
+    <div *ngIf="isSuccess" class="d-grid gap-2 col-6 mx-auto alert alert-info" >
+        <h2 style="color: darkblue">{{successMessage}}</h2>
     </div>
     
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <div style="display: flex;">
-        <button mat-button mat-dialog-close>Close without save</button>
+        <button *ngIf="!isSuccess" mat-button mat-dialog-close>Close without save</button>
     </div>
 </mat-dialog-actions>

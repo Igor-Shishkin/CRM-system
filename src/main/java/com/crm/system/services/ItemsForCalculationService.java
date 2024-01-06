@@ -1,5 +1,6 @@
 package com.crm.system.services;
 
+import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.models.User;
 import com.crm.system.models.order.ItemForCalcualtion;
 import com.crm.system.models.order.Order;
@@ -24,23 +25,27 @@ public class ItemsForCalculationService {
 
     public void saveItems(Set<ItemForCalcualtion> items, long orderId) throws UserPrincipalNotFoundException {
         Order order = orderService.getOrder(orderId);
-        order.getCalculations().clear();
+        if (!order.isAgreementSigned()) {
+            order.getCalculations().clear();
 
-        items = items.stream()
-                .filter(item -> !item.getThing().isEmpty())
-                .peek(item -> {
-                    item.setItemId(null);
-                    item.setOrder(order);
-                })
-                .collect(Collectors.toSet());
-        calculateTotalPrice(items);
+            items = items.stream()
+                    .filter(item -> !item.getThing().isEmpty())
+                    .peek(item -> {
+                        item.setItemId(null);
+                        item.setOrder(order);
+                    })
+                    .collect(Collectors.toSet());
+            calculateTotalPrice(items);
 
-        double sum = calcualteResultSum(items);
+            double sum = calcualteResultSum(items);
 
-        order.getCalculations().addAll(items);
-        order.setResultPrice(sum);
-        order.setDateOfLastChange(LocalDateTime.now());
-        orderService.changeOrder(order);
+            order.getCalculations().addAll(items);
+            order.setResultPrice(sum);
+            order.setDateOfLastChange(LocalDateTime.now());
+            orderService.changeOrder(order);
+        } else {
+            throw new MismanagementOfTheClientException("You can't changes item's calculation if agreement is signed");
+        }
     }
 
     private double calcualteResultSum(Set<ItemForCalcualtion> items) {
