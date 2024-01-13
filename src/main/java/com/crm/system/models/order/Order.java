@@ -23,6 +23,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Long orderId;
+
     @NotBlank
     @Column(name = "real_need")
     private String realNeed;

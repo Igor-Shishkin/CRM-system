@@ -23,6 +23,10 @@ export class OrderWorkplaceComponent implements OnInit{
   orderInstance: any;
   unableToSignAgreement = false;
   unableToPainment = false;
+  isSuccess = false;
+  successMessage = '';
+  isFailed = false;
+  failMessage = '';
   
   constructor(
     private router: Router ,
@@ -140,5 +144,26 @@ export class OrderWorkplaceComponent implements OnInit{
           console.log(err);
         }
       })
+    }
+    saveChanges(){
+      this.orderService.saveChenges(this.order).subscribe({
+        next: data => {
+          this.isSuccess = true;
+          this.successMessage = 'Changes are saved';
+          this.delayHidingCloseMessage()
+        }, error: err => {
+          console.error(err);
+          this.isFailed = true;
+          this.failMessage = 'An error occurred while saving data. Try saving it again after a while.'
+        }
+      })
+    }
+    delayHidingCloseMessage() {
+      setTimeout(() => {
+        this.successMessage = ''
+        this.failMessage = '';
+        this.isSuccess = false;
+        this.isFailed = false;
+      }, 5000);
     }
   }

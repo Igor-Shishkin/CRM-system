@@ -4,69 +4,82 @@
   <button type="button" class="btn btn-outline-warning floating-buttons"
   style="bottom: 51px;">New order</button>
 
-
-<div class="row g-2 field-margin">
-  <div class="col-auto field-description" >
-    <label class="col-form-label ">Full name</label>
-  </div>
-  <div class="col-auto">
-    <input class="form-control field-design" type="text"
-    [(ngModel)]="client.fullName" [ngModelOptions]="{ standalone: true }"
-    [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
-  </div>
-</div>
-
-<div class="row g-2  field-margin">
-  <div class="col-auto field-description">
-    <label class="col-form-label">Email </label>
-  </div>
-  <div class="col-auto">
-    <input class="form-control field-design" type="text"
-    [(ngModel)]="client.email" [ngModelOptions]="{ standalone: true }"
-    [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
-  </div>
-</div>
-
-<div class="row g-2 field-margin">
-  <div class="col-auto field-description">
-    <label class="col-form-label">Phone number</label>
-  </div>
-  <div class="col-auto">
+<section>
+  <div class="row g-2 field-margin">
+    <div class="col-auto field-description" >
+      <label class="col-form-label ">Full name</label>
+    </div>
+    <div class="col-auto">
       <input class="form-control field-design" type="text"
-      [(ngModel)]="client.phoneNumber" [ngModelOptions]="{ standalone: true }"
+      [(ngModel)]="client.fullName" [ngModelOptions]="{ standalone: true }"
       [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
+    </div>
   </div>
-</div>
 
-<div class="row g-2 field-margin">
-  <div class="col-auto field-description">
-    <label class="col-form-label">Address</label>
-  </div>
-  <div class="col-auto">
+  <div class="row g-2  field-margin">
+    <div class="col-auto field-description">
+      <label class="col-form-label">Email </label>
+    </div>
+    <div class="col-auto">
       <input class="form-control field-design" type="text"
-      [(ngModel)]="client.address" [ngModelOptions]="{ standalone: true }"
+      [(ngModel)]="client.email" [ngModelOptions]="{ standalone: true }"
       [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
+    </div>
   </div>
-</div>
 
-<div class="row g-3 field-margin" style="margin-left: 0x;">
-  <div class="col-auto field-description">
-    <label class="col-form-label">Number of orders</label>
+  <div class="row g-2 field-margin">
+    <div class="col-auto field-description">
+      <label class="col-form-label">Phone number</label>
+    </div>
+    <div class="col-auto">
+        <input class="form-control field-design" type="text"
+        [(ngModel)]="client.phoneNumber" [ngModelOptions]="{ standalone: true }"
+        [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
+    </div>
   </div>
-  <div class="col-auto">
-      <input class="form-control field-design" type="text"style="margin-left: -4px;"
-      value="{{calculateNumberOfOrdders()}}"
-      disabled readonly>
-  </div>
-</div>
 
-<footer class="d-inline-flex gap-1">
-  <input type="checkbox" class="btn-check" id="btn-edit" autocomplete="off" (click)="changeEditably()">
-  <label class="btn btn-outline-success" for="btn-edit" style="height: 35px;">Edit data</label>
- 
-  <button type="button" class="btn btn-outline-success" style="margin-left: 15px; height: 35px;"
-  (click)="editClientData()">Save</button>
-</footer>
+  <div class="row g-2 field-margin">
+    <div class="col-auto field-description">
+      <label class="col-form-label">Address</label>
+    </div>
+    <div class="col-auto">
+        <input class="form-control field-design" type="text"
+        [(ngModel)]="client.address" [ngModelOptions]="{ standalone: true }"
+        [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
+    </div>
+  </div>
+
+  <div class="row g-3 field-margin" style="margin-left: 0x;">
+    <div class="col-auto field-description">
+      <label class="col-form-label">Number of orders</label>
+    </div>
+    <div class="col-auto">
+        <input class="form-control field-design" type="text" style="margin-left: -4px;"
+        value="{{calculateNumberOfOrdders()}}"
+        disabled readonly>
+    </div>
+  </div>
+
+  <footer class="d-flex justify-content-between align-items-center gap-1" style="width: 700px;">
+    <div>
+      <input type="checkbox" class="btn-check" id="btn-edit" autocomplete="off" (click)="changeEditably()">
+      <label class="btn btn-outline-success" for="btn-edit" style="height: 35px;">Edit data</label>
+<!-- 
+      <input type="checkbox" class="btn-check" id="btn-edit" autocomplete="off" (click)="editClientData()"
+      style="margin-left: 8px;">
+      <label class="btn btn-outline-success" for="btn-edit" style="height: 35px;">Save</label> -->
+  
+      <button type="button" class="btn btn-outline-success" style="margin-left: 15px; height: 35px; margin-top: 4px;"
+        (click)="editClientData()">Save</button>
+    </div>
+  
+    <button [disabled]="isRequestSent" (click)="sentClientToBlackList()" type="button"
+      class="btn btn-outline-danger">
+      <span *ngIf="isRequestSent" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+      <span role="status">To black list</span>
+    </button>
+  </footer>
+</section>
 
 <div *ngIf="isResultOfSavedShown" class="alert alert-dark" role="alert">
   {{responceMessage}}
@@ -173,10 +186,6 @@
     </div>
 </section>
 
-<button [disabled]="isRequestSent" (click)="sentClientToBlackList()" type="button"
-class="btn btn-outline-danger" style="margin-left: 5px;">
-  <span *ngIf="isRequestSent" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-  <span role="status">To black list</span>
-</button>
+
 
 

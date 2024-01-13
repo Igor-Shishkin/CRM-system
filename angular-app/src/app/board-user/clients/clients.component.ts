@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Client } from 'src/entities/Client';
 import { ClientsService } from 'src/app/_services/clients.service';
 import { Router } from '@angular/router';
+import { StorageService } from 'src/app/_services/storage.service';
 
 @Component({
   selector: 'app-clients',
   templateUrl: './clients.component.html',
   styleUrls: ['./clients.component.css']
 })
-export class ClientsComponent {
+export class ClientsComponent implements OnInit{
   clients!: Client[]
   isSuccessLoad = false;
   isSuccessDelete = false
@@ -18,28 +19,14 @@ export class ClientsComponent {
   isRequestSent = false;
   
   constructor(private clientService: ClientsService,
-              private router: Router) {}
+              private router: Router,
+              private storageService: StorageService) {}
   
     ngOnInit(): void {
-      this.refreshListOfLeads;
+      this.refreshListOfClients();
     }
-    sentClientToBlackList( id : number) {
-      this.isRequestSent = true;
-      this.clientService.sentClientToBlackList(id).subscribe({
-        next: (data: any) => {
-          this.responseMessage = data;
-          this.isSuccessDelete = true;
-          this.reloadPage(1500);
-        },
-        error: (err: any) => {
-          console.error(err);
-          this.isError = true;
-          this.errorMessage = 'Error deleting Client';
-          this.isRequestSent = false;
-        }
-      });
-    }
-    refreshListOfLeads(){
+
+    refreshListOfClients(){
       this.isRequestSent = false;
       this.clientService.getListOfClients().subscribe({
         next: data => {
@@ -49,19 +36,15 @@ export class ClientsComponent {
         },
         error: (err: any) => {
           console.error(err); 
+
           this.isError = true;
           this.errorMessage = 'Error loading data';
           this.isRequestSent = false;
         }
       })
     }
-    reloadPage(delay: number): void {
-      setTimeout(() => {
-        this.isSuccessDelete = false;
-        this.refreshListOfLeads;
-      }, delay); 
-    }
     goToClientDetail(clientId: number) {
+      this.storageService.setActiveClientId(clientId);
       this.router.navigate(['/user-board/client-workplace', clientId]);
     }
   }

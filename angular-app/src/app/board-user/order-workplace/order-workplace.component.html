@@ -1,13 +1,26 @@
-<nav>
+<section>
     <h2>{{order.clientFullName}}</h2>
     <p>Phone number: {{order.clientPhoneNumber}}</p>
     <p>Email: {{order.clientEmail}}</p>
     <button (click)="backTotheClient()" class="btn btn-outline-secondary" type="button">Back to the client</button>
-</nav>
+</section>
 
 <div class="separator"></div>
 
-<button type="button" class="btn btn-outline-danger" (click)="showOrderInfo()">Danger</button>
+<!-- <button type="button" class="btn btn-outline-danger" (click)="showOrderInfo()">Danger</button> -->
+
+
+<div style="color: darkblue; margin: 15px;">
+  <div class="d-grid gap-2">
+    <button class="btn btn-outline-secondary" type="button" (click)="saveChanges()">Save changes</button>
+  </div>
+  <div *ngIf="isFailed" class="alert alert-danger" role="alert">
+    {{failMessage}}
+  </div>
+  <div *ngIf="isSuccess" class="alert alert-success" role="alert">
+    {{successMessage}}
+  </div>
+</div>
 
  
 <section>
@@ -20,7 +33,10 @@
             </div>
         </div>
 
-        <h2>Real need: {{order.realNeed}}</h2>
+        <h2>Real need:</h2>
+        <textarea class="custom-input-form w-100" style="height: 75px; font-size: 20px; border-radius: 10px;"
+        [value]="order.realNeed" [(ngModel)]="order.realNeed"
+        ></textarea>
         <p>Date of creation: {{order.dateOfCreation}}</p>
 
         <div style="display: flex;">
@@ -266,7 +282,22 @@
 
 </section>
 
+
+<div style="color: darkblue; margin: 15px;">
+  <div class="d-grid gap-2">
+    <button class="btn btn-outline-secondary" type="button" (click)="saveChanges()">Save changes</button>
+  </div>
+  <div *ngIf="isFailed" class="alert alert-danger" role="alert">
+    {{failMessage}}
+  </div>
+  <div *ngIf="isSuccess" class="alert alert-success" role="alert">
+    {{successMessage}}
+  </div>
+</div>
+
+
 <div class="separator"></div>
+
 
 <footer>
   <h3>Project photo</h3>

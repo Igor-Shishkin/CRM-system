@@ -13,6 +13,7 @@ const httpOptions = {
   providedIn: 'root'
 })
 export class OrderService {
+
   constructor(private http: HttpClient) { }
 
   getOrder(orderId: number):Observable<Order>{
@@ -57,6 +58,27 @@ export class OrderService {
   }
   cancelPayment(orderId: number) {
     return this.http.post<any>(`${ORDER_API}/cancel-payment?orderId=${orderId}`, { responseType: 'text' }).pipe(
+      catchError((error: any) => {
+        console.log(error);
+        throw error;
+      })
+    )
+  }
+  saveChenges(order: Order) {
+
+    order.calculations = [];
+    order.projectPhotos = [];
+    order.resultPrice = undefined;
+    order.hasBeenPaid = undefined;
+    order.isAgreementSigned = undefined;
+    order.clientEmail = undefined;
+    order.clientFullName = undefined;
+    order.clientId = undefined;
+    order.clientPhoneNumber = undefined;
+    order.dateOfCreation = undefined;
+    order.dateOfLastChange = undefined;
+
+    return this.http.post<any>(`${ORDER_API}/save-order-changes`,  order , httpOptions).pipe(
       catchError((error: any) => {
         console.log(error);
         throw error;

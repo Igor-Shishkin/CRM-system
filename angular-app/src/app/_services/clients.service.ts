@@ -16,6 +16,7 @@ export class ClientsService {
   constructor(private http: HttpClient) { }
 
   getListOfClients(): Observable<any> {
+    console.log('run!')
     return this.http.get<Client[]>(CLIENTS_API + '/clients').pipe(
       catchError((error: any) => {
         console.error(error);

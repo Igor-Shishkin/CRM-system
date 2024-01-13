@@ -8,6 +8,7 @@ import com.crm.system.models.User;
 import com.crm.system.models.order.InfoIsShown;
 import com.crm.system.models.order.ItemForCalcualtion;
 import com.crm.system.models.order.Order;
+import com.crm.system.playload.request.ChangeOrderRequest;
 import com.crm.system.playload.response.NewCalculationsForOrderResponse;
 import com.crm.system.playload.response.OrderInfoResponse;
 import com.crm.system.repository.OrderRepository;
@@ -118,16 +119,44 @@ public class OrderService {
         if (!order.isHasBeenPaid()) {
             return;
         }
-
+        setClientStatus(order);
         order.setHasBeenPaid(false);
         order.setDateOfLastChange(LocalDateTime.now());
-//        order.getClient().setStatus(ClientStatus.CLIENT);
         order.getClient().setDateOfLastChange(LocalDateTime.now());
 
         historyMessageService.createHistoryMessageForClient(order.getClient(), order.getClient().getUser(),
                 String.format("'You have canceled payment by %s", order.getClient().getFullName()));
     }
+    public void saveOrderChanges(ChangeOrderRequest changedOrder) throws UserPrincipalNotFoundException {
+        Order order = getOrderById(changedOrder.getOrderId());
+        setChangedParameters(order, changedOrder);
+        order.setDateOfLastChange(LocalDateTime.now());
 
+        orderRepository.save(order);
+    }
+
+    private void setChangedParameters(Order order, ChangeOrderRequest changedOrder) {
+        order.setIsCalculationShown(changedOrder.getIsCalculationShown());
+        order.setAgreementPrepared(changedOrder.isAgreementPrepared());
+        order.setAddress(changedOrder.getAddress());
+        order.setRealNeed(changedOrder.getRealNeed());
+        order.setCalculationPromised(changedOrder.isCalculationPromised());
+        order.setEstimateBudged(changedOrder.getEstimateBudged());
+        order.setIsProjectShown(changedOrder.getIsProjectShown());
+        order.setMeasurementOffered(changedOrder.isMeasurementOffered());
+        order.setMeasurementsTaken(changedOrder.isMeasurementsTaken());
+        order.setProjectApproved(changedOrder.isProjectApproved());
+        order.setWasMeetingInOffice(changedOrder.isWasMeetingInOffice());
+    }
+
+    private void setClientStatus(Order order) {
+     if ( order.getClient().getOrders().stream()
+             .noneMatch(Order::isHasBeenPaid) )  {
+         order.getClient().setStatus(ClientStatus.CLIENT);
+     } else {
+         order.getClient().setStatus(ClientStatus.LEAD);
+     }
+    }
     private boolean checkIfCalculationIsShownToClient(Order order) {
         if (!order.getIsCalculationShown().equals(InfoIsShown.NOT_SHOWN)) {
             return true;
@@ -167,6 +196,5 @@ public class OrderService {
         return activeUser.getClients().stream()
                 .anyMatch(client -> client.getId().equals(order.getClient().getId()));
     }
-
 
 }
