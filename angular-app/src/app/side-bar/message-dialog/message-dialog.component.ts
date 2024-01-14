@@ -2,8 +2,6 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { AuthService } from 'src/app/_services/auth.service';
 import { HistoryService } from 'src/app/_services/history.service';
 import { HistoryMessage } from 'src/entities/HistoryMessage';
 import { HistoryTag } from 'src/entities/HistoryTag';
@@ -21,13 +19,14 @@ export class MessageDialogComponent implements OnInit{
   initiallyTagName = '';
   initiallyEntityName?: string;
   selectedDate: Date = new Date();
+  isSuccess = false;
+  isFailed = false;
+  deadlineDate = new Date();
 
   constructor(
     public dialogRef: MatDialogRef<MessageDialogComponent>,
     private cdr: ChangeDetectorRef,
     private historyService: HistoryService,
-    private router: Router,
-    private authService: AuthService,
     private datePipe: DatePipe,
     @Inject(MAT_DIALOG_DATA) public data: { message: HistoryMessage }
   ) {
@@ -45,6 +44,11 @@ export class MessageDialogComponent implements OnInit{
             .filter(tag => tag.tagName == this.message?.tagName)
             ?.map(tag => tag.entityName)[0];
           this.filteredHistoryTags = this.historyTags?.filter(tag => tag.tagName == this.message?.tagName);
+          if (this.message.deadline && this.message.deadline.length>0) {
+            const stringDate = this.message.deadline;
+            this.deadlineDate = new Date(stringDate);
+          }
+
         }
 
       }, error(err) {
@@ -54,10 +58,9 @@ export class MessageDialogComponent implements OnInit{
     if (this.message && this.message.tagName) {
       this.initiallyTagName = this.message?.tagName;
     }
-    
   }
-  chooseTagNames(event: Event) {
 
+  chooseTagNames(event: Event) {
     const target = event.target as HTMLSelectElement;
     const category = target.value;
     if (this.message) {
@@ -68,8 +71,8 @@ export class MessageDialogComponent implements OnInit{
     this.filteredHistoryTags = this.historyTags?.filter(tag => tag.tagName === category);
     this.cdr.detectChanges();
   }
-  chooseEntity(event: Event) {
 
+  chooseEntity(event: Event) {
     const target = event.target as HTMLSelectElement;
     const entityId = target.value;
     this.initiallyEntityName = '';
@@ -78,23 +81,43 @@ export class MessageDialogComponent implements OnInit{
     }
     console.log(entityId);
   }
+
   updateDate(event: MatDatepickerInputEvent<Date>) {
+    console.log('doing')
     if (event.value !== null) {
+      
+      console.log(event.value)
       const pattern = 'yyyy-MM-dd\'T\'HH:mm:ss';
       const formattedDate = this.datePipe.transform(event.value, pattern) || '';
+      console.log(formattedDate)
       this.message!.deadline = formattedDate.toString();
     }
   }
 
   saveMessage() {
     if (this.message) {
+      // if (this.deadlineDate) {
+      //   this.editDeadline();
+      // }
+      console.log(this.message.deadline)
       this.historyService.saveNewHistoryMessage(this.message).subscribe({
-        next: (response) => {
-          console.log(response);
+        next: data => {
+          this.isSuccess = true;
+          this.delayHidingCloseDialoge()
         }, error:(err) => {
+          this.isFailed = true;
           console.log(err);
         }
       })
     };
   }
+  delayHidingCloseDialoge() {
+    setTimeout(() => {
+      this.dialogRef.close();
+    }, 2000);
+  }
+//   editDeadline(){
+//     const formattedDeadline = this.datePipe.transform(deadlineDate, 'yyyy-MM-ddTHH:mm:ss');
+//     const deadlineRightFormat = new Date(this.message?.deadline)
+//   }
 }

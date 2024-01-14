@@ -8,6 +8,7 @@ import { MessageDialogComponent } from './message-dialog/message-dialog.componen
 import { HistoryService } from '../_services/history.service';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
 import { AuthService } from '../_services/auth.service';
+import { MessageMenuComponent } from './message-menu/message-menu.component';
 
 // import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -71,10 +72,20 @@ private isLoggedInSubscription: Subscription;
 
 
   openDialog(messageToEdit: HistoryMessage): void {
+    // const dialogConfig = new MatDialogConfig();
+    // dialogConfig.width = '400px'; 
+    // dialogConfig.data = { message: messageToEdit };
+    // const dialogRef = this.dialog.open(MessageDialogComponent, dialogConfig);
+ 
+    // dialogRef.afterClosed().subscribe(result => {
+    //   this.refreshHistory();
+    // });
+
+
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = '400px'; 
     dialogConfig.data = { message: messageToEdit };
-    const dialogRef = this.dialog.open(MessageDialogComponent, dialogConfig);
+    dialogConfig.width = '350px'; 
+    const dialogRef = this.dialog.open(MessageMenuComponent, dialogConfig);
  
     dialogRef.afterClosed().subscribe(result => {
       this.refreshHistory();

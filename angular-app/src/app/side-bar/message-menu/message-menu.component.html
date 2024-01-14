@@ -1,0 +1,18 @@
+<mat-dialog-content>
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <button type="button" class="btn btn-outline-info"
+        (click)="editMessage()"
+        >Edit message</button>
+        <button type="button" class="btn btn-outline-info"
+        (click)="changeDoneStatus()">
+        {{message?.isDone ? 'Сancel as done' : 'Mark as done'}}</button>
+        <button type="button" class="btn btn-outline-info"
+        (click)="changeImportantStatus()">
+        {{message?.isImportant ? 'Сancel as important' : 'Mark as imporant'}}</button>
+        <button type="button" class="btn btn-outline-dark">Delete message</button>
+    </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>

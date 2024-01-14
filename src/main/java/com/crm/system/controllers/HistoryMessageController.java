@@ -42,7 +42,7 @@ public class HistoryMessageController {
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
     }
-    @Operation(summary = "Get tags for new history message", tags = {"history", "tags", "new message"})
+    @Operation(summary = "Get tags for history message", tags = {"history", "tags"})
     @GetMapping("tags")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getTagsForNewHistoryMessage() {
@@ -50,12 +50,12 @@ public class HistoryMessageController {
             List<TagForHistoryMessageResponse> tags = historyMessageService.getListOfTags();
             return ResponseEntity.ok(tags);
         } catch (UserPrincipalNotFoundException e) {
-            log.error("History Service, sending tags. Error: " + e.getMessage());
+            log.error("History Controller, sending tags. Error: " + e.getMessage());
             return ResponseEntity.badRequest()
-                    .body(new MessageResponse("History Service, sending tags. Error: " + e.getMessage()));
+                    .body(new MessageResponse("History Controller, sending tags. Error: " + e.getMessage()));
         }
     }
-    @Operation(summary = "Save new history message", tags = {"history", "new message"})
+    @Operation(summary = "Save history message", tags = {"history", "new message"})
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> saveMessage(@RequestBody HistoryMessage message) {
@@ -63,22 +63,48 @@ public class HistoryMessageController {
             historyMessageService.saveMessage(message);
             return ResponseEntity.ok(new MessageResponse("Message is saved"));
         } catch (UserPrincipalNotFoundException | SubjectNotBelongToActiveUser e) {
-            log.error("History Service, saving message. Error: " + e.getMessage());
+            log.error("History Controller, saving message. Error: " + e.getMessage());
             return ResponseEntity.badRequest()
-                    .body(new MessageResponse("History Service, saving message. Error: " + e.getMessage()));
+                    .body(new MessageResponse("History Controller, saving message. Error: " + e.getMessage()));
         }
     }
-    @Operation(summary = "Save new history message", tags = {"history", "new message"})
+    @Operation(summary = "Delete history message", tags = {"history", "delete"})
     @DeleteMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteMessage(@RequestParam long messageId) {
         try {
             historyMessageService.deleteMessage(messageId);
-            return ResponseEntity.ok(new MessageResponse("Message is saved"));
+            return ResponseEntity.ok(new MessageResponse("Message is deleted"));
         } catch (UserPrincipalNotFoundException | SubjectNotBelongToActiveUser e) {
-            log.error("History Service, deleting message. Error: " + e.getMessage());
+            log.error("History Controller, deleting message. Error: " + e.getMessage());
             return ResponseEntity.badRequest()
-                    .body(new MessageResponse("History Service, deleting message. Error: " + e.getMessage()));
+                    .body(new MessageResponse("History Controller, deleting message. Error: " + e.getMessage()));
+        }
+    }
+    @Operation(summary = "Change important status of message", tags = {"history", "status"})
+    @PutMapping("/change-important-status")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> changeImportantStatus(@RequestParam long messageId) {
+        try {
+            historyMessageService.changeImportantStatus(messageId);
+            return ResponseEntity.ok(new MessageResponse("Status is changed"));
+        } catch (UserPrincipalNotFoundException | SubjectNotBelongToActiveUser e) {
+            log.error("History Controller, change important status. Error: " + e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("History Controller, change important status. Error: " + e.getMessage()));
+        }
+    }
+    @Operation(summary = "Change important status of message", tags = {"history", "status"})
+    @PutMapping("/change-done-status")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> changeDoneStatus(@RequestParam long messageId) {
+        try {
+            historyMessageService.changeDoneStatus(messageId);
+            return ResponseEntity.ok(new MessageResponse("Status is changed"));
+        } catch (UserPrincipalNotFoundException | SubjectNotBelongToActiveUser e) {
+            log.error("History Controller, change done status. Error: " + e.getMessage());
+            return ResponseEntity.badRequest()
+                    .body(new MessageResponse("History Controller, change done status. Error: " + e.getMessage()));
         }
     }
 }

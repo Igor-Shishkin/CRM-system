@@ -63,9 +63,9 @@ public class HistoryMessageService {
     }
 
     public List<TagForHistoryMessageResponse> getListOfTags() throws UserPrincipalNotFoundException {
-        Optional<User> optionalUser = userService.getActiveUser();
-        if (optionalUser.isPresent()) {
-            Set<Client> clients = optionalUser.get().getClients();
+        User activeUser = getActiveUser();
+
+            Set<Client> clients = activeUser.getClients();
             List<TagForHistoryMessageResponse> tags = new ArrayList<>(clients.size() * 2);
             for (Client client : clients) {
                 TagForHistoryMessageResponse tag = new TagForHistoryMessageResponse();
@@ -75,9 +75,7 @@ public class HistoryMessageService {
                 tags.add(tag);
             }
             return tags;
-        } else {
-            throw new UserPrincipalNotFoundException("User not found exception");
-        }
+
     }
 
     public void saveMessage(HistoryMessage message) throws UserPrincipalNotFoundException {
@@ -105,6 +103,28 @@ public class HistoryMessageService {
             throw new SubjectNotBelongToActiveUser("It's not your history message");
         }
     }
+    public void changeImportantStatus(long messageId) throws UserPrincipalNotFoundException {
+        HistoryMessage message = getMessageById(messageId);
+        message.setImportant(!message.isImportant());
+        historyMessageRepository.save(message);
+    }
+    public void changeDoneStatus(long messageId) throws UserPrincipalNotFoundException {
+        HistoryMessage message = getMessageById(messageId);
+        message.setDone(!message.isDone());
+        historyMessageRepository.save(message);
+    }
+
+    private HistoryMessage getMessageById(long messageId) throws UserPrincipalNotFoundException {
+        User activeUser = getActiveUser();
+        Optional<HistoryMessage> optionalMessage = activeUser.getHistory().stream()
+                .filter(message -> message.getMessageId().equals(messageId))
+                .findFirst();
+        if (optionalMessage.isEmpty()) {
+            throw new RequestOptionalIsEmpty("You don't have message with this ID");
+        }
+        return optionalMessage.get();
+    }
+
     private long getActiveUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
@@ -122,6 +142,7 @@ public class HistoryMessageService {
         return activeUser.getHistory().stream()
                 .anyMatch(m -> m.getMessageId().equals(messageId));
     }
+
 
 
 }

@@ -3,6 +3,9 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { HistoryMessage } from 'src/entities/HistoryMessage';
 
 const USER_KEY = 'auth-user';
+const ACTIVE_ID = 'active-id';
+const ACTIVE_TAG = 'acive-tag';
+
 
 @Injectable({
   providedIn: 'root'
@@ -61,11 +64,20 @@ export class StorageService {
     this.isLoggedInSubject.next(isLoggedIn);
   }
   getActiveClientId(): number {
-    return this.clientID;
+    const activeId = window.sessionStorage.getItem(ACTIVE_ID);
+    if (activeId) {
+      return Number.parseInt(activeId);
+    }
+    return -1;
+    // return this.clientID;
   }
   setActiveClientId(id: number) {
-    this.clientID = id;
-    this.activeClientIdSubject.next(id);
+    window.sessionStorage.removeItem(ACTIVE_ID);
+    if (id) {
+    window.sessionStorage.setItem(ACTIVE_ID, id.toString());
+    }
+    // this.clientID = id;
+    // this.activeClientIdSubject.next(id);
   }
   getHistory(): HistoryMessage[] {
     return this.userHistory;

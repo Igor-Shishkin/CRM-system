@@ -33,6 +33,7 @@ import { PhotosComponent } from './board-user/order-workplace/photos/photos.comp
 import { SendEmailComponent } from './board-user/order-workplace/send-email/send-email.component';
 import { ConfirmSigningContractComponent } from './board-user/order-workplace/confirm-signing-contract/confirm-signing-contract.component';
 import { ConfirmPainmentComponent } from './board-user/order-workplace/confirm-painment/confirm-painment.component';
+import { MessageMenuComponent } from './side-bar/message-menu/message-menu.component';
 
 
 @NgModule({
@@ -58,7 +59,8 @@ import { ConfirmPainmentComponent } from './board-user/order-workplace/confirm-p
     PhotosComponent,
     SendEmailComponent,
     ConfirmSigningContractComponent,
-    ConfirmPainmentComponent
+    ConfirmPainmentComponent,
+    MessageMenuComponent
   ],
   imports: [
     BrowserModule,

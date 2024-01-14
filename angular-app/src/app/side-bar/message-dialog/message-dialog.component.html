@@ -52,14 +52,23 @@
       </div>
     </div>
     <mat-form-field style="background-color: rgba(165, 165, 165, 0.1);">
-      <input matInput [matDatepicker]="picker" placeholder="Select Date " 
-      (dateChange)="updateDate($event)">
+      <input matInput [matDatepicker]="picker" placeholder="Select Date" 
+      (dateChange)="updateDate($event)" readonly>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
     <button type="submit" style="margin: 5px 15px;" class="btn btn-primary">Submit</button>
   </form>
+  <footer>
+    <div *ngIf="isSuccess" class="alert alert-success" role="alert">
+      Changes are saved
+    </div>
+    <div *ngIf="isFailed" class="alert alert-danger" role="alert">
+      Sorry, we were unable to save your message. Try contacting support, they sometimes respond.
+    </div>
+  </footer>
 </mat-dialog-content>
+
 <mat-dialog-actions align="end">
   <button mat-button mat-dialog-close>Close</button>
 </mat-dialog-actions>

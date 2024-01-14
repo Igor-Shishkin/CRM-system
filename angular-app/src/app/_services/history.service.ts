@@ -30,7 +30,6 @@ export class HistoryService {
     );
   }
   saveNewHistoryMessage(message: HistoryMessage) {
-
     return this.http.post<HistoryMessage>(HISTORY_URL, message).pipe(
       tap((response) => {
         console.log('Request sent successfully:', response);
@@ -45,6 +44,22 @@ export class HistoryService {
     this.http.delete(HISTORY_URL + `?messageId=${messageId}`).pipe(
       catchError((error: any) => {
         console.error('Deleting HistoryMessage error: ' + error);
+        throw error;
+      })
+    );
+  }
+  changeImportantStatus(messageId: number | undefined) {
+    return this.http.put<HistoryMessage>(HISTORY_URL + `/change-important-status?messageId=${messageId}`, null).pipe(
+      catchError((error: any) => {
+        console.error('Change important status HistoryMessage error: ' + error);
+        throw error;
+      })
+    );
+  }
+  changeDoneStatus(messageId: number | undefined) {
+    return this.http.put<any>(HISTORY_URL + `/change-done-status?messageId=${messageId}`, null).pipe(
+      catchError((error: any) => {
+        console.error('Change important status HistoryMessage error: ' + error);
         throw error;
       })
     );
