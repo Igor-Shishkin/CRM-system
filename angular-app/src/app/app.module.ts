@@ -34,6 +34,7 @@ import { SendEmailComponent } from './board-user/order-workplace/send-email/send
 import { ConfirmSigningContractComponent } from './board-user/order-workplace/confirm-signing-contract/confirm-signing-contract.component';
 import { ConfirmPainmentComponent } from './board-user/order-workplace/confirm-painment/confirm-painment.component';
 import { MessageMenuComponent } from './side-bar/message-menu/message-menu.component';
+import { ConfirmDeleteComponent } from './side-bar/message-menu/confirm-delete/confirm-delete.component';
 
 
 @NgModule({
@@ -60,7 +61,8 @@ import { MessageMenuComponent } from './side-bar/message-menu/message-menu.compo
     SendEmailComponent,
     ConfirmSigningContractComponent,
     ConfirmPainmentComponent,
-    MessageMenuComponent
+    MessageMenuComponent,
+    ConfirmDeleteComponent
   ],
   imports: [
     BrowserModule,

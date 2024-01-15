@@ -1,16 +1,34 @@
 <mat-dialog-content>
-    <div class="d-grid gap-2 col-6 mx-auto">
-        <button type="button" class="btn btn-outline-info"
-        (click)="editMessage()"
-        >Edit message</button>
-        <button type="button" class="btn btn-outline-info"
-        (click)="changeDoneStatus()">
-        {{message?.isDone ? 'Сancel as done' : 'Mark as done'}}</button>
-        <button type="button" class="btn btn-outline-info"
-        (click)="changeImportantStatus()">
-        {{message?.isImportant ? 'Сancel as important' : 'Mark as imporant'}}</button>
-        <button type="button" class="btn btn-outline-dark">Delete message</button>
+    <div *ngIf="!isDeleted" class="d-grid gap-2 col-6 mx-auto">
+        <button type="button" class="btn btn-info"
+        (click)="editMessage()" [disabled]="isProcess"
+        >Edit message
+        </button>
+
+        <button type="button" class="btn btn-info"
+        (click)="changeDoneStatus()" [disabled]="isProcess">
+        {{message?.isDone ? 'Сancel as done' : 'Mark as done'}}
+        </button>
+
+        <button type="button" class="btn btn-info"
+        (click)="changeImportantStatus()" [disabled]="isProcess">
+        {{message?.isImportant ? 'Сancel as important' : 'Mark as imporant'}}
+        </button>
+
+        <button type="button" class="btn btn-outline-dark"
+        (click)="deleteMessage()" [disabled]="isProcess">
+        Delete message
+        </button>
     </div>
+    <div *ngIf="isSuccess" class="alert alert-success" role="alert">
+        {{successMessage}}
+      </div>
+      <div *ngIf="isFailed" class="alert alert-danger" role="alert">
+        Sorry, we were unable to save changes. Try contacting support, they sometimes respond.
+      </div>
+      <div *ngIf="isDeleted" class="alert alert-dark" role="alert">
+        The message is deleted ❕
+      </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

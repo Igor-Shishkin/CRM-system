@@ -40,8 +40,8 @@ export class HistoryService {
       })
     );
   }
-  deleteMessage(messageId: number) {
-    this.http.delete(HISTORY_URL + `?messageId=${messageId}`).pipe(
+  deleteMessage(messageId: number): any {
+    return this.http.delete<any>(HISTORY_URL + `?messageId=${messageId}`).pipe(
       catchError((error: any) => {
         console.error('Deleting HistoryMessage error: ' + error);
         throw error;

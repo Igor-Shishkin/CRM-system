@@ -72,16 +72,6 @@ private isLoggedInSubscription: Subscription;
 
 
   openDialog(messageToEdit: HistoryMessage): void {
-    // const dialogConfig = new MatDialogConfig();
-    // dialogConfig.width = '400px'; 
-    // dialogConfig.data = { message: messageToEdit };
-    // const dialogRef = this.dialog.open(MessageDialogComponent, dialogConfig);
- 
-    // dialogRef.afterClosed().subscribe(result => {
-    //   this.refreshHistory();
-    // });
-
-
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = { message: messageToEdit };
     dialogConfig.width = '350px'; 

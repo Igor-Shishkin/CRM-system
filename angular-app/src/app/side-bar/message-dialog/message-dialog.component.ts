@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectorRef, Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { HistoryService } from 'src/app/_services/history.service';
@@ -25,7 +25,6 @@ export class MessageDialogComponent implements OnInit{
 
   constructor(
     public dialogRef: MatDialogRef<MessageDialogComponent>,
-    private cdr: ChangeDetectorRef,
     private historyService: HistoryService,
     private datePipe: DatePipe,
     @Inject(MAT_DIALOG_DATA) public data: { message: HistoryMessage }
@@ -48,9 +47,7 @@ export class MessageDialogComponent implements OnInit{
             const stringDate = this.message.deadline;
             this.deadlineDate = new Date(stringDate);
           }
-
         }
-
       }, error(err) {
         console.log('loading history tags error: ' + err);
       }
@@ -69,7 +66,6 @@ export class MessageDialogComponent implements OnInit{
     }
     this.initiallyTagName = ' ';
     this.filteredHistoryTags = this.historyTags?.filter(tag => tag.tagName === category);
-    this.cdr.detectChanges();
   }
 
   chooseEntity(event: Event) {
@@ -79,11 +75,9 @@ export class MessageDialogComponent implements OnInit{
     if (this.message) {
       this.message.tagId = parseInt(entityId, 10);
     }
-    console.log(entityId);
   }
 
   updateDate(event: MatDatepickerInputEvent<Date>) {
-    console.log('doing')
     if (event.value !== null) {
       
       console.log(event.value)
@@ -96,12 +90,8 @@ export class MessageDialogComponent implements OnInit{
 
   saveMessage() {
     if (this.message) {
-      // if (this.deadlineDate) {
-      //   this.editDeadline();
-      // }
-      console.log(this.message.deadline)
       this.historyService.saveNewHistoryMessage(this.message).subscribe({
-        next: data => {
+        next: () => {
           this.isSuccess = true;
           this.delayHidingCloseDialoge()
         }, error:(err) => {
@@ -116,8 +106,4 @@ export class MessageDialogComponent implements OnInit{
       this.dialogRef.close();
     }, 2000);
   }
-//   editDeadline(){
-//     const formattedDeadline = this.datePipe.transform(deadlineDate, 'yyyy-MM-ddTHH:mm:ss');
-//     const deadlineRightFormat = new Date(this.message?.deadline)
-//   }
 }

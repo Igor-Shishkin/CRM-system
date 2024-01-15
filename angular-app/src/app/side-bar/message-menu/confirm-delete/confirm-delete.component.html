@@ -1,0 +1,13 @@
+<mat-dialog-content>
+    <h2>Once deleted, a message cannot be recovered. Do you confirm the deletion?</h2>
+    <div class="d-grid gap-2">
+        <button type="button" class="btn btn-dark" 
+        (click)="deleteMessage()" [disabled]="isProcess">
+        DELETE</button>
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>
