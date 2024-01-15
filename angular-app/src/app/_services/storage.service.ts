@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { HistoryMessage } from 'src/entities/HistoryMessage';
+import { HistoryTag } from 'src/entities/HistoryTag';
 
 const USER_KEY = 'auth-user';
 const ACTIVE_ID = 'active-id';
-const ACTIVE_TAG = 'acive-tag';
+const ACTIVE_TAG = 'acive-history-tag';
 
 
 @Injectable({
@@ -13,17 +14,20 @@ const ACTIVE_TAG = 'acive-tag';
 export class StorageService {
   private isLoggedInSubject: BehaviorSubject<boolean>;
   public isLoggedIn$: Observable<boolean>;
-  private activeClientIdSubject: Subject<number> = new Subject<number>();
   private historySubject: Subject<HistoryMessage[]> = new Subject<HistoryMessage[]>();
-  activeClientId$ = this.activeClientIdSubject.asObservable(); 
   history$ = this.historySubject.asObservable();
   private userHistory: HistoryMessage[] = [];
-  clientID = -1;
 
+  private activeHistoryTagSubject: BehaviorSubject<HistoryTag>;
+  activeHistoryTag$: Observable<HistoryTag>;
+  
 
   constructor() {
     this.isLoggedInSubject = new BehaviorSubject<boolean>(this.getLoggedInStatus());
     this.isLoggedIn$ = this.isLoggedInSubject.asObservable();
+    
+    this.activeHistoryTagSubject = new BehaviorSubject<HistoryTag>(this.getActiveHistoryTag());
+    this.activeHistoryTag$ = this.activeHistoryTagSubject.asObservable();
   }
 
   private getLoggedInStatusFromStorage(): boolean {
@@ -63,21 +67,27 @@ export class StorageService {
     localStorage.setItem('isLoggedIn', isLoggedIn ? 'true' : 'false');
     this.isLoggedInSubject.next(isLoggedIn);
   }
-  getActiveClientId(): number {
-    const activeId = window.sessionStorage.getItem(ACTIVE_ID);
-    if (activeId) {
-      return Number.parseInt(activeId);
+  setActiveHistoryTag(tagName: string, entityId: number) {
+    const historyTag = new HistoryTag();
+    historyTag.tagName = tagName;
+    historyTag.entityId = entityId;
+
+    window.sessionStorage.removeItem(ACTIVE_TAG);
+    if (historyTag.tagName && historyTag.entityId) {
+      window.sessionStorage.setItem(ACTIVE_TAG, JSON.stringify(historyTag));
+      this.activeHistoryTagSubject.next(historyTag);
     }
-    return -1;
-    // return this.clientID;
   }
-  setActiveClientId(id: number) {
-    window.sessionStorage.removeItem(ACTIVE_ID);
-    if (id) {
-    window.sessionStorage.setItem(ACTIVE_ID, id.toString());
+  getActiveHistoryTag(): HistoryTag {
+    const historyTagString = window.sessionStorage.getItem(ACTIVE_TAG);
+    if (historyTagString) {
+      try {
+        return JSON.parse(historyTagString) as HistoryTag;
+      } catch (error) {
+        console.error('Error parsing HistoryTag:', error);
+      }
     }
-    // this.clientID = id;
-    // this.activeClientIdSubject.next(id);
+    return {} as HistoryTag;
   }
   getHistory(): HistoryMessage[] {
     return this.userHistory;

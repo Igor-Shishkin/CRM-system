@@ -1,14 +1,12 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { HistoryMessage } from '../../entities/HistoryMessage';
-import { UserService } from '../_services/user.service';
 import { StorageService } from '../_services/storage.service';
 import { BehaviorSubject, Subscription, combineLatest } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 import { HistoryService } from '../_services/history.service';
-import { ActivatedRouteSnapshot, Router, RouterStateSnapshot } from '@angular/router';
-import { AuthService } from '../_services/auth.service';
 import { MessageMenuComponent } from './message-menu/message-menu.component';
+import { HistoryTag } from 'src/entities/HistoryTag';
+import { MessageDialogComponent } from './message-dialog/message-dialog.component';
 
 // import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -22,10 +20,10 @@ export class SideBarComponent implements OnInit{
 
 history$: BehaviorSubject<HistoryMessage[]> = new BehaviorSubject<HistoryMessage[]>([]);
 history: HistoryMessage[] = [];
+activeHistoryTag = new HistoryTag;
 filteredHistory?: HistoryMessage[];
-activeClientId = -1;
 private historySubscription: Subscription;
-private activeClientIdSubscription: Subscription;
+private activeHistoryTagSubscription: Subscription;
 content?: string;
 isLoadFailing = false;
 
@@ -36,15 +34,15 @@ private isLoggedInSubscription: Subscription;
   constructor(
       private storageService: StorageService,
       public dialog: MatDialog,
-      private historyService: HistoryService,) {
+      private historyService: HistoryService) {
         this.historySubscription = this.storageService.history$.subscribe((userHistory: HistoryMessage[]) => {
           this.history = userHistory;
         });
-        this.activeClientIdSubscription = this.storageService.activeClientId$.subscribe((activeClientId: number) => {
-          this.activeClientId = activeClientId;
-        });
         this.isLoggedInSubscription = this.storageService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
           this.isLoggedIn = isLoggedIn;
+        });
+        this.activeHistoryTagSubscription = this.storageService.activeHistoryTag$.subscribe((historyTag: HistoryTag) => {
+          this.activeHistoryTag = historyTag;
         });
   }
 
@@ -52,18 +50,20 @@ private isLoggedInSubscription: Subscription;
 
     this.storageService.history$.subscribe((history: HistoryMessage[]) => {
       this.history = history;
-      this.filteredHistory = this.history.sort((a, b) => {
-        if (a.dateOfCreation && b.dateOfCreation) {
+      this.filteredHistory = this.history
+        .sort((a, b) => {
+          if (a.dateOfCreation && b.dateOfCreation) {
 
-          const dateA = new Date(a.dateOfCreation);
-          const dateB = new Date(b.dateOfCreation);
-          
-          if (!isNaN(dateA.getTime()) && !isNaN(dateB.getTime())) {
-            return dateB.getTime() - dateA.getTime();
+            const dateA = new Date(a.dateOfCreation);
+            const dateB = new Date(b.dateOfCreation);
+
+            if (!isNaN(dateA.getTime()) && !isNaN(dateB.getTime())) {
+              return dateB.getTime() - dateA.getTime();
+            }
           }
+          return 0;
         }
-        return 0;
-      })});
+      )});
 
     if (this.history.length == 0) {
       this.refreshHistory();
@@ -84,22 +84,32 @@ private isLoggedInSubscription: Subscription;
   editMessage(selectedMessage: HistoryMessage): void {
     this.openDialog(selectedMessage);
   }
+  
   createNewMessage() {
     const message = new HistoryMessage;
     message.messageId = -1;
     message.tagName = this.history[0].tagName;
-    if (this.activeClientId != -1) {
-      message.tagId = this.activeClientId;
+    if (this.activeHistoryTag.entityId != -1) {
+      message.tagId = this.activeHistoryTag.entityId;
     }
-    this.openDialog(message);
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '500px'; 
+    dialogConfig.data = { message: message };
+    const dialogRef = this.dialog.open(MessageDialogComponent, dialogConfig);
+ 
+    dialogRef.afterClosed().subscribe(() => {
+      this.refreshHistory();
+    });
   }
 
   showAllHistory(){
     this.filteredHistory = this.history;
   }
   showActiveClientHistory(){
-    this.filteredHistory = this.history?.filter(message => message.tagId === this.activeClientId);
-    console.log(this.activeClientId);
+    console.log(this.activeHistoryTag)
+    this.filteredHistory = this.history?.filter(message => message.tagId === this.activeHistoryTag.entityId);
+    console.log(this.activeHistoryTag.entityId);
   }
   refreshHistory(){
     this.historyService.getHistory().subscribe({

@@ -3,6 +3,7 @@ import { Client } from 'src/entities/Client';
 import { ClientsService } from 'src/app/_services/clients.service';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/_services/storage.service';
+import { HistoryTag } from 'src/entities/HistoryTag';
 
 @Component({
   selector: 'app-clients',
@@ -18,12 +19,14 @@ export class ClientsComponent implements OnInit{
   isError = false;
   isRequestSent = false;
   
+  
   constructor(private clientService: ClientsService,
               private router: Router,
               private storageService: StorageService) {}
   
     ngOnInit(): void {
       this.refreshListOfClients();
+      this.storageService.setActiveHistoryTag('CLIENT', -1);
     }
 
     refreshListOfClients(){
@@ -44,7 +47,7 @@ export class ClientsComponent implements OnInit{
       })
     }
     goToClientDetail(clientId: number) {
-      this.storageService.setActiveClientId(clientId);
+      this.storageService.setActiveHistoryTag('CLIENT', clientId);
       this.router.navigate(['/user-board/client-workplace', clientId]);
     }
   }

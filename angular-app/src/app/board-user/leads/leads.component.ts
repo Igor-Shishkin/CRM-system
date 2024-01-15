@@ -24,6 +24,7 @@ export class LeadsComponent implements OnInit{
   
     ngOnInit(): void {
       this.refreshListOfLeads();
+      this.storageService.setActiveHistoryTag('CLIENT', -1);
     }
     refreshListOfLeads(){
       this.isRequestSent = true;
@@ -42,7 +43,7 @@ export class LeadsComponent implements OnInit{
       })
     }
     goToClientDetail(clientId: number) {
-      this.storageService.setActiveClientId(clientId);
+      this.storageService.setActiveHistoryTag('CLIENT', clientId);
       this.router.navigate(['/user-board/client-workplace', clientId]);
     }
 }
