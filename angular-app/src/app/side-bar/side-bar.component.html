@@ -1,18 +1,68 @@
 
-<div class="general ">
+<div class="general">
 
-    <div class="logo-container" style="margin-bottom: 3px;">
-        
-        <button style="background-color: transparent; border: none;"
-        [routerLinkActive]="'active-nav'"
-        [routerLink]="'/home'">
-            <img src="assets\images\LOGO.png" width="40px" />
-        </button>
+    <!-- <head> -->
+        <div class="logo-container" style="margin-bottom: 3px;">
 
-        <p class="colorful-text" style="margin-top: 9px; margin-bottom: 3px;">alfanamestaj.rs</p>
-    </div>
+            <button style="background-color: transparent; border: none;"
+            [routerLinkActive]="'active-nav'"
+            [routerLink]="'/home'">
+                <img src="assets\images\LOGO.png" width="40px" />
+            </button>
+
+            <p class="colorful-text" style="margin-top: 9px; margin-bottom: 3px;">alfanamestaj.rs</p>
+        </div>
+    <!-- </head> -->
 
     <div class="separator"></div>
+
+    <div class="d-flex justify-content-between align-items-center gap-1">
+        <div class="dropdown" >
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Dropdown button
+            </button>
+            <ul class="dropdown-menu dropdown-menu-dark">
+                <li>
+                    <div class="form-check form-switch form-check-reverse">
+                        <input class="form-check-input" type="checkbox" id="byCategotyCheckBox"
+                        [disabled]="activeHistoryTag.tagName?.length==0 || activeHistoryTag.tagName==undefined"
+                        [(ngModel)]="filterParameters.byCategory" [ngModelOptions]="{ standalone: true }"
+                        (change)="filterMethodHistory()">
+                        <label class="form-check-label" for="byCategotyCheckBox">Active category</label>
+                    </div>
+                </li>
+                <li>
+                    <div class="form-check form-switch form-check-reverse">
+                        <input class="form-check-input" type="checkbox" id="byIdCheckBox"
+                        [disabled]="activeHistoryTag.entityId==-1 || activeHistoryTag.entityId == undefined"
+                        [(ngModel)]="filterParameters.byId" [ngModelOptions]="{ standalone: true }"
+                        (change)="filterMethodHistory()">
+                        <label class="form-check-label" for="byIdCheckBox">Active entity</label>
+                    </div>
+                </li>
+                <li>
+                    <div class="form-check form-switch form-check-reverse">
+                        <input class="form-check-input" type="checkbox" id="byImportantCheckBox"
+                        [(ngModel)]="filterParameters.byImportant" [ngModelOptions]="{ standalone: true }"
+                        (change)="filterMethodHistory()">
+                        <label class="form-check-label" for="byImportantCheckBox">Only important</label>
+                    </div>
+                </li>             
+                <li>
+                    <div class="form-check form-switch form-check-reverse">
+                        <input class="form-check-input" type="checkbox" id="byUndoneCheckBox"
+                        [(ngModel)]="filterParameters.byUndone" [ngModelOptions]="{ standalone: true }"
+                        (change)="filterMethodHistory()">
+                        <label class="form-check-label" for="byUndoneCheckBox">Only undone</label>
+                    </div>
+                </li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" (click)="cancelFilters()">Show all</a></li>
+            </ul>
+        </div>
+    
+        <button type="button"class="btn btn-outline-secondary" (click)="createNewMessage()">New message</button>
+    </div>
 
     <div class="btn-toolbar" *ngIf="!isLoadFailing || isLoggedIn" >
         <div class="btn-group me-2" role="group" style="max-height: 35px;" >
@@ -33,7 +83,7 @@
 
     <div class="separator" *ngIf="!isLoadFailing || isLoggedIn"></div>
 
-    <div style="padding: 6px, 4px;" id="list" class="custom-scrollbar">
+    <section style="padding: 6px, 4px;" id="list" class="custom-scrollbar">
         <div  *ngFor="let message of filteredHistory" >
             <div class="label-action " style="margin: 8px;"
                 (click)="editMessage(message)">
@@ -48,5 +98,5 @@
                 <p style="margin: 0px; color: rgb(181, 181, 181);" class="separator" style="margin: 5px;"></p>
             </div>    
         </div>
-    </div>
+    </section>
 </div>

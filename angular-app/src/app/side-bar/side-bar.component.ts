@@ -7,6 +7,7 @@ import { HistoryService } from '../_services/history.service';
 import { MessageMenuComponent } from './message-menu/message-menu.component';
 import { HistoryTag } from 'src/entities/HistoryTag';
 import { MessageDialogComponent } from './message-dialog/message-dialog.component';
+import { HistoryFilterParameters } from 'src/entities/HistoryFilterParameters';
 
 // import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
@@ -27,6 +28,8 @@ private activeHistoryTagSubscription: Subscription;
 content?: string;
 isLoadFailing = false;
 
+filterParameters: HistoryFilterParameters = new HistoryFilterParameters;
+
 isLoggedIn$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 isLoggedIn?: boolean;
 private isLoggedInSubscription: Subscription;
@@ -37,6 +40,8 @@ private isLoggedInSubscription: Subscription;
       private historyService: HistoryService) {
         this.historySubscription = this.storageService.history$.subscribe((userHistory: HistoryMessage[]) => {
           this.history = userHistory;
+          this.filterMethodHistory();
+          this.sortFilteredHistory();
         });
         this.isLoggedInSubscription = this.storageService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
           this.isLoggedIn = isLoggedIn;
@@ -50,24 +55,33 @@ private isLoggedInSubscription: Subscription;
 
     this.storageService.history$.subscribe((history: HistoryMessage[]) => {
       this.history = history;
-      this.filteredHistory = this.history
-        .sort((a, b) => {
-          if (a.dateOfCreation && b.dateOfCreation) {
-
-            const dateA = new Date(a.dateOfCreation);
-            const dateB = new Date(b.dateOfCreation);
-
-            if (!isNaN(dateA.getTime()) && !isNaN(dateB.getTime())) {
-              return dateB.getTime() - dateA.getTime();
-            }
-          }
-          return 0;
-        }
-      )});
+      this.filteredHistory = history;
+    });
 
     if (this.history.length == 0) {
       this.refreshHistory();
     }
+    this.sortFilteredHistory();
+    this.filterMethodHistory();
+    
+  }
+
+  filterMethodHistory() {
+    console.log(this.activeHistoryTag);
+    console.log(this.filterParameters);
+    this.filteredHistory = this.history;
+    if (this.filterParameters.byId && this.activeHistoryTag.entityId && this.activeHistoryTag.entityId > 0) {
+      this.filterHistoryByActiveId();
+      console.log('ID checking')
+    } else if (this.filterParameters.byCategory && this.activeHistoryTag.tagName && this.activeHistoryTag.tagName.length>0) {
+      this.filterHistoryByCategories();
+    };
+    if (this.filterParameters.byImportant) {
+      this.filterHistoryByImportant();
+    };
+    if (this.filterParameters.byUndone) {
+      this.filterHistoryByUndone();
+    };
   }
 
 
@@ -88,7 +102,7 @@ private isLoggedInSubscription: Subscription;
   createNewMessage() {
     const message = new HistoryMessage;
     message.messageId = -1;
-    message.tagName = this.history[0].tagName;
+    message.tagName = this.activeHistoryTag.tagName;
     if (this.activeHistoryTag.entityId != -1) {
       message.tagId = this.activeHistoryTag.entityId;
     }
@@ -114,8 +128,11 @@ private isLoggedInSubscription: Subscription;
   refreshHistory(){
     this.historyService.getHistory().subscribe({
       next: data => {
-        this.updateHistory(data);
+        this.history = data;
+        console.log(this.filterParameters)
         this.isLoadFailing = false;
+        this.filterMethodHistory();
+        this.sortFilteredHistory();
       },
       error: err => {
         this.isLoadFailing = true;
@@ -123,7 +140,50 @@ private isLoggedInSubscription: Subscription;
       }
     });
   }
-  updateHistory(newHistory: HistoryMessage[]) {
-    this.storageService.setHistory(newHistory);
+  filterHistoryByCategories() {
+    if (this.filteredHistory) 
+    this.filteredHistory = this.filteredHistory
+      .filter(message => message.tagName === this.activeHistoryTag.tagName);
+  }
+  filterHistoryByActiveId() {
+    if (this.filteredHistory) 
+    this.filteredHistory = this.filteredHistory
+      .filter(message => message.tagId === this.activeHistoryTag.entityId);
+  }
+  filterHistoryByImportant() {
+    if (this.filteredHistory) 
+    this.filteredHistory = this.filteredHistory
+      .filter(message => message.isImportant);
+  }
+  filterHistoryByUndone() {
+    if (this.filteredHistory) 
+    this.filteredHistory = this.filteredHistory
+      .filter(message => !message.isDone);
+  }
+  sortFilteredHistory() {
+    if (this.filteredHistory) {
+      this.filteredHistory = this.filteredHistory
+      .sort((a, b) => {
+        if (a.dateOfCreation && b.dateOfCreation) {
+
+          const dateA = new Date(a.dateOfCreation);
+          const dateB = new Date(b.dateOfCreation);
+
+          if (!isNaN(dateA.getTime()) && !isNaN(dateB.getTime())) {
+            return dateB.getTime() - dateA.getTime();
+          }
+        }
+        return 0;
+      }
+    )
+  }
+  }
+  cancelFilters() {
+    this.filterParameters.byCategory = false;
+    this.filterParameters.byId = false;
+    this.filterParameters.byImportant = false;
+    this.filterParameters.byUndone = false;
+
+    this.filteredHistory = this.history;
   }
 }

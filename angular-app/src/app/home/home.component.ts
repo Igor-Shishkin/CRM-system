@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit{
 
   ngOnInit(): void {
     this.isLoggedIn = this.storageService.isLoggedIn();
+    this.storageService.setActiveHistoryTag('', -1);
   }
 
 }
