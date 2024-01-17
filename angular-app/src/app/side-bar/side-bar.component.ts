@@ -40,8 +40,7 @@ private isLoggedInSubscription: Subscription;
       private historyService: HistoryService) {
         this.historySubscription = this.storageService.history$.subscribe((userHistory: HistoryMessage[]) => {
           this.history = userHistory;
-          this.filterMethodHistory();
-          this.sortFilteredHistory();
+          this.delayFilterHistory();
         });
         this.isLoggedInSubscription = this.storageService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
           this.isLoggedIn = isLoggedIn;
@@ -67,12 +66,9 @@ private isLoggedInSubscription: Subscription;
   }
 
   filterMethodHistory() {
-    console.log(this.activeHistoryTag);
-    console.log(this.filterParameters);
     this.filteredHistory = this.history;
     if (this.filterParameters.byId && this.activeHistoryTag.entityId && this.activeHistoryTag.entityId > 0) {
       this.filterHistoryByActiveId();
-      console.log('ID checking')
     } else if (this.filterParameters.byCategory && this.activeHistoryTag.tagName && this.activeHistoryTag.tagName.length>0) {
       this.filterHistoryByCategories();
     };
@@ -176,7 +172,13 @@ private isLoggedInSubscription: Subscription;
         return 0;
       }
     )
+    }
   }
+  delayFilterHistory() {
+    setTimeout(() => {
+      this.filterMethodHistory();
+      this.sortFilteredHistory();
+    }, 500)
   }
   cancelFilters() {
     this.filterParameters.byCategory = false;

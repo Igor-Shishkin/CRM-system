@@ -57,28 +57,11 @@
                     </div>
                 </li>
               <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" (click)="cancelFilters()">Show all</a></li>
+              <li><a class="dropdown-item" (click)="cancelFilters()">Reset filters</a></li>
             </ul>
         </div>
     
         <button type="button"class="btn btn-outline-secondary" (click)="createNewMessage()">New message</button>
-    </div>
-
-    <div class="btn-toolbar" *ngIf="!isLoadFailing || isLoggedIn" >
-        <div class="btn-group me-2" role="group" style="max-height: 35px;" >
-          <input type="radio" class="btn-check"  autocomplete="off" checked>
-          <label class="btn btn-outline-primary" (click)="showAllHistory()">
-            All history</label>
-
-          <input type="radio" class="btn-check"  autocomplete="off">
-          <label class="btn btn-outline-primary"  (click)="showActiveClientHistory()"> 
-            Active client</label>
-        </div>
-        <div class="btn-group" role="group"> 
-            <button type="button" class="btn btn-outline-primary "
-             (click)="createNewMessage()"
-            >New message</button>
-        </div>
     </div>
 
     <div class="separator" *ngIf="!isLoadFailing || isLoggedIn"></div>
