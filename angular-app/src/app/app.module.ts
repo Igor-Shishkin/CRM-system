@@ -9,7 +9,6 @@ import { RegisterComponent } from './register/register.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
-import { BoardModeratorComponent } from './board-moderator/board-moderator.component';
 import { BoardUserComponent } from './board-user/board-user.component';
 import { httpInterceptorProviders } from './_helpers/http.interceptor';
 import { NavigationComponent } from './navigation/navigation.component';
@@ -34,7 +33,12 @@ import { SendEmailComponent } from './board-user/order-workplace/send-email/send
 import { ConfirmSigningContractComponent } from './board-user/order-workplace/confirm-signing-contract/confirm-signing-contract.component';
 import { ConfirmPainmentComponent } from './board-user/order-workplace/confirm-painment/confirm-painment.component';
 import { MessageMenuComponent } from './side-bar/message-menu/message-menu.component';
-import { ConfirmDeleteComponent } from './side-bar/message-menu/confirm-delete/confirm-delete.component';
+import { ConfirmDeleteMessageComponent } from './side-bar/message-menu/confirm-delete-messsage/confirm-delete-message.component';
+import { CreateNewOrderComponent } from './board-user/client-workplace/create-new-order/create-new-order.component';
+import { RegisterNewUserComponent } from './board-admin/register-new-user/register-new-user.component';
+import { ConfirmDeleteUserComponent } from './board-admin/confirm-delete-user/confirm-delete-user.component';
+import { SentEmailComponent } from './board-user/client-workplace/sent-email/sent-email.component';
+import { UsersComponent } from './board-admin/users/users.component';
 
 
 @NgModule({
@@ -45,7 +49,6 @@ import { ConfirmDeleteComponent } from './side-bar/message-menu/confirm-delete/c
     HomeComponent,
     ProfileComponent,
     BoardAdminComponent,
-    BoardModeratorComponent,
     BoardUserComponent,
     NavigationComponent,
     LeadsComponent,
@@ -62,7 +65,12 @@ import { ConfirmDeleteComponent } from './side-bar/message-menu/confirm-delete/c
     ConfirmSigningContractComponent,
     ConfirmPainmentComponent,
     MessageMenuComponent,
-    ConfirmDeleteComponent
+    ConfirmDeleteMessageComponent,
+    CreateNewOrderComponent,
+    RegisterNewUserComponent,
+    ConfirmDeleteUserComponent,
+    SentEmailComponent,
+    UsersComponent
   ],
   imports: [
     BrowserModule,

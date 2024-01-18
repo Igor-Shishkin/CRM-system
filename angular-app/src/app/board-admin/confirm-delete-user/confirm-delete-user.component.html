@@ -1,0 +1,35 @@
+<mat-dialog-content>
+    <h2 *ngIf="!isAdminSureInDeleting">By deleting a user, you will simultaneously delete all
+         data belonging to him. Are you sure you want to do this?
+    </h2>
+
+    <div *ngIf="!isAdminSureInDeleting" class="d-grid gap-2">
+        <button type="button" class="btn btn-dark" 
+        (click)="confirmDeleting()" [disabled]="isProcess">
+        I'm sure!</button>
+    </div>
+
+
+
+
+    <h2 *ngIf="isAdminSureInDeleting">If you have not accidentally clicked all these buttons 
+        and still want to permanently delete this user, click the "DELETE" button
+   </h2>
+    <div *ngIf="isAdminSureInDeleting" class="d-grid gap-2">
+        <button type="button" class="btn btn-danger" 
+        (click)="deleteUser()" [disabled]="isProcess">
+        DELETE</button>
+    </div>
+
+    <div *ngIf="isSuccess" class="alert alert-success" role="alert">
+        User successfully deleted
+    </div>
+    <div *ngIf="isFailed" class="alert alert-danger" role="alert">
+        An error occurred while sending a request to the server and a happy accident saved this user for a while
+    </div>
+
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Close</button>
+  </mat-dialog-actions>

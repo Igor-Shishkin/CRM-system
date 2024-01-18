@@ -18,20 +18,20 @@
        type="button" class="btn btn-outline-secondary custom-size">Clients</button>
     </div>
     <div class="w3-col m4 l4">
-      <button type="button" class="btn btn-outline-secondary custom-size">Providers</button>
+      <button type="button" class="btn btn-outline-secondary custom-size" disabled>Providers</button>
     </div>
   </div>
   <div class="w3-row">
     <div class="w3-col m4 l4">
-      <button type="button" class="btn btn-outline-secondary custom-size">Cash</button>
+      <button type="button" class="btn btn-outline-secondary custom-size" disabled>Cash</button>
     </div>
     <div class="w3-col m4 l4">
-      <button type="button" class="btn btn-outline-secondary custom-size">Statistic</button>
+      <button type="button" class="btn btn-outline-secondary custom-size" disabled>Statistic</button>
     </div>
     <div class="w3-col m4 l4">
       <button type="button" class="btn btn-outline-secondary custom-size"
       [routerLinkActive]="'active-nav'"
-      [routerLink]="'/admin'"
+      [routerLink]="'/admin/users'"
       >Administration</button>
     </div>
   </div>

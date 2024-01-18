@@ -1,0 +1,35 @@
+<p *ngIf="isError == true" class="">{{errorMessage}}</p>
+
+<h4>{{responseMessage}}</h4>
+
+<table class="table table-hover custom-table">
+  
+  <thead> 
+      <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>email</th>
+          <th>roles</th>
+          <th>Number of clients</th>
+          <th>Action</th>
+      </tr>
+  </thead>
+
+
+  <tbody *ngIf="isLoaded == true">
+      <tr *ngFor="let user of users">
+          <td>{{user.id}}</td>
+          <td>{{user.username}}</td>
+          <td>{{user.email}}</td>
+          <td>{{user.roles}}</td>
+          <td>{{user.clientsNumber}}</td>
+          <td>            
+            <button (click)="deleteUser(user.id)" type="button" 
+            class="btn btn-outline-danger" style="margin-left: 5px;">Delete</button>
+          </td>
+      </tr>
+  </tbody>
+</table>
+
+<button [routerLink]="'/admin/register-new-user'" 
+ type="button" class="btn btn-outline-primary">Add USER</button>

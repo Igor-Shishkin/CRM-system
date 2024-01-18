@@ -3,7 +3,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angu
 import { HistoryMessage } from 'src/entities/HistoryMessage';
 import { MessageDialogComponent } from '../message-dialog/message-dialog.component';
 import { HistoryService } from 'src/app/_services/history.service';
-import { ConfirmDeleteComponent } from './confirm-delete/confirm-delete.component';
+import { ConfirmDeleteMessageComponent } from './confirm-delete-messsage/confirm-delete-message.component';
 
 @Component({
   selector: 'app-message-menu',
@@ -81,7 +81,7 @@ export class MessageMenuComponent {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = { message: this.message };
     dialogConfig.width = '350px'; 
-    const dialogRef = this.dialog.open(ConfirmDeleteComponent, dialogConfig);
+    const dialogRef = this.dialog.open(ConfirmDeleteMessageComponent, dialogConfig);
  
     dialogRef.afterClosed().subscribe(result => {
       this.cdr.markForCheck();

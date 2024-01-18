@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { UserService } from '../_services/user.service';
-import { AuthService } from '../_services/auth.service';
-import { User } from '../../entities/User';
+import { Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { ConfirmDeleteUserComponent } from './confirm-delete-user/confirm-delete-user.component';
+import { AuthService } from 'src/app/_services/auth.service';
+import { UserService } from 'src/app/_services/user.service';
+import { User } from 'src/entities/User';
+import { ConfirmDeleteUserComponent } from '../confirm-delete-user/confirm-delete-user.component';
 
 @Component({
-  selector: 'app-board-admin',
-  templateUrl: './board-admin.component.html',
-  styleUrls: ['./board-admin.component.css']
+  selector: 'app-users',
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.css']
 })
-export class BoardAdminComponent implements OnInit {
+export class UsersComponent {
   users?: User[];
   isLoaded = false;
   responseMessage = '';

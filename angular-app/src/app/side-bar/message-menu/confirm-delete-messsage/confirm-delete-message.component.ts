@@ -4,11 +4,11 @@ import { HistoryService } from 'src/app/_services/history.service';
 import { HistoryMessage } from 'src/entities/HistoryMessage';
 
 @Component({
-  selector: 'app-confirm-delete',
-  templateUrl: './confirm-delete.component.html',
-  styleUrls: ['./confirm-delete.component.css']
+  selector: 'app-confirm-delete-message',
+  templateUrl: './confirm-delete-message.component.html',
+  styleUrls: ['./confirm-delete-message.component.css']
 })
-export class ConfirmDeleteComponent {
+export class ConfirmDeleteMessageComponent {
   message: HistoryMessage;
   isFailed = false;
   isProcess = false;
@@ -17,10 +17,9 @@ export class ConfirmDeleteComponent {
     @Inject(MAT_DIALOG_DATA) public data: { message: HistoryMessage },
     private historyService: HistoryService,
     public dialog: MatDialog,
-    public dialogRef: MatDialogRef<ConfirmDeleteComponent>
+    public dialogRef: MatDialogRef<ConfirmDeleteMessageComponent>
   ) {
     this.message = data.message;
-    console.log(this.message);
   }
   deleteMessage() {
     this.isProcess = true;

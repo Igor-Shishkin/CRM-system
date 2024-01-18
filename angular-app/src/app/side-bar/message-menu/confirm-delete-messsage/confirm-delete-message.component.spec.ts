@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ConfirmDeleteComponent } from './confirm-delete.component';
+import { ConfirmDeleteMessageComponent } from './confirm-delete-message.component';
 
 describe('ConfirmDeleteComponent', () => {
-  let component: ConfirmDeleteComponent;
-  let fixture: ComponentFixture<ConfirmDeleteComponent>;
+  let component: ConfirmDeleteMessageComponent;
+  let fixture: ComponentFixture<ConfirmDeleteMessageComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ConfirmDeleteComponent]
+      declarations: [ConfirmDeleteMessageComponent]
     });
-    fixture = TestBed.createComponent(ConfirmDeleteComponent);
+    fixture = TestBed.createComponent(ConfirmDeleteMessageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
