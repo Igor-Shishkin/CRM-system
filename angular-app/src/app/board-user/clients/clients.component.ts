@@ -13,7 +13,6 @@ import { HistoryTag } from 'src/entities/HistoryTag';
 export class ClientsComponent implements OnInit{
   clients!: Client[]
   isSuccessLoad = false;
-  isSuccessDelete = false
   responseMessage = '';
   errorMessage = '';
   isError = false;
@@ -47,8 +46,10 @@ export class ClientsComponent implements OnInit{
       })
     }
     goToClientDetail(clientId: number) {
-      this.storageService.setActiveHistoryTag('CLIENT', clientId);
-      this.router.navigate(['/user-board/client-workplace', clientId]);
+      if (!this.isRequestSent) {
+        this.storageService.setActiveHistoryTag('CLIENT', clientId);
+        this.router.navigate(['/user-board/client-workplace', clientId]);
+      }
     }
   }
   

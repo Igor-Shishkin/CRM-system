@@ -6,7 +6,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { HistoryService } from '../_services/history.service';
 import { MessageMenuComponent } from './message-menu/message-menu.component';
 import { HistoryTag } from 'src/entities/HistoryTag';
-import { MessageDialogComponent } from './message-dialog/message-dialog.component';
+import { SaveMessageDialogComponent } from './save-message-dialog/save-message-dialog.component';
 import { HistoryFilterParameters } from 'src/entities/HistoryFilterParameters';
 
 // import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -106,7 +106,7 @@ private isLoggedInSubscription: Subscription;
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '500px'; 
     dialogConfig.data = { message: message };
-    const dialogRef = this.dialog.open(MessageDialogComponent, dialogConfig);
+    const dialogRef = this.dialog.open(SaveMessageDialogComponent, dialogConfig);
  
     dialogRef.afterClosed().subscribe(() => {
       this.refreshHistory();

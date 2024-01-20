@@ -8,11 +8,11 @@ import { HistoryTag } from 'src/entities/HistoryTag';
 
 @Component({
   selector: 'app-message-dialog',
-  templateUrl: './message-dialog.component.html',
-  styleUrls: ['./message-dialog.component.css']
+  templateUrl: './save-message-dialog.component.html',
+  styleUrls: ['./save-message-dialog.component.css']
 })
 
-export class MessageDialogComponent implements OnInit{
+export class SaveMessageDialogComponent implements OnInit{
   message?: HistoryMessage;
   historyTags?: HistoryTag[];
   filteredHistoryTags?: HistoryTag[];
@@ -24,7 +24,7 @@ export class MessageDialogComponent implements OnInit{
   deadlineDate = new Date();
 
   constructor(
-    public dialogRef: MatDialogRef<MessageDialogComponent>,
+    public dialogRef: MatDialogRef<SaveMessageDialogComponent>,
     private historyService: HistoryService,
     private datePipe: DatePipe,
     @Inject(MAT_DIALOG_DATA) public data: { message: HistoryMessage }

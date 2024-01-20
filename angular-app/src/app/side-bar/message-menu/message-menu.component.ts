@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { HistoryMessage } from 'src/entities/HistoryMessage';
-import { MessageDialogComponent } from '../message-dialog/message-dialog.component';
+import { SaveMessageDialogComponent } from '../save-message-dialog/save-message-dialog.component';
 import { HistoryService } from 'src/app/_services/history.service';
 import { ConfirmDeleteMessageComponent } from './confirm-delete-messsage/confirm-delete-message.component';
 
@@ -31,7 +31,7 @@ export class MessageMenuComponent {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '500px'; 
     dialogConfig.data = { message: this.message };
-    const dialogRef = this.dialog.open(MessageDialogComponent, dialogConfig);
+    const dialogRef = this.dialog.open(SaveMessageDialogComponent, dialogConfig);
  
     dialogRef.afterClosed().subscribe(result => {
       this.dialogRef.close();

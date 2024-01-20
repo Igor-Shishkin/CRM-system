@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ClientsService } from 'src/app/_services/clients.service';
 import { HistoryService } from 'src/app/_services/history.service';
 import { StorageService } from 'src/app/_services/storage.service';
-import { MessageDialogComponent } from 'src/app/side-bar/message-dialog/message-dialog.component';
+import { SaveMessageDialogComponent } from 'src/app/side-bar/save-message-dialog/save-message-dialog.component';
 import { Client } from 'src/entities/Client';
 import { HistoryMessage } from 'src/entities/HistoryMessage';
 import { Order } from 'src/entities/Order';
@@ -137,7 +137,7 @@ export class ClientWorkplaceComponent {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '500px'; 
     dialogConfig.data = { message: message };
-    const dialogRef = this.dialog.open(MessageDialogComponent, dialogConfig);
+    const dialogRef = this.dialog.open(SaveMessageDialogComponent, dialogConfig);
  
     dialogRef.afterClosed().subscribe(() => {
 

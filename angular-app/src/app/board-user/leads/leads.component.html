@@ -24,26 +24,18 @@
               <th>email</th>
               <th>phone</th>
               <th>Orders</th>
-              <th>Actions</th>
-              <th></th>
-              <th></th>
           </tr>
       </thead>
   
   
-      <tbody *ngIf="isSuccessLoad == true">
-          <tr *ngFor="let lead of leads" style="border-bottom: 1px rgb(2, 5, 75);">
+      <tbody *ngIf="isSuccessLoad == true" >
+          <tr *ngFor="let lead of leads" style="border-bottom: 1px rgb(2, 5, 75); cursor: pointer;"
+          (click)="goToClientDetail(lead.id || -1)">
               <td>{{lead.id}}</td>
               <td>{{lead.fullName}}</td>
               <td>{{lead.email}}</td>
               <td>{{lead.phoneNumber}}</td>
               <td>{{lead.numberOfOrders}}</td>
-              <td class="clearfix">
-                  <button [disabled]="isRequestSent" 
-                  (click)="goToClientDetail(lead.id || -1)" class="btn btn-outline-info">
-                  Go to LID
-                  </button>
-              </td>
           </tr>
       </tbody>
     </table>

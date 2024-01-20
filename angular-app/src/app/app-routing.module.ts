@@ -11,7 +11,7 @@ import { AddLeadComponent } from './board-user/add-lead/add-lead.component';
 import { LeadsComponent } from './board-user/leads/leads.component';
 import { ClientWorkplaceComponent } from './board-user/client-workplace/client-workplace.component';
 import { SideBarComponent } from './side-bar/side-bar.component';
-import { MessageDialogComponent } from './side-bar/message-dialog/message-dialog.component';
+import { SaveMessageDialogComponent } from './side-bar/save-message-dialog/save-message-dialog.component';
 import { authGuard } from './_guard/auth.guard';
 import { NotPermissionComponent } from './home/not-permission/not-permission.component';
 import { authUserGuard } from './_guard/auth-user.guard';
@@ -40,7 +40,7 @@ const routes: Routes = [
   ] },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'side-bar', component: SideBarComponent, children: [
-    { path: 'message-dialog', component: MessageDialogComponent}
+    { path: 'message-dialog', component: SaveMessageDialogComponent}
   ]}
 ];
 

@@ -52,7 +52,7 @@
       </div>
     </div>
     <mat-form-field style="background-color: rgba(165, 165, 165, 0.1);">
-      <input matInput [matDatepicker]="picker" placeholder="Select Date" 
+      <input matInput [matDatepicker]="picker" placeholder="Deadline date" 
       (dateChange)="updateDate($event)" readonly>
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>

@@ -43,7 +43,9 @@ export class LeadsComponent implements OnInit{
       })
     }
     goToClientDetail(clientId: number) {
-      this.storageService.setActiveHistoryTag('CLIENT', clientId);
-      this.router.navigate(['/user-board/client-workplace', clientId]);
+      if (!this.isRequestSent) {
+        this.storageService.setActiveHistoryTag('CLIENT', clientId);
+        this.router.navigate(['/user-board/client-workplace', clientId]);
+      }
     }
 }

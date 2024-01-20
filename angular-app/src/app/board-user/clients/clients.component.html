@@ -9,13 +9,10 @@
           [routerLinkActive]="'active-nav'"
           [routerLink]="'/user-board/clients'" aria-current="page" >CLIENTs
         </button>
-      </div>
+    </div>
 
     <div *ngIf="isError" class="alert alert-danger" role="alert">
       {{errorMessage}}
-    </div>
-    <div *ngIf="isSuccessDelete" class="alert alert-success" role="alert">
-      Client is deleted
     </div>
   
     <table class="table table-hover custom-table" style="color: aliceblue;">
@@ -27,24 +24,18 @@
               <th>email</th>
               <th>phone</th>
               <th>Orders</th>
-              <th>Actions</th>
-              <th></th>
-              <th></th>
           </tr>
       </thead>
   
   
       <tbody *ngIf="isSuccessLoad == true">
-          <tr *ngFor="let client of clients" style="border-bottom: 1px rgb(2, 5, 75);">
+          <tr *ngFor="let client of clients" style="border-bottom: 1px rgb(2, 5, 75); cursor: pointer;"
+          (click)="goToClientDetail(client.id || -1)" >
               <td>{{client.id}}</td>
               <td>{{client.fullName}}</td>
               <td>{{client.email}}</td>
               <td>{{client.phoneNumber}}</td>
               <td>{{(client.orders) ? client.orders.length : 0}}</td>
-              <td>
-                  <button [disabled]="isRequestSent" 
-                  (click)="goToClientDetail(client.id || -1)" class="btn btn-outline-info">Go to Client</button>
-              </td>
           </tr>
       </tbody>
     </table>

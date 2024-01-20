@@ -20,7 +20,7 @@ import { ClientWorkplaceComponent } from './board-user/client-workplace/client-w
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { MessageDialogComponent } from './side-bar/message-dialog/message-dialog.component';
+import { SaveMessageDialogComponent } from './side-bar/save-message-dialog/save-message-dialog.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -56,7 +56,7 @@ import { UsersComponent } from './board-admin/users/users.component';
     ClientsComponent,
     AddLeadComponent,
     ClientWorkplaceComponent,
-    MessageDialogComponent,
+    SaveMessageDialogComponent,
     NotPermissionComponent,
     OrderWorkplaceComponent,
     ItemCalculationComponent,
