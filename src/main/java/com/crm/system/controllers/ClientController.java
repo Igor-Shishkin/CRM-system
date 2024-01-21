@@ -37,12 +37,12 @@ public class ClientController {
 
     @Operation(summary = "Add new Lead", tags = { "Client", "add"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
-    @PostMapping()
+    @PostMapping("/add-new-lead")
     public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLeadRequest addLidRequest) {
         try {
-            clientService.addNewLead(addLidRequest);
+            long leadId = clientService.addNewLead(addLidRequest);
             log.info(String.format("Lid %s is added", addLidRequest.getFullName()));
-            return ResponseEntity.ok(new MessageResponse("New LEAD is save"));
+            return ResponseEntity.ok(leadId);
         } catch (UserPrincipalNotFoundException e) {
             log.error("User isn't defined. " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

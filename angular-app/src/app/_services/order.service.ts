@@ -3,6 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
 import { NewCalculations } from 'src/entities/NewCalculations';
 import { Order } from 'src/entities/Order';
+import { CalculationItemsService } from './calculation-items.service';
+import { ItemCalculationComponent } from '../board-user/order-workplace/item-calculation/item-calculation.component';
+import { ItemForCalculation } from 'src/entities/ItemForCalculation';
 
 const ORDER_API = 'http://localhost:8080/api/user-board/order'
 const httpOptions = {
@@ -66,23 +69,35 @@ export class OrderService {
   }
   saveChenges(order: Order) {
 
-    order.calculations = [];
-    order.projectPhotos = [];
-    order.resultPrice = undefined;
-    order.hasBeenPaid = undefined;
-    order.isAgreementSigned = undefined;
-    order.clientEmail = undefined;
-    order.clientFullName = undefined;
-    order.clientId = undefined;
-    order.clientPhoneNumber = undefined;
-    order.dateOfCreation = undefined;
-    order.dateOfLastChange = undefined;
 
-    return this.http.post<any>(`${ORDER_API}/save-order-changes`,  order , httpOptions).pipe(
+  const orderCopy: Order = { ...order };
+
+  orderCopy.calculations = {} as ItemForCalculation[];
+  orderCopy.resultPrice = undefined;
+  orderCopy.hasBeenPaid = undefined;
+  orderCopy.isAgreementSigned = undefined;
+  orderCopy.clientEmail = undefined;
+  orderCopy.clientFullName = undefined;
+  orderCopy.clientId = undefined;
+  orderCopy.clientPhoneNumber = undefined;
+  orderCopy.dateOfCreation = undefined;
+  orderCopy.dateOfLastChange = undefined;
+
+    return this.http.post<any>(`${ORDER_API}/save-order-changes`,  orderCopy , httpOptions).pipe(
       catchError((error: any) => {
         console.log(error);
         throw error;
       })
     )
+  }
+
+  createNewOrder(clientId: number, realNeed: string, estimateBudget: number) {
+    console.log(clientId)
+    return this.http.post<number>(`${ORDER_API}/create-new-order`, 
+    {
+      clientId,
+      realNeed, 
+      estimateBudget
+    }, httpOptions)
   }
 }

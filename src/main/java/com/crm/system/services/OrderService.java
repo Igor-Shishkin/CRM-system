@@ -3,12 +3,14 @@ package com.crm.system.services;
 import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
+import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
 import com.crm.system.models.User;
 import com.crm.system.models.order.InfoIsShown;
 import com.crm.system.models.order.ItemForCalcualtion;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.request.ChangeOrderRequest;
+import com.crm.system.playload.request.CreateNewOrderRequest;
 import com.crm.system.playload.response.NewCalculationsForOrderResponse;
 import com.crm.system.playload.response.OrderInfoResponse;
 import com.crm.system.repository.OrderRepository;
@@ -24,11 +26,13 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserService userService;
     private final HistoryMessageService historyMessageService;
+    private final ClientService clientService;
 
-    public OrderService(OrderRepository orderRepository, UserService userService, HistoryMessageService historyMessageService) {
+    public OrderService(OrderRepository orderRepository, UserService userService, HistoryMessageService historyMessageService, ClientService clientService) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.historyMessageService = historyMessageService;
+        this.clientService = clientService;
     }
 
 
@@ -68,7 +72,7 @@ public class OrderService {
             order.setDateOfLastChange(LocalDateTime.now());
             orderRepository.save(order);
 
-            historyMessageService.createHistoryMessageForClient(order.getClient(), order.getClient().getUser(),
+            createNewHistoryMessage(order.getClient(),
                     "Signed an agreement with ".concat(order.getClient().getFullName()));
         } else {
             throw new MismanagementOfTheClientException
@@ -87,7 +91,7 @@ public class OrderService {
             order.setDateOfLastChange(LocalDateTime.now());
             orderRepository.save(order);
 
-            historyMessageService.createHistoryMessageForClient(order.getClient(), order.getClient().getUser(),
+            createNewHistoryMessage(order.getClient(),
                     String.format("The contract with %s was canceled", order.getClient().getFullName()));
         } else {
             throw new MismanagementOfTheClientException("Order is already paid");
@@ -124,15 +128,33 @@ public class OrderService {
         order.setDateOfLastChange(LocalDateTime.now());
         order.getClient().setDateOfLastChange(LocalDateTime.now());
 
-        historyMessageService.createHistoryMessageForClient(order.getClient(), order.getClient().getUser(),
+        createNewHistoryMessage(order.getClient(),
                 String.format("'You have canceled payment by %s", order.getClient().getFullName()));
+
     }
+
+
+
     public void saveOrderChanges(ChangeOrderRequest changedOrder) throws UserPrincipalNotFoundException {
         Order order = getOrderById(changedOrder.getOrderId());
         setChangedParameters(order, changedOrder);
         order.setDateOfLastChange(LocalDateTime.now());
 
         orderRepository.save(order);
+    }
+    public long createNewOrder(CreateNewOrderRequest request) throws UserPrincipalNotFoundException {
+        Client currentClient = getClientById(request.getClientId());
+        Order newOrder = new Order(request.getRealNeed(), request.getEstimateBudget(), currentClient);
+        Order savedOrder = orderRepository.save(newOrder);
+
+        createNewHistoryMessage(currentClient,
+                String.format("You have a new order from %s client. Congratulations!", currentClient.getFullName()));
+        return savedOrder.getOrderId();
+    }
+
+    private Client getClientById(long clientId) throws UserPrincipalNotFoundException {
+        Client currentClient = clientService.getClientById(clientId);
+        return currentClient;
     }
 
     private void setChangedParameters(Order order, ChangeOrderRequest changedOrder) {
@@ -195,6 +217,9 @@ public class OrderService {
         User activeUser = optionalUser.get();
         return activeUser.getClients().stream()
                 .anyMatch(client -> client.getId().equals(order.getClient().getId()));
+    }
+    private void createNewHistoryMessage(Client client, String textMessage) {
+        historyMessageService.createHistoryMessageForClient(client, textMessage);
     }
 
 }

@@ -8,6 +8,7 @@ export class Client {
     isClient : boolean | undefined;
     address: string | undefined;
     numberOfOrders: number | undefined;
+    numberOfPaidOrders: number | undefined;
     orders: Order[] | undefined;
 }
 

@@ -2,31 +2,37 @@
 <form  (submit)="save(name, address, email, phoneNumber)" class="custom-form"
     style="margin-right: 20%;">
 
-    <div >
-      <label for="exampleInputName" class="w3-input" style="margin-top: 8px;">Name</label>
-      <input class="w3-input custom-form" required type="text" id="nameInput"  placeholder="Enter name" #name>
+    <div class="mb-3">
+      <label for="exampleInputName" style="margin-top: 8px;">Name</label>
+      <input required type="text" class="form-control custom-input-area" id="nameInput"  
+      placeholder="Enter name" #name>
+    </div>
+
+    <div class="mb-3">
+      <label style="margin-top: 8px;">Address</label>
+      <input required type="text" class="form-control custom-input-area" id="addressInput" 
+      placeholder="Enter address" #address>
     </div>
   
-    <div>
-      <label class="w3-input" style="margin-top: 8px;">Address</label>
-      <input class="w3-input custom-form" required type="text" id="addressInput" placeholder="Enter address" #address>
+    <div class="mb-3">
+      <label style="margin-top: 8px;">Email address</label>
+      <input class="form-control custom-input-area" required type="email" id="emailInput" 
+      placeholder="name@example.com" #email style="margin-bottom: 0px;">
+      <p style="margin: 0px 5px; color: rgb(240, 240, 211, 0.5); font-size: 10px; font-weight: 60;" 
+      id="emailHelp" class="form-text" >
+        We'll never share your email with anyone else.
+      </p>
+    </div>
+
+  
+    <div class="mb-3">
+      <label style="margin-top: 0px;">Phone number</label>
+      <input required type="text" class="form-control custom-input-area" id="disabledTextInput" 
+      placeholder="Enter phone number" #phoneNumber>
     </div>
   
-    <div>
-      <label class="w3-input" style="margin-top: 8px;">Email address</label>
-      <input class="w3-input custom-form" required type="email" id="emailInput" placeholder="name@example.com" #email>
-    </div>
-    <p style="margin-bottom: 0px; color: rgb(240, 240, 211, 0.5); font-size: 10px; font-weight: 60;" 
-    id="emailHelp" class="form-text" >
-      We'll never share your email with anyone else.
-    </p>
-  
-    <div>
-      <label class="w3-input" style="margin-top: 0px;">Phone number</label>
-      <input class="w3-input custom-form" required type="text" id="disabledTextInput" placeholder="Enter phone number" #phoneNumber>
-    </div>
-  
-    <button [disabled]="isAdded" type="submit" class="btn btn-primary" style="margin-top: 8px;">Submit</button>
+    <button [disabled]="isAdded" type="submit" class="btn btn-primary" style="margin-top: 8px;"
+    [disabled]="isRequestProcess">Submit</button>
   </form>
    
   <div *ngIf="isError" class="alert alert-danger" role="alert">

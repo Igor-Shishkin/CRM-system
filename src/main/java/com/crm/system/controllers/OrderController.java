@@ -5,6 +5,7 @@ import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.request.ChangeOrderRequest;
+import com.crm.system.playload.request.CreateNewOrderRequest;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.playload.response.NewCalculationsForOrderResponse;
 import com.crm.system.playload.response.OrderInfoResponse;
@@ -120,9 +121,8 @@ public class OrderController {
     @Operation(summary = "Save changes", tags = { "Order", "change"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
     @PostMapping("/save-order-changes")
-    public ResponseEntity<?> confirmPayment(@Valid  @RequestBody ChangeOrderRequest changeOrderRequest) {
+    public ResponseEntity<?> saveOrderChanges(@Valid  @RequestBody ChangeOrderRequest changeOrderRequest) {
         try {
-            log.error(String.valueOf(changeOrderRequest.getOrderId()));
             orderService.saveOrderChanges(changeOrderRequest);
             return ResponseEntity.ok(new MessageResponse("Changes are saved"));
         } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
@@ -132,5 +132,21 @@ public class OrderController {
                     .body(new MessageResponse("Order controller: " + e.getMessage()));
         }
     }
+    @Operation(summary = "Create new order", tags = { "Order", "new"})
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PostMapping("/create-new-order")
+    public ResponseEntity<?> createNewOrder(@Valid  @RequestBody CreateNewOrderRequest createNewOrderRequest) {
+        try {
+            long newOrderID = orderService.createNewOrder(createNewOrderRequest);
+            return ResponseEntity.ok(newOrderID);
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
+                 UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
+            log.error("Order controller: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("Order controller: " + e.getMessage()));
+        }
+    }
+
+
 
 }

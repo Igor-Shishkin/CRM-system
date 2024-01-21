@@ -18,5 +18,5 @@ public class AddLeadRequest {
     private String email;
     @Size(max = 50)
     private String phoneNumber;
-    private String addres;
+    private String address;
 }

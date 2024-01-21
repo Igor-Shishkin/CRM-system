@@ -24,6 +24,7 @@
               <th>email</th>
               <th>phone</th>
               <th>Orders</th>
+              <th>Paid orders</th>
           </tr>
       </thead>
   
@@ -35,7 +36,8 @@
               <td>{{client.fullName}}</td>
               <td>{{client.email}}</td>
               <td>{{client.phoneNumber}}</td>
-              <td>{{(client.orders) ? client.orders.length : 0}}</td>
+              <td>{{client.numberOfOrders}}</td>
+              <td>{{client.numberOfPaidOrders}}</td>
           </tr>
       </tbody>
     </table>

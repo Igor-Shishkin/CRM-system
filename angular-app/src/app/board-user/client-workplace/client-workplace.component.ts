@@ -8,6 +8,7 @@ import { SaveMessageDialogComponent } from 'src/app/side-bar/save-message-dialog
 import { Client } from 'src/entities/Client';
 import { HistoryMessage } from 'src/entities/HistoryMessage';
 import { Order } from 'src/entities/Order';
+import { CreateNewOrderComponent } from './create-new-order/create-new-order.component';
 
 @Component({
   selector: 'app-client-workplace',
@@ -146,6 +147,16 @@ export class ClientWorkplaceComponent {
           this.storageService.setHistory(data);
         }
       })
+    });
+  }
+  createNewOrder() {
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '600px'; 
+    dialogConfig.data = { clientId: this.client.id };
+    const dialogRef = this.dialog.open(CreateNewOrderComponent, dialogConfig);
+ 
+    dialogRef.afterClosed().subscribe(() => {
     });
   }
 }

@@ -33,11 +33,11 @@ public class HistoryMessageService {
         this.userService = userService;
     }
 
-    public void createHistoryMessageForClient(Client client, User user, String messageText) {
+    public void createHistoryMessageForClient(Client client, String messageText) {
         HistoryMessage message = new HistoryMessage(messageText);
         message.setTagName(TagName.CLIENT);
         message.setTagId(client.getId());
-        message.setUser(user);
+        message.setUser(client.getUser());
         message.setImportant(false);
         message.setDone(true);
         message.setDateOfCreation(LocalDateTime.now());

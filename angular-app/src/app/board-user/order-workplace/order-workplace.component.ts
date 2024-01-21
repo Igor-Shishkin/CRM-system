@@ -147,7 +147,7 @@ export class OrderWorkplaceComponent implements OnInit{
     }
     saveChanges(){
       this.orderService.saveChenges(this.order).subscribe({
-        next: data => {
+        next: () => {
           this.isSuccess = true;
           this.successMessage = 'Changes are saved';
           this.delayHidingCloseMessage()
@@ -164,6 +164,6 @@ export class OrderWorkplaceComponent implements OnInit{
         this.failMessage = '';
         this.isSuccess = false;
         this.isFailed = false;
-      }, 5000);
+      }, 4000);
     }
   }

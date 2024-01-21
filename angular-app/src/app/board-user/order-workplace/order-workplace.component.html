@@ -7,7 +7,7 @@
 
 <div class="separator"></div>
 
-<!-- <button type="button" class="btn btn-outline-danger" (click)="showOrderInfo()">Danger</button> -->
+<button type="button" class="btn btn-outline-danger" (click)="showOrderInfo()">Danger</button>
 
 
 <div style="color: darkblue; margin: 15px;">
@@ -54,7 +54,7 @@
               <label class="centered-element " style="grid-area: description;">Estimate Budget:</label>
             </div>
             <div class="centered-element" style="grid-area: value;">
-                <input class="form-control custom-input-form" type="text"  style="grid-area: value; width: 90px;"
+                <input class="form-control custom-input-form" type="number"  style="grid-area: value; width: 90px;"
                 [value]="order.estimateBudged" [(ngModel)]="order.estimateBudged" (change)="delayCalculateProgress()">
             </div>
             <div class="outer-div" style="grid-area: range;">

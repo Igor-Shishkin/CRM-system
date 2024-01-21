@@ -101,7 +101,7 @@ export class SaveMessageDialogComponent implements OnInit{
       })
     };
   }
-  delayHidingCloseDialoge() {
+  delayHidingCloseDialoge() { 
     setTimeout(() => {
       this.dialogRef.close();
     }, 2000);

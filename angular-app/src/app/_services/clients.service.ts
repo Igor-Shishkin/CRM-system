@@ -36,8 +36,8 @@ export class ClientsService {
     return this.http.put(`${CLIENTS_API}/to-black-list?leadId=${clientId}`, { responseType: 'text' });
   }
   addLead(fullName : string, address : string, email : string, phoneNumber : string):
-    Observable<any> {
-      return this.http.post(CLIENTS_API,
+    Observable<number> {
+      return this.http.post<number>(CLIENTS_API + '/add-new-lead',
         {
           fullName,
           address,

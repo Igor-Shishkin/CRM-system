@@ -76,7 +76,7 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
-    public void addNewLead(AddLeadRequest addLeadRequest) throws UserPrincipalNotFoundException {
+    public long addNewLead(AddLeadRequest addLeadRequest) throws UserPrincipalNotFoundException {
         if (clientRepository.existsByEmail(addLeadRequest.getEmail())) {
             throw new ClientAlreadyExistException("Lid with this email already exists");
         }
@@ -85,13 +85,15 @@ public class ClientService {
                 addLeadRequest.getFullName(),
                 addLeadRequest.getEmail(),
                 addLeadRequest.getPhoneNumber(),
-                addLeadRequest.getAddres(),
+                addLeadRequest.getAddress(),
                 activeUser);
 
         String messageText = String.format("Lead %s is created", newLead.getFullName());
-        historyMessageService.createHistoryMessageForClient(newLead, activeUser, messageText);
+        Client savedLead = clientRepository.save(newLead);
 
-        clientRepository.save(newLead);
+        historyMessageService.createHistoryMessageForClient(savedLead, messageText);
+
+        return savedLead.getId();
     }
 
     public void sentToBlackList(long clientId) throws UserPrincipalNotFoundException, SubjectNotBelongToActiveUser {
@@ -102,7 +104,7 @@ public class ClientService {
         clientRepository.save(client);
 
         String messageText = String.format("Client %s goes to blackList", client.getFullName());
-        historyMessageService.createHistoryMessageForClient(client, client.getUser(), messageText);
+        historyMessageService.createHistoryMessageForClient(client, messageText);
     }
 
 
@@ -145,7 +147,7 @@ public class ClientService {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
         return userId;
     }
-    private Client getClientById(long clientId) throws UserPrincipalNotFoundException {
+    public Client getClientById(long clientId) throws UserPrincipalNotFoundException {
         Optional<Client> optionalClient = clientRepository.findById(clientId);
         if (optionalClient.isEmpty()) {
             throw new RequestOptionalIsEmpty(String.format("Client with %d id doesn't exist", clientId));
