@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>Create new order</h2>
+<mat-dialog-content>
+  <section>
+    <div class="mb-3">
+      <label for="exampleFormControlTextarea1" class="form-label">Real need</label>
+      <textarea style="width: 100%;" class="form-control custom-textarea custom-input-area" 
+        rows="3" [(ngModel)]="realNeed" 
+        [ngModelOptions]="{ standalone: true }">
+      </textarea>
+    </div>
+
+    <div class="grid-container" style="display: grid;">
+      <div class="outer-div ">
+        <label class="centered-element " style="grid-area: description;">Estimate Budget:</label>
+      </div>
+      <div class="centered-element" style="grid-area: value;">
+        <input class="form-control custom-input-form" type="number" style="grid-area: value; width: 90px;" id="manual-input-estimate-budget"
+          [value]="estimateBudget" [(ngModel)]="estimateBudget" >
+      </div>
+      <div class="outer-div" style="grid-area: range;">
+        <input type="range" class="form-range centered-element" min="0" max="10000" step="100" 
+          [value]="estimateBudget" [(ngModel)]="estimateBudget">
+      </div>
+    </div>
+
+    <button type="submit" style="margin: 5px 15px;" class="btn btn-primary" (click)="createNewOrder()"
+    [disabled]="isREquestProcess"
+    >Create order</button>
+  </section>
+  <footer>
+    <div *ngIf="isSuccess" class="alert alert-success" role="alert">
+      Order is created
+    </div>
+    <div *ngIf="isFail" class="alert alert-danger" role="alert">
+      Something went wrong and nothing worked. Try again.
+    </div>
+  </footer>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Close</button>
+</mat-dialog-actions>

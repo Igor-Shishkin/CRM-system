@@ -1,0 +1,19 @@
+
+.custom-input-form{
+    background-color: transparent;
+    color: white;
+}
+.grid-container {
+    display: grid;
+    grid-template-areas:
+      'description value range range range range range range range range  range range range';
+    margin: 11px 0px;
+}
+.outer-div {
+    display: flex;
+    align-items: center; 
+    height: 35px; 
+}
+.wrong-input {
+    border: 2px solid red;
+}
