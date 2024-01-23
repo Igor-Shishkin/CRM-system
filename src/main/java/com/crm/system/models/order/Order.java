@@ -84,11 +84,6 @@ public class Order {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateOfLastChange;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
-    @Column(name = "project_photos")
-    private Set<ProjectPhoto> projectPhotos = new HashSet<>();
-
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<ItemForCalcualtion> calculations = new HashSet<>();

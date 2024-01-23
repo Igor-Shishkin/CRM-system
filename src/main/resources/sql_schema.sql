@@ -93,15 +93,6 @@ CREATE TABLE items (
     FOREIGN KEY (order_id) REFERENCES orders(order_id)
 );
 
-CREATE TABLE order_photos (
-    photo_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    photo_data LONGBLOB,
-    note VARCHAR(255),
-    is_client_photo BOOLEAN,
-    order_id BIGINT,
-    FOREIGN KEY (order_id) REFERENCES orders(order_id)
-);
-
 INSERT INTO roles (name)
 VALUES 
 ('ROLE_USER'), 

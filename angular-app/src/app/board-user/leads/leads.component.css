@@ -6,6 +6,7 @@
   .custom-table tbody td {
     background-color: transparent; 
     color: rgb(171, 212, 248);
+    font-size: 19px;
   }
 
 .clearfix::after {

@@ -1,5 +1,4 @@
 import { ItemForCalculation } from "./ItemForCalculation";
-import { ProjectPhoto } from "./ProjectPhoto";
 
 export class Order {
     orderId: number | undefined;
@@ -25,9 +24,7 @@ export class Order {
     clientId: number | undefined;
     clientEmail:string | undefined;
 
-    projectPhotos: ProjectPhoto[] | undefined;
     calculations: ItemForCalculation[] | undefined;
-
 } 
 
 

@@ -74,9 +74,7 @@ export class OrderWorkplaceComponent implements OnInit{
       this.counter = Math.floor( (this.counter/12) *100 );
       this.orderProgress = `${this.counter}%`; 
     }
-    showOrderInfo() {
-      console.log(this.order)
-    }
+    
     delayCalculateProgress() {
       setTimeout(() => {
         this.calculateOrderProgress();

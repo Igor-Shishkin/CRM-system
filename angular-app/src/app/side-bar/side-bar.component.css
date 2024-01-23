@@ -1,3 +1,9 @@
+ .btn{
+  font-size: 18px;
+ }
+ li{
+  font-size: 17px;
+ }
  .general {
     background-color: #333;
     padding: 10px;
@@ -60,18 +66,16 @@
     cursor: pointer;
   }
   .custom-scrollbar {
-
-    height: 70%;
+    height: 75%;
     overflow-y: auto;
     scrollbar-track-color: #333; 
     scrollbar-thumb-color: #666; 
-    scrollbar-width: thin; /* Thin scrollbar */
-    scrollbar-thumb-radius: 5px; /* Roundness of the thumb */
+    scrollbar-width: thin; 
+    scrollbar-thumb-radius: 5px; 
   }
   
-  /* For Webkit browsers (Chrome, Safari) */
   .custom-scrollbar::-webkit-scrollbar {
-    width: 5px; /* Width of the scrollbar */
+    width: 5px; 
   }
   
   .custom-scrollbar::-webkit-scrollbar-track {

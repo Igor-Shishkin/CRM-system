@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand navbar-dark bg-dark" style="height: 60px;">
+<nav class="navbar navbar-expand navbar-dark bg-dark" style="height: 70px;">
 
     <ul class="navbar-nav ml-auto">
       <li class="nav-item" *ngIf="!isLoggedIn" routerLink="login">
@@ -25,26 +25,19 @@
             [routerLinkActive]="'active-nav'"
             [routerLink]="'/user-board/clients'"
             class="dropdown-item" href="#">Clients</a></li>
-          <li><a class="dropdown-item" href="#">Orders</a></li>
-          <li><a class="dropdown-item" href="#">Cash</a></li>
 
           <li><hr class="dropdown-divider"></li>
-          <li *ngIf="showModeratorBoard">
-            <a 
-            [routerLinkActive]="'active-nav'"
-            [routerLink]="'/mod'"
-            class="dropdown-item" routerLink="mod">Moderator mode</a>
-          </li>
           <li *ngIf="showAdminBoard">
             <a       
             [routerLinkActive]="'active-nav'"
-            [routerLink]="'/admin'"
+            [routerLink]="'/admin/users'"
              class="dropdown-item" routerLink="admin">Admin mode</a>
           </li>
 
           <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="#">Providers</a></li>
-          <li><a class="dropdown-item" href="#">Statistics</a></li>
+          <li><a class="dropdown-item" >Cash</a></li>
+          <li><a class="dropdown-item" >Providers</a></li>
+          <li><a class="dropdown-item" >Statistics</a></li>
 
         </ul>
       </li>
@@ -52,10 +45,12 @@
 
     <div class="navbar-nav ml-auto container" *ngIf="isLoggedIn">
       <div class="nav-item">
-        <img src="assets\images\profile-icon.png" alt="Profile" width="40px" routerLink="profile"/>
+        <img src="assets\images\profile-icon.png" alt="Profile" width="50px" routerLink="profile" 
+        style="cursor: pointer;"/>
       </div>
       <div class="nav-item">
-        <img src="assets\images\log-out.png" alt="Log out" width="40px" (click)="logout()"/>
+        <img src="assets\images\log-out.png" alt="Log out" width="50px" (click)="logout()"
+        style="cursor: pointer;"/>
       </div>
     </div>
   </nav>

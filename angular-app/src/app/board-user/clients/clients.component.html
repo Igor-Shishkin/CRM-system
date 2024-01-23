@@ -3,7 +3,7 @@
     <div style="display: flex;">
         <button type="button" class="btn btn-secondary" style="margin-left: 10px;" 
           [routerLinkActive]="'active-nav'"
-          [routerLink]="'/user-board/leads'" aria-current="page" >LIDs
+          [routerLink]="'/user-board/leads'" aria-current="page" >LEADs
         </button>
         <button disabled="true" type="button" class="btn btn-secondary" style="margin-left: 10px;"  
           [routerLinkActive]="'active-nav'"
@@ -27,7 +27,7 @@
               <th>Paid orders</th>
           </tr>
       </thead>
-  
+   
   
       <tbody *ngIf="isSuccessLoad == true">
           <tr *ngFor="let client of clients" style="border-bottom: 1px rgb(2, 5, 75); cursor: pointer;"

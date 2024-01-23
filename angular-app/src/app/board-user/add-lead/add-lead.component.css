@@ -2,13 +2,12 @@
     background-color: transparent;
     color: white;
 }
-.custom-label {
-    color: rgb(174, 174, 174);
-}
-.custom-input {
+label{
     font-size: 18px;
+    color: rgb(204, 204, 204, 0.85);
 }
 .custom-input-area{
     background-color: transparent;
     color: rgb(204, 204, 204);
+    font-size: 21px;
 }

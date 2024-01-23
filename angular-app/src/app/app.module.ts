@@ -28,7 +28,6 @@ import { NotPermissionComponent } from './home/not-permission/not-permission.com
 import { DatePipe } from '@angular/common';
 import { OrderWorkplaceComponent } from './board-user/order-workplace/order-workplace.component';
 import { ItemCalculationComponent } from './board-user/order-workplace/item-calculation/item-calculation.component';
-import { PhotosComponent } from './board-user/order-workplace/photos/photos.component';
 import { ConfirmSigningContractComponent } from './board-user/order-workplace/confirm-signing-contract/confirm-signing-contract.component';
 import { ConfirmPainmentComponent } from './board-user/order-workplace/confirm-painment/confirm-painment.component';
 import { MessageMenuComponent } from './side-bar/message-menu/message-menu.component';
@@ -59,7 +58,6 @@ import { SentEmailComponent } from './sent-email/sent-email.component';
     NotPermissionComponent,
     OrderWorkplaceComponent,
     ItemCalculationComponent,
-    PhotosComponent,
     ConfirmSigningContractComponent,
     ConfirmPainmentComponent,
     MessageMenuComponent,
