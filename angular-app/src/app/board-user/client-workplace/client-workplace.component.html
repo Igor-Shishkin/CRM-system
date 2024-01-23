@@ -1,10 +1,19 @@
 
 
-  <button type="button" class="btn btn-outline-warning floating-buttons" 
+<div class="floating-buttons" style="display: flex;">
+  <button type="button" class="btn btn-outline-warning" 
   (click)="createNewMessage()">
   Create reminder</button>
-  <button type="button" class="btn btn-outline-warning floating-buttons"
-  style="bottom: 51px;" (click)="createNewOrder()">New order</button>
+  <button type="button" class="btn btn-outline-warning" style="margin: 0px 10px; height: 35px;"
+  (click)="createNewOrder()">New order</button>
+  <button type="button" class="btn btn-outline-warning"
+  (click)="sentEmailToClient()">Sent mail</button>
+</div>
+
+
+
+
+
 
 <section>
   <div class="row g-2 field-margin">

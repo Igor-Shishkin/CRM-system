@@ -9,6 +9,7 @@ import { ConfirmSigningContractComponent } from './confirm-signing-contract/conf
 import { ConfirmPainmentComponent } from './confirm-painment/confirm-painment.component';
 import { StorageService } from 'src/app/_services/storage.service';
 import { HistoryService } from 'src/app/_services/history.service';
+import { SentEmailComponent } from 'src/app/sent-email/sent-email.component';
 
 @Component({
   selector: 'app-order-workplace',
@@ -27,6 +28,7 @@ export class OrderWorkplaceComponent implements OnInit{
   successMessage = '';
   isFailed = false;
   failMessage = '';
+  isEmailSent = false;
   
   constructor(
     private router: Router ,
@@ -129,12 +131,34 @@ export class OrderWorkplaceComponent implements OnInit{
         };
         const dialogRef = this.dialog.open(ConfirmPainmentComponent, dialogConfig);
           
-        dialogRef.afterClosed().subscribe(result => {
+        dialogRef.afterClosed().subscribe(() => {
           this.calculateOrderProgress();
         });
       } else {
         this.unableToPainment = true;
       }
+    }
+    sentEmailToClient() {
+      const dialogConfig = new MatDialogConfig();
+      const user = this.storageService.getUser();
+      const messageTemplate = 'Dear ' + this.order.clientFullName + 
+        '\n\nI am writing about your order `' + this.order.realNeed + 
+        '`\n\nBest regards\n' + user.username;
+      dialogConfig.data = {
+        email: this.order.clientEmail,
+        messageTemplate: messageTemplate,
+        tagName: 'CLIENT',
+        tagId: this.order.clientId
+      };
+      dialogConfig.width = '600px';
+      const dialogRef = this.dialog.open(SentEmailComponent, dialogConfig);
+
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result && result.isEmailSent) {
+          this.isEmailSent = true;
+          this.delayHidingCloseMessage();
+        }
+      });
     }
     refreshHistoryMessages() {
       this.historyService.getHistory().subscribe({
@@ -164,6 +188,7 @@ export class OrderWorkplaceComponent implements OnInit{
         this.failMessage = '';
         this.isSuccess = false;
         this.isFailed = false;
+        this.isEmailSent = false;
       }, 4000);
     }
   }

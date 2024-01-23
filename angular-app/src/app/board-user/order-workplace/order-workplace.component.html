@@ -273,7 +273,10 @@
             Confirm payment by the client
             <span *ngIf="order.hasBeenPaid">✅</span>
           </button>
-          <button type="button" class="btn btn-outline-success">Sent email</button>
+          <button type="button" class="btn btn-outline-success" (click)="sentEmailToClient()">Sent email</button>
+          <div *ngIf="isEmailSent" class="alert alert-success" role="alert">
+            Email to client is sent 👌
+          </div>
           <h2 >Result price: {{order.resultPrice === -1 || order.resultPrice === 0 ? '' : order.resultPrice}}</h2>
         </div>
       </div>

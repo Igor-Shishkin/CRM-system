@@ -29,7 +29,6 @@ import { DatePipe } from '@angular/common';
 import { OrderWorkplaceComponent } from './board-user/order-workplace/order-workplace.component';
 import { ItemCalculationComponent } from './board-user/order-workplace/item-calculation/item-calculation.component';
 import { PhotosComponent } from './board-user/order-workplace/photos/photos.component';
-import { SendEmailComponent } from './board-user/order-workplace/send-email/send-email.component';
 import { ConfirmSigningContractComponent } from './board-user/order-workplace/confirm-signing-contract/confirm-signing-contract.component';
 import { ConfirmPainmentComponent } from './board-user/order-workplace/confirm-painment/confirm-painment.component';
 import { MessageMenuComponent } from './side-bar/message-menu/message-menu.component';
@@ -37,8 +36,8 @@ import { ConfirmDeleteMessageComponent } from './side-bar/message-menu/confirm-d
 import { CreateNewOrderComponent } from './board-user/client-workplace/create-new-order/create-new-order.component';
 import { RegisterNewUserComponent } from './board-admin/register-new-user/register-new-user.component';
 import { ConfirmDeleteUserComponent } from './board-admin/confirm-delete-user/confirm-delete-user.component';
-import { SentEmailComponent } from './board-user/client-workplace/sent-email/sent-email.component';
 import { UsersComponent } from './board-admin/users/users.component';
+import { SentEmailComponent } from './sent-email/sent-email.component';
 
 
 @NgModule({
@@ -61,7 +60,6 @@ import { UsersComponent } from './board-admin/users/users.component';
     OrderWorkplaceComponent,
     ItemCalculationComponent,
     PhotosComponent,
-    SendEmailComponent,
     ConfirmSigningContractComponent,
     ConfirmPainmentComponent,
     MessageMenuComponent,

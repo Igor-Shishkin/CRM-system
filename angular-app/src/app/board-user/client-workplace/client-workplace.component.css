@@ -63,7 +63,6 @@
     position: fixed;
     bottom: 10px; 
     right: 10px; 
-    width: 135px;
     cursor: pointer;
     z-index: 10;
   }

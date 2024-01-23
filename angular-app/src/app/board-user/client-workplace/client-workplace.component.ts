@@ -9,6 +9,7 @@ import { Client } from 'src/entities/Client';
 import { HistoryMessage } from 'src/entities/HistoryMessage';
 import { Order } from 'src/entities/Order';
 import { CreateNewOrderComponent } from './create-new-order/create-new-order.component';
+import { SentEmailComponent } from 'src/app/sent-email/sent-email.component';
 
 @Component({
   selector: 'app-client-workplace',
@@ -28,6 +29,7 @@ export class ClientWorkplaceComponent {
   isResultOfSavedShown = false;
   responceMessage = '';
   filteredOrders?: Order[];
+  isEmailSent = false;
 
   constructor(private clientService: ClientsService, 
       public dialog: MatDialog,
@@ -158,6 +160,33 @@ export class ClientWorkplaceComponent {
  
     dialogRef.afterClosed().subscribe(() => {
     });
+  }
+  sentEmailToClient() {
+    const dialogConfig = new MatDialogConfig();
+    const user = this.storageService.getUser();
+    const messageTemplate = 'Dear ' + this.client.fullName + 
+      '\n\nI am writing about ... ' + 
+      '\n\nBest regards\n' + user.username;
+    dialogConfig.data = {
+      email: this.client.email,
+      messageTemplate: messageTemplate,
+      tagName: 'CLIENT',
+      tagId: this.clientId
+    };
+    dialogConfig.width = '600px';
+    const dialogRef = this.dialog.open(SentEmailComponent, dialogConfig);
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result && result.isEmailSent) {
+        this.isEmailSent = true;
+        this.delayHidingCloseMessage();
+      }
+    });
+  }
+  delayHidingCloseMessage() {
+    setTimeout(() => {
+      this.isEmailSent = false;
+    }, 4000);
   }
 }
 
