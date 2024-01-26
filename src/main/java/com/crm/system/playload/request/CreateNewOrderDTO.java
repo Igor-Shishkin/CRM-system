@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateNewOrderRequest {
+public class CreateNewOrderDTO {
     private long clientId;
     private String realNeed;
     private double estimateBudget;

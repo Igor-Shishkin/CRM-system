@@ -4,7 +4,7 @@ import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.playload.response.MessageResponse;
-import com.crm.system.playload.response.TagForHistoryMessageResponse;
+import com.crm.system.playload.response.TagForHistoryMessageDTO;
 import com.crm.system.services.HistoryMessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 import java.util.Set;
@@ -47,7 +46,7 @@ public class HistoryMessageController {
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getTagsForNewHistoryMessage() {
         try {
-            List<TagForHistoryMessageResponse> tags = historyMessageService.getListOfTags();
+            List<TagForHistoryMessageDTO> tags = historyMessageService.getListOfTags();
             return ResponseEntity.ok(tags);
         } catch (UserPrincipalNotFoundException e) {
             log.error("History Controller, sending tags. Error: " + e.getMessage());

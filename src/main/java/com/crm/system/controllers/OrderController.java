@@ -3,12 +3,11 @@ package com.crm.system.controllers;
 import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
-import com.crm.system.models.order.Order;
-import com.crm.system.playload.request.ChangeOrderRequest;
-import com.crm.system.playload.request.CreateNewOrderRequest;
+import com.crm.system.playload.request.ChangeOrderDTO;
+import com.crm.system.playload.request.CreateNewOrderDTO;
 import com.crm.system.playload.response.MessageResponse;
-import com.crm.system.playload.response.NewCalculationsForOrderResponse;
-import com.crm.system.playload.response.OrderInfoResponse;
+import com.crm.system.playload.response.NewCalculationsForOrderDTO;
+import com.crm.system.playload.response.OrderInfoDTO;
 import com.crm.system.services.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -40,8 +39,8 @@ public class OrderController {
     @GetMapping()
     public ResponseEntity<?> getOrder(@RequestParam long orderId) {
         try {
-            OrderInfoResponse orderInfoResponse = orderService.getOrderInfoResponce(orderId);
-            return ResponseEntity.ok(orderInfoResponse);
+            OrderInfoDTO orderInfoDTO = orderService.getOrderInfoResponce(orderId);
+            return ResponseEntity.ok(orderInfoDTO);
         } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
             log.error("Order controller: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -53,7 +52,7 @@ public class OrderController {
     @GetMapping("/new-calculations")
     public ResponseEntity<?> getNewCalculations(@Valid @RequestParam long orderId) {
         try {
-            NewCalculationsForOrderResponse newCalculations = orderService.getNewCalculations(orderId);
+            NewCalculationsForOrderDTO newCalculations = orderService.getNewCalculations(orderId);
             return ResponseEntity.ok(newCalculations);
         } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
                  UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
@@ -121,9 +120,9 @@ public class OrderController {
     @Operation(summary = "Save changes", tags = { "Order", "change"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
     @PostMapping("/save-order-changes")
-    public ResponseEntity<?> saveOrderChanges(@Valid  @RequestBody ChangeOrderRequest changeOrderRequest) {
+    public ResponseEntity<?> saveOrderChanges(@Valid  @RequestBody ChangeOrderDTO changeOrderDTO) {
         try {
-            orderService.saveOrderChanges(changeOrderRequest);
+            orderService.saveOrderChanges(changeOrderDTO);
             return ResponseEntity.ok(new MessageResponse("Changes are saved"));
         } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
                  UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
@@ -135,9 +134,9 @@ public class OrderController {
     @Operation(summary = "Create new order", tags = { "Order", "new"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
     @PostMapping("/create-new-order")
-    public ResponseEntity<?> createNewOrder(@Valid  @RequestBody CreateNewOrderRequest createNewOrderRequest) {
+    public ResponseEntity<?> createNewOrder(@Valid  @RequestBody CreateNewOrderDTO createNewOrderDTO) {
         try {
-            long newOrderID = orderService.createNewOrder(createNewOrderRequest);
+            long newOrderID = orderService.createNewOrder(createNewOrderDTO);
             return ResponseEntity.ok(newOrderID);
         } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
                  UserPrincipalNotFoundException | MismanagementOfTheClientException e) {

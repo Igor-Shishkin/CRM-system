@@ -9,10 +9,10 @@ import com.crm.system.models.User;
 import com.crm.system.models.order.InfoIsShown;
 import com.crm.system.models.order.ItemForCalcualtion;
 import com.crm.system.models.order.Order;
-import com.crm.system.playload.request.ChangeOrderRequest;
-import com.crm.system.playload.request.CreateNewOrderRequest;
-import com.crm.system.playload.response.NewCalculationsForOrderResponse;
-import com.crm.system.playload.response.OrderInfoResponse;
+import com.crm.system.playload.request.ChangeOrderDTO;
+import com.crm.system.playload.request.CreateNewOrderDTO;
+import com.crm.system.playload.response.NewCalculationsForOrderDTO;
+import com.crm.system.playload.response.OrderInfoDTO;
 import com.crm.system.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
@@ -36,10 +36,10 @@ public class OrderService {
     }
 
 
-    public OrderInfoResponse getOrderInfoResponce(long orderId) throws UserPrincipalNotFoundException {
+    public OrderInfoDTO getOrderInfoResponce(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
-        OrderInfoResponse orderInfoResponse = new OrderInfoResponse(order);
-        return orderInfoResponse;
+        OrderInfoDTO orderInfoDTO = new OrderInfoDTO(order);
+        return orderInfoDTO;
     }
 
 
@@ -48,9 +48,9 @@ public class OrderService {
         return order;
     }
 
-    public NewCalculationsForOrderResponse getNewCalculations(long orderId) throws UserPrincipalNotFoundException {
+    public NewCalculationsForOrderDTO getNewCalculations(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
-        NewCalculationsForOrderResponse newCalculations = new NewCalculationsForOrderResponse();
+        NewCalculationsForOrderDTO newCalculations = new NewCalculationsForOrderDTO();
         newCalculations.setItems(order.getCalculations());
         newCalculations.setResultPrice(order.getResultPrice());
         return newCalculations;
@@ -135,14 +135,14 @@ public class OrderService {
 
 
 
-    public void saveOrderChanges(ChangeOrderRequest changedOrder) throws UserPrincipalNotFoundException {
+    public void saveOrderChanges(ChangeOrderDTO changedOrder) throws UserPrincipalNotFoundException {
         Order order = getOrderById(changedOrder.getOrderId());
         setChangedParameters(order, changedOrder);
         order.setDateOfLastChange(LocalDateTime.now());
 
         orderRepository.save(order);
     }
-    public long createNewOrder(CreateNewOrderRequest request) throws UserPrincipalNotFoundException {
+    public long createNewOrder(CreateNewOrderDTO request) throws UserPrincipalNotFoundException {
         Client currentClient = getClientById(request.getClientId());
         Order newOrder = new Order(request.getRealNeed(), request.getEstimateBudget(), currentClient);
         Order savedOrder = orderRepository.save(newOrder);
@@ -157,7 +157,7 @@ public class OrderService {
         return currentClient;
     }
 
-    private void setChangedParameters(Order order, ChangeOrderRequest changedOrder) {
+    private void setChangedParameters(Order order, ChangeOrderDTO changedOrder) {
         order.setIsCalculationShown(changedOrder.getIsCalculationShown());
         order.setAgreementPrepared(changedOrder.isAgreementPrepared());
         order.setAddress(changedOrder.getAddress());

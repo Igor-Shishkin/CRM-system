@@ -6,14 +6,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class OrderInfoResponse extends Order {
+public class OrderInfoDTO extends Order {
 
     private String clientFullName;
     private String clientPhoneNumber;
     private String clientEmail;
     private long clientId;
 
-    public OrderInfoResponse(Order order) {
+    public OrderInfoDTO(Order order) {
         super();
 
         this.setOrderId(order.getOrderId());

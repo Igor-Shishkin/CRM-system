@@ -2,16 +2,14 @@ package com.crm.system.playload.request;
 
 import com.crm.system.models.order.InfoIsShown;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ChangeOrderRequest {
+public class ChangeOrderDTO {
     private Long orderId;
     private String realNeed;
     private double estimateBudged;

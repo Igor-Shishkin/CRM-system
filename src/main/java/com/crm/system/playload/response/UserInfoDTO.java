@@ -4,18 +4,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
-public class UserInfoResponse {
+public class UserInfoDTO {
     private Long id;
     private String username;
     private String email;
     private List<String> roles;
     private int clientsNumber;
 
-    private UserInfoResponse(Long id, String username, String email, List<String> roles, int clientsNumber) {
+    private UserInfoDTO(Long id, String username, String email, List<String> roles, int clientsNumber) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -48,8 +47,8 @@ public class UserInfoResponse {
             this.clientsNumber = clientsNumber;
             return this;
         }
-        public UserInfoResponse build() {
-            return new UserInfoResponse(id,
+        public UserInfoDTO build() {
+            return new UserInfoDTO(id,
                     username,
                     email,
                     roles,

@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AddLeadRequest {
+public class AddLeadDTO {
     @NotBlank
     @Size(max = 50)
     private String fullName;

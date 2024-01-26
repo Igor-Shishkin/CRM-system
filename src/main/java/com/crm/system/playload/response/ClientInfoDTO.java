@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ClientInfoResponse {
+public class ClientInfoDTO {
     private Long id;
     private String fullName;
     private String email;
@@ -16,8 +16,8 @@ public class ClientInfoResponse {
     private int numberOfOrders;
     private int numberOfPaidOrders;
 
-    protected ClientInfoResponse(Long id, String fullName, String email, String phoneNumber,
-                                 String address, ClientStatus status, int quantityOfOrders, int numberOfPaidOrders) {
+    protected ClientInfoDTO(Long id, String fullName, String email, String phoneNumber,
+                            String address, ClientStatus status, int quantityOfOrders, int numberOfPaidOrders) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -69,8 +69,8 @@ public class ClientInfoResponse {
             return this;
         }
 
-        public ClientInfoResponse build() {
-            return new ClientInfoResponse(id,
+        public ClientInfoDTO build() {
+            return new ClientInfoDTO(id,
                     fullName,
                     email,
                     phoneNumber,

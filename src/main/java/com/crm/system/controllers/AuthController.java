@@ -4,8 +4,8 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.*;
 
 import com.crm.system.exception.UserAlreadyExistsException;
-import com.crm.system.playload.request.LoginRequest;
-import com.crm.system.playload.request.SignupRequest;
+import com.crm.system.playload.request.LoginDTO;
+import com.crm.system.playload.request.SignUpDTO;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.security.services.UserDetailsServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,10 +38,10 @@ public class AuthController {
 
     @PostMapping("/signin")
     @Operation(summary = "Login in system", tags = { "auth", "login" })
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDTO loginDTO) {
         try {
             Authentication authentication = authenticationManager
-                    .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                    .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
             ResponseEntity<?> responseEntity = userDetailsService.authenticateUser(authentication);
             log.info("User {} is logged", Objects.requireNonNull(responseEntity.getBody()).toString());
             return responseEntity;
@@ -54,7 +54,7 @@ public class AuthController {
     @PostMapping("/signup")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "New user registration", tags = { "auth", "registration" })
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpDTO signUpRequest) {
         try {
             userDetailsService.registerUser(signUpRequest);
             log.info("User registered successfully!");

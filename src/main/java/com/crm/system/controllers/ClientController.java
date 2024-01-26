@@ -5,9 +5,9 @@ import com.crm.system.exception.NameOrEmailIsEmptyException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
-import com.crm.system.playload.request.AddLeadRequest;
-import com.crm.system.playload.request.EditClientDataRequest;
-import com.crm.system.playload.response.ClientInfoResponse;
+import com.crm.system.playload.request.AddLeadDTO;
+import com.crm.system.playload.request.EditClientDataDTO;
+import com.crm.system.playload.response.ClientInfoDTO;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.services.ClientService;
@@ -38,7 +38,7 @@ public class ClientController {
     @Operation(summary = "Add new Lead", tags = { "Client", "add"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
     @PostMapping("/add-new-lead")
-    public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLeadRequest addLidRequest) {
+    public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLeadDTO addLidRequest) {
         try {
             long leadId = clientService.addNewLead(addLidRequest);
             log.info(String.format("Lid %s is added", addLidRequest.getFullName()));
@@ -89,7 +89,7 @@ public class ClientController {
     @GetMapping("/clients")
     public ResponseEntity<?> getAllClientsForUser() {
         try {
-            List<ClientInfoResponse> clients = clientService.getClientsForUser();
+            List<ClientInfoDTO> clients = clientService.getClientsForUser();
             return ResponseEntity.ok(clients);
         } catch (UserPrincipalNotFoundException e) {
             log.error("Authorisation Error: " + e.getMessage());
@@ -102,7 +102,7 @@ public class ClientController {
     @GetMapping("/leads")
     public ResponseEntity<?> getAllLeadsForUser() {
         try {
-            List<ClientInfoResponse> leads = clientService.getLeadsForUser();
+            List<ClientInfoDTO> leads = clientService.getLeadsForUser();
             return ResponseEntity.ok(leads);
         } catch (UserPrincipalNotFoundException e) {
             log.error("Authorisation Error: " + e.getMessage());
@@ -115,7 +115,7 @@ public class ClientController {
     @GetMapping("/get-black-list-clients")
     public ResponseEntity<?> getBlackListClientsForUser() {
         try {
-            List<ClientInfoResponse> clients = clientService.getBlackListClientsForUser();
+            List<ClientInfoDTO> clients = clientService.getBlackListClientsForUser();
             return ResponseEntity.ok(clients);
         } catch (UserPrincipalNotFoundException e) {
             log.error("Authorisation Error: " + e.getMessage());
@@ -140,7 +140,7 @@ public class ClientController {
     @Operation(summary = "Get Client's info", tags = { "client", "info"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
     @PutMapping("edit-client-data")
-    public ResponseEntity<?> editClientInfo(@RequestBody EditClientDataRequest request) {
+    public ResponseEntity<?> editClientInfo(@RequestBody EditClientDataDTO request) {
         try {
             clientService.editClientData(request);
             return ResponseEntity.ok(new MessageResponse("Changes are saved!"));

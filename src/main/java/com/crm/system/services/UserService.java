@@ -1,9 +1,7 @@
 package com.crm.system.services;
 
-import com.crm.system.exception.RequestOptionalIsEmpty;
-import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.models.User;
-import com.crm.system.playload.response.UserInfoResponse;
+import com.crm.system.playload.response.UserInfoDTO;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.services.UserDetailsImpl;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +19,6 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class UserService {
@@ -56,9 +53,9 @@ public class UserService {
         userRepository.save(user);
         return "Photo is upload";
     }
-    public List<UserInfoResponse> getInfoAllUsers() {
+    public List<UserInfoDTO> getInfoAllUsers() {
         List<User> allUsers = userRepository.findAll();
-        List<UserInfoResponse> userInfoResponseList = new LinkedList<>();
+        List<UserInfoDTO> userInfoDTOList = new LinkedList<>();
 
         long activeUserId = getActiveUserId();
 
@@ -67,17 +64,17 @@ public class UserService {
                 List<String> roles = user.getRoles().stream()
                         .map(Object::toString)
                         .toList();
-                UserInfoResponse userInfoResponse = new UserInfoResponse.Builder()
+                UserInfoDTO userInfoDTO = new UserInfoDTO.Builder()
                         .withId(user.getUserId())
                         .withUsername(user.getUsername())
                         .withEmail(user.getEmail())
                         .withRoles(roles)
                         .withLidsNumber(user.getClients().size())
                         .build();
-                userInfoResponseList.add(userInfoResponse);
+                userInfoDTOList.add(userInfoDTO);
             }
         }
-        return userInfoResponseList;
+        return userInfoDTOList;
     }
     public Optional<User> getActiveUser() {
         long activeUserId = getActiveUserId();

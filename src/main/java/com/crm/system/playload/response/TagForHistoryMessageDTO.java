@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TagForHistoryMessageResponse {
+public class TagForHistoryMessageDTO {
     @Enumerated(EnumType.STRING)
     private TagName tagName;
     private long entityId;

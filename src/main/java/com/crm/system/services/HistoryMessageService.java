@@ -6,7 +6,7 @@ import com.crm.system.models.Client;
 import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.models.User;
 import com.crm.system.models.history.TagName;
-import com.crm.system.playload.response.TagForHistoryMessageResponse;
+import com.crm.system.playload.response.TagForHistoryMessageDTO;
 import com.crm.system.repository.HistoryMessageRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.services.UserDetailsImpl;
@@ -74,13 +74,13 @@ public class HistoryMessageService {
         return historyMessages;
     }
 
-    public List<TagForHistoryMessageResponse> getListOfTags() throws UserPrincipalNotFoundException {
+    public List<TagForHistoryMessageDTO> getListOfTags() throws UserPrincipalNotFoundException {
         User activeUser = getActiveUser();
 
             Set<Client> clients = activeUser.getClients();
-            List<TagForHistoryMessageResponse> tags = new ArrayList<>(clients.size() * 2);
+            List<TagForHistoryMessageDTO> tags = new ArrayList<>(clients.size() * 2);
             for (Client client : clients) {
-                TagForHistoryMessageResponse tag = new TagForHistoryMessageResponse();
+                TagForHistoryMessageDTO tag = new TagForHistoryMessageDTO();
                 tag.setTagName(TagName.CLIENT);
                 tag.setEntityName(client.getFullName());
                 tag.setEntityId(client.getId());

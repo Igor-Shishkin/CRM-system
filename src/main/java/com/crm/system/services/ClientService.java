@@ -8,9 +8,9 @@ import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
 import com.crm.system.models.User;
 import com.crm.system.models.order.Order;
-import com.crm.system.playload.request.AddLeadRequest;
-import com.crm.system.playload.request.EditClientDataRequest;
-import com.crm.system.playload.response.ClientInfoResponse;
+import com.crm.system.playload.request.AddLeadDTO;
+import com.crm.system.playload.request.EditClientDataDTO;
+import com.crm.system.playload.response.ClientInfoDTO;
 import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.services.UserDetailsImpl;
@@ -37,15 +37,15 @@ public class ClientService {
         this.historyMessageService = historyMessageService;
     }
 
-    public List<ClientInfoResponse> getClientsForUser() throws UserPrincipalNotFoundException {
+    public List<ClientInfoDTO> getClientsForUser() throws UserPrincipalNotFoundException {
         User user = getActiveUser();
-        List<ClientInfoResponse> infoClientResponses = new ArrayList<>(user.getClients().size() * 2);
+        List<ClientInfoDTO> infoClientResponses = new ArrayList<>(user.getClients().size() * 2);
         for (Client client : user.getClients()) {
             if (client.getStatus().equals(ClientStatus.CLIENT)) {
                 int numberOfPaidOrders = (int) client.getOrders().stream()
                         .filter(Order::isHasBeenPaid)
                         .count();
-                ClientInfoResponse clientInfoResponse = new ClientInfoResponse.Builder()
+                ClientInfoDTO clientInfoResponse = new ClientInfoDTO.Builder()
                         .withId (client.getId())
                         .withFullName(client.getFullName())
                         .withAddress(client.getAddress())
@@ -61,11 +61,11 @@ public class ClientService {
         return infoClientResponses;
     }
 
-    public List<ClientInfoResponse> getLeadsForUser() throws UserPrincipalNotFoundException {
+    public List<ClientInfoDTO> getLeadsForUser() throws UserPrincipalNotFoundException {
         User user = getActiveUser();
         return user.getClients().stream()
                 .filter(client -> client.getStatus().equals(ClientStatus.LEAD))
-                .map(client -> new ClientInfoResponse.Builder()
+                .map(client -> new ClientInfoDTO.Builder()
                         .withId(client.getId())
                         .withFullName(client.getFullName())
                         .withAddress(client.getAddress())
@@ -76,11 +76,11 @@ public class ClientService {
                         .build())
                 .collect(Collectors.toList());
     }
-    public List<ClientInfoResponse> getBlackListClientsForUser() throws UserPrincipalNotFoundException {
+    public List<ClientInfoDTO> getBlackListClientsForUser() throws UserPrincipalNotFoundException {
         User user = getActiveUser();
         return user.getClients().stream()
                 .filter(client -> client.getStatus().equals(ClientStatus.BLACKLIST))
-                .map(client -> new ClientInfoResponse.Builder()
+                .map(client -> new ClientInfoDTO.Builder()
                         .withId(client.getId())
                         .withFullName(client.getFullName())
                         .withAddress(client.getAddress())
@@ -92,16 +92,16 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
-    public long addNewLead(AddLeadRequest addLeadRequest) throws UserPrincipalNotFoundException {
-        if (clientRepository.existsByEmail(addLeadRequest.getEmail())) {
+    public long addNewLead(AddLeadDTO addLeadDTO) throws UserPrincipalNotFoundException {
+        if (clientRepository.existsByEmail(addLeadDTO.getEmail())) {
             throw new ClientAlreadyExistException("Lid with this email already exists");
         }
         User activeUser = getActiveUser();
         Client newLead = new Client(
-                addLeadRequest.getFullName(),
-                addLeadRequest.getEmail(),
-                addLeadRequest.getPhoneNumber(),
-                addLeadRequest.getAddress(),
+                addLeadDTO.getFullName(),
+                addLeadDTO.getEmail(),
+                addLeadDTO.getPhoneNumber(),
+                addLeadDTO.getAddress(),
                 activeUser);
 
         String messageText = String.format("Lead %s is created", newLead.getFullName());
@@ -153,7 +153,7 @@ public class ClientService {
         }
         return client;
     }
-    public void editClientData(EditClientDataRequest request) throws UserPrincipalNotFoundException {
+    public void editClientData(EditClientDataDTO request) throws UserPrincipalNotFoundException {
         if (request.getFullName().isBlank() ||
                 request.getEmail().isBlank()) {
             throw new NameOrEmailIsEmptyException("Name and email can't be empty!");

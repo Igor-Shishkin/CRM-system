@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ChangeAgreementStatusRequest {
+public class ChangeAgreementStatusDTO {
     @JsonProperty("isAgreementSigned")
     private boolean isAgreementSigned;
     private long orderId;

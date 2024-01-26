@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EditClientDataRequest {
+public class EditClientDataDTO {
     @NotBlank
     private Long clientId;
     @NotBlank

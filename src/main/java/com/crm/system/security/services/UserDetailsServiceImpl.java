@@ -4,8 +4,8 @@ import com.crm.system.exception.UserAlreadyExistsException;
 import com.crm.system.models.User;
 import com.crm.system.models.security.ERole;
 import com.crm.system.models.security.Role;
-import com.crm.system.playload.request.SignupRequest;
-import com.crm.system.playload.response.UserInfoResponse;
+import com.crm.system.playload.request.SignUpDTO;
+import com.crm.system.playload.response.UserInfoDTO;
 import com.crm.system.repository.RoleRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.PasswordConfig;
@@ -69,7 +69,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                .body(new UserInfoResponse.Builder()
+                .body(new UserInfoDTO.Builder()
                         .withId(userDetails.getId())
                         .withEmail(userDetails.getEmail())
                         .withUsername(userDetails.getUsername())
@@ -77,7 +77,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         .build());
     }
 
-    public void registerUser(SignupRequest signUpRequest) throws UserAlreadyExistsException {
+    public void registerUser(SignUpDTO signUpRequest) throws UserAlreadyExistsException {
         for (String role : signUpRequest.getRole()) {
             System.out.println(role);
         }

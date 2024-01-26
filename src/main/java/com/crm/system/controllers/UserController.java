@@ -1,9 +1,7 @@
 package com.crm.system.controllers;
 
-import com.crm.system.exception.RequestOptionalIsEmpty;
-import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.playload.response.MessageResponse;
-import com.crm.system.playload.response.UserInfoResponse;
+import com.crm.system.playload.response.UserInfoDTO;
 import com.crm.system.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,7 +16,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @Tag(name = "Order controller", description = "Order management APIs")
@@ -37,8 +34,8 @@ public class UserController {
     @GetMapping("/users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getAllUsers() {
-        List<UserInfoResponse> userInfoResponseList = userService.getInfoAllUsers();
-        return ResponseEntity.ok(userInfoResponseList);
+        List<UserInfoDTO> userInfoDTOList = userService.getInfoAllUsers();
+        return ResponseEntity.ok(userInfoDTOList);
     }
     @Operation(summary = "Add photo to user", tags = {"user", "photo", "avatar"})
     @PostMapping("/photo")
