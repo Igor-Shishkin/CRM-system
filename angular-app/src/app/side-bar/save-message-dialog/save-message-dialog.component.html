@@ -2,22 +2,27 @@
 <mat-dialog-content>
   <form (submit)="saveMessage()">
     <div class="mb-3">
-      <label for="exampleFormControlTextarea1" class="form-label">History message</label>
+      <label for="text-of-message-input" class="form-label">History message</label>
       <textarea style="width: 100%;" class="form-control custom-textarea custom-input-area" 
+        id="text-of-message-input"
         rows="3" [(ngModel)]="message!.messageText"
         [ngModelOptions]="{ standalone: true }">
       </textarea>
     </div>
     <div class="mb-3">
-      <label for="exampleFormControlInput1" class="form-label">Note</label>
-      <input type="text" class="form-control custom-input-area" [(ngModel)]="message!.note"
-      [ngModelOptions]="{ standalone: true }">
+      <label for="note-input" class="form-label">Note</label>
+      <input type="text" id="note-input"
+        class="form-control custom-input-area" 
+        [(ngModel)]="message!.note"
+        [ngModelOptions]="{ standalone: true }"
+        >
     </div>
 
     <div class="mb-3" style="display: flex;">
       <div >
-        <label for="exampleFormControlInput1" class="form-label">Category</label>
-        <select class="form-select custom-input-area" aria-label="Default select example" 
+        <label for="category-drop-menu" class="form-label">Category</label>
+        <select class="form-select custom-input-area" aria-label="category-chooser" 
+          id="category-drop-menu"
           (change)="chooseTagNames($event)">
           <option selected disabled>{{initiallyTagName}}</option>
           <option value="CLIENT">CLIENT</option>
@@ -29,9 +34,11 @@
         </select>
       </div>
       <div style="margin-left: 20px;">
-        <label for="exampleFormControlInput1" class="form-label">Entity</label>
-        <select class="form-select custom-input-area" aria-label="Default select example" 
-          (change)="chooseEntity($event)">
+        <label for="entity-drop-menu" class="form-label">Entity</label>
+        <select class="form-select custom-input-area" aria-label="entity-chooser" 
+          id="entity-drop-menu"
+          (change)="chooseEntity($event)"
+        >
           <option selected>{{initiallyEntityName}}</option>
           <option *ngFor="let tag of filteredHistoryTags" value="{{tag.entityId}}"
             >{{tag.entityName}}</option>
@@ -41,16 +48,25 @@
 
     <div style="display: flex; margin: 15px;" >
       <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" role="switch" style="margin-bottom: 7px;"
-        [(ngModel)]="message!.isImportant" [ngModelOptions]="{ standalone: true }">
-        <label class="form-check-label">Import</label>
+        <input class="form-check-input" type="checkbox" id="is-important-checkbox"
+          role="switch" style="margin-bottom: 7px;"
+          [(ngModel)]="message!.isImportant" [ngModelOptions]="{ standalone: true }">
+        <label class="form-check-label" 
+          for="is-important-checkbox">
+          Import
+        </label>
       </div>
+
       <div class="form-check form-switch" style="display: flex; margin-left: 20px;">
-        <input class="form-check-input" type="checkbox" role="switch"
-        [(ngModel)]="message!.isDone" style="margin-bottom: 7px;" [ngModelOptions]="{ standalone: true }">
-        <label class="form-check-label">Done</label>
+        <input class="form-check-input" type="checkbox" 
+          id="is-done-checkbox" role="switch"
+          [(ngModel)]="message!.isDone" style="margin-bottom: 7px;" 
+          [ngModelOptions]="{ standalone: true }"
+        >
+        <label class="form-check-label" for="is-done-checkbox">Done</label>
       </div>
     </div>
+
     <mat-form-field style="background-color: rgba(165, 165, 165, 0.1);">
       <input matInput [matDatepicker]="picker" placeholder="Deadline date" 
       (dateChange)="updateDate($event)" readonly>

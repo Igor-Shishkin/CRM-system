@@ -1,17 +1,23 @@
 <div class="container to-side-container" *ngIf="currentUser; else loggedOut">
   <div class="left-column">
+
     <header class="jumbotron">
       <h3>
          My Profile
       </h3>
     </header>
+
     <h4>Name: 
-      {{ currentUser.username }}</h4>
+      {{ currentUser.username }}
+    </h4>
+    
     <p>
       Email:
       {{ currentUser.email }}
     </p>
+
     <strong>My roles:</strong>
+    
     <ul>
       <li *ngFor="let role of currentUser.roles">
         {{ role }}

@@ -2,24 +2,29 @@
 <mat-dialog-content>
   <form (submit)="sentEmail()">
     <div class="mb-3">
-        <label for="exampleFormControlInput1" class="form-label">Subject</label>
+        <label for="subject-of-email-input" class="form-label">Subject</label>
         <input type="text" class="form-control custom-input-area" 
-        name="subjectOfMAil"
-        [(ngModel)]="form.subjectOfMAil" 
-        #subjectOfMAil="ngModel">
+          id="subject-of-email-input" name="subjectOfMAil"
+          [(ngModel)]="form.subjectOfMAil" 
+          #subjectOfMAil="ngModel"
+        >
     </div>
     <div class="mb-3">
-      <label for="exampleFormControlTextarea1" class="form-label">Text</label>
+      <label for="text-of-email-input" class="form-label">Text</label>
       <textarea type="text" class="form-control custom-textarea custom-input-area" 
-        rows="10" 
+        id="text-of-email-input" rows="10" 
         [(ngModel)]="form.textOfEmail" #textOfEmail="ngModel"
         name="textOfEmail">
       </textarea>
     </div>
 
     <button type="submit" style="margin: 5px 15px;" class="btn btn-primary"
-    [disabled]="isRequestInProcess">Submit</button>
+      [disabled]="isRequestInProcess">
+      Submit
+    </button>
   </form>
+
+  
   <footer>
     <div *ngIf="isSuccessRequest" class="alert alert-success" role="alert">
       Email is sent!

@@ -22,8 +22,8 @@ export class OrderWorkplaceComponent implements OnInit{
   counter = 1;
   orderProgress = '';
   orderInstance: any;
-  unableToSignAgreement = false;
-  unableToPainment = false;
+  isUnableToSignAgreement = false;
+  isUnableToPainment = false;
   isSuccess = false;
   successMessage = '';
   isFailed = false;
@@ -99,12 +99,13 @@ export class OrderWorkplaceComponent implements OnInit{
             console.log(err)
           }
         })
-        this.unableToSignAgreement = false;
+        this.isUnableToSignAgreement = false;
       });
     }
     openConfirmSingingDialog(): void {
       if (this.order.calculations && this.order.calculations.length>0 &&
-        this.order.resultPrice && this.order.resultPrice>0) 
+        this.order.resultPrice && this.order.resultPrice>0 && 
+        this.order.isCalculationShown !== 'NOT_SHOWN') 
       {
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = { 
@@ -117,7 +118,7 @@ export class OrderWorkplaceComponent implements OnInit{
           this.calculateOrderProgress();
         });
       } else {
-        this.unableToSignAgreement = true;
+        this.isUnableToSignAgreement = true;
       }
     }
     openConfirmPaidDialog(): void {
@@ -133,7 +134,7 @@ export class OrderWorkplaceComponent implements OnInit{
           this.calculateOrderProgress();
         });
       } else {
-        this.unableToPainment = true;
+        this.isUnableToPainment = true;
       }
     }
     sentEmailToClient() {

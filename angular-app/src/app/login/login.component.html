@@ -10,12 +10,12 @@
       name="form"
       (ngSubmit)="f.form.valid && onSubmit()"
       #f="ngForm"
-      novalidate
-    >
+      novalidate>
+
       <div class="form-group">
-        <label for="username">Username</label>
+        <label for="username-input">Username</label>
         <input
-          type="text"
+          type="text" id="username-input"
           class="form-control"
           name="username"
           [(ngModel)]="form.username"
@@ -28,9 +28,9 @@
         </div>
       </div>
       <div class="form-group">
-        <label for="password">Password</label>
+        <label for="password-input">Password</label>
         <input
-          type="password"
+          type="password" id="password-input"
           class="form-control"
           name="password"
           [(ngModel)]="form.password"
@@ -39,18 +39,22 @@
           #password="ngModel"
           [ngClass]="{ 'is-invalid': f.submitted && password.errors }"
         />
+
         <div *ngIf="password.errors && f.submitted" class="invalid-feedback">
           <div *ngIf="password.errors['required']">Password is required</div>
           <div *ngIf="password.errors['minlength']">
             Password must be at least 6 characters
           </div>
         </div>
+
       </div>
+
       <div class="form-group" style="margin-top: 10px;">
-        <button class="btn btn-primary btn-block">
+        <button class="btn btn-primary btn-block" id="login-button">
           Login
         </button>
       </div>
+      
       <div class="form-group">
         <div *ngIf="f.submitted && isLoginFailed" class="alert alert-danger" role="alert">
           Login failed: {{ errorMessage }}

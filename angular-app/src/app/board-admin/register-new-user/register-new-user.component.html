@@ -13,9 +13,9 @@
         </div>
   
         <div class="form-group custom-form">
-          <label for="username">Username</label>
+          <label for="username-input">Username</label>
           <input
-            type="text"
+            type="text" id="username-input"
             class="form-control custom-form"
             name="username"
             [(ngModel)]="form.username"
@@ -23,8 +23,8 @@
             minlength="3"
             maxlength="20"
             #username="ngModel"
-            [ngClass]="{ 'is-invalid': f.submitted && username.errors }"
-          />
+            [ngClass]="{ 'is-invalid': f.submitted && username.errors }"/>
+
           <div class="invalid-feedback" *ngIf="username.errors && f.submitted">
             <div *ngIf="username.errors['required']">Username is required</div>
             <div *ngIf="username.errors['minlength']">
@@ -35,10 +35,11 @@
             </div>
           </div>
         </div>
+
         <div class="form-group">
-          <label for="email">Email</label>
+          <label for="email-input">Email</label>
           <input
-            type="email"
+            type="email" id="email-input"
             class="form-control custom-form"
             name="email"
             [(ngModel)]="form.email"
@@ -55,40 +56,43 @@
           </div>
         </div>
         <div class="form-group custom-form">
-          <label for="password">Password</label>
+          <label for="password-input">Password</label>
           <input
-            type="password"
+            type="password" id="password-input"
             class="form-control custom-form"
             name="password"
             [(ngModel)]="form.password"
             required
             minlength="6"
             #password="ngModel"
-            [ngClass]="{ 'is-invalid': f.submitted && password.errors }"
-          />
+            [ngClass]="{ 'is-invalid': f.submitted && password.errors }"/>
+
           <div class="invalid-feedback" *ngIf="password.errors && f.submitted">
-            <div *ngIf="password.errors['required']">Password is required</div>
+            <div *ngIf="password.errors['required']">
+              Password is required
+            </div>
             <div *ngIf="password.errors['minlength']">
               Password must be at least 6 characters
             </div>
           </div>
         </div>
+
         <div style="margin-top: 11px; margin-bottom: 11px;">
             <div class="form-check form-check-inline  row align-items-center custom-form">
               <div class="col-auto">
-                <input class="form-check-input" type="checkbox" value="User" id="inlineCheckbox1" 
-                [checked]="form.role.includes('User')" (change)="updateRole('User')"
-                style="vertical-align: middle;">
-                <label class="form-check-label ml-2" for="inlineCheckbox1" style="vertical-align: middle;">
+                <input class="form-check-input" type="checkbox" value="User" id="is-user-checkbox" 
+                  [checked]="form.role.includes('User')" (change)="updateRole('User')"
+                  style="vertical-align: middle;">
+                <label class="form-check-label ml-2" for="is-user-checkbox" style="vertical-align: middle;">
                   User
                 </label>
               </div>
             </div>
             <div class="form-check form-check-inline  row align-items-center">
                 <div class="col-auto">
-                  <input class="form-check-input" type="checkbox" value="Admin" id="flexCheckChecked"
-                  [checked]="form.role.includes('Admin')" (change)="updateRole('Admin')">
-                  <label class="form-check-label ml-2" for="flexCheckChecked">
+                  <input class="form-check-input" type="checkbox" value="Admin" id="is-admin-checkbox"
+                    [checked]="form.role.includes('Admin')" (change)="updateRole('Admin')">
+                  <label class="form-check-label ml-2" for="is-admin-checkbox">
                     Admin
                   </label>
                 </div>
@@ -96,7 +100,10 @@
         </div>
   
         <div class="form-group">
-          <button class="btn btn-primary btn-block" [disabled]="isProcess">Sign Up</button>
+          <button class="btn btn-primary btn-block" id="sign-up-button" 
+            [disabled]="isProcess">
+            Sign Up
+          </button>
         </div>
   
       </form>

@@ -1,12 +1,17 @@
 <div class="container1" id="app">
+
   <div class="w3-sidebar w3-bar-block" style="width: 35%;">
     <app-side-bar></app-side-bar>
   </div>
-  <div class="main-content" style="margin-left:36%; margin-right: 1%;">
+
+  <div class="main-content" style="margin-left:36%; margin-right: 1%; margin-top: 7px;">
+    
     <app-navigation style="max-height: 15px;"> </app-navigation>
+
     <div  class="custom-scrollbar">
       <router-outlet></router-outlet>
     </div>
+
   </div>
 
 </div>
