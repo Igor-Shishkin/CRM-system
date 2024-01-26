@@ -35,7 +35,6 @@ public class OrderInfoResponse extends Order {
         this.setResultPrice(order.getResultPrice());
 
         this.setClient(null);
-        this.setProjectPhotos(order.getProjectPhotos());
         this.setCalculations(order.getCalculations());
 
         this.setClientFullName(order.getClient().getFullName());

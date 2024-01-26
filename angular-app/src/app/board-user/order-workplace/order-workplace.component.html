@@ -1,20 +1,24 @@
 <section>
-    <h2>{{order.clientFullName}}</h2>
+    <h1>{{order.clientFullName}}</h1>
     <p>Phone number: {{order.clientPhoneNumber}}</p>
     <p>Email: {{order.clientEmail}}</p>
     <button (click)="backTotheClient()" class="btn btn-outline-secondary" type="button">Back to the client</button>
 </section>
 
-<div class="separator"></div>
+<div class="separator" style="height: 13px;"></div>
+
 
 <div style="color: darkblue; margin: 15px;">
   <div class="d-grid gap-2">
-    <button class="btn btn-outline-secondary" type="button" (click)="saveChanges()">Save changes</button>
+    <button class="btn btn-outline-info" type="button" id="saveChangesButton"
+      (click)="saveChanges()">
+      Save changes
+    </button>
   </div>
   <div *ngIf="isFailed" class="alert alert-danger" role="alert">
     {{failMessage}}
   </div>
-  <div *ngIf="isSuccess" class="alert alert-success" role="alert">
+  <div *ngIf="isSuccess" class="alert alert-info" role="alert">
     {{successMessage}}
   </div>
 </div>
@@ -31,31 +35,37 @@
         </div>
 
         <h2>Real need:</h2>
-        <textarea class="custom-input-form w-100" style="height: 75px; font-size: 20px; border-radius: 10px;"
-        [value]="order.realNeed" [(ngModel)]="order.realNeed"
-        ></textarea>
+        <textarea class="custom-input-form w-100" id="realNeedTExtArea"
+          style="height: 75px; font-size: 20px; border-radius: 10px;"
+          [value]="order.realNeed" [(ngModel)]="order.realNeed">
+        </textarea>
         <p>Date of creation: {{order.dateOfCreation}}</p>
 
         <div style="display: flex;">
-            <div class=" field-description">
-              <label class="col-form-label">Address</label>
+            <div class=" custom-label-field">
+              <label class="col-form-label" for="addressInput">Address</label>
             </div>
             <div style="width: 100%;">
-                <input class="form-control custom-input-form" type="text"
-                [value]="order.address" [(ngModel)]="order.address">
+                <input class="form-control custom-input-form" type="text" id="addressInput"
+                  [value]="order.address" [(ngModel)]="order.address">
             </div>
           </div>
 
         <div class="grid-container" style="display: grid;">
             <div class="outer-div ">
-              <label class="centered-element " style="grid-area: description;">Estimate Budget:</label>
+              <label class="centered-element " for="estimate-budged-input"
+                style="grid-area: description;">
+                Estimate Budget:
+              </label>
             </div>
             <div class="centered-element" style="grid-area: value;">
-                <input class="form-control custom-input-form" type="number"  style="grid-area: value; width: 90px;"
-                [value]="order.estimateBudged" [(ngModel)]="order.estimateBudged" (change)="delayCalculateProgress()">
+                <input class="form-control custom-input-form" type="number" id="estimate-budged-input"
+                  style="grid-area: value; width: 90px;"
+                  [value]="order.estimateBudged" [(ngModel)]="order.estimateBudged" (change)="delayCalculateProgress()">
             </div>
             <div class="outer-div" style="grid-area: range;">
-                <input type="range" class="form-range centered-element" min="0" max="10000" step="100" 
+                <input type="range" class="form-range centered-element" id="estimate-budged-range-input"
+                min="0" max="10000" step="100" 
                 [value]="order.estimateBudged"
                 (click)="delayCalculateProgress()" [(ngModel)]="order.estimateBudged"
                 >
@@ -64,185 +74,230 @@
 </section>
 
 <section style="display: flex;">
-    <section style="width: 430px;">
+    <section style="width: 500px;">
 
         <div class="row g-3 field-margin">
-            <div class="col-auto field-description">
+            <div class="col-auto custom-label-field">
               <label class="col-form-label">Measurement offered</label>
             </div>
             <div class="col-auto">
-                <div class="btn-group" role="group-measurement-offered" aria-label="Basic radio toggle button group">
-                    <input type="radio" class="btn-check" name="btnradiomeasuroff" id="btnradiomeasuroff1" 
-                    autocomplete="off" 
-                    [checked]="!order.isMeasurementOffered" [(ngModel)]="order.isMeasurementOffered" [value]="false">
-                    <label class="btn btn-outline-primary" for="btnradiomeasuroff1"
-                    (click)="delayCalculateProgress()"
-                    >NO</label>
+                <div class="btn-group" role="group-measurement-offered" 
+                aria-label="Basic radio toggle button group">
+                    <input type="radio" class="btn-check" name="btn-radio-measurement-offered" 
+                      id="btn-radio-measurement-offered1" autocomplete="off" 
+                      [checked]="!order.isMeasurementOffered" 
+                      [(ngModel)]="order.isMeasurementOffered" 
+                      [value]="false">
+                    <label class="btn btn-outline-primary" for="btn-radio-measurement-offered1"
+                      (click)="delayCalculateProgress()">
+                      NO
+                    </label>
                 
-                    <input type="radio" class="btn-check" name="btnradiomeasuroff" id="btnradiomeasuroff2" autocomplete="off" 
-                    [checked]="order.isMeasurementOffered" [(ngModel)]="order.isMeasurementOffered" [value]="true">
-                    <label class="btn btn-outline-primary" for="btnradiomeasuroff2"
-                    (click)="delayCalculateProgress()"
-                    >YES</label>
+                    <input type="radio" class="btn-check" name="btn-radio-measurement-offered" 
+                      id="btn-radio-measurement-offered2" autocomplete="off" 
+                      [checked]="order.isMeasurementOffered" 
+                      [(ngModel)]="order.isMeasurementOffered" [value]="true">
+                    <label class="btn btn-outline-primary" for="btn-radio-measurement-offered2"
+                      (click)="delayCalculateProgress()">
+                      YES
+                    </label>
                   </div>
             </div>
         </div>
 
         <div class="row g-3 field-margin">
-            <div class="col-auto field-description">
+            <div class="col-auto custom-label-field">
               <label class="col-form-label">Measurement taken</label>
             </div>
             <div class="col-auto">
                 <div class="btn-group" role="group-measurement-taken" aria-label="Basic radio toggle button group">
-                    <input type="radio" class="btn-check" name="btnradiomeasurtaken" id="btnradiomeasurtaken1" 
-                    autocomplete="off" [(ngModel)]="order.isMeasurementsTaken" [value]="false">
-                    <label class="btn btn-outline-primary" for="btnradiomeasurtaken1"
-                    (click)="delayCalculateProgress()"
-                    >NO</label>
+                    <input type="radio" class="btn-check" 
+                      name="btn-radio-measurement-taken" id="btn-radio-measurement-taken1" 
+                      autocomplete="off" [(ngModel)]="order.isMeasurementsTaken" 
+                      [value]="false">
+                    <label class="btn btn-outline-primary" for="btn-radio-measurement-taken1"
+                      (click)="delayCalculateProgress()">
+                      NO
+                    </label>
                 
-                    <input type="radio" class="btn-check" name="btnradiomeasurtaken" id="btnradiomeasurtaken2" 
-                    autocomplete="off" [(ngModel)]="order.isMeasurementsTaken" [value]="true">
-                    <label class="btn btn-outline-primary" for="btnradiomeasurtaken2"
-                    (click)="delayCalculateProgress()"
-                    >YES</label>
+                    <input type="radio" class="btn-check" 
+                      name="btn-radio-measurement-taken" id="btn-radio-measurement-taken2" 
+                      autocomplete="off" [(ngModel)]="order.isMeasurementsTaken" 
+                      [value]="true">
+                    <label class="btn btn-outline-primary" for="btn-radio-measurement-taken2"
+                    (click)="delayCalculateProgress()">
+                      YES
+                    </label>
                   </div>
             </div>
         </div>
 
         <div class="row g-3 field-margin">
-            <div class="col-auto field-description">
+            <div class="col-auto custom-label-field">
               <label class="col-form-label">Meeting in office</label>
             </div>
             <div class="col-auto">
                 <div class="btn-group" role="group-meeting-office" aria-label="Basic radio toggle button group">
-                    <input type="radio" class="btn-check" name="meeting-in-office" id="meeting-in-office1" 
-                    autocomplete="off" [(ngModel)]="order.wasMeetingInOffice" [value]="false">
+                    <input type="radio" class="btn-check" name="meeting-in-office" 
+                      id="meeting-in-office1" 
+                      autocomplete="off" [(ngModel)]="order.wasMeetingInOffice" 
+                      [value]="false">
                     <label class="btn btn-outline-primary" for="meeting-in-office1"
-                    (click)="delayCalculateProgress()"
-                    >NO</label>
+                      (click)="delayCalculateProgress()">
+                      NO
+                    </label>
                 
-                    <input type="radio" class="btn-check" name="meeting-in-office" id="meeting-in-office2" 
-                    autocomplete="off" [(ngModel)]="order.wasMeetingInOffice" [value]="true">
+                    <input type="radio" class="btn-check" name="meeting-in-office" 
+                      id="meeting-in-office2" autocomplete="off" 
+                      [(ngModel)]="order.wasMeetingInOffice" [value]="true">
                     <label class="btn btn-outline-primary" for="meeting-in-office2"
-                    (click)="delayCalculateProgress()"
-                    >YES</label>
+                      (click)="delayCalculateProgress()">
+                      YES
+                    </label>
                   </div>
             </div>
         </div>
 
         <div class="row g-3 field-margin">
-            <div class="col-auto field-description">
+            <div class="col-auto custom-label-field">
               <label class="col-form-label">Calculation promised</label>
             </div>
             <div class="col-auto">
                 <div class="btn-group" role="group-calculation-promised" aria-label="Basic radio toggle button group">
-                    <input type="radio" class="btn-check" name="calc-promised" id="calc-promised1" 
-                    autocomplete="off" [(ngModel)]="order.isCalculationPromised" [value]="false">
-                    <label class="btn btn-outline-primary" for="calc-promised1"
-                    (click)="delayCalculateProgress()"
-                    >NO</label>
+                    <input type="radio" class="btn-check" name="calculations-promised" 
+                      id="calculations-promised1" autocomplete="off" 
+                      [(ngModel)]="order.isCalculationPromised" [value]="false">
+                    <label class="btn btn-outline-primary" for="calculations-promised1"
+                      (click)="delayCalculateProgress()">
+                      NO
+                    </label>
                 
-                    <input type="radio" class="btn-check" name="calc-promised" id="calc-promised2" 
-                    autocomplete="off" [(ngModel)]="order.isCalculationPromised" [value]="true">
-                    <label class="btn btn-outline-primary" for="calc-promised2"
-                    (click)="delayCalculateProgress()"
-                    >YES</label>
+                    <input type="radio" class="btn-check" name="calculations-promised" 
+                      id="calculations-promised2" autocomplete="off" 
+                      [(ngModel)]="order.isCalculationPromised" [value]="true">
+                    <label class="btn btn-outline-primary" for="calculations-promised2"
+                      (click)="delayCalculateProgress()">
+                      YES
+                    </label>
                   </div>
             </div>
         </div>
 
         <div class="row g-3 field-margin">
-            <div class="col-auto field-description">
-                <label class="col-form-label">Calculation shown</label>
+            <div class="col-auto custom-label-field">
+                <label class="col-form-label"
+                [ngClass]="{ 'wrong-input': isUnableToSignAgreement && !order.isAgreementSigned }">
+                  Calculation shown
+                </label>
             </div>
             <div class="col-auto">
                 <div class="btn-group" role="group">
-                    <input type="radio" class="btn-check" name="calc-shown" id="calc-shown1" autocomplete="off" 
-                    [(ngModel)]="order.isCalculationShown" [value]="'NOT_SHOWN'">
-                    <label class="btn btn-outline-primary" for="calc-shown1"
-                    (click)="delayCalculateProgress()"
-                    >NO</label>
+                    <input type="radio" class="btn-check" name="calculation-shown" 
+                      id="calculation-shown1" autocomplete="off" 
+                      [(ngModel)]="order.isCalculationShown" [value]="'NOT_SHOWN'">
+                    <label class="btn btn-outline-primary" for="calculation-shown1"
+                      (click)="delayCalculateProgress()">
+                      NO
+                    </label>
                 
-                    <input type="radio" class="btn-check" name="calc-shown" id="calc-shown2" autocomplete="off" 
-                    [(ngModel)]="order.isCalculationShown" [value]="'SHOWN_ONLINE'">
-                    <label class="btn btn-outline-primary" for="calc-shown2"
-                    (click)="delayCalculateProgress()"
-                    >ONLINE</label>
+                    <input type="radio" class="btn-check" name="calculation-shown" 
+                      id="calculation-shown2" autocomplete="off" 
+                      [(ngModel)]="order.isCalculationShown" [value]="'SHOWN_ONLINE'">
+                    <label class="btn btn-outline-primary" for="calculation-shown2" 
+                      (click)="delayCalculateProgress()">
+                      ONLINE
+                    </label>
                 
-                    <input type="radio" class="btn-check" name="calc-shown" id="calc-shown3" autocomplete="off"
-                    [(ngModel)]="order.isCalculationShown" [value]="'SHOWN_IN_OFFICE'">
-                    <label class="btn btn-outline-primary" for="calc-shown3"
-                    (click)="delayCalculateProgress()"
-                    >IN OFFICE</label>
+                    <input type="radio" class="btn-check" name="calculation-shown" 
+                      id="calculation-shown3" autocomplete="off"
+                      [(ngModel)]="order.isCalculationShown" [value]="'SHOWN_IN_OFFICE'">
+                    <label class="btn btn-outline-primary" for="calculation-shown3"
+                      (click)="delayCalculateProgress()">
+                      IN OFFICE
+                    </label>
                 </div>
             </div>
         </div>
 
         <div class="row g-3 field-margin">
-            <div class="col-auto field-description">
+            <div class="col-auto custom-label-field">
                 <label class="col-form-label">Project shown</label>
             </div>
             <div class="col-auto">
                 <div class="btn-group" role="group">
-                    <input type="radio" class="btn-check" name="project-shown" id="project-shown1" autocomplete="off" 
-                    [(ngModel)]="order.isProjectShown" [value]="'NOT_SHOWN'">
+                    <input type="radio" class="btn-check" name="project-shown" 
+                      id="project-shown1" autocomplete="off" 
+                      [(ngModel)]="order.isProjectShown" [value]="'NOT_SHOWN'">
                     <label class="btn btn-outline-primary" for="project-shown1"
-                    (click)="delayCalculateProgress()"
-                    >NO</label>
+                      (click)="delayCalculateProgress()">
+                      NO
+                    </label>
                 
-                    <input type="radio" class="btn-check" name="project-shown" id="project-shown2" autocomplete="off" 
-                    [(ngModel)]="order.isProjectShown" [value]="'SHOWN_ONLINE'">
+                    <input type="radio" class="btn-check" name="project-shown" 
+                      id="project-shown2" autocomplete="off" 
+                      [(ngModel)]="order.isProjectShown" [value]="'SHOWN_ONLINE'">
                     <label class="btn btn-outline-primary" for="project-shown2"
-                    (click)="delayCalculateProgress()"
-                    >ONLINE</label>
+                      (click)="delayCalculateProgress()">
+                      ONLINE
+                    </label>
                 
-                    <input type="radio" class="btn-check" name="project-shown" id="project-shown3" autocomplete="off" 
-                    [(ngModel)]="order.isProjectShown" [value]="'SHOWN_IN_OFFICE'">
+                    <input type="radio" class="btn-check" name="project-shown" 
+                      id="project-shown3" autocomplete="off" 
+                      [(ngModel)]="order.isProjectShown" [value]="'SHOWN_IN_OFFICE'">
                     <label class="btn btn-outline-primary" for="project-shown3"
-                    (click)="delayCalculateProgress()"
-                    >IN OFFICE</label>
+                     (click)="delayCalculateProgress()">
+                     IN OFFICE
+                    </label>
                 </div>
             </div>
         </div>
 
         <div class="row g-3 field-margin">
-            <div class="col-auto field-description">
+            <div class="col-auto custom-label-field">
               <label class="col-form-label">Project approved</label>
             </div>
             <div class="col-auto">
                 <div class="btn-group" role="group-project-approved" aria-label="Basic radio toggle button group">
-                    <input type="radio" class="btn-check" name="prjt-approved" id="prjt-approved1" 
-                    autocomplete="off" [(ngModel)]="order.isProjectApproved" [value]="false">
-                    <label class="btn btn-outline-primary" for="prjt-approved1"
-                    (click)="delayCalculateProgress()"
-                    >NO</label>
+
+                    <input type="radio" class="btn-check" name="project-approved" id="project-approved1" 
+                      autocomplete="off" [(ngModel)]="order.isProjectApproved" [value]="false">
+                    <label class="btn btn-outline-primary" for="project-approved1"
+                      (click)="delayCalculateProgress()">
+                      NO
+                    </label>
                 
-                    <input type="radio" class="btn-check" name="prjt-approved" id="prjt-approved2" 
-                    autocomplete="off" [(ngModel)]="order.isProjectApproved" [value]="true">
-                    <label class="btn btn-outline-primary" for="prjt-approved2"
-                    (click)="delayCalculateProgress()"
-                    >YES</label>
+                    <input type="radio" class="btn-check" name="project-approved" 
+                      id="project-approved2" autocomplete="off" 
+                      [(ngModel)]="order.isProjectApproved" [value]="true">
+                    <label class="btn btn-outline-primary" for="project-approved2"
+                      (click)="delayCalculateProgress()">
+                      YES
+                    </label>
                   </div>
             </div>
         </div>
 
         <div class="row g-3 field-margin">
-            <div class="col-auto field-description">
+            <div class="col-auto custom-label-field">
               <label class="col-form-label">Agreement prepared</label>
             </div>
             <div class="col-auto">
                 <div class="btn-group" role="group-agreement-prepared" aria-label="Basic radio toggle button group">
-                    <input type="radio" class="btn-check" name="agreem-prep" id="agreem-prep1" 
-                    autocomplete="off" [(ngModel)]="order.isAgreementPrepared" [value]="false">
-                    <label class="btn btn-outline-primary" for="agreem-prep1"
-                    (click)="delayCalculateProgress()"
-                    >NO</label>
+                    <input type="radio" class="btn-check" 
+                      name="agreement-prepeared" id="agreement-prepeared1" autocomplete="off" 
+                      [(ngModel)]="order.isAgreementPrepared" [value]="false">
+                    <label class="btn btn-outline-primary" for="agreement-prepeared1"
+                      (click)="delayCalculateProgress()">
+                      NO
+                    </label>
                 
-                    <input type="radio" class="btn-check" name="agreem-prep" id="agreem-prep2" 
-                    autocomplete="off" [(ngModel)]="order.isAgreementPrepared" [value]="true">
-                    <label class="btn btn-outline-primary" for="agreem-prep2"
-                    (click)="delayCalculateProgress()"
-                    >YES</label>
+                    <input type="radio" class="btn-check" name="agreement-prepeared" 
+                      id="agreement-prepeared2" autocomplete="off" 
+                      [(ngModel)]="order.isAgreementPrepared" [value]="true">
+                    <label class="btn btn-outline-primary" for="agreement-prepeared2"
+                      (click)="delayCalculateProgress()">
+                      YES
+                    </label>
                   </div>
             </div>
         </div>
@@ -252,28 +307,39 @@
     <aside style="margin-left: 11%; margin-top: 25px">
       <div class="d-flex flex-column align-items-end">
         <div class="d-grid gap-2 col-12 col-md-10 justify-content-end">
-          <button type="button" class="btn btn-outline-success" 
-          [ngClass]="{ 'wrong-input': unableToSignAgreement }"
+
+          <button type="button" class="btn btn-outline-success" id="edit-items-button"
+            [ngClass]="{ 'wrong-input': isUnableToSignAgreement && !order.isAgreementSigned }"
             (click)="openCalculationDialog()" [disabled]="order.isAgreementSigned">
             Edit items
             <span *ngIf="order.calculations?.length==0 || order.resultPrice!<=0">⚠️</span>
           </button>
-          <button type="button" class="btn btn-outline-success" 
+
+          <button type="button" class="btn btn-outline-success" id="confirm-singing-button"
             (click)="openConfirmSingingDialog()" 
             [disabled]="order.hasBeenPaid || order.calculations?.length==0 || order.resultPrice!<=0">
             Confirm the signing of the contract
             <span *ngIf="order.isAgreementSigned">✅</span>
           </button>
-          <button type="button" class="btn btn-outline-success"
-          (click)="openConfirmPaidDialog()"
-          [disabled]="!order.isAgreementSigned">
+          <div *ngIf="isUnableToSignAgreement && !order.isAgreementSigned" class="alert alert-danger" role="alert">
+            You must fill out a list of items and show the client the total amount
+          </div>
+
+          <button type="button" class="btn btn-outline-success" id="confirm-paid-button"
+            (click)="openConfirmPaidDialog()"
+            [disabled]="!order.isAgreementSigned">
             Confirm payment by the client
             <span *ngIf="order.hasBeenPaid">✅</span>
           </button>
-          <button type="button" class="btn btn-outline-success" (click)="sentEmailToClient()">Sent email</button>
+
+          <button type="button" class="btn btn-outline-success" (click)="sentEmailToClient()"
+            id="sent-email-button">
+            Sent email
+          </button>
           <div *ngIf="isEmailSent" class="alert alert-success" role="alert">
             Email to client is sent 👌
           </div>
+
           <h2 >Result price: {{order.resultPrice === -1 || order.resultPrice === 0 ? '' : order.resultPrice}}</h2>
         </div>
       </div>
@@ -285,16 +351,18 @@
 
 <div style="color: darkblue; margin: 15px;">
   <div class="d-grid gap-2">
-    <button class="btn btn-outline-secondary" type="button" (click)="saveChanges()">Save changes</button>
+    <button class="btn btn-outline-info" type="button" (click)="saveChanges()"
+      id="save-changes-button">
+      Save changes
+    </button>
   </div>
   <div *ngIf="isFailed" class="alert alert-danger" role="alert">
     {{failMessage}}
   </div>
-  <div *ngIf="isSuccess" class="alert alert-success" role="alert">
+  <div *ngIf="isSuccess" class="alert alert-info" role="alert">
     {{successMessage}}
   </div>
 </div>
-
 
 <div class="separator"></div>
 

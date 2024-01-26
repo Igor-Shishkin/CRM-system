@@ -1,11 +1,12 @@
-.field-description{
-    width: 180px;
+.custom-label-field{
+    width: 200px;
 }
 .field-margin{
     margin: 1px;
 }
 .separator {
-    border-top: 2px solid #ccc; 
+    border-top: 2px solid #025b6b; 
+    border-bottom: 2px solid #025b6b; 
     margin: 15px 15px 25px 15px; 
 }
 .form-control{
@@ -28,4 +29,7 @@
 }
 .wrong-input {
     border: 2px solid red;
+}
+p, label {
+    font-size: 18px;
 }

@@ -3,7 +3,6 @@ import { Client } from 'src/entities/Client';
 import { ClientsService } from 'src/app/_services/clients.service';
 import { Router } from '@angular/router';
 import { StorageService } from 'src/app/_services/storage.service';
-import { HistoryTag } from 'src/entities/HistoryTag';
 
 @Component({
   selector: 'app-clients',

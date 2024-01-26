@@ -1,9 +1,5 @@
-.vertical-item {
-    display: flex;
-    flex-direction: column;
-  }
 
-  .horizontal-checkboxes {
+  .horizontal-checkboxes-box {
     display: flex;
   }
   
@@ -11,7 +7,6 @@
     writing-mode: vertical-rl;
     transform: rotate(200deg);
     cursor: pointer;
-
   }
 
   .check-box-margin{
@@ -49,14 +44,15 @@
   .field-margin{
     margin: 10px;
   }
-  .field-description{
-    width: 130px;
+  .custom-client-info-field{
+    width: 160px;
   }
-  .field-design{
+  .custom-input{
     background-color: rgb(25, 26, 50, 0.2);
     color: rgb(163, 207, 193);
-    width: 550px;
+    width: 700px;
     cursor: vertical;
+    font-size: 19px;
   }
 
   .floating-buttons {
@@ -65,4 +61,7 @@
     right: 10px; 
     cursor: pointer;
     z-index: 10;
+  }
+  p {
+    font-size: 18px;
   }

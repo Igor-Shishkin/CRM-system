@@ -19,8 +19,6 @@ import { SentEmailComponent } from 'src/app/sent-email/sent-email.component';
 export class ClientWorkplaceComponent {
   client: Client = new Client;
   isRequestSent = false;
-  isSuccessLoad = false;
-  responseMessage = '';
   errorMessage = '';
   isError = false;
   progress = 0;
@@ -30,6 +28,7 @@ export class ClientWorkplaceComponent {
   responceMessage = '';
   filteredOrders?: Order[];
   isEmailSent = false;
+  isClientSentToBlackList = false;
 
   constructor(private clientService: ClientsService, 
       public dialog: MatDialog,
@@ -62,44 +61,28 @@ export class ClientWorkplaceComponent {
   sentClientToBlackList() {
     this.isRequestSent = true;
     this.clientService.sentClientToBlackList(this.client?.id || -1).subscribe({
-      next: (data: any) => {
-        this.responseMessage = data;
-        this.reloadPage(1500);
+      next: () => {
+        this.isClientSentToBlackList = true;
+        this.reloadPage(2500);
       },
       error: (err: any) => {
         console.error(err);
         this.isError = true;
-        this.errorMessage = 'Error deleting Client';
+        this.errorMessage = 'Error sending Client to blacklist';
         this.isRequestSent = false;
       }
     });
   }
   reloadPage(delay: number): void {
     setTimeout(() => {
-      this.router.navigateByUrl('/home');
+      const URL = (this.client.status === 'CLIENT') ? '/user-board/clients' : '/user-board/leads'
+      this.router.navigateByUrl(URL);
     }, delay); 
-  }
-
-  calculateOrderProgress(order: Order): string{
-    let counter = 1;
-    if (order.wasMeetingInOffice === true) { counter++; }
-    if (order.isCalculationPromised === true) { counter++; }
-    if (order.isCalculationShown !== 'NOT_SHOWN') { counter++; }
-    if (order.isProjectShown !== 'NOT_SHOWN') { counter++; }
-    if (order.isProjectApproved === true) { counter++; }
-    if (order.estimateBudged !== 0) { counter++; }
-    if (order.isMeasurementsTaken === true) { counter++; }
-    if (order.isMeasurementOffered === true) { counter++; }
-    if (order.isAgreementPrepared === true) { counter++; }
-    if (order.resultPrice && order.resultPrice > 0) { counter++; }
-    if (order.hasBeenPaid === true) { counter++; }
-    counter = Math.floor( (counter/12) *100 );
-    return `${counter}%`; 
   }
   changeEditably(){
     this.canEdit = !this.canEdit;
   }
-  calculateNumberOfOrdders(){
+  calculateNumberOfOrders(){
     if (this.client.orders){
       return this.client.orders.length;
     } 
@@ -126,10 +109,13 @@ export class ClientWorkplaceComponent {
       setTimeout(() => {
         this.isResultOfSavedShown = false;
         this.responceMessage = '';
+        this.isEmailSent = false;
       }, 4000);
   }
   goToTheOrder(orderId: number) {
-    this.router.navigate(['/user-board/order-workplace', orderId]);
+    if (!this.isClientSentToBlackList) {
+      this.router.navigate(['/user-board/order-workplace', orderId]);
+    }
   }
   createNewMessage() {
     const message = new HistoryMessage;
@@ -179,14 +165,26 @@ export class ClientWorkplaceComponent {
     dialogRef.afterClosed().subscribe((result) => {
       if (result && result.isEmailSent) {
         this.isEmailSent = true;
-        this.delayHidingCloseMessage();
+        this.performDelayedHidingAlert();
       }
     });
   }
-  delayHidingCloseMessage() {
-    setTimeout(() => {
-      this.isEmailSent = false;
-    }, 4000);
+  
+  calculateOrderProgress(order: Order): string{
+    let counter = 1;
+    if (order.wasMeetingInOffice === true) { counter++; }
+    if (order.isCalculationPromised === true) { counter++; }
+    if (order.isCalculationShown !== 'NOT_SHOWN') { counter++; }
+    if (order.isProjectShown !== 'NOT_SHOWN') { counter++; }
+    if (order.isProjectApproved === true) { counter++; }
+    if (order.estimateBudged !== 0) { counter++; }
+    if (order.isMeasurementsTaken === true) { counter++; }
+    if (order.isMeasurementOffered === true) { counter++; }
+    if (order.isAgreementPrepared === true) { counter++; }
+    if (order.resultPrice && order.resultPrice > 0) { counter++; }
+    if (order.hasBeenPaid === true) { counter++; }
+    counter = Math.floor( (counter/12) *100 );
+    return `${counter}%`; 
   }
 }
 

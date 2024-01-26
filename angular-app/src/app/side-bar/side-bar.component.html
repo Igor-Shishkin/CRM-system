@@ -18,41 +18,46 @@
 
     <div class="d-flex justify-content-between align-items-center gap-1" *ngIf="isLoggedIn">
         <div class="dropdown" >
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Filters
+            <button class="btn btn-outline-secondary dropdown-toggle" 
+                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Filters
             </button>
             <ul class="dropdown-menu dropdown-menu-dark">
                 <li>
                     <div class="form-check form-switch form-check-reverse">
                         <input class="form-check-input" type="checkbox" id="byCategotyCheckBox"
-                        [disabled]="activeHistoryTag.tagName?.length==0 || activeHistoryTag.tagName==undefined"
-                        [(ngModel)]="filterParameters.byCategory" [ngModelOptions]="{ standalone: true }"
-                        (change)="filterMethodHistory()">
+                            [disabled]="activeHistoryTag.tagName?.length==0 || activeHistoryTag.tagName==undefined"
+                            [(ngModel)]="filterParameters.byCategory" [ngModelOptions]="{ standalone: true }"
+                            (change)="filterMethodHistory()">
                         <label class="form-check-label" for="byCategotyCheckBox">Active category</label>
                     </div>
                 </li>
                 <li>
                     <div class="form-check form-switch form-check-reverse">
                         <input class="form-check-input" type="checkbox" id="byIdCheckBox"
-                        [disabled]="activeHistoryTag.entityId==-1 || activeHistoryTag.entityId == undefined"
-                        [(ngModel)]="filterParameters.byId" [ngModelOptions]="{ standalone: true }"
-                        (change)="filterMethodHistory()">
+                            [disabled]="activeHistoryTag.entityId==-1 || activeHistoryTag.entityId == undefined"
+                            [(ngModel)]="filterParameters.byId" [ngModelOptions]="{ standalone: true }"
+                            (change)="filterMethodHistory()"
+                        >
                         <label class="form-check-label" for="byIdCheckBox">Active entity</label>
                     </div>
                 </li>
                 <li>
                     <div class="form-check form-switch form-check-reverse">
                         <input class="form-check-input" type="checkbox" id="byImportantCheckBox"
-                        [(ngModel)]="filterParameters.byImportant" [ngModelOptions]="{ standalone: true }"
-                        (change)="filterMethodHistory()">
+                            [(ngModel)]="filterParameters.byImportant" [ngModelOptions]="{ standalone: true }"
+                            (change)="filterMethodHistory()"
+                        >
                         <label class="form-check-label" for="byImportantCheckBox">Only important</label>
                     </div>
                 </li>             
                 <li>
                     <div class="form-check form-switch form-check-reverse">
                         <input class="form-check-input" type="checkbox" id="byUndoneCheckBox"
-                        [(ngModel)]="filterParameters.byUndone" [ngModelOptions]="{ standalone: true }"
-                        (change)="filterMethodHistory()">
+                            [(ngModel)]="filterParameters.byUndone" 
+                            [ngModelOptions]="{ standalone: true }"
+                            (change)="filterMethodHistory()"
+                        >
                         <label class="form-check-label" for="byUndoneCheckBox">Only undone</label>
                     </div>
                 </li>
@@ -70,26 +75,34 @@
         <div  *ngFor="let message of filteredHistory" >
             <div class="label-action " style="margin: 8px;"
                 (click)="editMessage(message)">
-                <p style="margin: 0px; font-size: 17px;">{{message.messageText}}</p>
+                <p style="margin: 0px; font-size: 17px;">
+                    {{message.messageText}}
+                </p>
 
-                <p style="margin: 0px; color: rgb(201, 95, 95); font-size: 15px;"
-                >{{message.deadline | date: 'shortDate'}}</p>
+                <p style="margin: 0px; color: rgb(201, 95, 95); font-size: 13px;">
+                    {{message.deadline | date: 'shortDate'}}
+                </p>
 
-                <p style="margin: 0px; color: rgb(181, 181, 181); font-size: 14px;" >{{message.note}}</p>
+                <p style="margin: 0px; color: rgb(181, 181, 181); font-size: 14px;" >
+                    {{message.note}}
+                </p>
 
                 <div style="display: flex;">
                     <p *ngIf="message.isImportant" 
-                    style="margin: 0px; color: rgb(201, 95, 95); font-size: 13px;"
-                    >IMPORTANT</p>
+                        style="margin: 0px; color: rgb(201, 95, 95); font-size: 13px;">
+                        IMPORTANT
+                    </p>
                     <p *ngIf="message.isDone" 
-                    style="margin: 0px 0px 0px 10px; color: rgb(128, 247, 128); font-size: 13px;"
-                    >DONE</p>
+                        style="margin: 0px 0px 0px 10px; color: rgb(128, 247, 128); font-size: 13px;">
+                        DONE
+                    </p>
                 </div>
 
-                <p style="margin: 0px; color: rgb(181, 181, 181); font-size: 14px;"
-                >{{message.dateOfCreation | date: 'medium'}}</p>
+                <p style="margin: 0px; color: rgb(181, 181, 181); font-size: 12px;">
+                    {{message.dateOfCreation | date: 'medium'}}
+                </p>
 
-                <p style="margin: 0px; color: rgb(181, 181, 181);" class="separator" style="margin: 5px;"></p>
+                <p style="border-top: 1px solid rgb(181, 181, 181, 0.6); margin: 10px;" class="separator"></p>
             </div>    
         </div>
     </section>

@@ -1,5 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { UserService } from '../_services/user.service';
+import { Component, OnInit,  } from '@angular/core';
 import { StorageService } from '../_services/storage.service';
 
 
@@ -15,7 +14,7 @@ export class HomeComponent implements OnInit{
   isLoggedIn?: boolean;
 
 
-  constructor(private userService: UserService, private storageService: StorageService) { }
+  constructor(private storageService: StorageService) { }
 
 
   ngOnInit(): void {

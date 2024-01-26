@@ -47,6 +47,12 @@ private isLoggedInSubscription: Subscription;
         });
         this.activeHistoryTagSubscription = this.storageService.activeHistoryTag$.subscribe((historyTag: HistoryTag) => {
           this.activeHistoryTag = historyTag;
+
+          this.filterParameters.byCategory = (this.activeHistoryTag.tagName !== '');
+          this.filterParameters.byId = (this.activeHistoryTag.entityId ! > 0);
+
+          this.filterMethodHistory();
+          this.sortFilteredHistory();
         });
   }
 
@@ -60,9 +66,8 @@ private isLoggedInSubscription: Subscription;
     if (this.history.length == 0) {
       this.refreshHistory();
     }
-    this.sortFilteredHistory();
     this.filterMethodHistory();
-    
+    this.sortFilteredHistory(); 
   }
 
   filterMethodHistory() {

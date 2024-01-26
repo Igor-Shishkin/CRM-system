@@ -32,8 +32,20 @@ export class ClientsService {
       })
     );
   }
+  getListOfClientsFromBlackList(){
+    return this.http.get<Client[]>(CLIENTS_API + '/get-black-list-clients').pipe(
+      catchError((error: any) => {
+        console.error(error);
+        throw error;
+      })
+    );
+  }
+  
   sentClientToBlackList(clientId : number) {
-    return this.http.put(`${CLIENTS_API}/to-black-list?leadId=${clientId}`, { responseType: 'text' });
+    return this.http.put(`${CLIENTS_API}/send-client-to-black-list?clientId=${clientId}`, { responseType: 'text' });
+  }
+  restoreClientToBlackList(clientId : number) {
+    return this.http.put(`${CLIENTS_API}/restore-client-from-black-list?clientId=${clientId}`, { responseType: 'text' });
   }
   addLead(fullName : string, address : string, email : string, phoneNumber : string):
     Observable<number> {

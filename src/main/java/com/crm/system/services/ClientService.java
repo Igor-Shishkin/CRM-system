@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class ClientService {
         this.historyMessageService = historyMessageService;
     }
 
-    public List<ClientInfoResponse> getAllClients() throws UserPrincipalNotFoundException {
+    public List<ClientInfoResponse> getClientsForUser() throws UserPrincipalNotFoundException {
         User user = getActiveUser();
         List<ClientInfoResponse> infoClientResponses = new ArrayList<>(user.getClients().size() * 2);
         for (Client client : user.getClients()) {
@@ -51,7 +52,7 @@ public class ClientService {
                         .withEmail(client.getEmail())
                         .withPhoneNumber(client.getPhoneNumber())
                         .withIsClient(ClientStatus.CLIENT)
-                        .withNmberOfOrders(client.getOrders().size())
+                        .withNumberOfOrders(client.getOrders().size())
                         .withNumberOfPaidOrders(numberOfPaidOrders)
                         .build();
                 infoClientResponses.add(clientInfoResponse);
@@ -60,7 +61,7 @@ public class ClientService {
         return infoClientResponses;
     }
 
-    public List<ClientInfoResponse> getAllLeads() throws UserPrincipalNotFoundException {
+    public List<ClientInfoResponse> getLeadsForUser() throws UserPrincipalNotFoundException {
         User user = getActiveUser();
         return user.getClients().stream()
                 .filter(client -> client.getStatus().equals(ClientStatus.LEAD))
@@ -71,7 +72,22 @@ public class ClientService {
                         .withEmail(client.getEmail())
                         .withPhoneNumber(client.getPhoneNumber())
                         .withIsClient(ClientStatus.LEAD)
-                        .withNmberOfOrders(client.getOrders().size())
+                        .withNumberOfOrders(client.getOrders().size())
+                        .build())
+                .collect(Collectors.toList());
+    }
+    public List<ClientInfoResponse> getBlackListClientsForUser() throws UserPrincipalNotFoundException {
+        User user = getActiveUser();
+        return user.getClients().stream()
+                .filter(client -> client.getStatus().equals(ClientStatus.BLACKLIST))
+                .map(client -> new ClientInfoResponse.Builder()
+                        .withId(client.getId())
+                        .withFullName(client.getFullName())
+                        .withAddress(client.getAddress())
+                        .withEmail(client.getEmail())
+                        .withPhoneNumber(client.getPhoneNumber())
+                        .withIsClient(ClientStatus.BLACKLIST)
+                        .withNumberOfOrders(client.getOrders().size())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -101,11 +117,30 @@ public class ClientService {
         Client client = getClientById(clientId);
 
         client.setStatus(ClientStatus.BLACKLIST);
+
+        client.setDateOfLastChange(LocalDateTime.now());
         clientRepository.save(client);
 
         String messageText = String.format("Client %s goes to blackList", client.getFullName());
         historyMessageService.createHistoryMessageForClient(client, messageText);
     }
+    public void restoreClientFromBlackList(long clientId) throws UserPrincipalNotFoundException, SubjectNotBelongToActiveUser {
+
+        Client client = getClientById(clientId);
+
+        if (hasPaidOrders(client)) {
+            client.setStatus(ClientStatus.CLIENT);
+        } else {
+            client.setStatus(ClientStatus.LEAD);
+        }
+
+        client.setDateOfLastChange(LocalDateTime.now());
+        clientRepository.save(client);
+
+        String messageText = String.format("Client %s is restored from blackList", client.getFullName());
+        historyMessageService.createHistoryMessageForClient(client, messageText);
+    }
+
 
 
 
@@ -113,7 +148,6 @@ public class ClientService {
         Client client = getClientById(clientId);
 
         for (Order order: client.getOrders()) {
-            order.setProjectPhotos(null);
             order.setCalculations(null);
             order.setClient(null);
         }
@@ -131,6 +165,7 @@ public class ClientService {
         client.setEmail(request.getEmail());
         client.setPhoneNumber(request.getPhoneNumber());
         client.setAddress(request.getAddress());
+        client.setDateOfLastChange(LocalDateTime.now());
 
         clientRepository.save(client);
     }
@@ -163,4 +198,10 @@ public class ClientService {
         User activeUser = getActiveUser();
         return (client.getUser().equals(activeUser));
     }
+    private boolean hasPaidOrders(Client client) {
+        return client.getOrders().stream()
+                .anyMatch(Order::isHasBeenPaid);
+    }
+
+
 }

@@ -1,15 +1,29 @@
 <div>
 
+  <div class="d-flex justify-content-between align-items-center gap-1">
     <div style="display: flex;">
-        <button type="button" class="btn btn-secondary" style="margin-left: 10px;" 
+        <button type="button" class="btn btn-secondary" 
+          style="margin-left: 10px;" id="go-to-list-of-leads"
+          [disabled]="isRequestSent"
           [routerLinkActive]="'active-nav'"
-          [routerLink]="'/user-board/leads'" aria-current="page" >LEADs
+          [routerLink]="'/user-board/leads'" aria-current="page" >
+          LEADs
         </button>
-        <button disabled="true" type="button" class="btn btn-secondary" style="margin-left: 10px;"  
+        <button disabled="true" type="button" class="btn btn-secondary" 
+          style="margin-left: 10px;" id="go-to-list-of-clients" 
+          [disabled]="isRequestSent"
           [routerLinkActive]="'active-nav'"
-          [routerLink]="'/user-board/clients'" aria-current="page" >CLIENTs
+          [routerLink]="'/user-board/clients'" aria-current="page" >
+          CLIENTs
         </button>
     </div>
+    <button  type="button" class="btn btn-secondary" style="margin-left: 10px;" 
+      [disabled]="isRequestSent" 
+      [routerLinkActive]="'active-nav'" id="go-to-black-list"
+      [routerLink]="'/user-board/blacklist-clients'" aria-current="page" >
+      Blacklist
+  </button>
+</div>
 
     <div *ngIf="isError" class="alert alert-danger" role="alert">
       {{errorMessage}}
@@ -42,7 +56,7 @@
       </tbody>
     </table>
   
-    <button [routerLink]="'/user-board/add-lead'" 
+    <button [routerLink]="'/user-board/add-lead'" id="addLeadButton"
      type="button" class="btn btn-outline-primary">Add LEAD</button>
   
   </div>

@@ -5,7 +5,7 @@ export class Client {
     fullName : string | undefined;
     email : string | undefined;
     phoneNumber : string | undefined;
-    isClient : boolean | undefined;
+    status : string | undefined;
     address: string | undefined;
     numberOfOrders: number | undefined;
     numberOfPaidOrders: number | undefined;

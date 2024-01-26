@@ -5,7 +5,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { RegisterComponent } from './register/register.component';
 import { HomeComponent } from './home/home.component';
 import { ProfileComponent } from './profile/profile.component';
 import { BoardAdminComponent } from './board-admin/board-admin.component';
@@ -37,13 +36,14 @@ import { RegisterNewUserComponent } from './board-admin/register-new-user/regist
 import { ConfirmDeleteUserComponent } from './board-admin/confirm-delete-user/confirm-delete-user.component';
 import { UsersComponent } from './board-admin/users/users.component';
 import { SentEmailComponent } from './sent-email/sent-email.component';
+import { RouterModule } from '@angular/router';
+import { BlackListOfClientsComponent } from './board-user/black-list-of-clients/black-list-of-clients.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    RegisterComponent,
     HomeComponent,
     ProfileComponent,
     BoardAdminComponent,
@@ -66,10 +66,12 @@ import { SentEmailComponent } from './sent-email/sent-email.component';
     RegisterNewUserComponent,
     ConfirmDeleteUserComponent,
     SentEmailComponent,
-    UsersComponent
+    UsersComponent,
+    BlackListOfClientsComponent
   ],
   imports: [
     BrowserModule,
+    RouterModule,
     AppRoutingModule,
     FormsModule,
     HttpClientModule,

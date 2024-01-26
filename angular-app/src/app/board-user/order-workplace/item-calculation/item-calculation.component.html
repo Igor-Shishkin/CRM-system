@@ -1,16 +1,18 @@
 <h2 mat-dialog-title style="margin-bottom: 8px;">Items for order</h2>
 <mat-dialog-content>
+
     <div *ngIf="isSavingWasFail" class="alert alert-danger" role="alert">
         {{errorMessage}}
     </div>
     <div *ngIf="isItemsSaved" class="alert alert-success" role="alert">
         Your changes are saved
       </div>
+
     <div class="custom-scrollbar" style="background-color: transparent;">
-    <table class="table table-hover custom-input-form">
+        <table class="table table-hover custom-input-form">
             <thead > 
                 <tr class="custom-input-form">
-                    <th  class="custom-input-form">Thing</th>
+                    <th  class="custom-input-form">Item</th>
                     <th  class="custom-input-form">Quantity</th>
                     <th class="custom-input-form">Unit price</th>
                     <th  class="custom-input-form">Total price</th>
@@ -21,47 +23,60 @@
             <tbody >
                 <tr *ngFor="let item of items" style="border-bottom: 1px rgb(2, 5, 75);" >
                     <td class="custom-input-form"  style="width: 410px;">
-                        <input class="form-control custom-input-form" type="text"
-                        [ngClass]="{ 'wrong-input': isEmptyThing(item) && (item.quantity && item.quantity > 0) }"
-                        [value]="item.thing" [(ngModel)]="item.thing">
+                        <input class="form-control custom-input-form" type="text" id="item-input"
+                            [ngClass]="{ 'wrong-input': isEmptyThing(item) && (item.quantity && item.quantity > 0) }"
+                            [value]="item.thing" [(ngModel)]="item.thing">
                     </td>
                     <td class="custom-input-form" style="width: 90px;"> 
-                        <input class="form-control custom-input-form" 
-                        [ngClass]="{ 'wrong-input': !isPositiveInteger(item.quantity || 0) &&  !isEmptyThing(item) }"
-                        [value]="item.quantity" [(ngModel)]="item.quantity"
-                        type="number"
-                        (change)="calcilateTotalPriceForItem(item)">
+                        <input class="form-control custom-input-form" id="quantity-input"
+                            [ngClass]="{ 'wrong-input': !isPositiveInteger(item.quantity || 0) &&  !isEmptyThing(item) }"
+                            [value]="item.quantity" [(ngModel)]="item.quantity"
+                            type="number"
+                            (change)="calcilateTotalPriceForItem(item)">
                     </td>
                     <td class="custom-input-form" style="width: 110px;">
-                        <input class="form-control custom-input-form"  type="number" 
-                        [ngClass]="{ 'wrong-input': isNonPositiveNumber(item.unitPrice || 0) &&  !isEmptyThing(item) }"
-                        [value]="item.unitPrice" [(ngModel)]="item.unitPrice" 
-                        (change)="calcilateTotalPriceForItem(item)">
+                        <input class="form-control custom-input-form"  type="number" id="unit-price-input"
+                            [ngClass]="{ 'wrong-input': isNonPositiveNumber(item.unitPrice || 0) &&  !isEmptyThing(item) }"
+                            [value]="item.unitPrice" [(ngModel)]="item.unitPrice" 
+                            (change)="calcilateTotalPriceForItem(item)">
                     </td>
                     <td class="custom-input-form" style="width: 110px;">
                         <input class="form-control custom-input-form" type="text"
-                        [value]="item.totalPrice" [(ngModel)]="item.totalPrice" disabled>
+                            id="total-price-input"
+                            [value]="item.totalPrice" 
+                            [(ngModel)]="item.totalPrice" disabled>
                     </td>
                     <td class="custom-input-form"> 
                         <button type="button" class="btn btn-outline-danger"
-                        (click)="deleteItem(item)"
-                        >Delete</button>
+                            id="delete-item-button"
+                            (click)="deleteItem(item)">
+                            Delete
+                        </button>
                     </td>
                 </tr>
             </tbody>
-
       </table>
+
     </div>
       <section class="grid-container">
-        <button type="button" class="btn btn-outline-light" style="grid-area: button;" 
-        (click)="addItem()">Add item</button>
+
+        <button type="button" class="btn btn-outline-light" id="add-item-button"
+            style="grid-area: button;" 
+            (click)="addItem()">
+            Add item
+        </button>
+
         <label style="grid-area: label;">Result: </label>
-        <label style="grid-area: sum;">{{ resultPrice === -1 ? 'Error' : resultPrice }}</label>
+        <label style="grid-area: sum;" id="result-price-label">{{ resultPrice === -1 ? 'Error' : resultPrice }}</label>
       </section>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <div style="display: flex;">
-        <button mat-button style="color: green;" (click)="saveItems()">Save</button>
-        <button mat-button mat-dialog-close>Close</button>
+        <button mat-button id="save-changes-button"
+            style="color: green;" 
+            (click)="saveItems()">
+            Save
+        </button>
+        <button mat-button mat-dialog-close id="closeWithoutSaveButton">Close</button>
     </div>
 </mat-dialog-actions>

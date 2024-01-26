@@ -1,201 +1,226 @@
 
-
-<div class="floating-buttons" style="display: flex;">
-  <button type="button" class="btn btn-outline-warning" 
-  (click)="createNewMessage()">
-  Create reminder</button>
-  <button type="button" class="btn btn-outline-warning" style="margin: 0px 10px; height: 35px;"
-  (click)="createNewOrder()">New order</button>
-  <button type="button" class="btn btn-outline-warning"
-  (click)="sentEmailToClient()">Sent mail</button>
-</div>
-
-
-
-
-
-
-<section>
-  <div class="row g-2 field-margin">
-    <div class="col-auto field-description" >
-      <label class="col-form-label ">Full name</label>
-    </div>
-    <div class="col-auto">
-      <input class="form-control field-design" type="text"
-      [(ngModel)]="client.fullName" [ngModelOptions]="{ standalone: true }"
-      [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
-    </div>
-  </div>
-
-  <div class="row g-2  field-margin">
-    <div class="col-auto field-description">
-      <label class="col-form-label">Email </label>
-    </div>
-    <div class="col-auto">
-      <input class="form-control field-design" type="text"
-      [(ngModel)]="client.email" [ngModelOptions]="{ standalone: true }"
-      [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
-    </div>
-  </div>
-
-  <div class="row g-2 field-margin">
-    <div class="col-auto field-description">
-      <label class="col-form-label">Phone number</label>
-    </div>
-    <div class="col-auto">
-        <input class="form-control field-design" type="text"
-        [(ngModel)]="client.phoneNumber" [ngModelOptions]="{ standalone: true }"
-        [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
-    </div>
-  </div>
-
-  <div class="row g-2 field-margin">
-    <div class="col-auto field-description">
-      <label class="col-form-label">Address</label>
-    </div>
-    <div class="col-auto">
-        <input class="form-control field-design" type="text"
-        [(ngModel)]="client.address" [ngModelOptions]="{ standalone: true }"
-        [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
-    </div>
-  </div>
-
-  <div class="row g-3 field-margin" style="margin-left: 0x;">
-    <div class="col-auto field-description">
-      <label class="col-form-label">Number of orders</label>
-    </div>
-    <div class="col-auto">
-        <input class="form-control field-design" type="text" style="margin-left: -4px;"
-        value="{{calculateNumberOfOrdders()}}"
-        disabled readonly>
-    </div>
-  </div>
-
-  <footer class="d-flex justify-content-between align-items-center gap-1" style="width: 700px;">
-    <div>
-      <input type="checkbox" class="btn-check" id="btn-edit" autocomplete="off" (click)="changeEditably()">
-      <label class="btn btn-outline-success" for="btn-edit" style="height: 35px;">Edit data</label>
-  
-      <button type="button" class="btn btn-outline-success" style="margin-left: 15px; height: 35px; margin-top: 4px;"
-        (click)="editClientData()">Save</button>
-    </div>
-  
-    <button [disabled]="isRequestSent" (click)="sentClientToBlackList()" type="button"
-      class="btn btn-outline-danger">
-      <span *ngIf="isRequestSent" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
-      <span role="status">To black list</span>
+  <div class="floating-buttons" style="display: flex;">
+    <button type="button" class="btn btn-outline-warning" id="create-reminder-button"
+      [disabled]="isRequestSent || isClientSentToBlackList"
+      (click)="createNewMessage()">
+      Create reminder
     </button>
+
+    <button type="button" id="create-order-button"
+      class="btn btn-outline-warning" style="margin: 0px 10px; height: 40px;"
+      [disabled]="isRequestSent || isClientSentToBlackList"
+      (click)="createNewOrder()">
+      New order
+    </button>
+
+    <button type="button" id="sent-email-to-clien-button"
+      class="btn btn-outline-warning" [disabled]="isRequestSent || isClientSentToBlackList"
+      (click)="sentEmailToClient()">
+      Sent mail
+    </button> 
+  </div>
+
+  <section style="font-size: 18px;">
+    <div class="row g-2 field-margin">
+      <div class="col-auto custom-client-info-field" >
+        <label for="full-name-input" class="col-form-label ">Full name</label>
+      </div>
+      <div class="col-auto">
+        <input class="form-control custom-input" type="text" id="full-name-input"
+        [(ngModel)]="client.fullName" [ngModelOptions]="{ standalone: true }"
+        [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
+      </div>
+    </div>
+
+    <div class="row g-2  field-margin">
+      <div class="col-auto custom-client-info-field">
+        <label for="email-input" class="col-form-label">Email </label>
+      </div>
+      <div class="col-auto">
+        <input id="email-input" class="form-control custom-input" type="text"
+        [(ngModel)]="client.email" [ngModelOptions]="{ standalone: true }"
+        [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
+      </div>
+    </div>
+
+    <div class="row g-2 field-margin">
+      <div class="col-auto custom-client-info-field">
+        <label class="col-form-label" for="phone-number-input">Phone number</label>
+      </div>
+      <div class="col-auto">
+          <input class="form-control custom-input" type="text" id="phone-number-input"
+          [(ngModel)]="client.phoneNumber" [ngModelOptions]="{ standalone: true }"
+          [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
+      </div>
+    </div>
+
+    <div class="row g-2 field-margin">
+      <div class="col-auto custom-client-info-field">
+        <label class="col-form-label" for="address-input">Address</label>
+      </div>
+      <div class="col-auto">
+          <input class="form-control custom-input" type="text" id="address-input"
+          [(ngModel)]="client.address" [ngModelOptions]="{ standalone: true }"
+          [disabled]="!(canEdit)" [readOnly]="!(canEdit)">
+      </div>
+    </div>
+
+    <div class="row g-2 field-margin">
+      <div class="col-auto custom-client-info-field">
+        <label class="col-form-label" for="number-of-orders-info">Number of orders</label>
+      </div>
+      <div class="col-auto">
+          <input class="form-control custom-input" type="text" id="number-of-orders-info" 
+          value="{{calculateNumberOfOrders()}}"
+          disabled readonly>
+      </div>
+    </div>
+
+    <footer class="d-flex justify-content-between align-items-center gap-1" style="width: 865px;">
+      <div>
+        <input type="checkbox" class="btn-check" id="checkbox-edit-data" autocomplete="off" (click)="changeEditably()">
+        <label class="btn btn-outline-success" for="checkbox-edit-data" style="height: 35px;">Edit data</label>
+      
+        <button type="button" id="saveEditedDataButton"
+          class="btn btn-outline-success" style="margin-left: 15px; height: 35px; margin-top: 4px;"
+          (click)="editClientData()" [disabled]="isRequestSent || isClientSentToBlackList">
+          Save
+        </button>
+      </div>
+    
+      <button id="sent-client-to-black-list-button"
+        [disabled]="isRequestSent || isClientSentToBlackList" (click)="sentClientToBlackList()" type="button"
+        class="btn btn-outline-danger">
+        <span *ngIf="isRequestSent" class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+        <span role="status">To black list</span>
+      </button>
+    </footer>
+
+    <div *ngIf="isClientSentToBlackList" class="alert alert-dark" role="alert">
+      The client is sent to blacklist
+    </div>
+  </section>
+
+  <div *ngIf="isResultOfSavedShown" class="alert alert-dark" role="alert">
+    {{responceMessage}}
+  </div>
+
+  <div class="separator" style="margin: 15px;"></div>
+
+  <h2>Orders</h2>
+
+  <section *ngFor="let order of client?.orders" class="order-container" (click)="goToTheOrder(order.orderId || -1)">
+
+      <div class="progress text-bg-dark" role="progressbar" aria-label="Success example" aria-valuenow="25" 
+      aria-valuemin="0" aria-valuemax="100" style="margin: 7px;">
+          <div class="progress-bar bg-primary" [style.width]="calculateOrderProgress(order)">
+            {{calculateOrderProgress(order)}}</div>
+          </div>
+
+      <h2 style="color: rgb(52, 188, 45);">
+        Real need: {{order.realNeed}}
+      </h2>
+      <div style="display: flex; ">
+          <div style="width: 50%;">
+              <p style="margin: 0;">Estimate budhet: {{order.estimateBudged}}</p>
+              <p style="margin: 0;">Data of creation: {{order.dateOfCreation}}</p>
+              <p style="margin: 0;">Address: {{order.address}}</p>
+              <p style="margin: 0;">Result price {{order.resultPrice}}</p>
+          </div>
+          <aside class="horizontal-checkboxes-box "
+          style="color: rgb(215, 216, 212); font-weight: 65px; justify-items: end;">
+
+            <div class="align-top " style="width: 90px;">
+              <label class=" vertical-text  form-switch align-top" for="is-applicated-checkbox">
+                  Application
+                  <input class="form-check-input " type="checkbox" role="switch" id="is-applicated-checkbox" checked
+                  disabled>
+              </label>
+            </div>
+
+            <div class="align-top check-box-margin" >
+              <label class=" vertical-text  form-switch align-top" for="is-project-shown-checkbox">
+                  Project is shown
+                  <input class="form-check-input " type="checkbox" role="switch" id="is-project-shown-checkbox"
+                  [checked]="order.isProjectShown != 'NOT_SHOWN'"  disabled>
+              </label>
+            </div>
+
+            <div class="align-top check-box-margin" >
+              <label class=" vertical-text  form-switch align-top" for="is-calculation-promised-checkbox">
+                  Calculation is promised
+                  <input class="form-check-input align-top" 
+                  type="checkbox" role="switch" id="is-calculation-promised-checkbox"
+                  [checked]="order.isCalculationPromised" disabled>
+              </label>
+            </div>
+
+            <div class="align-top check-box-margin" >
+              <label class=" vertical-text  form-switch align-top" for="is-calculation-shown-checkbox">
+                  Calculation is shown
+                  <input class="form-check-input align-top" type="checkbox" role="switch" 
+                  id="is-calculation-shown-checkbox"
+                  [checked]="order.isCalculationShown != 'NOT_SHOWN'" disabled>
+              </label>
+            </div>
+
+            <div class="align-top check-box-margin">
+              <label class=" vertical-text  form-switch align-top" for="was-meeting-in-office-checkbox">
+                  Meeting in office
+                  <input class="form-check-input " type="checkbox" role="switch" id="was-meeting-in-office-checkbox"
+                  [checked]="order.wasMeetingInOffice" disabled>
+              </label>
+            </div>
+
+            <div class="align-top check-box-margin">
+              <label class=" vertical-text  form-switch align-top" for="is-measurement-offered-checkbox">
+                  Measurement is offered
+                  <input class="form-check-input " type="checkbox" role="switch" id="is-measurement-offered-checkbox"
+                  [checked]="order.isMeasurementOffered" disabled>
+              </label>
+            </div>
+
+            <div class="align-top check-box-margin">
+              <label class=" vertical-text  form-switch align-top" for="ismeasurements-taken-checkbox">
+                  Measurement is taken
+                  <input class="form-check-input " type="checkbox" role="switch" id="ismeasurements-taken-checkbox"
+                  [checked]="order.isMeasurementsTaken" disabled>
+              </label>
+            </div>
+
+            <div class="align-top check-box-margin">
+              <label class=" vertical-text  form-switch align-top" for="is-project-approved-checkbox">
+                  Project is approved
+                  <input class="form-check-input " type="checkbox" role="switch" id="is-project-approved-checkbox"
+                  [checked]="order.isProjectApproved" disabled>
+              </label>
+            </div>
+
+            <div class="align-top check-box-margin">
+              <label class=" vertical-text  form-switch align-top" for="is-agreement-prepared-checkbox">
+                  Agreement has prepared
+                  <input class="form-check-input " type="checkbox" role="switch" id="is-agreement-prepared-checkbox"
+                  [checked]="order.isAgreementPrepared" disabled>
+              </label>
+            </div>
+
+            <div class="align-top check-box-margin">
+              <label class=" vertical-text  form-switch align-top" for="is-agreement-signed-checkbox">
+                  Agreement has signed
+                  <input class="form-check-input " type="checkbox" role="switch" id="is-agreement-signed-checkbox"
+                  [checked]="order.isAgreementSigned" disabled>
+              </label>
+            </div>
+
+          </aside>
+      </div>
+      <div *ngIf="order.hasBeenPaid" class="paid-container">
+        <h1 id="paid-label">PAID</h1>
+      </div>
+  </section>
+
+  <footer>
+    <div class="separator" style="margin: 40px; border-color: rgb(10, 0, 61, 0.2);"></div>
   </footer>
-</section>
-
-<div *ngIf="isResultOfSavedShown" class="alert alert-dark" role="alert">
-  {{responceMessage}}
-</div>
-
-<div class="separator" style="margin: 15px;"></div>
-
-<h2>Orders</h2>
-
-<section *ngFor="let order of client?.orders" class="order-container" (click)="goToTheOrder(order.orderId || -1)">
-
-    <div class="progress text-bg-dark" role="progressbar" aria-label="Success example" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-        <div class="progress-bar bg-primary" [style.width]="calculateOrderProgress(order)">
-          {{calculateOrderProgress(order)}}</div>
-        </div>
-
-    <h4>Real need: {{order.realNeed}}</h4>
-    <div style="display: flex; ">
-        <div style="width: 50%;">
-            <p style="margin: 0;">Estimate budhet: {{order.estimateBudged}}</p>
-            <p style="margin: 0;">Data of creation: {{order.dateOfCreation}}</p>
-            <p style="margin: 0;">Address: {{order.address}}</p>
-            <p style="margin: 0;">Result price {{order.resultPrice}}</p>
-        </div>
-        <aside class="horizontal-checkboxes "
-        style="color: rgb(215, 216, 212); font-weight: 65px; justify-items: end;">
-
-          <div class="align-top " style="width: 90px;">
-            <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
-                Application
-                <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked" checked
-                disabled>
-            </label>
-          </div>
-
-          <div class="align-top check-box-margin" >
-            <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
-                Project is shown
-                <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                [checked]="order.isProjectShown != 'NOT_SHOWN'"  disabled>
-            </label>
-          </div>
-
-          <div class="align-top check-box-margin" >
-            <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
-                Calculation is promised
-                <input class="form-check-input align-top" type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                [checked]="order.isCalculationPromised" disabled>
-            </label>
-          </div>
-
-          <div class="align-top check-box-margin" >
-            <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
-                Calculation is shown
-                <input class="form-check-input align-top" type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                [checked]="order.isCalculationShown != 'NOT_SHOWN'" disabled>
-            </label>
-          </div>
-
-          <div class="align-top check-box-margin">
-            <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
-                Meeting in office
-                <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                [checked]="order.wasMeetingInOffice" disabled>
-            </label>
-          </div>
-
-          <div class="align-top check-box-margin">
-            <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
-                Measurement is offered
-                <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                [checked]="order.isMeasurementOffered" disabled>
-            </label>
-          </div>
-
-          <div class="align-top check-box-margin">
-            <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
-                Measurement is taken
-                <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                [checked]="order.isMeasurementsTaken" disabled>
-            </label>
-          </div>
-
-          <div class="align-top check-box-margin">
-            <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
-                Project is approved
-                <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                [checked]="order.isProjectApproved" disabled>
-            </label>
-          </div>
-
-          <div class="align-top check-box-margin">
-            <label class=" vertical-text  form-switch align-top" for="flexSwitchCheckChecked">
-                Agreement has prepared
-                <input class="form-check-input " type="checkbox" role="switch" id="flexSwitchCheckChecked"
-                [checked]="order.isAgreementPrepared" disabled>
-            </label>
-          </div>
-
-        </aside>
-    </div>
-    <div *ngIf="order.hasBeenPaid" class="paid-container">
-      <h1 id="paid-label">PAID</h1>
-    </div>
-</section>
-
-<footer>
-  <div class="separator" style="margin-top: 10px; border-color: rgb(10, 0, 61, 0.2);"></div>
-</footer>
-
 
 

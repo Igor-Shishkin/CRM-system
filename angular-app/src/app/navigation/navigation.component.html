@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand navbar-dark bg-dark" style="height: 70px;">
+<nav class="navbar navbar-expand navbar-dark bg-dark" style="height: 70px; box-shadow: 0 0 8px rgb(153, 92, 215);">
 
     <ul class="navbar-nav ml-auto">
       <li class="nav-item" *ngIf="!isLoggedIn" routerLink="login">
@@ -7,31 +7,42 @@
 
       <li class="nav-item" *ngIf="isLoggedIn">
         <a  class="nav-link" 
-        [routerLinkActive]="'active-nav'"
-        [routerLink]="'/home'"
-        >Home</a>
+          [routerLinkActive]="'active-nav'"
+          [routerLink]="'/home'">
+          Home
+        </a>
       </li>
  
       <li class="nav-item dropdown" *ngIf="isLoggedIn">
-        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <a class="nav-link dropdown-toggle" role="button" 
+          data-bs-toggle="dropdown" aria-expanded="false">
           Action
         </a>
         <ul class="dropdown-menu dropdown-menu-dark">
-          <li><a
-            [routerLinkActive]="'active-nav'"
-            [routerLink]="'/user-board/leads'"
-            class="dropdown-item" href="#">LEADs</a></li>
-          <li><a
-            [routerLinkActive]="'active-nav'"
-            [routerLink]="'/user-board/clients'"
-            class="dropdown-item" href="#">Clients</a></li>
+          <li>
+            <a [routerLinkActive]="'active-nav'"
+              [routerLink]="'/user-board/leads'"
+              class="dropdown-item" href="#">
+              LEADs
+            </a>
+          </li>
+          <li>
+            <a [routerLinkActive]="'active-nav'"
+              [routerLink]="'/user-board/clients'"
+              class="dropdown-item" href="#">
+              Clients
+            </a>
+          </li>
 
           <li><hr class="dropdown-divider"></li>
+
           <li *ngIf="showAdminBoard">
             <a       
-            [routerLinkActive]="'active-nav'"
-            [routerLink]="'/admin/users'"
-             class="dropdown-item" routerLink="admin">Admin mode</a>
+              [routerLinkActive]="'active-nav'"
+              [routerLink]="'/admin/users'"
+              class="dropdown-item" routerLink="admin">
+              Admin mode
+            </a>
           </li>
 
           <li><hr class="dropdown-divider"></li>

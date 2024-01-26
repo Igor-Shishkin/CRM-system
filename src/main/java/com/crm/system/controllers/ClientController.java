@@ -57,17 +57,30 @@ public class ClientController {
 
     @Operation(summary = "Sent client to blackList by ID", tags = { "client", "lead", "black list"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
-    @PutMapping("/to-black-list")
-    public ResponseEntity<?> deleteClientById(@RequestParam long leadId) {
-        System.out.println("\n" + leadId + "\n");
+    @PutMapping("/send-client-to-black-list")
+    public ResponseEntity<?> sendClientToBlackList(@RequestParam long clientId) {
         try {
-            clientService.sentToBlackList(leadId);
-            log.info(String.format("Client with %d id on the black list", leadId));
-            return ResponseEntity.ok(new MessageResponse(String.format("Lead with %d id is deleted", leadId)));
+            clientService.sentToBlackList(clientId);
+            log.info(String.format("Client with %d id on the black list", clientId));
+            return ResponseEntity.ok(new MessageResponse(String.format("Lead with %d id is in blacklist", clientId)));
         } catch (IllegalArgumentException | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
-            log.error("Delete user error: " + e.toString());
+            log.error("Sending to blacklist error: " + e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Delete user error: " + e.getMessage()));
+                    .body(new MessageResponse("Sending to blacklist error: " + e.getMessage()));
+        }
+    }
+    @Operation(summary = "Restore client from blackList by ID", tags = { "client", "lead", "black list"})
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PutMapping("/restore-client-from-black-list")
+    public ResponseEntity<?> restoreClientFromBlackList(@RequestParam long clientId) {
+        try {
+            clientService.restoreClientFromBlackList(clientId);
+            log.info(String.format("Client with %d id is restored from black list", clientId));
+            return ResponseEntity.ok(new MessageResponse(String.format("Client with %d id is restored from black list", clientId)));
+        } catch (IllegalArgumentException | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
+            log.error("Restore from blacklist error: " + e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("Restore from blacklist error: " + e.getMessage()));
         }
     }
 
@@ -76,7 +89,7 @@ public class ClientController {
     @GetMapping("/clients")
     public ResponseEntity<?> getAllClientsForUser() {
         try {
-            List<ClientInfoResponse> clients = clientService.getAllClients();
+            List<ClientInfoResponse> clients = clientService.getClientsForUser();
             return ResponseEntity.ok(clients);
         } catch (UserPrincipalNotFoundException e) {
             log.error("Authorisation Error: " + e.getMessage());
@@ -89,8 +102,21 @@ public class ClientController {
     @GetMapping("/leads")
     public ResponseEntity<?> getAllLeadsForUser() {
         try {
-            List<ClientInfoResponse> leads = clientService.getAllLeads();
+            List<ClientInfoResponse> leads = clientService.getLeadsForUser();
             return ResponseEntity.ok(leads);
+        } catch (UserPrincipalNotFoundException e) {
+            log.error("Authorisation Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new MessageResponse("User isn't defined. " + e.getMessage()));
+        }
+    }
+    @Operation(summary = "Get all blacklist clients", tags = { "blacklist", "get"})
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @GetMapping("/get-black-list-clients")
+    public ResponseEntity<?> getBlackListClientsForUser() {
+        try {
+            List<ClientInfoResponse> clients = clientService.getBlackListClientsForUser();
+            return ResponseEntity.ok(clients);
         } catch (UserPrincipalNotFoundException e) {
             log.error("Authorisation Error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
