@@ -1,0 +1,79 @@
+<div>
+
+  <div class="d-flex justify-content-between align-items-center gap-1">
+    <div style="display: flex;">
+        <button type="button" class="btn btn-secondary" 
+          style="margin-left: 10px;" id="go-to-list-of-leads"
+          [disabled]="isRequestSent"
+          [routerLinkActive]="'active-nav'"
+          [routerLink]="'/user-board/leads'" aria-current="page" >
+          LEADs
+        </button>
+        <button  type="button" class="btn btn-secondary" 
+          style="margin-left: 10px;" id="go-to-list-of-clients" 
+          [disabled]="isRequestSent"
+          [routerLinkActive]="'active-nav'"
+          [routerLink]="'/user-board/clients'" aria-current="page" >
+          CLIENTs
+        </button>
+    </div>
+    <button  type="button" class="btn btn-secondary" 
+      style="margin-left: 10px;" disabled="true"
+      [routerLinkActive]="'active-nav'" id="go-to-black-list"
+      [routerLink]="'/user-board/blacklist-clients'" aria-current="page" >
+      Blacklist
+  </button>
+</div>
+
+    <div *ngIf="!isSuccessLoad" class="alert alert-danger" role="alert">
+      Something went wrong and we can’t receive data from the server
+    </div>
+    <div *ngIf="isSuccessRequest" class="alert alert-info" role="alert">
+      The client is restored from blacklist
+    </div>
+    <div *ngIf="isFailedRequest" class="alert alert-danger" role="alert">
+      We apologize, but today is a very busy day for us and everything is getting out of hand. 
+      Unfortunately, we were unable to restore this client.
+    </div>
+  
+    <table class="table table-hover custom-table" style="color: aliceblue;">
+    
+      <thead> 
+          <tr>
+              <th>Name</th>
+              <th>email</th>
+              <th>phone</th>
+              <th>Orders</th>
+              <th>Restore</th>
+          </tr>
+      </thead>
+   
+      <tbody *ngIf="isSuccessLoad == true">
+          <tr *ngFor="let client of clients" style="border-bottom: 1px rgb(2, 5, 75);">
+              <td>{{client.fullName}}</td>
+              <td>{{client.email}}</td>
+              <td>{{client.phoneNumber}}</td>
+              <td>{{client.numberOfOrders}}</td>
+              <td>
+                <button type="button" class="btn btn-info" (click)="restoreClientFromBlacklist(client)"
+                id="restoreButton"
+                [disabled]="isRequestSent || client.status !== 'BLACKLIST'">Restore</button>
+              </td>
+          </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="!isSuccessLoad" class="alert alert-danger" role="alert">
+      Something went wrong and we can`t receive data from the server
+    </div>
+    <div *ngIf="isSuccessRequest" class="alert alert-info" role="alert">
+      The client is restored from blacklist
+    </div>
+    <div *ngIf="isFailedRequest" class="alert alert-danger" role="alert">
+      We apologize, but today is a very busy day for us and everything is getting out of hand. 
+      Unfortunately, we were unable to restore this client.
+    </div>
+  
+  </div>
+  
+  
