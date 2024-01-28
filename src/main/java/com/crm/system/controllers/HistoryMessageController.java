@@ -31,7 +31,7 @@ public class HistoryMessageController {
 
     @Operation(summary = "Get user's history", tags = {"user", "history"})
     @GetMapping("/get-history")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getUserHistory(){
         try {
             Set<HistoryMessage> history = historyMessageService.getUserHistory();
@@ -43,7 +43,7 @@ public class HistoryMessageController {
     }
     @Operation(summary = "Get tags for history message", tags = {"history", "tags"})
     @GetMapping("tags")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getTagsForNewHistoryMessage() {
         try {
             List<TagForHistoryMessageDTO> tags = historyMessageService.getListOfTags();
@@ -56,7 +56,7 @@ public class HistoryMessageController {
     }
     @Operation(summary = "Save history message", tags = {"history", "new message"})
     @PostMapping()
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> saveMessage(@RequestBody HistoryMessage message) {
         try {
             historyMessageService.saveMessage(message);
@@ -69,7 +69,7 @@ public class HistoryMessageController {
     }
     @Operation(summary = "Delete history message", tags = {"history", "delete"})
     @DeleteMapping()
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> deleteMessage(@RequestParam long messageId) {
         try {
             historyMessageService.deleteMessage(messageId);
@@ -82,7 +82,7 @@ public class HistoryMessageController {
     }
     @Operation(summary = "Change important status of message", tags = {"history", "status"})
     @PutMapping("/change-important-status")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> changeImportantStatus(@RequestParam long messageId) {
         try {
             historyMessageService.changeImportantStatus(messageId);
@@ -95,7 +95,7 @@ public class HistoryMessageController {
     }
     @Operation(summary = "Change important status of message", tags = {"history", "status"})
     @PutMapping("/change-done-status")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> changeDoneStatus(@RequestParam long messageId) {
         try {
             historyMessageService.changeDoneStatus(messageId);

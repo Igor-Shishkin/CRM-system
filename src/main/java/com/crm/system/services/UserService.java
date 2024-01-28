@@ -16,9 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -28,12 +27,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
     public ResponseEntity<?> getPhoto() throws UserPrincipalNotFoundException, FileNotFoundException {
-        Long userId = getActiveUserId();
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            throw new UserPrincipalNotFoundException("There isn't User with this ID");
-        }
-        User user = optionalUser.get();
+        User user = getActiveUser();
         if (user.getPhotoOfUser() == null) {
             throw new FileNotFoundException("This user doesn't have a photo");
         }
@@ -41,49 +35,38 @@ public class UserService {
         HttpHeaders headers = getHeaders(photoOfUser);
         return new ResponseEntity<>(photoOfUser, headers, HttpStatus.OK);
     }
-    public String uploadPhoto(MultipartFile file) throws UserPrincipalNotFoundException, IOException {
-        Long userId = getActiveUserId();
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) {
-            throw new UserPrincipalNotFoundException("User with this ID doesn't exist");
-        }
+    public String uploadPhoto(MultipartFile file) throws IOException {
+        User activeUser = getActiveUser();
+
         byte[] bytes = file.getBytes();
-        User user = optionalUser.get();
-        user.setPhotoOfUser(bytes);
-        userRepository.save(user);
+
+        activeUser.setPhotoOfUser(bytes);
+        userRepository.save(activeUser);
         return "Photo is upload";
     }
     public List<UserInfoDTO> getInfoAllUsers() {
+
         List<User> allUsers = userRepository.findAll();
-        List<UserInfoDTO> userInfoDTOList = new LinkedList<>();
-
         long activeUserId = getActiveUserId();
 
-        for (User user : allUsers) {
-            if (user.getUserId()!=activeUserId) {
-                List<String> roles = user.getRoles().stream()
-                        .map(Object::toString)
-                        .toList();
-                UserInfoDTO userInfoDTO = new UserInfoDTO.Builder()
-                        .withId(user.getUserId())
-                        .withUsername(user.getUsername())
-                        .withEmail(user.getEmail())
-                        .withRoles(roles)
-                        .withLidsNumber(user.getClients().size())
-                        .build();
-                userInfoDTOList.add(userInfoDTO);
-            }
-        }
-        return userInfoDTOList;
-    }
-    public Optional<User> getActiveUser() {
-        long activeUserId = getActiveUserId();
-        Optional<User> optionalUser = userRepository.findById(activeUserId);
-        return optionalUser;
+        return allUsers.stream()
+                .filter(user -> user.getUserId()!=activeUserId)
+                .map(user -> {
+                    List<String> roles = user.getRoles().stream()
+                            .map(Object::toString)
+                            .toList();
+                    return new UserInfoDTO.Builder()
+                            .withId(user.getUserId())
+                            .withUsername(user.getUsername())
+                            .withEmail(user.getEmail())
+                            .withRoles(roles)
+                            .withLidsNumber(user.getClients().size())
+                            .build();
+                })
+                .collect(Collectors.toList());
     }
 
-
-    private long getActiveUserId() {
+    public long getActiveUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
         return userId;
@@ -91,12 +74,10 @@ public class UserService {
     private HttpHeaders getHeaders(byte[] photoOfUser) {
         HttpHeaders headers = new HttpHeaders();
         String imageType = getImageType(photoOfUser);
-        if (imageType == null) {
-            headers.setContentType(MediaType.IMAGE_JPEG);
-        } else {
-            headers.setContentType(MediaType.parseMediaType(imageType));
-        }
+
+        headers.setContentType((imageType == null) ? MediaType.IMAGE_JPEG : MediaType.parseMediaType(imageType));
         headers.setContentLength(photoOfUser.length);
+
         return headers;
     }
     private String getImageType(byte[] imageData) {
@@ -108,6 +89,10 @@ public class UserService {
             }
         }
         return null;
+    }
+    public User getActiveUser() throws UserPrincipalNotFoundException {
+        return userRepository.findById(getActiveUserId())
+                .orElseThrow(() -> new UserPrincipalNotFoundException("There isn't User with this ID"));
     }
 
 }

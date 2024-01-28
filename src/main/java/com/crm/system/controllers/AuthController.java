@@ -88,25 +88,21 @@ public class AuthController {
     }
     @Operation(summary = "checkAuthorization", tags = { "auth", "check" })
     @GetMapping("/check/user-role")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> checkAuthorizationForUserRole()  {
         return ResponseEntity.ok(true);
     }
-    @Operation(summary = "checkAuthorization", tags = { "auth", "check" })
-    @GetMapping("/check/moderator-role")
-    @PreAuthorize("hasRole('ROLE_MODERATOR')")
-    public ResponseEntity<?> checkAuthorizationForModeratorRole() {
-        return ResponseEntity.ok(true);
-    }
+
     @Operation(summary = "check authorization", tags = { "auth", "check" })
     @GetMapping("/check/admin-role")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> checkAuthorizationForAdminRole() {
         return ResponseEntity.ok(true);
     }
+
     @Operation(summary = "check authorization", tags = { "auth", "check" })
     @GetMapping("/check")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> checkAuthorization() {
         return ResponseEntity.ok(true);
     }

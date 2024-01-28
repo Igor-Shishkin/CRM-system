@@ -48,7 +48,7 @@ public class OrderService {
         return order;
     }
 
-    public NewCalculationsForOrderDTO getNewCalculations(long orderId) throws UserPrincipalNotFoundException {
+    public NewCalculationsForOrderDTO getCalculations(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
         NewCalculationsForOrderDTO newCalculations = new NewCalculationsForOrderDTO();
         newCalculations.setItems(order.getCalculations());
@@ -58,12 +58,13 @@ public class OrderService {
 
     public void changeOrder(Order order) {
         orderRepository.save(order);
+        saveDateOfLastChangeForClient(order.getClient());
     }
 
     public void signAgreement(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
         if (order.isAgreementSigned()) {
-            return;
+            throw new MismanagementOfTheClientException("Agreement is already signed");
         }
 
         if (checkIfCalculationIsRight(order) && checkIfCalculationIsShownToClient(order)) {
@@ -72,18 +73,20 @@ public class OrderService {
             order.setDateOfLastChange(LocalDateTime.now());
             orderRepository.save(order);
 
-            createNewHistoryMessage(order.getClient(),
+            createNewImportantHistoryMessage(order.getClient(),
                     "Signed an agreement with ".concat(order.getClient().getFullName()));
+
+            saveDateOfLastChangeForClient(order.getClient());
         } else {
             throw new MismanagementOfTheClientException
-                    ("To sign the contract, you must fill out the calculations correctly.");
+                    ("To sign the contract, you must fill out the calculations correctly and show it to Client.");
         }
     }
 
     public void cancelAgreement(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
         if (!order.isAgreementSigned()) {
-            return;
+            throw new MismanagementOfTheClientException("Agreement isn't signed");
         }
 
         if (!order.isHasBeenPaid()) {
@@ -91,8 +94,10 @@ public class OrderService {
             order.setDateOfLastChange(LocalDateTime.now());
             orderRepository.save(order);
 
-            createNewHistoryMessage(order.getClient(),
+            createNewImportantHistoryMessage(order.getClient(),
                     String.format("The contract with %s was canceled", order.getClient().getFullName()));
+
+            saveDateOfLastChangeForClient(order.getClient());
         } else {
             throw new MismanagementOfTheClientException("Order is already paid");
         }
@@ -101,7 +106,7 @@ public class OrderService {
     public void confirmPayment(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
         if (order.isHasBeenPaid()) {
-            return;
+            throw new MismanagementOfTheClientException("payment was already made");
         }
         if (order.isAgreementSigned()) {
             order.setHasBeenPaid(true);
@@ -110,9 +115,11 @@ public class OrderService {
             order.getClient().setDateOfLastChange(LocalDateTime.now());
             orderRepository.save(order);
 
-            historyMessageService.createHistoryMessageForClientWithNote(order.getClient(), order.getClient().getUser(),
-                    String.format("'You have confirmed payment by %s", order.getClient().getFullName()),
-                    "Congratulations on the successful completion of your order!");
+
+            String historyMessage = String.format("'You have confirmed payment by %s", order.getClient().getFullName());
+            createNewImportantHistoryMessage(order.getClient(), historyMessage);
+
+            saveDateOfLastChangeForClient(order.getClient());
         } else {
             throw new MismanagementOfTheClientException("Agreement is not signed");
         }
@@ -121,16 +128,17 @@ public class OrderService {
     public void cancelPayment(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
         if (!order.isHasBeenPaid()) {
-            return;
+            throw new MismanagementOfTheClientException("Payment was not made");
         }
         setClientStatus(order);
         order.setHasBeenPaid(false);
         order.setDateOfLastChange(LocalDateTime.now());
         order.getClient().setDateOfLastChange(LocalDateTime.now());
 
-        createNewHistoryMessage(order.getClient(),
+        createNewImportantHistoryMessage(order.getClient(),
                 String.format("'You have canceled payment by %s", order.getClient().getFullName()));
 
+        saveDateOfLastChangeForClient(order.getClient());
     }
 
 
@@ -140,15 +148,20 @@ public class OrderService {
         setChangedParameters(order, changedOrder);
         order.setDateOfLastChange(LocalDateTime.now());
 
+        saveDateOfLastChangeForClient(order.getClient());
+
         orderRepository.save(order);
     }
+
     public long createNewOrder(CreateNewOrderDTO request) throws UserPrincipalNotFoundException {
         Client currentClient = getClientById(request.getClientId());
         Order newOrder = new Order(request.getRealNeed(), request.getEstimateBudget(), currentClient);
         Order savedOrder = orderRepository.save(newOrder);
 
-        createNewHistoryMessage(currentClient,
+        createNewImportantHistoryMessage(currentClient,
                 String.format("You have a new order from %s client. Congratulations!", currentClient.getFullName()));
+
+        saveDateOfLastChangeForClient(currentClient);
         return savedOrder.getOrderId();
     }
 
@@ -172,8 +185,8 @@ public class OrderService {
     }
 
     private void setClientStatus(Order order) {
-     if ( order.getClient().getOrders().stream()
-             .noneMatch(Order::isHasBeenPaid) )  {
+
+     if ( order.getClient().getOrders().stream().noneMatch(Order::isHasBeenPaid) )  {
          order.getClient().setStatus(ClientStatus.CLIENT);
      } else {
          order.getClient().setStatus(ClientStatus.LEAD);
@@ -187,39 +200,28 @@ public class OrderService {
     }
 
     private boolean checkIfCalculationIsRight(Order order) {
+
         Predicate<ItemForCalcualtion> isValidItem = item ->
                 item.getThing() != null && !item.getThing().isEmpty() &&
                         item.getUnitPrice() > 0 &&
                         item.getTotalPrice() > 0 &&
                         item.getQuantity() > 0;
+
         boolean isValidItems = order.getCalculations().stream().allMatch(isValidItem);
         return isValidItems && order.getResultPrice() > 0;
     }
 
     private Order getOrderById(long orderId) throws UserPrincipalNotFoundException {
-        Optional<Order> optionalOrder = orderRepository.findById(orderId);
-        if (optionalOrder.isEmpty()) {
-            throw new RequestOptionalIsEmpty("There isn't order with this ID");
-        }
-        Order order = optionalOrder.get();
-        if (isOrderBelongsActiveUser(order)) {
-            return order;
-        } else {
-            throw new SubjectNotBelongToActiveUser("It's not your order");
-        }
+        long activeUserId = userService.getActiveUserId();
+        Order order = orderRepository.getOrderByOrderIdAndUserId(orderId, activeUserId)
+                .orElseThrow(() -> new RequestOptionalIsEmpty("You don't have order with this ID"));
+        return order;
     }
-
-    private boolean isOrderBelongsActiveUser(Order order) throws UserPrincipalNotFoundException {
-        Optional<User> optionalUser = userService.getActiveUser();
-        if (optionalUser.isEmpty()) {
-            throw new UserPrincipalNotFoundException("I can't found active user");
-        }
-        User activeUser = optionalUser.get();
-        return activeUser.getClients().stream()
-                .anyMatch(client -> client.getId().equals(order.getClient().getId()));
+    private void createNewImportantHistoryMessage(Client client, String textMessage) {
+        historyMessageService.createImportantHistoryMessageForClient(client, textMessage);
     }
-    private void createNewHistoryMessage(Client client, String textMessage) {
-        historyMessageService.createHistoryMessageForClient(client, textMessage);
+    private void saveDateOfLastChangeForClient(Client client) {
+        client.setDateOfLastChange(LocalDateTime.now());
+        clientService.saveClient(client);
     }
-
 }

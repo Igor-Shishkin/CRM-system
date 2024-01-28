@@ -22,7 +22,6 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 @Slf4j
 @Tag(name = "Order controller", description = "Order management APIs")
-//@CrossOrigin(origins = "*", allowedHeaders = "*")
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("api/user-board/order")
@@ -35,7 +34,7 @@ public class OrderController {
     }
 
     @Operation(summary = "Get order", tags = { "Order", "get"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping()
     public ResponseEntity<?> getOrder(@RequestParam long orderId) {
         try {
@@ -47,12 +46,12 @@ public class OrderController {
                     .body(new MessageResponse("Order controller: " + e.getMessage()));
         }
     }
-    @Operation(summary = "Get new calculations for order", tags = { "Order", "get"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
-    @GetMapping("/new-calculations")
-    public ResponseEntity<?> getNewCalculations(@Valid @RequestParam long orderId) {
+    @Operation(summary = "Get calculations for order", tags = { "Order", "get"})
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("/calculations")
+    public ResponseEntity<?> getCalculations(@Valid @RequestParam long orderId) {
         try {
-            NewCalculationsForOrderDTO newCalculations = orderService.getNewCalculations(orderId);
+            NewCalculationsForOrderDTO newCalculations = orderService.getCalculations(orderId);
             return ResponseEntity.ok(newCalculations);
         } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
                  UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
@@ -62,7 +61,7 @@ public class OrderController {
         }
     }
     @Operation(summary = "Sign agreement", tags = { "Order", "agreement"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/sign-agreement")
     public ResponseEntity<?> signAgreement(@Valid  @RequestParam long orderId) {
         try {
@@ -76,7 +75,7 @@ public class OrderController {
         }
     }
     @Operation(summary = "Cancel agreement", tags = { "Order", "agreement"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/cancel-agreement")
     public ResponseEntity<?> cancelAgreement(@Valid  @RequestParam long orderId) {
         try {
@@ -90,7 +89,7 @@ public class OrderController {
         }
     }
     @Operation(summary = "Cancel payment", tags = { "Order", "payment"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/cancel-payment")
     public ResponseEntity<?> cancelPayment(@Valid  @RequestParam long orderId) {
         try {
@@ -104,7 +103,7 @@ public class OrderController {
         }
     }
     @Operation(summary = "Confirm payment", tags = { "Order", "payment"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/confirm-payment")
     public ResponseEntity<?> confirmPayment(@Valid  @RequestParam long orderId) {
         try {
@@ -118,7 +117,7 @@ public class OrderController {
         }
     }
     @Operation(summary = "Save changes", tags = { "Order", "change"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/save-order-changes")
     public ResponseEntity<?> saveOrderChanges(@Valid  @RequestBody ChangeOrderDTO changeOrderDTO) {
         try {
@@ -132,7 +131,7 @@ public class OrderController {
         }
     }
     @Operation(summary = "Create new order", tags = { "Order", "new"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/create-new-order")
     public ResponseEntity<?> createNewOrder(@Valid  @RequestBody CreateNewOrderDTO createNewOrderDTO) {
         try {

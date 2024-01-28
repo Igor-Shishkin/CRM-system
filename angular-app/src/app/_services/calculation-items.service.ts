@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError } from 'rxjs';
 import { ItemForCalculation } from 'src/entities/ItemForCalculation';
 
-const ITEMS_API = 'http://localhost:8080/api/items-for-calculation'
+const ITEMS_API = 'http://localhost:8080/api/user-board/items-for-calculation'
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };

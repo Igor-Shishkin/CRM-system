@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Tag(name = "Client controller", description = "Client management APIs")
@@ -36,32 +37,26 @@ public class ClientController {
     }
 
     @Operation(summary = "Add new Lead", tags = { "Client", "add"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/add-new-lead")
     public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLeadDTO addLidRequest) {
         try {
             long leadId = clientService.addNewLead(addLidRequest);
-            log.info(String.format("Lid %s is added", addLidRequest.getFullName()));
             return ResponseEntity.ok(leadId);
-        } catch (UserPrincipalNotFoundException e) {
-            log.error("User isn't defined. " + e.getMessage());
+        } catch (UserPrincipalNotFoundException | ClientAlreadyExistException e) {
+            log.error("Adding new lead error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("User isn't defined. " + e.getMessage()));
-        } catch (ClientAlreadyExistException e) {
-            log.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse(e.getMessage()));
+                    .body(new MessageResponse("Adding new lead error: " + e.getMessage()));
         }
 
     }
 
     @Operation(summary = "Sent client to blackList by ID", tags = { "client", "lead", "black list"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/send-client-to-black-list")
     public ResponseEntity<?> sendClientToBlackList(@RequestParam long clientId) {
         try {
             clientService.sentToBlackList(clientId);
-            log.info(String.format("Client with %d id on the black list", clientId));
             return ResponseEntity.ok(new MessageResponse(String.format("Lead with %d id is in blacklist", clientId)));
         } catch (IllegalArgumentException | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
             log.error("Sending to blacklist error: " + e);
@@ -70,12 +65,11 @@ public class ClientController {
         }
     }
     @Operation(summary = "Restore client from blackList by ID", tags = { "client", "lead", "black list"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/restore-client-from-black-list")
     public ResponseEntity<?> restoreClientFromBlackList(@RequestParam long clientId) {
         try {
             clientService.restoreClientFromBlackList(clientId);
-            log.info(String.format("Client with %d id is restored from black list", clientId));
             return ResponseEntity.ok(new MessageResponse(String.format("Client with %d id is restored from black list", clientId)));
         } catch (IllegalArgumentException | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
             log.error("Restore from blacklist error: " + e);
@@ -85,11 +79,11 @@ public class ClientController {
     }
 
     @Operation(summary = "Get all clients", tags = { "clients", "get"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/clients")
     public ResponseEntity<?> getAllClientsForUser() {
         try {
-            List<ClientInfoDTO> clients = clientService.getClientsForUser();
+            Set<ClientInfoDTO> clients = clientService.getClientsForUser();
             return ResponseEntity.ok(clients);
         } catch (UserPrincipalNotFoundException e) {
             log.error("Authorisation Error: " + e.getMessage());
@@ -98,7 +92,7 @@ public class ClientController {
         }
     }
     @Operation(summary = "Get all Leads", tags = { "leads", "get"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/leads")
     public ResponseEntity<?> getAllLeadsForUser() {
         try {
@@ -111,7 +105,7 @@ public class ClientController {
         }
     }
     @Operation(summary = "Get all blacklist clients", tags = { "blacklist", "get"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/get-black-list-clients")
     public ResponseEntity<?> getBlackListClientsForUser() {
         try {
@@ -124,7 +118,7 @@ public class ClientController {
         }
     }
     @Operation(summary = "Get Client's info", tags = { "client", "info"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/client-info")
     public ResponseEntity<?> getClient(@RequestParam long clientId) {
         try {
@@ -138,7 +132,7 @@ public class ClientController {
     }
 
     @Operation(summary = "Get Client's info", tags = { "client", "info"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("edit-client-data")
     public ResponseEntity<?> editClientInfo(@RequestBody EditClientDataDTO request) {
         try {

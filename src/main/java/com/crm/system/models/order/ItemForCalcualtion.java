@@ -24,7 +24,7 @@ public class ItemForCalcualtion {
     @Column(name = "total_price")
     private double totalPrice;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     @JsonBackReference
     private Order order;

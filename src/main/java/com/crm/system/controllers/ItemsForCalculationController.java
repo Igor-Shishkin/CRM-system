@@ -21,7 +21,7 @@ import java.util.Set;
 @Tag(name = "Calculations controller", description = "Items for calculation management APIs")
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
 @RestController
-@RequestMapping("api/items-for-calculation")
+@RequestMapping("api/user-board/items-for-calculation")
 public class ItemsForCalculationController {
     private final ItemsForCalculationService itemsForCalculationService;
 
@@ -31,9 +31,8 @@ public class ItemsForCalculationController {
 
     @Operation(summary = "Get order's items for calculation", tags = {"item", "calculation"})
     @PostMapping("/save-items")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
-    public ResponseEntity<?> getUserHistory
-            (@RequestBody Set<ItemForCalcualtion> items, @RequestParam long orderId){
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<?> getUserHistory(@RequestBody Set<ItemForCalcualtion> items, @RequestParam long orderId){
         try {
             itemsForCalculationService.saveItems(items, orderId);
             return ResponseEntity.ok(new MessageResponse("Calculations are saved"));

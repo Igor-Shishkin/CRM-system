@@ -39,7 +39,7 @@ public class OrderInfoDTO extends Order {
 
         this.setClientFullName(order.getClient().getFullName());
         this.setClientPhoneNumber(order.getClient().getPhoneNumber());
-        this.setClientId(order.getClient().getId());
+        this.setClientId(order.getClient().getClientId());
         this.setClientEmail(order.getClient().getEmail());
     }
 }

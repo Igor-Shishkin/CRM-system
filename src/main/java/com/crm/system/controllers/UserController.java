@@ -39,14 +39,11 @@ public class UserController {
     }
     @Operation(summary = "Add photo to user", tags = {"user", "photo", "avatar"})
     @PostMapping("/photo")
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> uploadPhoto(@RequestParam("file") MultipartFile file) throws IOException, UserPrincipalNotFoundException {
         try {
             String responseText = userService.uploadPhoto(file);
             return ResponseEntity.ok(new MessageResponse(responseText));
-        }catch (UserPrincipalNotFoundException e) {
-            log.error(e.getMessage());
-            return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         } catch (IOException e) {
             log.error("Error reading file" + e.getMessage());
             return ResponseEntity.badRequest().body(new MessageResponse("Error reading file" + e.getMessage()));

@@ -22,7 +22,7 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,36 +37,37 @@ public class ClientService {
         this.historyMessageService = historyMessageService;
     }
 
-    public List<ClientInfoDTO> getClientsForUser() throws UserPrincipalNotFoundException {
+    public Set<ClientInfoDTO> getClientsForUser() throws UserPrincipalNotFoundException {
         User user = getActiveUser();
-        List<ClientInfoDTO> infoClientResponses = new ArrayList<>(user.getClients().size() * 2);
-        for (Client client : user.getClients()) {
-            if (client.getStatus().equals(ClientStatus.CLIENT)) {
-                int numberOfPaidOrders = (int) client.getOrders().stream()
-                        .filter(Order::isHasBeenPaid)
-                        .count();
-                ClientInfoDTO clientInfoResponse = new ClientInfoDTO.Builder()
-                        .withId (client.getId())
-                        .withFullName(client.getFullName())
-                        .withAddress(client.getAddress())
-                        .withEmail(client.getEmail())
-                        .withPhoneNumber(client.getPhoneNumber())
-                        .withIsClient(ClientStatus.CLIENT)
-                        .withNumberOfOrders(client.getOrders().size())
-                        .withNumberOfPaidOrders(numberOfPaidOrders)
-                        .build();
-                infoClientResponses.add(clientInfoResponse);
-            }
-        }
-        return infoClientResponses;
+
+        Set<ClientInfoDTO> infoClientDTO  = user.getClients().stream()
+                .map(client -> {
+                    int numberOfPaidOrders = (int) client.getOrders().stream()
+                            .filter(Order::isHasBeenPaid)
+                            .count();
+                    return new ClientInfoDTO.Builder()
+                            .withId (client.getClientId())
+                            .withFullName(client.getFullName())
+                            .withAddress(client.getAddress())
+                            .withEmail(client.getEmail())
+                            .withPhoneNumber(client.getPhoneNumber())
+                            .withIsClient(ClientStatus.CLIENT)
+                            .withNumberOfOrders(client.getOrders().size())
+                            .withNumberOfPaidOrders(numberOfPaidOrders)
+                            .build();
+                })
+                .collect(Collectors.toSet());
+
+        return infoClientDTO;
     }
 
     public List<ClientInfoDTO> getLeadsForUser() throws UserPrincipalNotFoundException {
         User user = getActiveUser();
+
         return user.getClients().stream()
                 .filter(client -> client.getStatus().equals(ClientStatus.LEAD))
                 .map(client -> new ClientInfoDTO.Builder()
-                        .withId(client.getId())
+                        .withId(client.getClientId())
                         .withFullName(client.getFullName())
                         .withAddress(client.getAddress())
                         .withEmail(client.getEmail())
@@ -81,7 +82,7 @@ public class ClientService {
         return user.getClients().stream()
                 .filter(client -> client.getStatus().equals(ClientStatus.BLACKLIST))
                 .map(client -> new ClientInfoDTO.Builder()
-                        .withId(client.getId())
+                        .withId(client.getClientId())
                         .withFullName(client.getFullName())
                         .withAddress(client.getAddress())
                         .withEmail(client.getEmail())
@@ -107,9 +108,9 @@ public class ClientService {
         String messageText = String.format("Lead %s is created", newLead.getFullName());
         Client savedLead = clientRepository.save(newLead);
 
-        historyMessageService.createHistoryMessageForClient(savedLead, messageText);
+        historyMessageService.createImportantHistoryMessageForClient(savedLead, messageText);
 
-        return savedLead.getId();
+        return savedLead.getClientId();
     }
 
     public void sentToBlackList(long clientId) throws UserPrincipalNotFoundException, SubjectNotBelongToActiveUser {
@@ -117,7 +118,6 @@ public class ClientService {
         Client client = getClientById(clientId);
 
         client.setStatus(ClientStatus.BLACKLIST);
-
         client.setDateOfLastChange(LocalDateTime.now());
         clientRepository.save(client);
 
@@ -128,11 +128,8 @@ public class ClientService {
 
         Client client = getClientById(clientId);
 
-        if (hasPaidOrders(client)) {
-            client.setStatus(ClientStatus.CLIENT);
-        } else {
-            client.setStatus(ClientStatus.LEAD);
-        }
+        client.setStatus(
+                (hasPaidOrders(client)) ? ClientStatus.CLIENT : ClientStatus.LEAD);
 
         client.setDateOfLastChange(LocalDateTime.now());
         clientRepository.save(client);
@@ -147,11 +144,13 @@ public class ClientService {
     public Client getClient(long clientId) throws UserPrincipalNotFoundException {
         Client client = getClientById(clientId);
 
-        for (Order order: client.getOrders()) {
-            order.setCalculations(null);
-            order.setClient(null);
-        }
+        client.getOrders()
+                .forEach(order -> {
+                    order.setCalculations(null);
+                    order.setClient(null);
+                });
         return client;
+
     }
     public void editClientData(EditClientDataDTO request) throws UserPrincipalNotFoundException {
         if (request.getFullName().isBlank() ||
@@ -170,11 +169,27 @@ public class ClientService {
         clientRepository.save(client);
     }
     private User getActiveUser() throws UserPrincipalNotFoundException {
-        Optional<User> optionalUser = userRepository.findById(getActiveUserId());
-        if (optionalUser.isEmpty()) {
-            throw new UserPrincipalNotFoundException("User not found");
+
+        User activeUser = userRepository.findById(getActiveUserId())
+                .orElseThrow(() -> new UserPrincipalNotFoundException("User not found"));
+        return activeUser;
+    }
+
+    public Client getClientById(long clientId) throws UserPrincipalNotFoundException {
+
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new RequestOptionalIsEmpty
+                        (String.format("Client with %d id doesn't exist", clientId)));
+
+        if (isClientBelongsToActiveUser(client)){
+            return client;
+        } else {
+            throw new SubjectNotBelongToActiveUser("It's not your Client. You don't have access to this Client.");
         }
-        return optionalUser.get();
+    }
+
+    public void saveClient(Client client) {
+        clientRepository.save(client);
     }
 
     private long getActiveUserId() {
@@ -182,22 +197,13 @@ public class ClientService {
         Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
         return userId;
     }
-    public Client getClientById(long clientId) throws UserPrincipalNotFoundException {
-        Optional<Client> optionalClient = clientRepository.findById(clientId);
-        if (optionalClient.isEmpty()) {
-            throw new RequestOptionalIsEmpty(String.format("Client with %d id doesn't exist", clientId));
-        }
-        Client client = optionalClient.get();
-        if (isClientBelongsToActiveUser(client)){
-            return client;
-        } else {
-            throw new SubjectNotBelongToActiveUser("It's not your Client. You don't have access to this Client.");
-        }
-    }
+
     private boolean isClientBelongsToActiveUser(Client client) throws UserPrincipalNotFoundException {
-        User activeUser = getActiveUser();
-        return (client.getUser().equals(activeUser));
+
+        Set<Long> allClientIdForUserById = clientRepository.findAllClientIdForUserById(getActiveUserId());
+        return allClientIdForUserById.stream().anyMatch(id -> id.equals(client.getClientId()));
     }
+
     private boolean hasPaidOrders(Client client) {
         return client.getOrders().stream()
                 .anyMatch(Order::isHasBeenPaid);

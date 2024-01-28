@@ -1,6 +1,5 @@
 package com.crm.system.models;
 
-import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.models.order.Order;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -28,10 +27,11 @@ public class Client {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         @Column(name = "client_id")
-        private Long id;
+        private Long clientId;
 
         @NotBlank
         @Size(max = 255)
+        @Column(name = "full_name")
         private String fullName;
 
         @Email
@@ -58,11 +58,11 @@ public class Client {
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private LocalDateTime dateOfLastChange;
 
-        @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+        @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
         @JsonManagedReference
         private Set<Order> orders = new HashSet<>();
         
-        @ManyToOne
+        @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id")
         @JsonBackReference
         private User user;

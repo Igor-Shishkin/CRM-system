@@ -27,7 +27,7 @@ export class OrderService {
       })
     )
   }
-  getNewCalculations(orderId: number):Observable<NewCalculations>{
+  getCalculations(orderId: number):Observable<NewCalculations>{
     return this.http.get<NewCalculations>(`${ORDER_API}/new-calculations?orderId=${orderId}`).pipe(
       catchError((error: any) => {
         console.log(error);
@@ -68,7 +68,6 @@ export class OrderService {
     )
   }
   saveChenges(order: Order) {
-
 
   const orderCopy: Order = { ...order };
 

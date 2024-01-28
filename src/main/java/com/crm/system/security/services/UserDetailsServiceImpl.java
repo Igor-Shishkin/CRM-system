@@ -2,6 +2,7 @@ package com.crm.system.security.services;
 
 import com.crm.system.exception.UserAlreadyExistsException;
 import com.crm.system.models.User;
+import com.crm.system.models.history.TagName;
 import com.crm.system.models.security.ERole;
 import com.crm.system.models.security.Role;
 import com.crm.system.playload.request.SignUpDTO;
@@ -10,6 +11,7 @@ import com.crm.system.repository.RoleRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.PasswordConfig;
 import com.crm.system.security.jwt.JwtUtils;
+import com.crm.system.services.HistoryMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
@@ -34,13 +36,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final PasswordConfig passwordConfig;
     private final RoleRepository roleRepository;
     private final JwtUtils jwtUtils;
+    private final HistoryMessageService historyMessageService;
 
     public UserDetailsServiceImpl(UserRepository userRepository, PasswordConfig passwordConfig,
-                                  RoleRepository roleRepository, JwtUtils jwtUtils) {
+                                  RoleRepository roleRepository, JwtUtils jwtUtils, HistoryMessageService historyMessageService) {
         this.userRepository = userRepository;
         this.passwordConfig = passwordConfig;
         this.roleRepository = roleRepository;
         this.jwtUtils = jwtUtils;
+        this.historyMessageService = historyMessageService;
     }
 
     @Override
@@ -77,28 +81,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         .build());
     }
 
-    public void registerUser(SignUpDTO signUpRequest) throws UserAlreadyExistsException {
-        for (String role : signUpRequest.getRole()) {
-            System.out.println(role);
-        }
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            throw new UserAlreadyExistsException("Error: Username is already taken!");
+    public void registerUser(SignUpDTO signUpRequest) throws UserAlreadyExistsException, UserPrincipalNotFoundException {
+        if (doesUsernameExist(signUpRequest.getUsername()) && doesEmailExist(signUpRequest.getEmail())) {
+            throw new UserAlreadyExistsException("Error: Username or email is already taken!");
         }
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new UserAlreadyExistsException("Error: Email is already in use!");
-        }
-
-        // Create new user's account
         User user = new User(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 passwordConfig.passwordEncoder().encode(signUpRequest.getPassword()));
 
-        Set<String> strRoles = signUpRequest.getRole();
-        Set<Role> roles = identifyRoles(strRoles);
-
+        Set<Role> roles = identifyRoles(signUpRequest.getRole());
         user.setRoles(roles);
-        userRepository.save(user);
+
+        User savedUser = userRepository.save(user);
+
+        String historyMessageText = String.format("User %s is added", user.getUsername());
+        historyMessageService.createHistoryMessageWithTagInfo(historyMessageText, null, TagName.ADMINISTRATION,
+                savedUser.getUserId(), true, true);
     }
 
     public ResponseCookie logoutUser() {
@@ -106,13 +105,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return cookie;
     }
     public String deleteUserById(long userId) throws UserPrincipalNotFoundException {
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            throw new UserPrincipalNotFoundException("User with this ID doesn't exist");
-        }
-        String username = user.get().getUsername();
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserPrincipalNotFoundException("User with this ID doesn't exist"));
+        String username = user.getUsername();
         userRepository.deleteById(userId);
-        return String.format("User '%s' is deleted", user.get().getUsername());
+        return String.format("User '%s' is deleted", username);
     }
 
     private Set<Role> identifyRoles(Set<String> strRoles) {
@@ -131,12 +128,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         roles.add(adminRole);
 
                         break;
-                    case "Moderator":
-                        Role modRole = roleRepository.findByName(ERole.ROLE_MODERATOR)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(modRole);
-
-                        break;
                     default:
                         Role userRole = roleRepository.findByName(ERole.ROLE_USER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
@@ -146,9 +137,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         }
         return roles;
     }
-    private long getActiveUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
-        return userId;
+    private boolean doesEmailExist(String email) {
+        return userRepository.existsByEmail(email);
+    }
+    private boolean doesUsernameExist(String username) {
+        return userRepository.existsByUsername(username);
     }
 }
