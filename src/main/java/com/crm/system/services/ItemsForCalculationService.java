@@ -18,7 +18,7 @@ public class ItemsForCalculationService {
         this.orderService = orderService;
     }
 
-    public void saveItems(Set<ItemForCalculation> items, long orderId) throws UserPrincipalNotFoundException {
+    public void saveItems(Set<ItemForCalculation> items, long orderId)  {
         Order order = orderService.getOrder(orderId);
         if (!order.isAgreementSigned()) {
             order.getCalculations().clear();

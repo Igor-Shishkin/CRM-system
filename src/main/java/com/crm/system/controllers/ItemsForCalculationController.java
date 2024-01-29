@@ -35,8 +35,7 @@ public class ItemsForCalculationController {
         try {
             itemsForCalculationService.saveItems(items, orderId);
             return ResponseEntity.ok(new MessageResponse("Calculations are saved"));
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException |
-                 MismanagementOfTheClientException e) {
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser | MismanagementOfTheClientException e) {
             log.error(e.getMessage());
             return ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
