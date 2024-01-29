@@ -4,6 +4,8 @@ import com.crm.system.models.order.Order;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 public class OrderInfoDTO extends Order {
@@ -41,5 +43,18 @@ public class OrderInfoDTO extends Order {
         this.setClientPhoneNumber(order.getClient().getPhoneNumber());
         this.setClientId(order.getClient().getClientId());
         this.setClientEmail(order.getClient().getEmail());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrderInfoDTO that = (OrderInfoDTO) o;
+        return clientId == that.clientId && Objects.equals(clientFullName, that.clientFullName) && Objects.equals(clientPhoneNumber, that.clientPhoneNumber) && Objects.equals(clientEmail, that.clientEmail);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(clientFullName, clientPhoneNumber, clientEmail, clientId);
     }
 }

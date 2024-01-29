@@ -11,6 +11,7 @@ import com.crm.system.playload.request.ChangeOrderDTO;
 import com.crm.system.playload.request.CreateNewOrderDTO;
 import com.crm.system.playload.response.CalculationsForOrderDTO;
 import com.crm.system.playload.response.OrderInfoDTO;
+import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,7 @@ public class OrderService {
     }
 
 
-    public Order getOrder(long orderId) throws UserPrincipalNotFoundException {
+    public Order getOrder(long orderId) {
         Order order = getOrderById(orderId);
         return order;
     }
@@ -131,6 +132,7 @@ public class OrderService {
         order.setHasBeenPaid(false);
         order.setDateOfLastChange(LocalDateTime.now());
         order.getClient().setDateOfLastChange(LocalDateTime.now());
+        orderRepository.save(order);
 
         createNewImportantHistoryMessage(order.getClient(),
                 String.format("'You have canceled payment by %s", order.getClient().getFullName()));
@@ -202,10 +204,15 @@ public class OrderService {
                 item.getThing() != null && !item.getThing().isEmpty() &&
                         item.getUnitPrice() > 0 &&
                         item.getTotalPrice() > 0 &&
-                        item.getQuantity() > 0;
+                        item.getQuantity() > 0 &&
+                        item.getTotalPrice() == item.getUnitPrice()*item.getQuantity()*1.1;
 
         boolean isValidItems = order.getCalculations().stream().allMatch(isValidItem);
-        return isValidItems && order.getResultPrice() > 0;
+        boolean isResultPriceRight = order.getResultPrice() == order.getCalculations().stream()
+                .mapToDouble(ItemForCalculation::getTotalPrice)
+                .sum();
+        return isValidItems && isResultPriceRight;
+
     }
 
     private Order getOrderById(long orderId) {

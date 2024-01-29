@@ -94,7 +94,7 @@ public class ClientService {
     }
 
     public long addNewLead(AddLeadDTO addLeadDTO) throws UserPrincipalNotFoundException {
-        if (clientRepository.existsByEmail(addLeadDTO.getEmail())) {
+        if (!clientRepository.existsByEmail(addLeadDTO.getEmail())) {
             throw new ClientAlreadyExistException("Lid with this email already exists");
         }
         User activeUser = getActiveUser();
@@ -112,6 +112,7 @@ public class ClientService {
 
         return savedLead.getClientId();
     }
+
 
     public void sentToBlackList(long clientId) throws UserPrincipalNotFoundException, SubjectNotBelongToActiveUser {
 
@@ -175,7 +176,7 @@ public class ClientService {
         return activeUser;
     }
 
-    public Client getClientById(long clientId) throws UserPrincipalNotFoundException {
+    public Client getClientById(long clientId)  {
 
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new RequestOptionalIsEmpty
@@ -198,7 +199,7 @@ public class ClientService {
         return userId;
     }
 
-    private boolean isClientBelongsToActiveUser(Client client) throws UserPrincipalNotFoundException {
+    private boolean isClientBelongsToActiveUser(Client client) {
 
         Set<Long> allClientIdForUserById = clientRepository.findAllClientIdForUserById(getActiveUserId());
         return allClientIdForUserById.stream().anyMatch(id -> id.equals(client.getClientId()));
@@ -208,6 +209,4 @@ public class ClientService {
         return client.getOrders().stream()
                 .anyMatch(Order::isHasBeenPaid);
     }
-
-
 }

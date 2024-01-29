@@ -40,7 +40,9 @@ public class ClientController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/add-new-lead")
     public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLeadDTO addLidRequest) {
+        log.error("55555555555555555555555");
         try {
+            log.error("&&&&&&&&&&&&&&&&&&&&&");
             long leadId = clientService.addNewLead(addLidRequest);
             return ResponseEntity.ok(leadId);
         } catch (UserPrincipalNotFoundException | ClientAlreadyExistException e) {
@@ -48,7 +50,6 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Adding new lead error: " + e.getMessage()));
         }
-
     }
 
     @Operation(summary = "Sent client to blackList by ID", tags = { "client", "lead", "black list"})

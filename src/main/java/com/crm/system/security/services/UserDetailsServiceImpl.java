@@ -61,7 +61,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return allUser;
     }
 
-    public ResponseEntity<?> authenticateUser(Authentication authentication) {
+    public ResponseEntity<UserInfoDTO> authenticateUser(Authentication authentication) {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
