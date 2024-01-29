@@ -3,8 +3,7 @@ package com.crm.system.controllers;
 import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
-import com.crm.system.models.history.HistoryMessage;
-import com.crm.system.models.order.ItemForCalcualtion;
+import com.crm.system.models.order.ItemForCalculation;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.services.ItemsForCalculationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,7 +31,7 @@ public class ItemsForCalculationController {
     @Operation(summary = "Get order's items for calculation", tags = {"item", "calculation"})
     @PostMapping("/save-items")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<?> getUserHistory(@RequestBody Set<ItemForCalcualtion> items, @RequestParam long orderId){
+    public ResponseEntity<?> getUserHistory(@RequestBody Set<ItemForCalculation> items, @RequestParam long orderId){
         try {
             itemsForCalculationService.saveItems(items, orderId);
             return ResponseEntity.ok(new MessageResponse("Calculations are saved"));

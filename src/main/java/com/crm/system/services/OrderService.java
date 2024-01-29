@@ -2,23 +2,20 @@ package com.crm.system.services;
 
 import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
-import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
-import com.crm.system.models.User;
 import com.crm.system.models.order.InfoIsShown;
-import com.crm.system.models.order.ItemForCalcualtion;
+import com.crm.system.models.order.ItemForCalculation;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.request.ChangeOrderDTO;
 import com.crm.system.playload.request.CreateNewOrderDTO;
-import com.crm.system.playload.response.NewCalculationsForOrderDTO;
+import com.crm.system.playload.response.CalculationsForOrderDTO;
 import com.crm.system.playload.response.OrderInfoDTO;
 import com.crm.system.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.function.Predicate;
 
 @Service
@@ -36,7 +33,7 @@ public class OrderService {
     }
 
 
-    public OrderInfoDTO getOrderInfoResponce(long orderId) throws UserPrincipalNotFoundException {
+    public OrderInfoDTO getOrderInfoResponce(long orderId) {
         Order order = getOrderById(orderId);
         OrderInfoDTO orderInfoDTO = new OrderInfoDTO(order);
         return orderInfoDTO;
@@ -48,12 +45,12 @@ public class OrderService {
         return order;
     }
 
-    public NewCalculationsForOrderDTO getCalculations(long orderId) throws UserPrincipalNotFoundException {
+    public CalculationsForOrderDTO getCalculations(long orderId) {
         Order order = getOrderById(orderId);
-        NewCalculationsForOrderDTO newCalculations = new NewCalculationsForOrderDTO();
-        newCalculations.setItems(order.getCalculations());
-        newCalculations.setResultPrice(order.getResultPrice());
-        return newCalculations;
+        CalculationsForOrderDTO calculations = new CalculationsForOrderDTO();
+        calculations.setItems(order.getCalculations());
+        calculations.setResultPrice(order.getResultPrice());
+        return calculations;
     }
 
     public void changeOrder(Order order) {
@@ -61,7 +58,7 @@ public class OrderService {
         saveDateOfLastChangeForClient(order.getClient());
     }
 
-    public void signAgreement(long orderId) throws UserPrincipalNotFoundException {
+    public void signAgreement(long orderId) {
         Order order = getOrderById(orderId);
         if (order.isAgreementSigned()) {
             throw new MismanagementOfTheClientException("Agreement is already signed");
@@ -83,7 +80,7 @@ public class OrderService {
         }
     }
 
-    public void cancelAgreement(long orderId) throws UserPrincipalNotFoundException {
+    public void cancelAgreement(long orderId) {
         Order order = getOrderById(orderId);
         if (!order.isAgreementSigned()) {
             throw new MismanagementOfTheClientException("Agreement isn't signed");
@@ -103,7 +100,7 @@ public class OrderService {
         }
     }
 
-    public void confirmPayment(long orderId) throws UserPrincipalNotFoundException {
+    public void confirmPayment(long orderId)  {
         Order order = getOrderById(orderId);
         if (order.isHasBeenPaid()) {
             throw new MismanagementOfTheClientException("payment was already made");
@@ -125,7 +122,7 @@ public class OrderService {
         }
     }
 
-    public void cancelPayment(long orderId) throws UserPrincipalNotFoundException {
+    public void cancelPayment(long orderId) {
         Order order = getOrderById(orderId);
         if (!order.isHasBeenPaid()) {
             throw new MismanagementOfTheClientException("Payment was not made");
@@ -143,7 +140,7 @@ public class OrderService {
 
 
 
-    public void saveOrderChanges(ChangeOrderDTO changedOrder) throws UserPrincipalNotFoundException {
+    public void saveOrderChanges(ChangeOrderDTO changedOrder) {
         Order order = getOrderById(changedOrder.getOrderId());
         setChangedParameters(order, changedOrder);
         order.setDateOfLastChange(LocalDateTime.now());
@@ -153,7 +150,7 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    public long createNewOrder(CreateNewOrderDTO request) throws UserPrincipalNotFoundException {
+    public long createNewOrder(CreateNewOrderDTO request) {
         Client currentClient = getClientById(request.getClientId());
         Order newOrder = new Order(request.getRealNeed(), request.getEstimateBudget(), currentClient);
         Order savedOrder = orderRepository.save(newOrder);
@@ -165,7 +162,7 @@ public class OrderService {
         return savedOrder.getOrderId();
     }
 
-    private Client getClientById(long clientId) throws UserPrincipalNotFoundException {
+    private Client getClientById(long clientId)  {
         Client currentClient = clientService.getClientById(clientId);
         return currentClient;
     }
@@ -201,7 +198,7 @@ public class OrderService {
 
     private boolean checkIfCalculationIsRight(Order order) {
 
-        Predicate<ItemForCalcualtion> isValidItem = item ->
+        Predicate<ItemForCalculation> isValidItem = item ->
                 item.getThing() != null && !item.getThing().isEmpty() &&
                         item.getUnitPrice() > 0 &&
                         item.getTotalPrice() > 0 &&
@@ -211,7 +208,7 @@ public class OrderService {
         return isValidItems && order.getResultPrice() > 0;
     }
 
-    private Order getOrderById(long orderId) throws UserPrincipalNotFoundException {
+    private Order getOrderById(long orderId) {
         long activeUserId = userService.getActiveUserId();
         Order order = orderRepository.getOrderByOrderIdAndUserId(orderId, activeUserId)
                 .orElseThrow(() -> new RequestOptionalIsEmpty("You don't have order with this ID"));

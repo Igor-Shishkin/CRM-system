@@ -1,7 +1,7 @@
 package com.crm.system.services;
 
 import com.crm.system.exception.MismanagementOfTheClientException;
-import com.crm.system.models.order.ItemForCalcualtion;
+import com.crm.system.models.order.ItemForCalculation;
 import com.crm.system.models.order.Order;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class ItemsForCalculationService {
         this.orderService = orderService;
     }
 
-    public void saveItems(Set<ItemForCalcualtion> items, long orderId) throws UserPrincipalNotFoundException {
+    public void saveItems(Set<ItemForCalculation> items, long orderId) throws UserPrincipalNotFoundException {
         Order order = orderService.getOrder(orderId);
         if (!order.isAgreementSigned()) {
             order.getCalculations().clear();
@@ -45,15 +45,15 @@ public class ItemsForCalculationService {
         }
     }
 
-    private double calculateResultSum(Set<ItemForCalcualtion> items) {
+    private double calculateResultSum(Set<ItemForCalculation> items) {
 
         return items.stream()
                 .filter(item -> item.getTotalPrice()>0)
-                .mapToDouble(ItemForCalcualtion::getTotalPrice)
+                .mapToDouble(ItemForCalculation::getTotalPrice)
                 .sum();
     }
 
-    private void calculateTotalPrice(Set<ItemForCalcualtion> items) {
+    private void calculateTotalPrice(Set<ItemForCalculation> items) {
         items.stream()
                 .filter(item -> item.getQuantity() >= 0 && item.getUnitPrice() >= 0)
                 .forEach(item -> item.setTotalPrice(item.getQuantity() * item.getUnitPrice() * 1.1));

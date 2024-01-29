@@ -6,7 +6,7 @@ import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.playload.request.ChangeOrderDTO;
 import com.crm.system.playload.request.CreateNewOrderDTO;
 import com.crm.system.playload.response.MessageResponse;
-import com.crm.system.playload.response.NewCalculationsForOrderDTO;
+import com.crm.system.playload.response.CalculationsForOrderDTO;
 import com.crm.system.playload.response.OrderInfoDTO;
 import com.crm.system.services.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,7 +40,7 @@ public class OrderController {
         try {
             OrderInfoDTO orderInfoDTO = orderService.getOrderInfoResponce(orderId);
             return ResponseEntity.ok(orderInfoDTO);
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
+        } catch (RequestOptionalIsEmpty e) {
             log.error("Order controller: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Order controller: " + e.getMessage()));
@@ -51,10 +51,9 @@ public class OrderController {
     @GetMapping("/calculations")
     public ResponseEntity<?> getCalculations(@Valid @RequestParam long orderId) {
         try {
-            NewCalculationsForOrderDTO newCalculations = orderService.getCalculations(orderId);
-            return ResponseEntity.ok(newCalculations);
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
-                 UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
+            CalculationsForOrderDTO calculations = orderService.getCalculations(orderId);
+            return ResponseEntity.ok(calculations);
+        } catch (RequestOptionalIsEmpty e) {
             log.error("Order controller: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Order controller: " + e.getMessage()));
@@ -67,8 +66,7 @@ public class OrderController {
         try {
             orderService.signAgreement(orderId);
             return ResponseEntity.ok(new MessageResponse("Agreement's signed"));
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
-                 UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
+        } catch (RequestOptionalIsEmpty | MismanagementOfTheClientException e) {
             log.error("Order controller: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Order controller: " + e.getMessage()));
@@ -81,8 +79,7 @@ public class OrderController {
         try {
             orderService.cancelAgreement(orderId);
             return ResponseEntity.ok(new MessageResponse("Agreement's status is canceled"));
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
-                 UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
+        } catch (RequestOptionalIsEmpty | MismanagementOfTheClientException e) {
             log.error("Order controller: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Order controller: " + e.getMessage()));
@@ -94,9 +91,8 @@ public class OrderController {
     public ResponseEntity<?> cancelPayment(@Valid  @RequestParam long orderId) {
         try {
             orderService.cancelPayment(orderId);
-            return ResponseEntity.ok(new MessageResponse("Agreement's status is canceled"));
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
-                 UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
+            return ResponseEntity.ok(new MessageResponse("Payment by client is canceled"));
+        } catch (RequestOptionalIsEmpty | MismanagementOfTheClientException e) {
             log.error("Order controller: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Order controller: " + e.getMessage()));
@@ -109,8 +105,7 @@ public class OrderController {
         try {
             orderService.confirmPayment(orderId);
             return ResponseEntity.ok(new MessageResponse("Payment is confirm"));
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
-                 UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
+        } catch (RequestOptionalIsEmpty | MismanagementOfTheClientException e) {
             log.error("Order controller: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Order controller: " + e.getMessage()));
@@ -123,8 +118,7 @@ public class OrderController {
         try {
             orderService.saveOrderChanges(changeOrderDTO);
             return ResponseEntity.ok(new MessageResponse("Changes are saved"));
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
-                 UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser e) {
             log.error("Order controller: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Order controller: " + e.getMessage()));
@@ -137,14 +131,10 @@ public class OrderController {
         try {
             long newOrderID = orderService.createNewOrder(createNewOrderDTO);
             return ResponseEntity.ok(newOrderID);
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
-                 UserPrincipalNotFoundException | MismanagementOfTheClientException e) {
+        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser e) {
             log.error("Order controller: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Order controller: " + e.getMessage()));
         }
     }
-
-
-
 }
