@@ -1,7 +1,7 @@
 import { Order } from "./Order";
 
 export class Client {
-    id : number | undefined;
+    clientId : number | undefined;
     fullName : string | undefined;
     email : string | undefined;
     phoneNumber : string | undefined;

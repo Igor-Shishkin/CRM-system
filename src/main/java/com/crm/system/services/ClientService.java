@@ -41,6 +41,7 @@ public class ClientService {
         User user = getActiveUser();
 
         Set<ClientInfoDTO> infoClientDTO  = user.getClients().stream()
+                .filter(client -> client.getStatus().equals(ClientStatus.CLIENT))
                 .map(client -> {
                     int numberOfPaidOrders = (int) client.getOrders().stream()
                             .filter(Order::isHasBeenPaid)

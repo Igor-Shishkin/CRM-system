@@ -34,7 +34,6 @@
       
       <thead> 
           <tr>
-              <th>Id</th>
               <th>Name</th>
               <th>email</th>
               <th>phone</th>
@@ -45,8 +44,8 @@
   
       <tbody *ngIf="isSuccessLoad == true" >
           <tr *ngFor="let lead of leads" style="border-bottom: 1px rgb(2, 5, 75); cursor: pointer;"
-          (click)="goToClientDetail(lead.id || -1)">
-              <td>{{lead.id}}</td>
+          (click)="goToClientDetail(lead.clientId || -1)">
+
               <td>{{lead.fullName}}</td>
               <td>{{lead.email}}</td>
               <td>{{lead.phoneNumber}}</td>

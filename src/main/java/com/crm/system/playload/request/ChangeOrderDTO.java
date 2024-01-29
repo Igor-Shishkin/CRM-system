@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ChangeOrderDTO {
-    @NotBlank
+
     private Long orderId;
 
     private String realNeed;

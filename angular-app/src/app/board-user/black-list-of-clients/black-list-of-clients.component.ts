@@ -35,7 +35,7 @@ export class BlackListOfClientsComponent {
     }
     restoreClientFromBlacklist(client: Client) {
       this.isRequestSent = true;
-      this.clientService.restoreClientToBlackList(client.id || -1).subscribe({
+      this.clientService.restoreClientToBlackList(client.clientId || -1).subscribe({
         next: () => {
           this.isSuccessRequest = true;
           this.isRequestSent = false;

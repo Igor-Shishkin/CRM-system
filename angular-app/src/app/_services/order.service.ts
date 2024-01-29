@@ -28,7 +28,7 @@ export class OrderService {
     )
   }
   getCalculations(orderId: number):Observable<NewCalculations>{
-    return this.http.get<NewCalculations>(`${ORDER_API}/new-calculations?orderId=${orderId}`).pipe(
+    return this.http.get<NewCalculations>(`${ORDER_API}/calculations?orderId=${orderId}`).pipe(
       catchError((error: any) => {
         console.log(error);
         throw error;
@@ -82,6 +82,8 @@ export class OrderService {
   orderCopy.dateOfCreation = undefined;
   orderCopy.dateOfLastChange = undefined;
 
+  console.log(orderCopy.orderId)
+
     return this.http.post<any>(`${ORDER_API}/save-order-changes`,  orderCopy , httpOptions).pipe(
       catchError((error: any) => {
         console.log(error);
@@ -91,7 +93,6 @@ export class OrderService {
   }
 
   createNewOrder(clientId: number, realNeed: string, estimateBudget: number) {
-    console.log(clientId)
     return this.http.post<number>(`${ORDER_API}/create-new-order`, 
     {
       clientId,

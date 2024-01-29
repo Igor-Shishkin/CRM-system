@@ -40,9 +40,7 @@ public class ClientController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/add-new-lead")
     public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLeadDTO addLidRequest) {
-        log.error("55555555555555555555555");
         try {
-            log.error("&&&&&&&&&&&&&&&&&&&&&");
             long leadId = clientService.addNewLead(addLidRequest);
             return ResponseEntity.ok(leadId);
         } catch (UserPrincipalNotFoundException | ClientAlreadyExistException e) {
@@ -132,7 +130,7 @@ public class ClientController {
         }
     }
 
-    @Operation(summary = "Get Client's info", tags = { "client", "info"})
+    @Operation(summary = "Edit Client's info", tags = { "client", "info"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("edit-client-data")
     public ResponseEntity<?> editClientInfo(@RequestBody EditClientDataDTO request) {

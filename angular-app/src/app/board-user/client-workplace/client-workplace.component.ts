@@ -45,11 +45,11 @@ export class ClientWorkplaceComponent {
       next: data => {
         this.client = data;
         this.filteredOrders = this.client.orders?.sort((a, b) => {
-          if (a.dateOfLastChange && b.dateOfLastChange) {
-            return a.dateOfLastChange.getTime()-a.dateOfLastChange.getTime();
+          if (a.dateOfLastChange instanceof Date && b.dateOfLastChange instanceof Date) {
+            return a.dateOfLastChange.getTime() - b.dateOfLastChange.getTime();
           }
           return 0;
-        })
+        });
       }, error: err => {
         console.log(err);
         this.isError = true;
@@ -60,7 +60,7 @@ export class ClientWorkplaceComponent {
 
   sentClientToBlackList() {
     this.isRequestSent = true;
-    this.clientService.sentClientToBlackList(this.client?.id || -1).subscribe({
+    this.clientService.sentClientToBlackList(this.client?.clientId || -1).subscribe({
       next: () => {
         this.isClientSentToBlackList = true;
         this.reloadPage(2500);
@@ -89,11 +89,11 @@ export class ClientWorkplaceComponent {
     return 0;
   }
   editClientData(){
-    if (this.client.id && this.client.fullName && this.client.email && 
+    if (this.client.clientId && this.client.fullName && this.client.email && 
       this.client.address && this.client.phoneNumber) {
-      this.clientService.editClientData(this.client.id, this.client.fullName, 
+      this.clientService.editClientData(this.client.clientId, this.client.fullName, 
         this.client.email, this.client.address, this.client.phoneNumber).subscribe({
-          next: data => {
+          next: () => {
             this.isResultOfSavedShown = true;
             this.responceMessage = "Changes are sucsessfully saved";
             this.performDelayedHidingAlert();
@@ -141,7 +141,7 @@ export class ClientWorkplaceComponent {
 
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '600px'; 
-    dialogConfig.data = { clientId: this.client.id };
+    dialogConfig.data = { clientId: this.client.clientId };
     const dialogRef = this.dialog.open(CreateNewOrderComponent, dialogConfig);
  
     dialogRef.afterClosed().subscribe(() => {
