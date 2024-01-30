@@ -3,6 +3,7 @@ package com.crm.system.services;
 import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.models.order.ItemForCalculation;
 import com.crm.system.models.order.Order;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
@@ -13,6 +14,8 @@ import java.util.stream.Collectors;
 @Service
 public class ItemsForCalculationService {
     private final OrderService orderService;
+    @Value("${app.crm.price.coefficient}")
+    private double PRICE_COEFFICIENT;
 
     public ItemsForCalculationService(UserService userService, OrderService orderService) {
         this.orderService = orderService;
@@ -56,6 +59,6 @@ public class ItemsForCalculationService {
     private void calculateTotalPrice(Set<ItemForCalculation> items) {
         items.stream()
                 .filter(item -> item.getQuantity() >= 0 && item.getUnitPrice() >= 0)
-                .forEach(item -> item.setTotalPrice(item.getQuantity() * item.getUnitPrice() * 1.1));
+                .forEach(item -> item.setTotalPrice(item.getQuantity() * item.getUnitPrice() * PRICE_COEFFICIENT));
     }
 }

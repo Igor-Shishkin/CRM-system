@@ -39,9 +39,9 @@ public class ClientController {
     @Operation(summary = "Add new Lead", tags = { "Client", "add"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/add-new-lead")
-    public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLeadDTO addLidRequest) {
+    public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLeadDTO addLeadRequest) {
         try {
-            long leadId = clientService.addNewLead(addLidRequest);
+            long leadId = clientService.addNewLead(addLeadRequest);
             return ResponseEntity.ok(leadId);
         } catch (UserPrincipalNotFoundException | ClientAlreadyExistException e) {
             log.error("Adding new lead error: " + e.getMessage());

@@ -13,6 +13,7 @@ import com.crm.system.playload.response.CalculationsForOrderDTO;
 import com.crm.system.playload.response.OrderInfoDTO;
 import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.OrderRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
@@ -25,6 +26,8 @@ public class OrderService {
     private final UserService userService;
     private final HistoryMessageService historyMessageService;
     private final ClientService clientService;
+    @Value("${app.crm.price.coefficient}")
+    private double PRICE_COEFFICIENT;
 
     public OrderService(OrderRepository orderRepository, UserService userService, HistoryMessageService historyMessageService, ClientService clientService) {
         this.orderRepository = orderRepository;
@@ -147,9 +150,9 @@ public class OrderService {
         setChangedParameters(order, changedOrder);
         order.setDateOfLastChange(LocalDateTime.now());
 
-        saveDateOfLastChangeForClient(order.getClient());
-
         orderRepository.save(order);
+
+        saveDateOfLastChangeForClient(order.getClient());
     }
 
     public long createNewOrder(CreateNewOrderDTO request) {
@@ -205,7 +208,7 @@ public class OrderService {
                         item.getUnitPrice() > 0 &&
                         item.getTotalPrice() > 0 &&
                         item.getQuantity() > 0 &&
-                        item.getTotalPrice() == item.getUnitPrice()*item.getQuantity()*1.1;
+                        item.getTotalPrice() == item.getUnitPrice()*item.getQuantity()*PRICE_COEFFICIENT;
 
         boolean isValidItems = order.getCalculations().stream().allMatch(isValidItem);
         boolean isResultPriceRight = order.getResultPrice() == order.getCalculations().stream()
