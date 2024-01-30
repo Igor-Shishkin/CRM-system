@@ -35,8 +35,8 @@ const routes: Routes = [
     { path: 'blacklist-clients', component: BlackListOfClientsComponent, canActivate: [authUserGuard]}
   ]},
   { path: 'admin', component: BoardAdminComponent, canActivate: [authAdminGuard] , children: [
-    { path: 'register-new-user', component: RegisterNewUserComponent},
-    { path: 'users', component: UsersComponent}
+    { path: 'register-new-user', component: RegisterNewUserComponent, canActivate: [authAdminGuard]}, 
+    { path: 'users', component: UsersComponent, canActivate: [authAdminGuard]}
   ] },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'side-bar', component: SideBarComponent, children: [
