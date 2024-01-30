@@ -19,12 +19,15 @@ import { HistoryFilterParameters } from 'src/entities/HistoryFilterParameters';
 })
 export class SideBarComponent implements OnInit{
 
-history$: BehaviorSubject<HistoryMessage[]> = new BehaviorSubject<HistoryMessage[]>([]);
-history: HistoryMessage[] = [];
-activeHistoryTag = new HistoryTag;
 filteredHistory?: HistoryMessage[];
+
+history: HistoryMessage[] = [];
+history$: BehaviorSubject<HistoryMessage[]> = new BehaviorSubject<HistoryMessage[]>([]);
 private historySubscription: Subscription;
+
+activeHistoryTag = new HistoryTag;
 private activeHistoryTagSubscription: Subscription;
+
 content?: string;
 isLoadFailing = false;
 
@@ -183,7 +186,7 @@ private isLoggedInSubscription: Subscription;
     setTimeout(() => {
       this.filterMethodHistory();
       this.sortFilteredHistory();
-    }, 500)
+    }, 100)
   }
   cancelFilters() {
     this.filterParameters.byCategory = false;

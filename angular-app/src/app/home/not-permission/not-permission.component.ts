@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/_services/auth.service';
 import { StorageService } from 'src/app/_services/storage.service';
@@ -8,19 +8,22 @@ import { StorageService } from 'src/app/_services/storage.service';
   templateUrl: './not-permission.component.html',
   styleUrls: ['./not-permission.component.css']
 })
-export class NotPermissionComponent implements OnInit{
+export class NotPermissionComponent implements AfterViewInit{
 
   constructor(private authService: AuthService,
           private storageService: StorageService,
           private router: Router) {}
 
-  ngOnInit(): void {
+ngAfterViewInit() {
+
+    console.log('in onInit')
 
   const USER_KEY = 'auth-user';
 
   this.authService.isAuthenticated().subscribe({
     next: data => {
       if (data) {
+        console.log('true')
         this.storageService.setLoggedInStatus(true);
         this.performDelayedNavigationToHome();
         return true;
@@ -52,7 +55,7 @@ export class NotPermissionComponent implements OnInit{
       this.router.navigateByUrl('/login');
       console.log('GO TO LOGIN');
     }, 2000);
-}
+  }
 
 
 }

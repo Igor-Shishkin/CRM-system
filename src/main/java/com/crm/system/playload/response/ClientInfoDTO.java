@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ClientInfoDTO {
-    private Long id;
+    private Long clientId;
     private String fullName;
     private String email;
     private String phoneNumber;
@@ -16,9 +16,9 @@ public class ClientInfoDTO {
     private int numberOfOrders;
     private int numberOfPaidOrders;
 
-    protected ClientInfoDTO(Long id, String fullName, String email, String phoneNumber,
+    protected ClientInfoDTO(Long clientId, String fullName, String email, String phoneNumber,
                             String address, ClientStatus status, int quantityOfOrders, int numberOfPaidOrders) {
-        this.id = id;
+        this.clientId = clientId;
         this.fullName = fullName;
         this.email = email;
         this.phoneNumber = phoneNumber;

@@ -9,16 +9,23 @@ import { StorageService } from '../_services/storage.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit{
-
-
+  isAdminRole = false;
+  isUserRole = false;
+  private roles: string[] = [];
   isLoggedIn?: boolean;
-
 
   constructor(private storageService: StorageService) { }
 
-
   ngOnInit(): void {
     this.isLoggedIn = this.storageService.isLoggedIn();
+    if (this.isLoggedIn) {
+      const user = this.storageService.getUser();
+      this.roles = user.roles;
+
+      this.isAdminRole = this.roles.includes('ROLE_ADMIN');
+      this.isUserRole = this.roles.includes('ROLE_USER');
+    }
+
     this.storageService.setActiveHistoryTag('', -1);
   }
 

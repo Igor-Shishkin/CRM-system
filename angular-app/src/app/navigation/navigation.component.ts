@@ -12,12 +12,13 @@ import { HistoryMessage } from 'src/entities/HistoryMessage';
 })
 export class NavigationComponent {
   private roles: string[] = [];
-  showAdminBoard = false;
-  showModeratorBoard = false;
+  isAdminRole = false;
+  isUserRole = false;
   username?: string;
   isDropdownActionVisible = false;
-  private isLoggedInSubscription: Subscription;
 
+
+  private isLoggedInSubscription: Subscription;
   isLoggedIn$: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   isLoggedIn?: boolean;
 
@@ -31,17 +32,18 @@ export class NavigationComponent {
 
     this.storageService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
       this.isLoggedIn = isLoggedIn;
+
+      if (this.isLoggedIn) {
+        const user = this.storageService.getUser();
+        this.roles = user.roles;
+  
+        this.isAdminRole = this.roles.includes('ROLE_ADMIN');
+        this.isUserRole = this.roles.includes('ROLE_USER');
+  
+        this.username = user.username;
+      }
     });
 
-    if (this.isLoggedIn) {
-      const user = this.storageService.getUser();
-      this.roles = user.roles;
-
-      this.showAdminBoard = this.roles.includes('ROLE_ADMIN');
-      this.showModeratorBoard = this.roles.includes('ROLE_MODERATOR');
-
-      this.username = user.username;
-    }
   }
   ngOnDestroy(): void {
     this.isLoggedInSubscription.unsubscribe();
@@ -55,8 +57,8 @@ export class NavigationComponent {
 
   logout(): void {
     this.isLoggedIn = false;
-    this.showAdminBoard = false;
-    this.showModeratorBoard = false;
+    this.isAdminRole = false;
+    this.isUserRole = false;
     this.storageService.clean();
     this.storageService.setHistory([new HistoryMessage()]);
     this.storageService.setLoggedInStatus(false);

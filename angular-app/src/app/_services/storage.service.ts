@@ -4,7 +4,6 @@ import { HistoryMessage } from 'src/entities/HistoryMessage';
 import { HistoryTag } from 'src/entities/HistoryTag';
 
 const USER_KEY = 'auth-user';
-const ACTIVE_ID = 'active-id';
 const ACTIVE_TAG = 'acive-history-tag';
 
 
@@ -44,7 +43,7 @@ export class StorageService {
     window.sessionStorage.setItem(USER_KEY, JSON.stringify(user));
   }
 
-  public getUser(): any {
+  public getUser() {
     const user = window.sessionStorage.getItem(USER_KEY);
     if (user) {
       return JSON.parse(user);

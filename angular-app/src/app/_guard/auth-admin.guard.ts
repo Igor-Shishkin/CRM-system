@@ -17,16 +17,12 @@ export const authAdminGuard: CanActivateFn = (route, state) => {
         return true;
       } else {
         console.log('You do not have permissions');
-        window.sessionStorage.removeItem(USER_KEY);
-        storageService.setLoggedInStatus(false);
         router.navigateByUrl('/home/not-permission');
         return false;
       }
     }, error: err => {
       console.log('can not connect with server: ' + err.toString);
-      storageService.setLoggedInStatus(false);
       router.navigateByUrl('/home/not-permission');
-      window.sessionStorage.removeItem(USER_KEY);
       return false;
     }
   })

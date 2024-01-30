@@ -19,15 +19,17 @@
           Action
         </a>
         <ul class="dropdown-menu dropdown-menu-dark">
-          <li>
-            <a [routerLinkActive]="'active-nav'"
+          <li [ariaDisabled]="!isUserRole">
+            <a *ngIf="isUserRole" 
+              [routerLinkActive]="'active-nav'"
               [routerLink]="'/user-board/leads'"
-              class="dropdown-item" href="#">
+              class="dropdown-item">
               LEADs
             </a>
           </li>
-          <li>
-            <a [routerLinkActive]="'active-nav'"
+          <li [ariaDisabled]="!isUserRole">
+            <a *ngIf="isUserRole" 
+              [routerLinkActive]="'active-nav'"
               [routerLink]="'/user-board/clients'"
               class="dropdown-item" href="#">
               Clients
@@ -36,12 +38,12 @@
 
           <li><hr class="dropdown-divider"></li>
 
-          <li *ngIf="showAdminBoard">
-            <a       
+          <li >
+            <a *ngIf="isAdminRole"        
               [routerLinkActive]="'active-nav'"
               [routerLink]="'/admin/users'"
               class="dropdown-item" routerLink="admin">
-              Admin mode
+              Administration
             </a>
           </li>
 
