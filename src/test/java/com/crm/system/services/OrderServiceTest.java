@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,6 +41,8 @@ class OrderServiceTest {
     private HistoryMessageService historyMessageService;
     @Mock
     private ClientService clientService;
+
+
     @Test
     void get_order_info_response_success() {
         OrderInfoDTO expectedOrderInfoDTO = new OrderInfoDTO(orderExample);
@@ -223,15 +226,17 @@ class OrderServiceTest {
     }
 
     @Test
-    void sign_agreement_success() {
+    void sign_agreement_success() throws NoSuchFieldException, IllegalAccessException {
         orderExample.setAgreementSigned(false);
         orderExample.setIsCalculationShown(InfoIsShown.SHOWN_ONLINE);
+        orderExample.setResultPrice(38.5);
 
         itemTwo.setThing("thingTwo");
         itemTwo.setQuantity(3);
         itemTwo.setUnitPrice(10);
         itemTwo.setTotalPrice(33);
 
+        setPriceCoefficient(1.1);
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
                 .thenReturn(Optional.ofNullable(orderExample));
@@ -436,6 +441,12 @@ class OrderServiceTest {
         orderExample.setIsCalculationShown(InfoIsShown.SHOWN_ONLINE);
         orderExample.setCalculations(Set.of(itemOne, itemTwo));
 
+    }
+
+    private void setPriceCoefficient(double value) throws NoSuchFieldException, IllegalAccessException {
+        Field field = OrderService.class.getDeclaredField("PRICE_COEFFICIENT");
+        field.setAccessible(true);
+        field.setDouble(orderService, value);
     }
 
 }
