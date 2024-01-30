@@ -1,7 +1,7 @@
 # Welcome to my final java course project.
 ### Used technologies: Java (Spring Boot 3.15), Angular 16, mySQL)
 
-### The main features are described in the file. Here I will describe the installation.
+### The main features are described in HELP.md file. Here I will describe the installation.
 
 ## Sequence of actions to start the project:
 #### Upload the project using GitHub CLI = https://github.com/Igor-Shishkin/CRM-system.git
@@ -23,10 +23,35 @@ app.crm.admin.password=000000
 
 ### You can launch the program in several ways, I will tell you how to do it using the IntelliJ
 
+
+
+
 ### Open project in IntelliJ
- - Run it (usual running - Shift+F10) 
+#### Run the Spring Boot application with IntelliJ (usual running - Shift+F10) 
+#### Download the necessary npm and Angular packages:
  - Open terminal (in IntelliJ)
- - Go to angular-app folde with __command cd .\angular-app\___
- - Download the necessary npm and Angular packages:
-     - **npm install**
-     - 
+ - enter the following commands into the terminal 
+     - **cd .\angular-app\\**
+     - **npm install -g @angular/cli@16**
+     - **npm install bootstrap@4.6.2**
+     - **npm install --force**
+     - **ng add @angular/material**
+
+### Run the Angular application entering the following commands into the terminal  
+ - __ng serve --port 8081__
+### If everything is installed successfully, you can open the browser and launch the application by entering in the address bar:
+ - **http://localhost:8081/**
+#### You can login as administrator (default) with:
+ - login: admin
+ - password: 000000
+
+##### If you want to test the application and have loaded data from src/main/resources/sql_schema.sql file into the database, you can also log in as the following users:
+ - with USER_ROLE:
+     - login: user
+     - password: 000000
+ - with USER_ROLE and ADMIN_ROLE:
+     - login: user-admin
+     - password: 000000
+  
+ ### You can also use Swagger Tools by clicking on the following link in your browser:
+ - http://localhost:8080/swagger-ui/index.html#/
