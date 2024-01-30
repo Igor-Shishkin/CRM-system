@@ -65,24 +65,27 @@
     color: rgb(208, 210, 252);
     cursor: pointer;
   }
+  
   .custom-scrollbar {
     height: 75%;
     overflow-y: auto;
-    scrollbar-track-color: #333; 
-    scrollbar-thumb-color: #666; 
     scrollbar-width: thin; 
-    scrollbar-thumb-radius: 5px; 
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 5px; 
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background-color: #333; 
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: #666; 
+    scrollbar-color: #666 #333; 
+}
+.custom-scrollbar::-webkit-scrollbar {
+    width: 2px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background-color: #333;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #666;
     border-radius: 5px;
-  }
+}
+.custom-scrollbar {
+    -ms-overflow-style: none; 
+}
+.custom-scrollbar::-ms-scrollbar-thumb {
+    background-color: #666;
+    border-radius: 5px;
+}
