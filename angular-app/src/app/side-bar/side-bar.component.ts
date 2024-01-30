@@ -51,7 +51,7 @@ private isLoggedInSubscription: Subscription;
         this.activeHistoryTagSubscription = this.storageService.activeHistoryTag$.subscribe((historyTag: HistoryTag) => {
           this.activeHistoryTag = historyTag;
 
-          this.filterParameters.byCategory = (this.activeHistoryTag.tagName !== '');
+          this.filterParameters.byCategory = (this.activeHistoryTag.tagName !== 'EMPTY');
           this.filterParameters.byId = (this.activeHistoryTag.entityId ! > 0);
 
           this.filterMethodHistory();

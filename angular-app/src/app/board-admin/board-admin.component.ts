@@ -4,6 +4,7 @@ import { AuthService } from '../_services/auth.service';
 import { User } from '../../entities/User';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ConfirmDeleteUserComponent } from './confirm-delete-user/confirm-delete-user.component';
+import { StorageService } from '../_services/storage.service';
 
 @Component({
   selector: 'app-board-admin',
@@ -19,32 +20,11 @@ export class BoardAdminComponent implements OnInit {
 
   constructor(private userService: UserService,
     private authService: AuthService,
-    public dialog: MatDialog) { }
+    public dialog: MatDialog,
+    private storageService: StorageService) { }
 
   ngOnInit(): void {
-    this.getListOfUsers();
+    this.storageService.setActiveHistoryTag('ADMINISTRATION', -1);
   }
-  deleteUser(userId: number) {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = { userId: userId };
-    dialogConfig.width = '450px'; 
-    const dialogRef = this.dialog.open(ConfirmDeleteUserComponent, dialogConfig);
- 
-    dialogRef.afterClosed().subscribe(() => {
-      this.getListOfUsers()
-    });
-  }
-  getListOfUsers() {
-    this.userService.getAllUsers().subscribe({
-      next: data => {
-        this.users = data;
-        this.isLoaded = true;
-      },
-      error: err => {
-        error: (err: any) => {
-          console.error(err); 
-        }
-      }
-    });
-  }
+
 }

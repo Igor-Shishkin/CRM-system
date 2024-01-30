@@ -74,5 +74,14 @@ export class NavigationComponent {
       }
     });
   }
+  setTagForClient() {
+    this.storageService.setActiveHistoryTag('CLIENT', -1);
+  }
+  setTagForHomePage() {
+    this.storageService.setActiveHistoryTag('EMPTY', -1);
+  }
+  setTagForAdministration() {
+    this.storageService.setActiveHistoryTag('ADMINISTRATION', -1);
+  }
 
 }

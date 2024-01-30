@@ -6,7 +6,7 @@
       </li>
 
       <li class="nav-item" *ngIf="isLoggedIn">
-        <a  class="nav-link" 
+        <a  class="nav-link" (click)="setTagForHomePage()"
           [routerLinkActive]="'active-nav'"
           [routerLink]="'/home'">
           Home
@@ -20,7 +20,7 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-dark">
           <li [ariaDisabled]="!isUserRole">
-            <a *ngIf="isUserRole" 
+            <a *ngIf="isUserRole" (click)="setTagForClient()"
               [routerLinkActive]="'active-nav'"
               [routerLink]="'/user-board/leads'"
               class="dropdown-item">
@@ -28,7 +28,7 @@
             </a>
           </li>
           <li [ariaDisabled]="!isUserRole">
-            <a *ngIf="isUserRole" 
+            <a *ngIf="isUserRole" (click)="setTagForClient()"
               [routerLinkActive]="'active-nav'"
               [routerLink]="'/user-board/clients'"
               class="dropdown-item" href="#">
@@ -39,7 +39,7 @@
           <li><hr class="dropdown-divider"></li>
 
           <li >
-            <a *ngIf="isAdminRole"        
+            <a *ngIf="isAdminRole" (click)="setTagForAdministration()"       
               [routerLinkActive]="'active-nav'"
               [routerLink]="'/admin/users'"
               class="dropdown-item" routerLink="admin">
@@ -58,7 +58,7 @@
 
     <div class="navbar-nav ml-auto container" *ngIf="isLoggedIn">
       <div class="nav-item">
-        <img src="assets\images\profile-icon.png" alt="Profile" width="50px" routerLink="profile" 
+        <img src="assets\images\profile-icon.png" alt="Profile" width="50px" routerLink="profile"  (click)="setTagForHomePage()"
         style="cursor: pointer;"/>
       </div>
       <div class="nav-item">

@@ -14,7 +14,9 @@ export class HomeComponent implements OnInit{
   private roles: string[] = [];
   isLoggedIn?: boolean;
 
-  constructor(private storageService: StorageService) { }
+  constructor(private storageService: StorageService) {
+    this.storageService.setActiveHistoryTag('', -1);
+   }
 
   ngOnInit(): void {
     this.isLoggedIn = this.storageService.isLoggedIn();
@@ -26,7 +28,13 @@ export class HomeComponent implements OnInit{
       this.isUserRole = this.roles.includes('ROLE_USER');
     }
 
-    this.storageService.setActiveHistoryTag('', -1);
+    this.storageService.setActiveHistoryTag('EMPTY', -1);
+  }
+  setTagForAdministration() {
+    this.storageService.setActiveHistoryTag('ADMINISTRATION', -1);
+  }
+  setTagForClient() {
+    this.storageService.setActiveHistoryTag('CLIENT', -1);
   }
 
 }

@@ -86,7 +86,7 @@ export class ClientWorkplaceComponent {
     if (this.client.orders){
       return this.client.orders.length;
     } 
-    return 0;
+    return 0; 
   }
   editClientData(){
     if (this.client.clientId && this.client.fullName && this.client.email && 

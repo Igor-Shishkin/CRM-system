@@ -2,13 +2,13 @@
 <div *ngIf="isLoggedIn" style="margin-top: 10px;">
   <div class="w3-row" style="margin-bottom: 30px; margin-top: 30px;">
     <div class="w3-col m4 l4">
-      <button [disabled]="!isUserRole"
+      <button [disabled]="!isUserRole" (click)="setTagForClient()"
         [routerLinkActive]="'active-nav'"
         [routerLink]="'/user-board/leads'"
         type="button" class="btn btn-outline-secondary custom-size">Leads</button>
     </div>
     <div class="w3-col m4 l4">
-      <button  [disabled]="!isUserRole"
+      <button  [disabled]="!isUserRole" (click)="setTagForClient()"
         [routerLinkActive]="'active-nav'"
         [routerLink]="'/user-board/clients'"
         type="button" class="btn btn-outline-secondary custom-size">Clients</button>
@@ -36,7 +36,7 @@
       <button type="button" class="btn btn-outline-secondary custom-size"
         [routerLinkActive]="'active-nav'"
         [routerLink]="'/admin/users'"
-        [disabled]="!isAdminRole"
+        [disabled]="!isAdminRole" (click)="setTagForAdministration()"
         >Administration
       </button>
     </div>
