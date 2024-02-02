@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTr
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/_services/auth.service';
 import { ClientsService } from 'src/app/_services/clients.service';
+import { HistoryService } from 'src/app/_services/history.service';
 import { StorageService } from 'src/app/_services/storage.service';
 
 @Component({
@@ -19,7 +20,8 @@ export class AddLeadComponent{
   constructor(
     private clientsService: ClientsService, 
     private router: Router, private zone: NgZone,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private historyService: HistoryService
     ) {}
 
   save(fullName: HTMLInputElement, address: HTMLInputElement, email: HTMLInputElement, phoneNumber: HTMLInputElement) {
@@ -28,6 +30,7 @@ export class AddLeadComponent{
       next: data => { 
         this.isAdded = true;
         this.isError = false;
+        this.refreshHistoryMessages();
         this.performDelayedNavigation(data);
       }, error: (err: any) => {
         this.isError = true;
@@ -42,6 +45,15 @@ export class AddLeadComponent{
         this.storageService.setActiveHistoryTag('CLIENT', clientId);
         this.router.navigate(['/user-board/client-workplace', clientId]);
       }, 2000);
+  }
+  refreshHistoryMessages() {
+    this.historyService.getHistory().subscribe({
+      next: data => {
+        this.storageService.setHistory(data);
+      }, error: err => {
+        console.log(err);
+      }
+    })
   }
 }
  

@@ -3,7 +3,7 @@ USE marton_db;
 
 SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS user_roles;
-DROP TABLE IF EXISTS items;
+DROP TABLE IF EXISTS items_for_additional_purchases;
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS history_messages;
 DROP TABLE IF EXISTS orders;

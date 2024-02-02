@@ -18,10 +18,10 @@ export class AdditionalPurchasesService {
   saveItemsForPurchases(items: ItemForAdditionalPurchases[], orderId : number) {
     console.log(items)
     return this.http.post(ITEMS_API + '/save-items',
-    items, // Send the array directly
+    items,
     {
       params: {
-        orderId: orderId.toString() // Send orderId as a query parameter
+        orderId: orderId.toString() 
       },
       headers: httpOptions.headers
     }

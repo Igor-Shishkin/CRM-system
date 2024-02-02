@@ -1,7 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { HistoryService } from 'src/app/_services/history.service';
 import { OrderService } from 'src/app/_services/order.service';
+import { StorageService } from 'src/app/_services/storage.service';
 
 @Component({
   selector: 'app-create-new-order',
@@ -21,6 +23,8 @@ export class CreateNewOrderComponent{
     public dialogRef: MatDialogRef<CreateNewOrderComponent>,
     private orderService: OrderService,
     private router: Router,
+    private historyService: HistoryService,
+    private storageService: StorageService,
     @Inject(MAT_DIALOG_DATA) public data: { clientId: number }
   ) {
     this.clientId = data.clientId;
@@ -31,6 +35,7 @@ export class CreateNewOrderComponent{
     this.orderService.createNewOrder(this.clientId, this.realNeed, this.estimateBudget).subscribe({
       next: data => {
         this.isSuccess = true;
+        this.refreshHistoryMessages();
         this.delayGoToNewOrder(data);
       }, error: err => {
         console.error
@@ -39,7 +44,15 @@ export class CreateNewOrderComponent{
       }
     })
   }
-
+  refreshHistoryMessages() {
+    this.historyService.getHistory().subscribe({
+      next: data => {
+        this.storageService.setHistory(data);
+      }, error: err => {
+        console.log(err);
+      }
+    })
+  }
 
   delayGoToNewOrder(newOrderId: number) {
     setTimeout(() => {

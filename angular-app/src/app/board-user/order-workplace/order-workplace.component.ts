@@ -83,17 +83,17 @@ export class OrderWorkplaceComponent implements OnInit{
     openCalculationDialog(): void {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.width = '870px'; 
-      dialogConfig.data = { items: this.order.additionalPurchases, orderId: this.order.orderId };
+      dialogConfig.data = { order: this.order };
       const dialogRef = this.dialog.open(ItemForAdditionalPurchasesComponent, dialogConfig);
   
       dialogRef.afterClosed().subscribe(result => {
         this.orderService.getAdditionPurchases(this.order.orderId || -1).subscribe({
           next: data => {
-            this.order.additionalPurchases = data.items;
-            this.order.resultPrice = data.resultPrice;
-            if (this.order.resultPrice) {
-              this.order.resultPrice = +this.order.resultPrice.toFixed(2);
-            } else { this.order.resultPrice = -1 }
+            // this.order.additionalPurchases = data.items;
+            // this.order.resultPrice = data.resultPrice;
+            // if (this.order.resultPrice) {
+            //   this.order.resultPrice = +this.order.resultPrice.toFixed(2);
+            // } else { this.order.resultPrice = -1 }
             this.calculateOrderProgress();
           }, error: err => {
             console.log(err)

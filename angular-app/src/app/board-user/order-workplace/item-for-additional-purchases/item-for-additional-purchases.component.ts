@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { timer } from 'rxjs';
 import { AdditionalPurchasesService } from 'src/app/_services/calculation-items.service';
 import { ItemForAdditionalPurchases } from 'src/entities/ItemForAdditionalPurchases';
+import { Order } from 'src/entities/Order';
 
 @Component({
   selector: 'app-item-for-additional-purchases',
@@ -13,21 +14,23 @@ import { ItemForAdditionalPurchases } from 'src/entities/ItemForAdditionalPurcha
 export class ItemForAdditionalPurchasesComponent {
 
 
-  items: ItemForAdditionalPurchases[];
+  items: ItemForAdditionalPurchases[] = [new ItemForAdditionalPurchases];
   resultPrice = 0;
-  orderId: number;
+  orderId = -1;
   isItemsSaved = false;
   isSavingWasFail = false;
   errorMessage = '';
   itemsForSaving: ItemForAdditionalPurchases[] = [];
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { items: ItemForAdditionalPurchases[], orderId: number },
+    @Inject(MAT_DIALOG_DATA) public data: { order: Order },
     private additionalPurchasesService: AdditionalPurchasesService,
     public dialogRef: MatDialogRef<ItemForAdditionalPurchasesComponent>
   ) {
-    this.items = this.data.items;
-    this.orderId = this.data.orderId;
+    if(this.data.order.additionalPurchases && this.data.order.orderId) {
+      this.items = this.data.order.additionalPurchases;
+      this.orderId = this.data.order.orderId;
+    }    
     this.calculateResultPrice();
   }
 
@@ -50,10 +53,11 @@ export class ItemForAdditionalPurchasesComponent {
     if (item.unitPrice && item.quantity) {
       item.totalPrice = item.unitPrice * item.quantity * 1.1;
       item.totalPrice = +item.totalPrice.toFixed(2);
-      this.calculateResultPrice();
     } else {
+      item.totalPrice = 0;
       this.resultPrice = -1;
     }
+    this.calculateResultPrice();
     this.isEmptyThing(item);
   }
   isNonPositiveNumber(price: number) {
@@ -91,6 +95,7 @@ export class ItemForAdditionalPurchasesComponent {
       this.additionalPurchasesService.saveItemsForPurchases(this.itemsForSaving, this.orderId).subscribe({
         next: () => {
           this.isItemsSaved = true;
+          this.data.order.resultPrice = this.resultPrice;
           this.delayHidingCloseDialoge();
         }, error: () => {
           this.isSavingWasFail = true;
@@ -123,7 +128,11 @@ export class ItemForAdditionalPurchasesComponent {
   }
   delayHidingCloseDialoge() {
     setTimeout(() => {
-      this.dialogRef.close();
+      const dataToSend = {
+        items: this.items,
+        resultPrice: this.resultPrice
+      };
+      this.dialogRef.close(dataToSend);
     }, 2000);
   }
 } 
