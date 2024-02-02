@@ -18,7 +18,7 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.List;
 
 @Slf4j
-@Tag(name = "Order controller", description = "Order management APIs")
+@Tag(name = "User controller", description = "Order management APIs")
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials="true")
 @RestController
 @RequestMapping("/api/user")
