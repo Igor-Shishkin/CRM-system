@@ -87,7 +87,7 @@ export class OrderWorkplaceComponent implements OnInit{
       const dialogRef = this.dialog.open(ItemForAdditionalPurchasesComponent, dialogConfig);
   
       dialogRef.afterClosed().subscribe(result => {
-        this.orderService.getCalculations(this.order.orderId || -1).subscribe({
+        this.orderService.getAdditionPurchases(this.order.orderId || -1).subscribe({
           next: data => {
             this.order.additionalPurchases = data.items;
             this.order.resultPrice = data.resultPrice;

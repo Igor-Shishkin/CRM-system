@@ -44,9 +44,9 @@ public class OrderController {
                     .body(new MessageResponse("Order controller: " + e.getMessage()));
         }
     }
-    @Operation(summary = "Get calculations for order", tags = { "Order", "get"})
+    @Operation(summary = "Get additional purchases for order", tags = { "Order", "get", "purchases"})
     @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("/calculations")
+    @GetMapping("/additional-purchases")
     public ResponseEntity<?> getAdditionalPurchases(@Valid @RequestParam long orderId) {
         try {
             ItemsForAdditionalPurchasesDTO calculations = orderService.getCalculations(orderId);

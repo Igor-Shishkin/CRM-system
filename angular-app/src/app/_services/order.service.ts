@@ -27,8 +27,8 @@ export class OrderService {
       })
     )
   }
-  getCalculations(orderId: number):Observable<NewCalculations>{
-    return this.http.get<NewCalculations>(`${ORDER_API}/calculations?orderId=${orderId}`).pipe(
+  getAdditionPurchases(orderId: number):Observable<NewCalculations>{
+    return this.http.get<NewCalculations>(`${ORDER_API}/additional-purchases?orderId=${orderId}`).pipe(
       catchError((error: any) => {
         console.log(error);
         throw error;
