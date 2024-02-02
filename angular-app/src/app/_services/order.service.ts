@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError } from 'rxjs';
 import { NewCalculations } from 'src/entities/NewCalculations';
 import { Order } from 'src/entities/Order';
-import { CalculationItemsService } from './calculation-items.service';
-import { ItemCalculationComponent } from '../board-user/order-workplace/item-calculation/item-calculation.component';
-import { ItemForCalculation } from 'src/entities/ItemForCalculation';
+import { AdditionalPurchasesService } from './calculation-items.service';
+import { ItemForAdditionalPurchasesComponent } from '../board-user/order-workplace/item-for-additional-purchases/item-for-additional-purchases.component';
+import { ItemForAdditionalPurchases } from 'src/entities/ItemForAdditionalPurchases';
 
 const ORDER_API = 'http://localhost:8080/api/user-board/order'
 const httpOptions = {
@@ -71,7 +71,7 @@ export class OrderService {
 
   const orderCopy: Order = { ...order };
 
-  orderCopy.calculations = {} as ItemForCalculation[];
+  orderCopy.additionalPurchases = {} as ItemForAdditionalPurchases[];
   orderCopy.resultPrice = undefined;
   orderCopy.hasBeenPaid = undefined;
   orderCopy.isAgreementSigned = undefined;

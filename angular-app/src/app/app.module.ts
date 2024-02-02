@@ -26,7 +26,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { NotPermissionComponent } from './home/not-permission/not-permission.component';
 import { DatePipe } from '@angular/common';
 import { OrderWorkplaceComponent } from './board-user/order-workplace/order-workplace.component';
-import { ItemCalculationComponent } from './board-user/order-workplace/item-calculation/item-calculation.component';
+import { ItemForAdditionalPurchasesComponent } from './board-user/order-workplace/item-for-additional-purchases/item-for-additional-purchases.component';
 import { ConfirmSigningContractComponent } from './board-user/order-workplace/confirm-signing-contract/confirm-signing-contract.component';
 import { ConfirmPainmentComponent } from './board-user/order-workplace/confirm-painment/confirm-painment.component';
 import { MessageMenuComponent } from './side-bar/message-menu/message-menu.component';
@@ -57,7 +57,7 @@ import { BlackListOfClientsComponent } from './board-user/black-list-of-clients/
     SaveMessageDialogComponent,
     NotPermissionComponent,
     OrderWorkplaceComponent,
-    ItemCalculationComponent,
+    ItemForAdditionalPurchasesComponent,
     ConfirmSigningContractComponent,
     ConfirmPainmentComponent,
     MessageMenuComponent,

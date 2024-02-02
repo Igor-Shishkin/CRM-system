@@ -6,7 +6,7 @@ import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.playload.request.ChangeOrderDTO;
 import com.crm.system.playload.request.CreateNewOrderDTO;
 import com.crm.system.playload.response.MessageResponse;
-import com.crm.system.playload.response.CalculationsForOrderDTO;
+import com.crm.system.playload.response.ItemsForAdditionalPurchasesDTO;
 import com.crm.system.playload.response.OrderInfoDTO;
 import com.crm.system.services.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,8 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 @Slf4j
 @Tag(name = "Order controller", description = "Order management APIs")
@@ -51,7 +49,7 @@ public class OrderController {
     @GetMapping("/calculations")
     public ResponseEntity<?> getCalculations(@Valid @RequestParam long orderId) {
         try {
-            CalculationsForOrderDTO calculations = orderService.getCalculations(orderId);
+            ItemsForAdditionalPurchasesDTO calculations = orderService.getCalculations(orderId);
             return ResponseEntity.ok(calculations);
         } catch (RequestOptionalIsEmpty e) {
             log.error("Order controller: " + e.getMessage());

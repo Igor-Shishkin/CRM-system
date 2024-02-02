@@ -4,11 +4,11 @@ import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
-import com.crm.system.models.order.ItemForCalculation;
+import com.crm.system.models.order.ItemForAdditionalPurchases;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.request.ChangeOrderDTO;
 import com.crm.system.playload.request.CreateNewOrderDTO;
-import com.crm.system.playload.response.CalculationsForOrderDTO;
+import com.crm.system.playload.response.ItemsForAdditionalPurchasesDTO;
 import com.crm.system.playload.response.OrderInfoDTO;
 import com.crm.system.services.OrderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,7 +43,7 @@ class OrderControllerTest {
 
     private ObjectMapper objectMapper = new ObjectMapper();
     private static OrderInfoDTO expectedDTO;
-    private static CalculationsForOrderDTO expectedCalculationsForOrderDTO;
+    private static ItemsForAdditionalPurchasesDTO expectedItemsForAdditionalPurchasesDTO;
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
@@ -85,14 +85,14 @@ class OrderControllerTest {
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void get_calculations_by_order_id_success() throws Exception {
-        when(orderService.getCalculations(1L)).thenReturn(expectedCalculationsForOrderDTO);
+        when(orderService.getCalculations(1L)).thenReturn(expectedItemsForAdditionalPurchasesDTO);
 
         mockMvc.perform(get("/api/user-board/order/calculations")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.resultPrice").value(expectedCalculationsForOrderDTO.getResultPrice()))
+                .andExpect(jsonPath("$.resultPrice").value(expectedItemsForAdditionalPurchasesDTO.getResultPrice()))
                 .andExpect( jsonPath("$.items").isArray());
     }
     @Test
@@ -353,13 +353,13 @@ class OrderControllerTest {
                 "55555", "Poland", null);
         exampleClient.setClientId(1L);
 
-        ItemForCalculation itemOne = new ItemForCalculation();
-        itemOne.setThing("thingOne");
+        ItemForAdditionalPurchases itemOne = new ItemForAdditionalPurchases();
+        itemOne.setItemName("thingOne");
         itemOne.setQuantity(1);
         itemOne.setUnitPrice(5);
         itemOne.setTotalPrice(5.5);
-        ItemForCalculation itemTwo = new ItemForCalculation();
-        itemTwo.setThing("thingTwo");
+        ItemForAdditionalPurchases itemTwo = new ItemForAdditionalPurchases();
+        itemTwo.setItemName("thingTwo");
         itemTwo.setQuantity(3);
         itemTwo.setUnitPrice(10);
         itemTwo.setTotalPrice(33);
@@ -369,12 +369,12 @@ class OrderControllerTest {
         orderExample.setRealNeed("Test need");
         orderExample.setAddress("Poland");
         orderExample.setClient(exampleClient);
-        orderExample.setCalculations(Set.of(itemOne, itemTwo));
+        orderExample.setAdditionalPurchases(Set.of(itemOne, itemTwo));
         orderExample.setResultPrice(38.5);
 
         expectedDTO = new OrderInfoDTO(orderExample);
-        expectedCalculationsForOrderDTO = new CalculationsForOrderDTO();
-        expectedCalculationsForOrderDTO.setItems(orderExample.getCalculations());
-        expectedCalculationsForOrderDTO.setResultPrice(orderExample.getResultPrice());
+        expectedItemsForAdditionalPurchasesDTO = new ItemsForAdditionalPurchasesDTO();
+        expectedItemsForAdditionalPurchasesDTO.setItems(orderExample.getAdditionalPurchases());
+        expectedItemsForAdditionalPurchasesDTO.setResultPrice(orderExample.getResultPrice());
     }
 }

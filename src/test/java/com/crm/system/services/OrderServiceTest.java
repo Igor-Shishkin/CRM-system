@@ -4,11 +4,11 @@ import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.models.Client;
 import com.crm.system.models.order.InfoIsShown;
-import com.crm.system.models.order.ItemForCalculation;
+import com.crm.system.models.order.ItemForAdditionalPurchases;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.request.ChangeOrderDTO;
 import com.crm.system.playload.request.CreateNewOrderDTO;
-import com.crm.system.playload.response.CalculationsForOrderDTO;
+import com.crm.system.playload.response.ItemsForAdditionalPurchasesDTO;
 import com.crm.system.playload.response.OrderInfoDTO;
 import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.OrderRepository;
@@ -88,15 +88,15 @@ class OrderServiceTest {
 
     @Test
     void get_calculations_success() {
-        CalculationsForOrderDTO expectedCalculation = new CalculationsForOrderDTO();
-        expectedCalculation.setItems(orderExample.getCalculations());
+        ItemsForAdditionalPurchasesDTO expectedCalculation = new ItemsForAdditionalPurchasesDTO();
+        expectedCalculation.setItems(orderExample.getAdditionalPurchases());
         expectedCalculation.setResultPrice(orderExample.getResultPrice());
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(1L, userService.getActiveUserId()))
                 .thenReturn(Optional.ofNullable(orderExample));
 
-        CalculationsForOrderDTO resultCalculations = orderService.getCalculations(1L);
+        ItemsForAdditionalPurchasesDTO resultCalculations = orderService.getCalculations(1L);
 
         assertThat(resultCalculations).isEqualTo(expectedCalculation);
     }
@@ -148,7 +148,7 @@ class OrderServiceTest {
     void sign_agreement_calculation_thing_wrong_error() {
         orderExample.setAgreementSigned(false);
         orderExample.setIsCalculationShown(InfoIsShown.SHOWN_ONLINE);
-        itemTwo.setThing("");
+        itemTwo.setItemName("");
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
@@ -231,7 +231,7 @@ class OrderServiceTest {
         orderExample.setIsCalculationShown(InfoIsShown.SHOWN_ONLINE);
         orderExample.setResultPrice(38.5);
 
-        itemTwo.setThing("thingTwo");
+        itemTwo.setItemName("thingTwo");
         itemTwo.setQuantity(3);
         itemTwo.setUnitPrice(10);
         itemTwo.setTotalPrice(33);
@@ -412,20 +412,20 @@ class OrderServiceTest {
 
     private static Order orderExample;
     private static Client clientExample;
-    private static ItemForCalculation itemTwo;
+    private static ItemForAdditionalPurchases itemTwo;
 
     static {
         clientExample = new Client("John Smith", "John@gmail.com",
                 "55555", "Poland, Poznan", null);
         clientExample.setClientId(5L);
 
-        ItemForCalculation itemOne = new ItemForCalculation();
-        itemOne.setThing("thingOne");
+        ItemForAdditionalPurchases itemOne = new ItemForAdditionalPurchases();
+        itemOne.setItemName("thingOne");
         itemOne.setQuantity(1);
         itemOne.setUnitPrice(5);
         itemOne.setTotalPrice(5.5);
-        itemTwo = new ItemForCalculation();
-        itemTwo.setThing("thingTwo");
+        itemTwo = new ItemForAdditionalPurchases();
+        itemTwo.setItemName("thingTwo");
         itemTwo.setQuantity(3);
         itemTwo.setUnitPrice(10);
         itemTwo.setTotalPrice(33);
@@ -439,7 +439,7 @@ class OrderServiceTest {
         orderExample.setAgreementSigned(false);
         orderExample.setResultPrice(38.5);
         orderExample.setIsCalculationShown(InfoIsShown.SHOWN_ONLINE);
-        orderExample.setCalculations(Set.of(itemOne, itemTwo));
+        orderExample.setAdditionalPurchases(Set.of(itemOne, itemTwo));
 
     }
 

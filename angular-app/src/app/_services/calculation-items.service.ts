@@ -1,9 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError } from 'rxjs';
-import { ItemForCalculation } from 'src/entities/ItemForCalculation';
+import { ItemForAdditionalPurchases } from 'src/entities/ItemForAdditionalPurchases';
 
-const ITEMS_API = 'http://localhost:8080/api/user-board/items-for-calculation'
+const ITEMS_API = 'http://localhost:8080/api/user-board/items-for-addition-purchases'
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
@@ -11,11 +11,11 @@ const httpOptions = {
 @Injectable({
   providedIn: 'root'
 })
-export class CalculationItemsService {
+export class AdditionalPurchasesService {
 
   constructor(private http: HttpClient) { }
 
-  saveItemsForCalculation(items: ItemForCalculation[], orderId : number) {
+  saveItemsForPurchases(items: ItemForAdditionalPurchases[], orderId : number) {
     console.log(items)
     return this.http.post(ITEMS_API + '/save-items',
     items, // Send the array directly

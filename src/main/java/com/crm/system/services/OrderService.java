@@ -5,18 +5,16 @@ import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
 import com.crm.system.models.order.InfoIsShown;
-import com.crm.system.models.order.ItemForCalculation;
+import com.crm.system.models.order.ItemForAdditionalPurchases;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.request.ChangeOrderDTO;
 import com.crm.system.playload.request.CreateNewOrderDTO;
-import com.crm.system.playload.response.CalculationsForOrderDTO;
+import com.crm.system.playload.response.ItemsForAdditionalPurchasesDTO;
 import com.crm.system.playload.response.OrderInfoDTO;
-import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDateTime;
 import java.util.function.Predicate;
 
@@ -49,10 +47,10 @@ public class OrderService {
         return order;
     }
 
-    public CalculationsForOrderDTO getCalculations(long orderId) {
+    public ItemsForAdditionalPurchasesDTO getCalculations(long orderId) {
         Order order = getOrderById(orderId);
-        CalculationsForOrderDTO calculations = new CalculationsForOrderDTO();
-        calculations.setItems(order.getCalculations());
+        ItemsForAdditionalPurchasesDTO calculations = new ItemsForAdditionalPurchasesDTO();
+        calculations.setItems(order.getAdditionalPurchases());
         calculations.setResultPrice(order.getResultPrice());
         return calculations;
     }
@@ -203,16 +201,16 @@ public class OrderService {
 
     private boolean checkIfCalculationIsRight(Order order) {
 
-        Predicate<ItemForCalculation> isValidItem = item ->
-                item.getThing() != null && !item.getThing().isEmpty() &&
+        Predicate<ItemForAdditionalPurchases> isValidItem = item ->
+                item.getItemName() != null && !item.getItemName().isEmpty() &&
                         item.getUnitPrice() > 0 &&
                         item.getTotalPrice() > 0 &&
                         item.getQuantity() > 0 &&
                         item.getTotalPrice() == item.getUnitPrice()*item.getQuantity()*PRICE_COEFFICIENT;
 
-        boolean isValidItems = order.getCalculations().stream().allMatch(isValidItem);
-        boolean isResultPriceRight = order.getResultPrice() == order.getCalculations().stream()
-                .mapToDouble(ItemForCalculation::getTotalPrice)
+        boolean isValidItems = order.getAdditionalPurchases().stream().allMatch(isValidItem);
+        boolean isResultPriceRight = order.getResultPrice() == order.getAdditionalPurchases().stream()
+                .mapToDouble(ItemForAdditionalPurchases::getTotalPrice)
                 .sum();
         return isValidItems && isResultPriceRight;
 

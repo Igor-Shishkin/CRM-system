@@ -37,7 +37,7 @@ public class OrderInfoDTO extends Order {
         this.setResultPrice(order.getResultPrice());
 
         this.setClient(null);
-        this.setCalculations(order.getCalculations());
+        this.setAdditionalPurchases(order.getAdditionalPurchases());
 
         this.setClientFullName(order.getClient().getFullName());
         this.setClientPhoneNumber(order.getClient().getPhoneNumber());

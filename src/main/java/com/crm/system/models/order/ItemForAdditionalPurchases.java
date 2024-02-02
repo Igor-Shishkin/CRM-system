@@ -8,14 +8,16 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "items")
-public class ItemForCalculation {
+@Table(name = "items_for_additional_purchases")
+public class ItemForAdditionalPurchases {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id")
     private Long itemId;
 
-    private String thing;
+    @Column(name = "item_name")
+    private String itemName;
+
     private int quantity;
 
     @Column(name = "unit_price")

@@ -1,6 +1,6 @@
-import { ItemForCalculation } from "./ItemForCalculation";
+import { ItemForAdditionalPurchases } from "./ItemForAdditionalPurchases";
 
 export class NewCalculations {
-    items: ItemForCalculation[] | undefined;
+    items: ItemForAdditionalPurchases[] | undefined;
     resultPrice: number | undefined;
 }

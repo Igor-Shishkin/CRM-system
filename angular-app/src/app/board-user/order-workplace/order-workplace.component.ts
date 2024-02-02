@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { timer } from 'rxjs';
 import { OrderService } from 'src/app/_services/order.service';
 import { Order } from 'src/entities/Order';
-import { ItemCalculationComponent } from './item-calculation/item-calculation.component';
+import { ItemForAdditionalPurchasesComponent } from './item-for-additional-purchases/item-for-additional-purchases.component';
 import { ConfirmSigningContractComponent } from './confirm-signing-contract/confirm-signing-contract.component';
 import { ConfirmPainmentComponent } from './confirm-painment/confirm-painment.component';
 import { StorageService } from 'src/app/_services/storage.service';
@@ -83,13 +83,13 @@ export class OrderWorkplaceComponent implements OnInit{
     openCalculationDialog(): void {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.width = '870px'; 
-      dialogConfig.data = { items: this.order.calculations, orderId: this.order.orderId };
-      const dialogRef = this.dialog.open(ItemCalculationComponent, dialogConfig);
+      dialogConfig.data = { items: this.order.additionalPurchases, orderId: this.order.orderId };
+      const dialogRef = this.dialog.open(ItemForAdditionalPurchasesComponent, dialogConfig);
   
       dialogRef.afterClosed().subscribe(result => {
         this.orderService.getCalculations(this.order.orderId || -1).subscribe({
           next: data => {
-            this.order.calculations = data.items;
+            this.order.additionalPurchases = data.items;
             this.order.resultPrice = data.resultPrice;
             if (this.order.resultPrice) {
               this.order.resultPrice = +this.order.resultPrice.toFixed(2);
@@ -103,7 +103,7 @@ export class OrderWorkplaceComponent implements OnInit{
       });
     }
     openConfirmSingingDialog(): void {
-      if (this.order.calculations && this.order.calculations.length>0 &&
+      if (this.order.additionalPurchases && this.order.additionalPurchases.length>0 &&
         this.order.resultPrice && this.order.resultPrice>0 && 
         this.order.isCalculationShown !== 'NOT_SHOWN') 
       {

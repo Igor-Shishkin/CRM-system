@@ -1,12 +1,11 @@
 package com.crm.system.services;
 
 import com.crm.system.exception.MismanagementOfTheClientException;
-import com.crm.system.models.order.ItemForCalculation;
+import com.crm.system.models.order.ItemForAdditionalPurchases;
 import com.crm.system.models.order.Order;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,13 +20,13 @@ public class ItemsForCalculationService {
         this.orderService = orderService;
     }
 
-    public void saveItems(Set<ItemForCalculation> items, long orderId)  {
+    public void saveItems(Set<ItemForAdditionalPurchases> items, long orderId)  {
         Order order = orderService.getOrder(orderId);
         if (!order.isAgreementSigned()) {
-            order.getCalculations().clear();
+            order.getAdditionalPurchases().clear();
 
             items = items.stream()
-                    .filter(item -> !item.getThing().isEmpty())
+                    .filter(item -> !item.getItemName().isEmpty())
                     .peek(item -> {
                         item.setOrder(order);
                     })
@@ -36,7 +35,7 @@ public class ItemsForCalculationService {
 
             double sum = calculateResultSum(items);
 
-            order.getCalculations().addAll(items);
+            order.getAdditionalPurchases().addAll(items);
             order.setResultPrice(sum);
             order.setDateOfLastChange(LocalDateTime.now());
 
@@ -48,15 +47,15 @@ public class ItemsForCalculationService {
         }
     }
 
-    private double calculateResultSum(Set<ItemForCalculation> items) {
+    private double calculateResultSum(Set<ItemForAdditionalPurchases> items) {
 
         return items.stream()
                 .filter(item -> item.getTotalPrice()>0)
-                .mapToDouble(ItemForCalculation::getTotalPrice)
+                .mapToDouble(ItemForAdditionalPurchases::getTotalPrice)
                 .sum();
     }
 
-    private void calculateTotalPrice(Set<ItemForCalculation> items) {
+    private void calculateTotalPrice(Set<ItemForAdditionalPurchases> items) {
         items.stream()
                 .filter(item -> item.getQuantity() >= 0 && item.getUnitPrice() >= 0)
                 .forEach(item -> item.setTotalPrice(item.getQuantity() * item.getUnitPrice() * PRICE_COEFFICIENT));

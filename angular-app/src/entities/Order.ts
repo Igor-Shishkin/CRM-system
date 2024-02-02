@@ -1,4 +1,4 @@
-import { ItemForCalculation } from "./ItemForCalculation";
+import { ItemForAdditionalPurchases } from "./ItemForAdditionalPurchases";
 
 export class Order {
     orderId: number | undefined;
@@ -24,7 +24,7 @@ export class Order {
     clientId: number | undefined;
     clientEmail:string | undefined;
 
-    calculations: ItemForCalculation[] | undefined;
+    additionalPurchases: ItemForAdditionalPurchases[] | undefined;
 } 
 
 

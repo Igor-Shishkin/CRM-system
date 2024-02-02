@@ -25,7 +25,7 @@
                     <td class="custom-input-form"  style="width: 410px;">
                         <input class="form-control custom-input-form" type="text" id="item-input"
                             [ngClass]="{ 'wrong-input': isEmptyThing(item) && (item.quantity && item.quantity > 0) }"
-                            [value]="item.thing" [(ngModel)]="item.thing">
+                            [value]="item.itemName" [(ngModel)]="item.itemName">
                     </td>
                     <td class="custom-input-form" style="width: 90px;"> 
                         <input class="form-control custom-input-form" id="quantity-input"

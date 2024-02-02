@@ -1,6 +1,6 @@
-export class ItemForCalculation {
+export class ItemForAdditionalPurchases {
     itemId: number | undefined;
-    thing: string | undefined;
+    itemName: string | undefined;
     quantity: number | undefined;
     unitPrice: number | undefined;
     totalPrice: number | undefined;

@@ -313,13 +313,13 @@
           <button type="button" class="btn btn-outline-success" id="edit-items-button"
             [ngClass]="{ 'wrong-input': isUnableToSignAgreement && !order.isAgreementSigned }"
             (click)="openCalculationDialog()" [disabled]="order.isAgreementSigned">
-            Edit items
-            <span *ngIf="order.calculations?.length==0 || order.resultPrice!<=0">⚠️</span>
+            Edit additional purchases
+            <span *ngIf="order.additionalPurchases?.length==0 || order.resultPrice!<=0">⚠️</span>
           </button>
 
           <button type="button" class="btn btn-outline-success" id="confirm-singing-button"
             (click)="openConfirmSingingDialog()" 
-            [disabled]="order.hasBeenPaid || order.calculations?.length==0 || order.resultPrice!<=0">
+            [disabled]="order.hasBeenPaid || order.additionalPurchases?.length==0 || order.resultPrice!<=0">
             Confirm the signing of the contract
             <span *ngIf="order.isAgreementSigned">✅</span>
           </button>

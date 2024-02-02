@@ -86,7 +86,7 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private Set<ItemForCalculation> calculations = new HashSet<>();
+    private Set<ItemForAdditionalPurchases> additionalPurchases = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")

@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -148,7 +147,7 @@ public class ClientService {
 
         client.getOrders()
                 .forEach(order -> {
-                    order.setCalculations(null);
+                    order.setAdditionalPurchases(null);
                     order.setClient(null);
                 });
         return client;
@@ -203,7 +202,8 @@ public class ClientService {
     private boolean isClientBelongsToActiveUser(Client client) {
 
         Set<Long> allClientIdForUserById = clientRepository.findAllClientIdForUserById(getActiveUserId());
-        return allClientIdForUserById.stream().anyMatch(id -> id.equals(client.getClientId()));
+        return allClientIdForUserById.stream()
+                .anyMatch(id -> id.equals(client.getClientId()));
     }
 
     private boolean hasPaidOrders(Client client) {

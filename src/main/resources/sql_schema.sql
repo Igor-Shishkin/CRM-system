@@ -82,9 +82,9 @@ CREATE TABLE history_messages (
                                   FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-CREATE TABLE items (
+CREATE TABLE items_for_additional_purchases (
                        item_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                       thing TEXT,
+                       item_name TEXT,
                        quantity INT,
                        unit_price DOUBLE,
                        total_price DOUBLE,
@@ -137,7 +137,7 @@ VALUES
     ('Order a handmade table', 1490.3, true, true, false, true, false, true, 0, false, 'Poland, Warszawa', true,
      'SHOWN_ONLINE', 'NOT_SHOWN', '2024-01-10', '2023-12-31', 2);
 
-INSERT INTO items (thing, quantity, unit_price, total_price, order_id)
+INSERT INTO items_for_additional_purchases (item_name, quantity, unit_price, total_price, order_id)
 VALUES
     ('chipboard sheet 400*200', 3, 231.5, 717.65, 1),
     ('chipboard sheet 100*150', 5, 100, 550, 1),
