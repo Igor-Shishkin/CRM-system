@@ -6,9 +6,9 @@
 
 #### Instructions on how to launch the application are in HELP.md file, here I describe the general capabilities
 
-### This document aims to provide you with detailed information on how to use and manage the CRM system effectively.
+## This document aims to provide you with detailed information on how to use and manage the CRM system effectively.
 
-## User Guide
+# User Guide
 
 ### Navigating the Dashboard
 
