@@ -1,10 +1,12 @@
 # Welcome to my final java course project.
 
+### To get acquainted with the capabilities of the application, you can watch this video: https://youtu.be/bUJOEkyztsk
+
 ### Used technologies: Java (Spring Boot 3.15), Angular 16, mySQL
 
 #### Instructions on how to launch the application are in HELP.md file, here I describe the general capabilities
 
-### Welcome to the CRM System Help Guide! This document aims to provide you with detailed information on how to use and manage the CRM system effectively.
+### This document aims to provide you with detailed information on how to use and manage the CRM system effectively.
 
 ## User Guide
 
