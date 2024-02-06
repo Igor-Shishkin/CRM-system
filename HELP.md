@@ -3,6 +3,8 @@
 
 ### The main features are described in Readme file in GitHub repository. Here I will describe the installation.
 
+<br><br>
+
 ## Sequence of actions to start the project:
 #### Upload the project using GitHub CLI = https://github.com/Igor-Shishkin/CRM-system.git
 #### Set up src/main/resources/application.properties
