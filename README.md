@@ -8,6 +8,8 @@
 
 ### This document aims to provide you with detailed information on how to use and manage the CRM system effectively.
 
+
+
 # User Guide
 
 ### Navigating the Dashboard
@@ -25,6 +27,8 @@ On the right side of the navigation menu you can use the 'Profile' and "Log out"
   Here you can perform basic actions for working with the CRM system. 
   From the HOME page you can select the branch you are interested in. 
   At the moment, only the CLIENTS, LEADS and ADMINISTRATION sections are active, the rest are still under development.
+
+
 
 ## Managing (USER_ROLE)
 
@@ -56,6 +60,8 @@ showing the calculations to the client. You also cannot confirm payment for the 
 _*A marketing lead is a person who shows interest in a brand's products or services, 
 which makes the person a potential customer. If the order is paid, the client automatically receives the 
 'CLIENT' status._
+
+
 
 ## Administrating (ADMIN_ROLE)
 
