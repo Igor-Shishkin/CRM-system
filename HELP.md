@@ -29,17 +29,9 @@
 
 ### Open project in IntelliJ
 #### Run the Spring Boot application with IntelliJ (usual running - Shift+F10)
-#### Download the necessary npm and Angular packages:
-- Open terminal (in IntelliJ)
-- enter the following commands into the terminal
-    - **cd .\angular-app\\**
-    - **npm install -g @angular/cli@16**
-    - **npm install bootstrap@4.6.2**
-    - **npm install --force**
-    - **ng add @angular/material**
 
 ### Run the Angular application entering the following commands into the terminal
-- __ng serve --port 8081__
+- `npm install && ng serve --port 8081`
 ### If everything is installed successfully, you can open the browser and launch the application by entering in the address bar:
 - **http://localhost:8081/**
 #### You can log in as administrator (default) with:
