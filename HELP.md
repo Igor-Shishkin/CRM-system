@@ -6,8 +6,8 @@
 <br><br>
 
 ## Sequence of actions to start the project:
-#### Upload the project using GitHub CLI = https://github.com/Igor-Shishkin/CRM-system.git
-#### Set up src/main/resources/application.properties
+#### Download the project using GitHub CLI = https://github.com/Igor-Shishkin/CRM-system.git
+#### [Optional] Set up src/main/resources/application.properties
 - enter your username and password for the SQL database:<br>
   spring.datasource.username=**YOUR_SQL_USER_NAME**<br>
   spring.datasource.password=**YOUR_SQL_PASSWORD**
@@ -20,18 +20,16 @@
   app.crm.admin.name=admin<br>
   app.crm.admin.password=000000
 
-#### To get acquainted with the project's capabilities, I recommend that you run the scripts in the file *src/main/resources/sql_schema.sql*
-- Basic data will be loaded from it, thanks to which you will see how the system operates. If you don't do this, you will still have to manually create the database and tables.
-
 <br><br><br><br>
 
-### You can launch the program in several ways, I will tell you how to do it using the IntelliJ
+#### Start database container
+In one terminal window run `cd server && docker-compose up`
 
-### Open project in IntelliJ
-#### Run the Spring Boot application with IntelliJ (usual running - Shift+F10)
+#### Start server application
+In another terminal window run `mvn clean install -U -DskipTests && mvn spring-boot:run`
 
-### Run the Angular application entering the following commands into the terminal
-- `npm install && ng serve --port 8081`
+#### Start the Angular application
+In yet another terminal window run (if you haven't try terminator!) `npm install && ng serve --port 8081`
 ### If everything is installed successfully, you can open the browser and launch the application by entering in the address bar:
 - **http://localhost:8081/**
 #### You can log in as administrator (default) with:
