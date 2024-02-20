@@ -36,115 +36,77 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @Operation(summary = "Add new Lead", tags = { "Client", "add"})
+    @Operation(summary = "Add new Lead", tags = {"Client", "add"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/add-new-lead")
-    public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLeadDTO addLeadRequest) {
-        try {
-            long leadId = clientService.addNewLead(addLeadRequest);
-            return ResponseEntity.ok(leadId);
-        } catch (UserPrincipalNotFoundException | ClientAlreadyExistException e) {
-            log.error("Adding new lead error: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Adding new lead error: " + e.getMessage()));
-        }
+    public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLeadDTO addLeadRequest)
+                        throws UserPrincipalNotFoundException {
+        long leadId = clientService.addNewLead(addLeadRequest);
+        return ResponseEntity.ok(leadId);
     }
 
-    @Operation(summary = "Sent client to blackList by ID", tags = { "client", "lead", "black list"})
+    @Operation(summary = "Sent client to blackList by ID", tags = {"client", "lead", "black list"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/send-client-to-black-list")
-    public ResponseEntity<?> sendClientToBlackList(@RequestParam long clientId) {
-        try {
-            clientService.sentToBlackList(clientId);
-            return ResponseEntity.ok(new MessageResponse(String.format("Lead with %d id is in blacklist", clientId)));
-        } catch (IllegalArgumentException | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
-            log.error("Sending to blacklist error: " + e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Sending to blacklist error: " + e.getMessage()));
-        }
+    public ResponseEntity<?> sendClientToBlackList(@RequestParam long clientId)
+                        throws UserPrincipalNotFoundException {
+        clientService.sentToBlackList(clientId);
+        return ResponseEntity.ok(new MessageResponse(String.format("Lead with %d id is in blacklist", clientId)));
     }
-    @Operation(summary = "Restore client from blackList by ID", tags = { "client", "lead", "black list"})
+
+    @Operation(summary = "Restore client from blackList by ID", tags = {"client", "lead", "black list"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/restore-client-from-black-list")
-    public ResponseEntity<?> restoreClientFromBlackList(@RequestParam long clientId) {
-        try {
-            clientService.restoreClientFromBlackList(clientId);
-            return ResponseEntity.ok(new MessageResponse(String.format("Client with %d id is restored from black list", clientId)));
-        } catch (IllegalArgumentException | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
-            log.error("Restore from blacklist error: " + e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Restore from blacklist error: " + e.getMessage()));
-        }
+    public ResponseEntity<?> restoreClientFromBlackList(@RequestParam long clientId)
+                        throws UserPrincipalNotFoundException {
+        clientService.restoreClientFromBlackList(clientId);
+        return ResponseEntity.ok(new MessageResponse(String.format("Client with %d id is restored from black list", clientId)));
     }
 
-    @Operation(summary = "Get all clients", tags = { "clients", "get"})
+    @Operation(summary = "Get all clients", tags = {"clients", "get"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/clients")
-    public ResponseEntity<?> getAllClientsForUser() {
-        try {
-            Set<ClientInfoDTO> clients = clientService.getClientsForUser();
-            return ResponseEntity.ok(clients);
-        } catch (UserPrincipalNotFoundException e) {
-            log.error("Authorisation Error: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("User isn't defined: " + e.getMessage()));
-        }
+    public ResponseEntity<?> getAllClientsForUser()
+                        throws UserPrincipalNotFoundException {
+        Set<ClientInfoDTO> clients = clientService.getClientsForUser();
+        return ResponseEntity.ok(clients);
     }
-    @Operation(summary = "Get all Leads", tags = { "leads", "get"})
+
+    @Operation(summary = "Get all Leads", tags = {"leads", "get"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/leads")
-    public ResponseEntity<?> getAllLeadsForUser() {
-        try {
-            List<ClientInfoDTO> leads = clientService.getLeadsForUser();
-            return ResponseEntity.ok(leads);
-        } catch (UserPrincipalNotFoundException e) {
-            log.error("Authorisation Error: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("User isn't defined. " + e.getMessage()));
-        }
+    public ResponseEntity<?> getAllLeadsForUser()
+                        throws UserPrincipalNotFoundException {
+        List<ClientInfoDTO> leads = clientService.getLeadsForUser();
+        return ResponseEntity.ok(leads);
     }
-    @Operation(summary = "Get all blacklist clients", tags = { "blacklist", "get"})
+
+    @Operation(summary = "Get all blacklist clients", tags = {"blacklist", "get"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/get-black-list-clients")
-    public ResponseEntity<?> getBlackListClientsForUser() {
-        try {
-            List<ClientInfoDTO> clients = clientService.getBlackListClientsForUser();
-            return ResponseEntity.ok(clients);
-        } catch (UserPrincipalNotFoundException e) {
-            log.error("Authorisation Error: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("User isn't defined. " + e.getMessage()));
-        }
+    public ResponseEntity<?> getBlackListClientsForUser()
+                        throws UserPrincipalNotFoundException {
+        List<ClientInfoDTO> clients = clientService.getBlackListClientsForUser();
+        return ResponseEntity.ok(clients);
     }
-    @Operation(summary = "Get Client's info", tags = { "client", "info"})
+
+    @Operation(summary = "Get Client's info", tags = {"client", "info"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/client-info")
-    public ResponseEntity<?> getClient(@RequestParam long clientId) {
-        try {
-            Client client = clientService.getClient(clientId);
-            return ResponseEntity.ok(client);
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser | UserPrincipalNotFoundException e) {
-            log.error(e.getMessage() + ". Error: " + e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse(e.getMessage() + ". Error: " + e));
-        }
+    public ResponseEntity<?> getClient(@RequestParam long clientId)
+                        throws UserPrincipalNotFoundException {
+        Client client = clientService.getClient(clientId);
+        return ResponseEntity.ok(client);
     }
 
-    @Operation(summary = "Edit Client's info", tags = { "client", "info"})
+    @Operation(summary = "Edit Client's info", tags = {"client", "info"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("edit-client-data")
-    public ResponseEntity<?> editClientInfo(@RequestBody EditClientDataDTO request) {
-        try {
-            clientService.editClientData(request);
-            return ResponseEntity.ok(new MessageResponse("Changes are saved!"));
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser |
-                 NameOrEmailIsEmptyException | UserPrincipalNotFoundException e) {
-            log.error("Save client data error: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Save client data error: " + e.getMessage()));
-        }
+    public ResponseEntity<?> editClientInfo(@RequestBody EditClientDataDTO request)
+                        throws UserPrincipalNotFoundException {
+        clientService.editClientData(request);
+        return ResponseEntity.ok(new MessageResponse("Changes are saved!"));
     }
-
 
 
 }

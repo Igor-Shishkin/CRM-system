@@ -17,7 +17,7 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 @Slf4j
 @Tag(name = "Email controller", description = "Email management APIs")
-@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials="true")
+@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("/api/email")
 public class EmailController {
@@ -29,16 +29,11 @@ public class EmailController {
     }
 
     @PostMapping("/sent-email")
-    @Operation(summary = "Sent email", tags = { "email", "sent" })
+    @Operation(summary = "Sent email", tags = {"email", "sent"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody SentEmailDTO sentEmailDTO) {
-        try {
-            emailService.sentEmail(sentEmailDTO);
-            return ResponseEntity.ok(new MessageResponse("Payment is confirm"));
-        } catch (MailException | UserPrincipalNotFoundException e) {
-            log.error("Email controller error: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Email controller error: " + e.getMessage()));
-        }
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody SentEmailDTO sentEmailDTO)
+                    throws UserPrincipalNotFoundException {
+        emailService.sentEmail(sentEmailDTO);
+        return ResponseEntity.ok(new MessageResponse("Payment is confirm"));
     }
 }

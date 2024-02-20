@@ -31,108 +31,67 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    @Operation(summary = "Get order", tags = { "Order", "get"})
+    @Operation(summary = "Get order", tags = {"Order", "get"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping()
     public ResponseEntity<?> getOrder(@RequestParam long orderId) {
-        try {
-            OrderInfoDTO orderInfoDTO = orderService.getOrderInfoResponce(orderId);
-            return ResponseEntity.ok(orderInfoDTO);
-        } catch (RequestOptionalIsEmpty e) {
-            log.error("Order controller: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Order controller: " + e.getMessage()));
-        }
+        OrderInfoDTO orderInfoDTO = orderService.getOrderInfoResponce(orderId);
+        return ResponseEntity.ok(orderInfoDTO);
     }
-    @Operation(summary = "Get additional purchases for order", tags = { "Order", "get", "purchases"})
+
+    @Operation(summary = "Get additional purchases for order", tags = {"Order", "get", "purchases"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/additional-purchases")
     public ResponseEntity<?> getAdditionalPurchases(@Valid @RequestParam long orderId) {
-        try {
-            ItemsForAdditionalPurchasesDTO calculations = orderService.getCalculations(orderId);
-            return ResponseEntity.ok(calculations);
-        } catch (RequestOptionalIsEmpty e) {
-            log.error("Order controller: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Order controller: " + e.getMessage()));
-        }
+        ItemsForAdditionalPurchasesDTO calculations = orderService.getCalculations(orderId);
+        return ResponseEntity.ok(calculations);
     }
-    @Operation(summary = "Sign agreement", tags = { "Order", "agreement"})
+
+    @Operation(summary = "Sign agreement", tags = {"Order", "agreement"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/sign-agreement")
-    public ResponseEntity<?> signAgreement(@Valid  @RequestParam long orderId) {
-        try {
-            orderService.signAgreement(orderId);
-            return ResponseEntity.ok(new MessageResponse("Agreement's signed"));
-        } catch (RequestOptionalIsEmpty | MismanagementOfTheClientException e) {
-            log.error("Order controller: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Order controller: " + e.getMessage()));
-        }
+    public ResponseEntity<?> signAgreement(@Valid @RequestParam long orderId) {
+        orderService.signAgreement(orderId);
+        return ResponseEntity.ok(new MessageResponse("Agreement's signed"));
     }
-    @Operation(summary = "Cancel agreement", tags = { "Order", "agreement"})
+
+    @Operation(summary = "Cancel agreement", tags = {"Order", "agreement"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/cancel-agreement")
-    public ResponseEntity<?> cancelAgreement(@Valid  @RequestParam long orderId) {
-        try {
-            orderService.cancelAgreement(orderId);
-            return ResponseEntity.ok(new MessageResponse("Agreement's status is canceled"));
-        } catch (RequestOptionalIsEmpty | MismanagementOfTheClientException e) {
-            log.error("Order controller: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Order controller: " + e.getMessage()));
-        }
+    public ResponseEntity<?> cancelAgreement(@Valid @RequestParam long orderId) {
+        orderService.cancelAgreement(orderId);
+        return ResponseEntity.ok(new MessageResponse("Agreement's status is canceled"));
     }
-    @Operation(summary = "Cancel payment", tags = { "Order", "payment"})
+
+    @Operation(summary = "Cancel payment", tags = {"Order", "payment"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/cancel-payment")
-    public ResponseEntity<?> cancelPayment(@Valid  @RequestParam long orderId) {
-        try {
-            orderService.cancelPayment(orderId);
-            return ResponseEntity.ok(new MessageResponse("Payment by client is canceled"));
-        } catch (RequestOptionalIsEmpty | MismanagementOfTheClientException e) {
-            log.error("Order controller: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Order controller: " + e.getMessage()));
-        }
+    public ResponseEntity<?> cancelPayment(@Valid @RequestParam long orderId) {
+        orderService.cancelPayment(orderId);
+        return ResponseEntity.ok(new MessageResponse("Payment by client is canceled"));
     }
-    @Operation(summary = "Confirm payment", tags = { "Order", "payment"})
+
+    @Operation(summary = "Confirm payment", tags = {"Order", "payment"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/confirm-payment")
-    public ResponseEntity<?> confirmPayment(@Valid  @RequestParam long orderId) {
-        try {
-            orderService.confirmPayment(orderId);
-            return ResponseEntity.ok(new MessageResponse("Payment is confirm"));
-        } catch (RequestOptionalIsEmpty | MismanagementOfTheClientException e) {
-            log.error("Order controller: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Order controller: " + e.getMessage()));
-        }
+    public ResponseEntity<?> confirmPayment(@Valid @RequestParam long orderId) {
+        orderService.confirmPayment(orderId);
+        return ResponseEntity.ok(new MessageResponse("Payment is confirm"));
     }
-    @Operation(summary = "Save changes", tags = { "Order", "change"})
+
+    @Operation(summary = "Save changes", tags = {"Order", "change"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/save-order-changes")
-    public ResponseEntity<?> saveOrderChanges(@Valid  @RequestBody ChangeOrderDTO changeOrderDTO) {
-        try {
-            orderService.saveOrderChanges(changeOrderDTO);
-            return ResponseEntity.ok(new MessageResponse("Changes are saved"));
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser e) {
-            log.error("Order controller: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Order controller: " + e.getMessage()));
-        }
+    public ResponseEntity<?> saveOrderChanges(@Valid @RequestBody ChangeOrderDTO changeOrderDTO) {
+        orderService.saveOrderChanges(changeOrderDTO);
+        return ResponseEntity.ok(new MessageResponse("Changes are saved"));
     }
-    @Operation(summary = "Create new order", tags = { "Order", "new"})
+
+    @Operation(summary = "Create new order", tags = {"Order", "new"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/create-new-order")
-    public ResponseEntity<?> createNewOrder(@Valid  @RequestBody CreateNewOrderDTO createNewOrderDTO) {
-        try {
-            long newOrderID = orderService.createNewOrder(createNewOrderDTO);
-            return ResponseEntity.ok(newOrderID);
-        } catch (RequestOptionalIsEmpty | SubjectNotBelongToActiveUser e) {
-            log.error("Order controller: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Order controller: " + e.getMessage()));
-        }
+    public ResponseEntity<?> createNewOrder(@Valid @RequestBody CreateNewOrderDTO createNewOrderDTO) {
+        long newOrderID = orderService.createNewOrder(createNewOrderDTO);
+        return ResponseEntity.ok(newOrderID);
     }
 }
