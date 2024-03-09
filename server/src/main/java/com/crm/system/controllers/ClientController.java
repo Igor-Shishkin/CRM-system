@@ -1,21 +1,15 @@
 package com.crm.system.controllers;
 
-import com.crm.system.exception.ClientAlreadyExistException;
-import com.crm.system.exception.NameOrEmailIsEmptyException;
-import com.crm.system.exception.RequestOptionalIsEmpty;
-import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
 import com.crm.system.playload.request.AddLeadDTO;
 import com.crm.system.playload.request.EditClientDataDTO;
 import com.crm.system.playload.response.ClientInfoDTO;
 import com.crm.system.playload.response.MessageResponse;
-import com.crm.system.repository.UserRepository;
 import com.crm.system.services.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +26,7 @@ import java.util.Set;
 public class ClientController {
     private final ClientService clientService;
 
-    public ClientController(ClientService clientService, UserRepository userRepository) {
+    public ClientController(ClientService clientService) {
         this.clientService = clientService;
     }
 
@@ -48,8 +42,7 @@ public class ClientController {
     @Operation(summary = "Sent client to blackList by ID", tags = {"client", "lead", "black list"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/send-client-to-black-list")
-    public ResponseEntity<?> sendClientToBlackList(@RequestParam long clientId)
-                        throws UserPrincipalNotFoundException {
+    public ResponseEntity<?> sendClientToBlackList(@RequestParam long clientId) {
         clientService.sentToBlackList(clientId);
         return ResponseEntity.ok(new MessageResponse(String.format("Lead with %d id is in blacklist", clientId)));
     }
@@ -57,8 +50,7 @@ public class ClientController {
     @Operation(summary = "Restore client from blackList by ID", tags = {"client", "lead", "black list"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/restore-client-from-black-list")
-    public ResponseEntity<?> restoreClientFromBlackList(@RequestParam long clientId)
-                        throws UserPrincipalNotFoundException {
+    public ResponseEntity<?> restoreClientFromBlackList(@RequestParam long clientId) {
         clientService.restoreClientFromBlackList(clientId);
         return ResponseEntity.ok(new MessageResponse(String.format("Client with %d id is restored from black list", clientId)));
     }
@@ -93,8 +85,7 @@ public class ClientController {
     @Operation(summary = "Get Client's info", tags = {"client", "info"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/client-info")
-    public ResponseEntity<?> getClient(@RequestParam long clientId)
-                        throws UserPrincipalNotFoundException {
+    public ResponseEntity<?> getClient(@RequestParam long clientId) {
         Client client = clientService.getClient(clientId);
         return ResponseEntity.ok(client);
     }
@@ -102,8 +93,7 @@ public class ClientController {
     @Operation(summary = "Edit Client's info", tags = {"client", "info"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("edit-client-data")
-    public ResponseEntity<?> editClientInfo(@RequestBody EditClientDataDTO request)
-                        throws UserPrincipalNotFoundException {
+    public ResponseEntity<?> editClientInfo(@RequestBody EditClientDataDTO request) {
         clientService.editClientData(request);
         return ResponseEntity.ok(new MessageResponse("Changes are saved!"));
     }

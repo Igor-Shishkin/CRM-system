@@ -54,7 +54,7 @@ public class HistoryMessageController {
     @Operation(summary = "Delete history message", tags = {"history", "delete"})
     @DeleteMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> deleteMessage(@RequestParam long messageId) throws UserPrincipalNotFoundException {
+    public ResponseEntity<?> deleteMessage(@RequestParam long messageId) {
         historyMessageService.deleteMessage(messageId);
         return ResponseEntity.ok(new MessageResponse("Message is deleted"));
     }
@@ -62,7 +62,7 @@ public class HistoryMessageController {
     @Operation(summary = "Change important status of message", tags = {"history", "status"})
     @PutMapping("/change-important-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> changeImportantStatus(@RequestParam long messageId) throws UserPrincipalNotFoundException {
+    public ResponseEntity<?> changeImportantStatus(@RequestParam long messageId) {
         historyMessageService.changeImportantStatus(messageId);
         return ResponseEntity.ok(new MessageResponse("Status is changed"));
     }
@@ -70,7 +70,7 @@ public class HistoryMessageController {
     @Operation(summary = "Change important status of message", tags = {"history", "status"})
     @PutMapping("/change-done-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> changeDoneStatus(@RequestParam long messageId) throws UserPrincipalNotFoundException {
+    public ResponseEntity<?> changeDoneStatus(@RequestParam long messageId) {
         historyMessageService.changeDoneStatus(messageId);
         return ResponseEntity.ok(new MessageResponse("Status is changed"));
     }

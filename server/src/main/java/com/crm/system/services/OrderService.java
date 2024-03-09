@@ -16,8 +16,6 @@ import com.crm.system.playload.response.OrderInfoDTO;
 import com.crm.system.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDateTime;
 import java.util.function.Predicate;
 
@@ -40,14 +38,12 @@ public class OrderService {
 
     public OrderInfoDTO getOrderInfoResponce(long orderId) {
         Order order = getOrderById(orderId);
-        OrderInfoDTO orderInfoDTO = new OrderInfoDTO(order);
-        return orderInfoDTO;
+        return new OrderInfoDTO(order);
     }
 
 
     public Order getOrder(long orderId) {
-        Order order = getOrderById(orderId);
-        return order;
+        return getOrderById(orderId);
     }
 
     public ItemsForAdditionalPurchasesDTO getCalculations(long orderId) {
@@ -63,7 +59,7 @@ public class OrderService {
         saveDateOfLastChangeForClient(order.getClient());
     }
 
-    public void signAgreement(long orderId) throws UserPrincipalNotFoundException {
+    public void signAgreement(long orderId){
         Order order = getOrderById(orderId);
         if (order.isAgreementSigned()) {
             throw new MismanagementOfTheClientException("Agreement is already signed");
@@ -85,7 +81,7 @@ public class OrderService {
         }
     }
 
-    public void cancelAgreement(long orderId) throws UserPrincipalNotFoundException {
+    public void cancelAgreement(long orderId) {
         Order order = getOrderById(orderId);
         if (!order.isAgreementSigned()) {
             throw new MismanagementOfTheClientException("Agreement isn't signed");
@@ -105,7 +101,7 @@ public class OrderService {
         }
     }
 
-    public void confirmPayment(long orderId) throws UserPrincipalNotFoundException {
+    public void confirmPayment(long orderId){
         Order order = getOrderById(orderId);
         if (order.isHasBeenPaid()) {
             throw new MismanagementOfTheClientException("payment was already made");
@@ -127,7 +123,7 @@ public class OrderService {
         }
     }
 
-    public void cancelPayment(long orderId) throws UserPrincipalNotFoundException {
+    public void cancelPayment(long orderId){
         Order order = getOrderById(orderId);
         if (!order.isHasBeenPaid()) {
             throw new MismanagementOfTheClientException("Payment was not made");
@@ -156,7 +152,7 @@ public class OrderService {
         saveDateOfLastChangeForClient(order.getClient());
     }
 
-    public long createNewOrder(CreateNewOrderDTO request) throws UserPrincipalNotFoundException {
+    public long createNewOrder(CreateNewOrderDTO request) {
         Client currentClient = getClientById(request.getClientId());
         Order newOrder = new Order(request.getRealNeed(), request.getEstimateBudget(), currentClient);
         Order savedOrder = orderRepository.save(newOrder);
@@ -169,8 +165,7 @@ public class OrderService {
     }
 
     private Client getClientById(long clientId)  {
-        Client currentClient = clientService.getClientById(clientId);
-        return currentClient;
+        return clientService.getClientById(clientId);
     }
 
     private void setChangedParameters(Order order, ChangeOrderDTO changedOrder) {
@@ -221,11 +216,10 @@ public class OrderService {
 
     private Order getOrderById(long orderId) {
         long activeUserId = userService.getActiveUserId();
-        Order order = orderRepository.getOrderByOrderIdAndUserId(orderId, activeUserId)
+        return orderRepository.getOrderByOrderIdAndUserId(orderId, activeUserId)
                 .orElseThrow(() -> new RequestOptionalIsEmpty("You don't have order with this ID"));
-        return order;
     }
-    private void createNewHistoryMessage(Client client, String textMessage) throws UserPrincipalNotFoundException {
+    private void createNewHistoryMessage(Client client, String textMessage) {
         historyMessageService.automaticallyCreateMessage(new HistoryMessage.Builder()
                 .withMessageText(textMessage)
                 .withIsDone(true)

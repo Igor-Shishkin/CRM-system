@@ -14,10 +14,6 @@ import com.crm.system.playload.request.AddLeadDTO;
 import com.crm.system.playload.request.EditClientDataDTO;
 import com.crm.system.playload.response.ClientInfoDTO;
 import com.crm.system.repository.ClientRepository;
-import com.crm.system.repository.UserRepository;
-import com.crm.system.security.services.UserDetailsImpl;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
@@ -32,7 +28,8 @@ public class ClientService {
     private final UserService userService;
     private final HistoryMessageService historyMessageService;
 
-    public ClientService(ClientRepository clientRepository, UserService userService, UserRepository userRepository, HistoryMessageService historyMessageService) {
+    public ClientService(ClientRepository clientRepository, UserService userService,
+                         HistoryMessageService historyMessageService) {
         this.clientRepository = clientRepository;
         this.userService = userService;
         this.historyMessageService = historyMessageService;
@@ -122,7 +119,7 @@ public class ClientService {
     }
 
 
-    public void sentToBlackList(long clientId) throws UserPrincipalNotFoundException, SubjectNotBelongToActiveUser {
+    public void sentToBlackList(long clientId) throws SubjectNotBelongToActiveUser {
 
         Client client = getClientById(clientId);
 
@@ -141,7 +138,7 @@ public class ClientService {
                 .build());
     }
 
-    public void restoreClientFromBlackList(long clientId) throws UserPrincipalNotFoundException, SubjectNotBelongToActiveUser {
+    public void restoreClientFromBlackList(long clientId) throws SubjectNotBelongToActiveUser {
 
         Client client = getClientById(clientId);
 
@@ -163,7 +160,7 @@ public class ClientService {
     }
 
 
-    public Client getClient(long clientId) throws UserPrincipalNotFoundException {
+    public Client getClient(long clientId) {
         Client client = getClientById(clientId);
 
         client.getOrders()
@@ -175,7 +172,7 @@ public class ClientService {
 
     }
 
-    public void editClientData(EditClientDataDTO request) throws UserPrincipalNotFoundException {
+    public void editClientData(EditClientDataDTO request) {
         if (request.getFullName().isBlank() ||
                 request.getEmail().isBlank()) {
             throw new NameOrEmailIsEmptyException("Name and email can't be empty!");
@@ -207,12 +204,6 @@ public class ClientService {
 
     public void saveClient(Client client) {
         clientRepository.save(client);
-    }
-
-    private long getActiveUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
-        return userId;
     }
 
     private boolean isClientBelongsToActiveUser(Client client) {

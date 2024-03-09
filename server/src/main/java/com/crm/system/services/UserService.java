@@ -68,8 +68,7 @@ public class UserService {
 
     public long getActiveUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = ((UserDetailsImpl) authentication.getPrincipal()).getId();
-        return userId;
+        return ((UserDetailsImpl) authentication.getPrincipal()).getId();
     }
     private HttpHeaders getHeaders(byte[] photoOfUser) {
         HttpHeaders headers = new HttpHeaders();

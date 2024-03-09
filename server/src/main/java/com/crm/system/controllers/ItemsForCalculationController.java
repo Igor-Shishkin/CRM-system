@@ -1,8 +1,5 @@
 package com.crm.system.controllers;
 
-import com.crm.system.exception.MismanagementOfTheClientException;
-import com.crm.system.exception.RequestOptionalIsEmpty;
-import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.order.ItemForAdditionalPurchases;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.services.ItemsForCalculationService;

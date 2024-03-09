@@ -3,7 +3,6 @@ package com.crm.system.controllers;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.*;
 
-import com.crm.system.exception.UserAlreadyExistsException;
 import com.crm.system.playload.request.LoginDTO;
 import com.crm.system.playload.request.SignUpDTO;
 import com.crm.system.playload.response.MessageResponse;
@@ -11,11 +10,9 @@ import com.crm.system.security.services.UserDetailsServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,7 +39,7 @@ public class AuthController {
         Authentication authentication = authenticationManager
               .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
         ResponseEntity<?> responseEntity = userDetailsService.authenticateUser(authentication);
-        log.info("User {} is logged", Objects.requireNonNull(responseEntity.getBody()).toString());
+        log.info("User {} is logged", Objects.requireNonNull(responseEntity.getBody()));
         return responseEntity;
     }
 

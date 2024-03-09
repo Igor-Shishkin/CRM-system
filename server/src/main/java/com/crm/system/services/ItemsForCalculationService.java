@@ -16,7 +16,7 @@ public class ItemsForCalculationService {
     @Value("${app.crm.price.coefficient}")
     private double PRICE_COEFFICIENT;
 
-    public ItemsForCalculationService(UserService userService, OrderService orderService) {
+    public ItemsForCalculationService(OrderService orderService) {
         this.orderService = orderService;
     }
 
@@ -27,9 +27,7 @@ public class ItemsForCalculationService {
 
             items = items.stream()
                     .filter(item -> !item.getItemName().isEmpty())
-                    .peek(item -> {
-                        item.setOrder(order);
-                    })
+                    .peek(item -> item.setOrder(order))
                     .collect(Collectors.toSet());
             calculateTotalPrice(items);
 

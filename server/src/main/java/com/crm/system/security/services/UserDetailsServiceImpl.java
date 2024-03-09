@@ -60,11 +60,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return UserDetailsImpl.build(user);
     }
 
-    public List<User> getAllUsers() {
-        List<User> allUser = userRepository.findAll();
-        return allUser;
-    }
-
     public ResponseEntity<UserInfoDTO> authenticateUser(Authentication authentication) {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -112,8 +107,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     public ResponseCookie logoutUser() {
-        ResponseCookie cookie = jwtUtils.getCleanJwtCookie();
-        return cookie;
+        return jwtUtils.getCleanJwtCookie();
     }
     public String deleteUserById(long userId) throws UserPrincipalNotFoundException {
         User user = userRepository.findById(userId)

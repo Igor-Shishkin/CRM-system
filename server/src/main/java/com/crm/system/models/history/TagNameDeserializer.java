@@ -8,8 +8,8 @@ import java.io.IOException;
 
 public class TagNameDeserializer extends JsonDeserializer<TagName> {
     @Override
-    public TagName deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, IOException {
+    public TagName deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
         String value = p.getValueAsString();
-        return TagName.valueOf(value); // Assuming your Enum has a valueOf() method
+        return TagName.valueOf(value);
     }
 }

@@ -17,7 +17,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleAllExceptions(Exception exception) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        String message = "";
+        String message;
 
         if (exception instanceof AuthenticationCredentialsNotFoundException) {
             status = HttpStatus.NOT_ACCEPTABLE;
