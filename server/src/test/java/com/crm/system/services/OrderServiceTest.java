@@ -3,6 +3,7 @@ package com.crm.system.services;
 import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.models.Client;
+import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.models.order.InfoIsShown;
 import com.crm.system.models.order.ItemForAdditionalPurchases;
 import com.crm.system.models.order.Order;
@@ -10,7 +11,6 @@ import com.crm.system.playload.request.ChangeOrderDTO;
 import com.crm.system.playload.request.CreateNewOrderDTO;
 import com.crm.system.playload.response.ItemsForAdditionalPurchasesDTO;
 import com.crm.system.playload.response.OrderInfoDTO;
-import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.OrderRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,8 +36,6 @@ class OrderServiceTest {
     @Mock
     private UserService userService;
     @Mock
-    private ClientRepository clientRepository;
-    @Mock
     private HistoryMessageService historyMessageService;
     @Mock
     private ClientService clientService;
@@ -49,7 +47,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(1L, userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         OrderInfoDTO resultOrderInfoResponce = orderService.getOrderInfoResponce(1L);
 
@@ -69,7 +67,7 @@ class OrderServiceTest {
     void get_order_success() {
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(1L, userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         Order resultOrder = orderService.getOrder(1L);
 
@@ -94,7 +92,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(1L, userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         ItemsForAdditionalPurchasesDTO resultCalculations = orderService.getCalculations(1L);
 
@@ -122,7 +120,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         MismanagementOfTheClientException exception = assertThrows(MismanagementOfTheClientException.class, () ->
                 orderService.signAgreement(orderExample.getOrderId()));
@@ -136,7 +134,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         MismanagementOfTheClientException exception = assertThrows(MismanagementOfTheClientException.class, () ->
                 orderService.signAgreement(orderExample.getOrderId()));
@@ -152,7 +150,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         MismanagementOfTheClientException exception = assertThrows(MismanagementOfTheClientException.class, () ->
                 orderService.signAgreement(orderExample.getOrderId()));
@@ -168,7 +166,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         MismanagementOfTheClientException exception = assertThrows(MismanagementOfTheClientException.class, () ->
                 orderService.signAgreement(orderExample.getOrderId()));
@@ -184,7 +182,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         MismanagementOfTheClientException exception = assertThrows(MismanagementOfTheClientException.class, () ->
                 orderService.signAgreement(orderExample.getOrderId()));
@@ -200,7 +198,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         MismanagementOfTheClientException exception = assertThrows(MismanagementOfTheClientException.class, () ->
                 orderService.signAgreement(orderExample.getOrderId()));
@@ -216,7 +214,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         MismanagementOfTheClientException exception = assertThrows(MismanagementOfTheClientException.class, () ->
                 orderService.signAgreement(orderExample.getOrderId()));
@@ -239,13 +237,12 @@ class OrderServiceTest {
         setPriceCoefficient(1.1);
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         orderService.signAgreement(orderExample.getOrderId());
 
         verify(orderRepository).save(orderExample);
-        verify(historyMessageService).createImportantHistoryMessageForClient(orderExample.getClient(),
-                "Signed an agreement with ".concat(orderExample.getClient().getFullName()));
+        verify(historyMessageService).automaticallyCreateMessage(any(HistoryMessage.class));
         verify(clientService).saveClient(orderExample.getClient());
 
         assertThat(orderExample.isAgreementSigned()).isTrue();
@@ -258,7 +255,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         MismanagementOfTheClientException exception = assertThrows(MismanagementOfTheClientException.class,
                 () -> orderService.cancelAgreement(orderExample.getOrderId()));
@@ -271,7 +268,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         MismanagementOfTheClientException exception = assertThrows(MismanagementOfTheClientException.class,
                 () -> orderService.cancelAgreement(orderExample.getOrderId()));
@@ -284,13 +281,12 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         orderService.cancelAgreement(orderExample.getOrderId());
 
         verify(orderRepository).save(orderExample);
-        verify(historyMessageService).createImportantHistoryMessageForClient(orderExample.getClient(),
-                String.format("The contract with %s was canceled", orderExample.getClient().getFullName()));
+        verify(historyMessageService).automaticallyCreateMessage(any(HistoryMessage.class));
         verify(clientService).saveClient(orderExample.getClient());
 
         assertThat(orderExample.isAgreementSigned()).isFalse();
@@ -301,7 +297,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         MismanagementOfTheClientException exception = assertThrows(MismanagementOfTheClientException.class,
                 () -> orderService.confirmPayment(orderExample.getOrderId()));
@@ -315,7 +311,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         MismanagementOfTheClientException exception = assertThrows(MismanagementOfTheClientException.class,
                 () -> orderService.confirmPayment(orderExample.getOrderId()));
@@ -329,13 +325,12 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         orderService.confirmPayment(orderExample.getOrderId());
 
         verify(orderRepository).save(orderExample);
-        verify(historyMessageService).createImportantHistoryMessageForClient(orderExample.getClient(),
-                String.format("'You have confirmed payment by %s", orderExample.getClient().getFullName()));
+        verify(historyMessageService).automaticallyCreateMessage(any(HistoryMessage.class));
         verify(clientService).saveClient(orderExample.getClient());
 
         assertThat(orderExample.isHasBeenPaid()).isTrue();
@@ -346,7 +341,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         MismanagementOfTheClientException exception = assertThrows(MismanagementOfTheClientException.class,
                 () -> orderService.cancelPayment(orderExample.getOrderId()));
@@ -358,13 +353,12 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         orderService.cancelPayment(orderExample.getOrderId());
 
         verify(orderRepository).save(orderExample);
-        verify(historyMessageService).createImportantHistoryMessageForClient(orderExample.getClient(),
-                String.format("'You have canceled payment by %s", orderExample.getClient().getFullName()));
+        verify(historyMessageService).automaticallyCreateMessage(any(HistoryMessage.class));
         verify(clientService).saveClient(orderExample.getClient());
 
         assertThat(orderExample.isHasBeenPaid()).isFalse();
@@ -378,7 +372,7 @@ class OrderServiceTest {
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(orderExample.getOrderId(), userService.getActiveUserId()))
-                .thenReturn(Optional.ofNullable(orderExample));
+                .thenReturn(Optional.of(orderExample));
 
         orderService.saveOrderChanges(changedOrderDTO);
 
@@ -404,15 +398,14 @@ class OrderServiceTest {
         assertThat(orderService.createNewOrder(request)).isEqualTo(7L);
 
         verify(orderRepository).save(any(Order.class));
-        verify(historyMessageService).createImportantHistoryMessageForClient(orderExample.getClient(),
-                String.format("You have a new order from %s client. Congratulations!", clientExample.getFullName()));
+        verify(historyMessageService).automaticallyCreateMessage(any(HistoryMessage.class));
         verify(clientService).saveClient(orderExample.getClient());
 
     }
 
-    private static Order orderExample;
-    private static Client clientExample;
-    private static ItemForAdditionalPurchases itemTwo;
+    private static final Order orderExample;
+    private static final Client clientExample;
+    private static final ItemForAdditionalPurchases itemTwo;
 
     static {
         clientExample = new Client("John Smith", "John@gmail.com",
