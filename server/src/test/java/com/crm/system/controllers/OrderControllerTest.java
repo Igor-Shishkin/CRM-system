@@ -41,9 +41,9 @@ class OrderControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private static OrderInfoDTO expectedDTO;
-    private static ItemsForAdditionalPurchasesDTO expectedItemsForAdditionalPurchasesDTO;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private static final OrderInfoDTO expectedDTO;
+    private static final ItemsForAdditionalPurchasesDTO expectedItemsForAdditionalPurchasesDTO;
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
@@ -79,15 +79,15 @@ class OrderControllerTest {
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message")
-                        .value("Order controller: You don't have order with this ID"));
+                        .value("You don't have order with this ID"));
     }
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void get_calculations_by_order_id_success() throws Exception {
-        when(orderService.getCalculations(1L)).thenReturn(expectedItemsForAdditionalPurchasesDTO);
+        when(orderService.getAdditionalPurchases(1L)).thenReturn(expectedItemsForAdditionalPurchasesDTO);
 
-        mockMvc.perform(get("/api/user-board/order/calculations")
+        mockMvc.perform(get("/api/user-board/order/additional-purchases")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
@@ -98,16 +98,16 @@ class OrderControllerTest {
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void get_calculations_by_order_id_error() throws Exception {
-        when(orderService.getCalculations(1L))
+        when(orderService.getAdditionalPurchases(1L))
                 .thenThrow(new RequestOptionalIsEmpty("You don't have order with this ID"));
 
-        mockMvc.perform(get("/api/user-board/order/calculations")
+        mockMvc.perform(get("/api/user-board/order/additional-purchases")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message")
-                        .value("Order controller: You don't have order with this ID"));
+                        .value("You don't have order with this ID"));
     }
 
     @Test
@@ -135,7 +135,7 @@ class OrderControllerTest {
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message")
-                        .value("Order controller: Agreement is already signed"));
+                        .value("Agreement is already signed"));
     }
 
     @Test
@@ -152,7 +152,7 @@ class OrderControllerTest {
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message")
-                        .value("Order controller: You don't have order with this ID"));
+                        .value("You don't have order with this ID"));
     }
 
     @Test
@@ -178,7 +178,7 @@ class OrderControllerTest {
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message")
-                        .value("Order controller: You don't have order with this ID"));
+                        .value("You don't have order with this ID"));
     }
     @Test
     @WithMockUser(username = "user", roles = "USER")
@@ -192,7 +192,7 @@ class OrderControllerTest {
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message")
-                        .value("Order controller: Agreement isn't signed"));
+                        .value("Agreement isn't signed"));
     }
     @Test
     @WithMockUser(username = "user", roles = "USER")
@@ -206,7 +206,7 @@ class OrderControllerTest {
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message")
-                        .value("Order controller: Payment was not made"));
+                        .value("Payment was not made"));
     }
     @Test
     @WithMockUser(username = "user", roles = "USER")
@@ -242,7 +242,7 @@ class OrderControllerTest {
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message")
-                        .value("Order controller: Payment was not made"));
+                        .value("Payment was not made"));
     }
     @Test
     @WithMockUser(username = "user", roles = "USER")
@@ -257,7 +257,7 @@ class OrderControllerTest {
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message")
-                        .value("Order controller: You don't have order with this ID"));
+                        .value("You don't have order with this ID"));
     }
 
     @Test
@@ -300,7 +300,7 @@ class OrderControllerTest {
                         .with(csrf()))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message")
-                        .value("Order controller: You don't have order with this ID"));
+                        .value("You don't have order with this ID"));
     }
 
     @Test
@@ -345,7 +345,7 @@ class OrderControllerTest {
                         .with(csrf()))
                 .andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.message")
-                   .value("Order controller: It's not your Client. You don't have access to this Client."));
+                   .value("It's not your Client. You don't have access to this Client."));
     }
 
     static {

@@ -94,7 +94,7 @@ class OrderServiceTest {
         when(orderRepository.getOrderByOrderIdAndUserId(1L, userService.getActiveUserId()))
                 .thenReturn(Optional.of(orderExample));
 
-        ItemsForAdditionalPurchasesDTO resultCalculations = orderService.getCalculations(1L);
+        ItemsForAdditionalPurchasesDTO resultCalculations = orderService.getAdditionalPurchases(1L);
 
         assertThat(resultCalculations).isEqualTo(expectedCalculation);
     }
@@ -104,7 +104,7 @@ class OrderServiceTest {
                 .thenThrow(new RequestOptionalIsEmpty("You don't have an order with this ID"));
 
         assertThrows(RequestOptionalIsEmpty.class, () ->
-                orderService.getCalculations(1L));
+                orderService.getAdditionalPurchases(1L));
     }
 
     @Test

@@ -46,7 +46,7 @@ public class OrderService {
         return getOrderById(orderId);
     }
 
-    public ItemsForAdditionalPurchasesDTO getCalculations(long orderId) {
+    public ItemsForAdditionalPurchasesDTO getAdditionalPurchases(long orderId) {
         Order order = getOrderById(orderId);
         ItemsForAdditionalPurchasesDTO calculations = new ItemsForAdditionalPurchasesDTO();
         calculations.setItems(order.getAdditionalPurchases());

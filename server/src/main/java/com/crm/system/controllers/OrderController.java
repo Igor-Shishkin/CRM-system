@@ -41,7 +41,7 @@ public class OrderController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/additional-purchases")
     public ResponseEntity<?> getAdditionalPurchases(@Valid @RequestParam long orderId) {
-        ItemsForAdditionalPurchasesDTO calculations = orderService.getCalculations(orderId);
+        ItemsForAdditionalPurchasesDTO calculations = orderService.getAdditionalPurchases(orderId);
         return ResponseEntity.ok(calculations);
     }
 
