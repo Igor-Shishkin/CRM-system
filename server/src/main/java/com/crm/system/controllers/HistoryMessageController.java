@@ -1,7 +1,5 @@
 package com.crm.system.controllers;
 
-import com.crm.system.exception.RequestOptionalIsEmpty;
-import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.playload.response.TagForHistoryMessageDTO;

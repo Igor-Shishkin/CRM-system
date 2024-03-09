@@ -1,5 +1,6 @@
 package com.crm.system.services;
 
+import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.playload.request.SentEmailDTO;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,10 +13,13 @@ public class EmailService {
 
     private final HistoryMessageService historyMessageService;
     private final JavaMailSender javaMailSender;
+    private final UserService userService;
 
-    public EmailService(UserService userService, HistoryMessageService historyMessageService, JavaMailSender javaMailSender) {
+    public EmailService(UserService userService, HistoryMessageService historyMessageService,
+                        JavaMailSender javaMailSender) {
         this.historyMessageService = historyMessageService;
         this.javaMailSender = javaMailSender;
+        this.userService = userService;
     }
 
 
@@ -31,10 +35,15 @@ public class EmailService {
     }
 
     private void createHistoryMessage(SentEmailDTO sentEmailDTO) throws UserPrincipalNotFoundException {
-        String messageText = "Send email '" + sentEmailDTO.getSubjectOfMail() + "'";
-        String messageNote = sentEmailDTO.getTextOfEmail();
+        String messageText = "Send email: " + sentEmailDTO.getSubjectOfMail() + "'";
 
-        historyMessageService.createHistoryMessageWithTagInfo(messageText, messageNote, sentEmailDTO.getTagName(),
-                sentEmailDTO.getTagId(), false, true);
+        historyMessageService.automaticallyCreateMessage(new HistoryMessage.Builder()
+                .withMessageText(messageText)
+                .withIsDone(true)
+                .withIsImportant(false)
+                .withTagName(sentEmailDTO.getTagName())
+                .withTagId(sentEmailDTO.getTagId())
+                .withUser(userService.getActiveUser())
+                .build());
     }
 }

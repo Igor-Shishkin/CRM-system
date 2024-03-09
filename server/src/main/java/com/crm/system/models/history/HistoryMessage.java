@@ -8,7 +8,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.util.Pair;
 
@@ -20,6 +22,8 @@ import java.util.Map;
 @Table(name = "history_messages")
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class HistoryMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,6 +70,63 @@ public class HistoryMessage {
         this.messageText = messageText;
         this.dateOfCreation = LocalDateTime.now();
     }
-    public HistoryMessage() {
+    public static class Builder {
+        private Long messageId;
+        private String messageText;
+        private LocalDateTime deadline;
+        private boolean isImportant;
+        private boolean isDone;
+        private String note;
+        private TagName tagName;
+        private long tagId;
+        private User user;
+        public Builder withMessageId(long messageId) {
+            this.messageId = messageId;
+            return this;
+        }
+        public Builder withMessageText(String messageText) {
+            this.messageText = messageText;
+            return this;
+        }
+        public Builder withDeadline(LocalDateTime deadline) {
+            this.deadline = deadline;
+            return this;
+        }
+        public Builder withIsImportant(boolean isImportant) {
+            this.isImportant = isImportant;
+            return this;
+        }
+        public Builder withIsDone(boolean isDone) {
+            this.isDone = isDone;
+            return this;
+        }
+        public Builder withNote(String note) {
+            this.note = note;
+            return this;
+        }
+        public Builder withTagName(TagName tagName) {
+            this.tagName = tagName;
+            return this;
+        }
+        public Builder withTagId(long tagId) {
+            this.tagId = tagId;
+            return this;
+        }
+        public Builder withUser(User user) {
+            this.user = user;
+            return this;
+        }
+        public HistoryMessage build(){
+            return new HistoryMessage(this.messageId,
+                    this.messageText,
+                    LocalDateTime.now(),
+                    this.deadline,
+                    this.isImportant,
+                    this.isDone,
+                    this.note,
+                    this.tagName,
+                    this.tagId,
+                    this.user);
+        }
     }
 }

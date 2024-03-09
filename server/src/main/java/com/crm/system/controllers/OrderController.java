@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+
 @Slf4j
 @Tag(name = "Order controller", description = "Order management APIs")
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
@@ -50,7 +52,7 @@ public class OrderController {
     @Operation(summary = "Sign agreement", tags = {"Order", "agreement"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/sign-agreement")
-    public ResponseEntity<?> signAgreement(@Valid @RequestParam long orderId) {
+    public ResponseEntity<?> signAgreement(@Valid @RequestParam long orderId) throws UserPrincipalNotFoundException {
         orderService.signAgreement(orderId);
         return ResponseEntity.ok(new MessageResponse("Agreement's signed"));
     }
@@ -58,7 +60,7 @@ public class OrderController {
     @Operation(summary = "Cancel agreement", tags = {"Order", "agreement"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/cancel-agreement")
-    public ResponseEntity<?> cancelAgreement(@Valid @RequestParam long orderId) {
+    public ResponseEntity<?> cancelAgreement(@Valid @RequestParam long orderId) throws UserPrincipalNotFoundException {
         orderService.cancelAgreement(orderId);
         return ResponseEntity.ok(new MessageResponse("Agreement's status is canceled"));
     }
@@ -66,7 +68,7 @@ public class OrderController {
     @Operation(summary = "Cancel payment", tags = {"Order", "payment"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/cancel-payment")
-    public ResponseEntity<?> cancelPayment(@Valid @RequestParam long orderId) {
+    public ResponseEntity<?> cancelPayment(@Valid @RequestParam long orderId) throws UserPrincipalNotFoundException {
         orderService.cancelPayment(orderId);
         return ResponseEntity.ok(new MessageResponse("Payment by client is canceled"));
     }
@@ -74,7 +76,7 @@ public class OrderController {
     @Operation(summary = "Confirm payment", tags = {"Order", "payment"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/confirm-payment")
-    public ResponseEntity<?> confirmPayment(@Valid @RequestParam long orderId) {
+    public ResponseEntity<?> confirmPayment(@Valid @RequestParam long orderId) throws UserPrincipalNotFoundException {
         orderService.confirmPayment(orderId);
         return ResponseEntity.ok(new MessageResponse("Payment is confirm"));
     }
@@ -90,7 +92,8 @@ public class OrderController {
     @Operation(summary = "Create new order", tags = {"Order", "new"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/create-new-order")
-    public ResponseEntity<?> createNewOrder(@Valid @RequestBody CreateNewOrderDTO createNewOrderDTO) {
+    public ResponseEntity<?> createNewOrder(@Valid @RequestBody CreateNewOrderDTO createNewOrderDTO)
+            throws UserPrincipalNotFoundException {
         long newOrderID = orderService.createNewOrder(createNewOrderDTO);
         return ResponseEntity.ok(newOrderID);
     }
