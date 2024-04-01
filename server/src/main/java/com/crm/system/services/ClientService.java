@@ -104,14 +104,14 @@ public class ClientService {
                 activeUser));
 
         String messageText = String.format("Lead %s is created", savedLead.getFullName());
-//        historyMessageService.automaticallyCreateMessage(new HistoryMessage.Builder()
-//                .withMessageText(messageText)
-//                .withIsDone(true)
-//                .withIsImportant(true)
-//                .withTagName(TagName.CLIENT)
-//                .withTagId(savedLead.getClientId())
-//                .withUser(activeUser)
-//                .build());
+        historyMessageService.automaticallyCreateMessage(new HistoryMessage.Builder()
+                .withMessageText(messageText)
+                .withIsDone(true)
+                .withIsImportant(true)
+                .withTagName(TagName.CLIENT)
+                .withTagId(savedLead.getClientId())
+                .withUser(activeUser)
+                .build());
 
         return savedLead.getClientId();
     }

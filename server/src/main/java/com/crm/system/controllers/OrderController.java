@@ -14,8 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
-
 @Slf4j
 @Tag(name = "Order controller", description = "Order management APIs")
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
