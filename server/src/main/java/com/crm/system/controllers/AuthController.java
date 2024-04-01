@@ -46,7 +46,7 @@ public class AuthController {
     @PostMapping("/signup")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "New user registration", tags = {"auth", "registration"})
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpDTO signUpRequest)
+    public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignUpDTO signUpRequest)
                             throws UserPrincipalNotFoundException {
         userDetailsService.registerUser(signUpRequest);
         log.info("User registered successfully!");
@@ -55,7 +55,7 @@ public class AuthController {
 
     @Operation(summary = "Logout", tags = {"auth", "logout"})
     @PostMapping("/signout")
-    public ResponseEntity<?> logoutUser() {
+    public ResponseEntity<MessageResponse> logoutUser() {
         ResponseCookie cookie = userDetailsService.logoutUser();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(new MessageResponse("You've been signed out!"));
@@ -64,7 +64,7 @@ public class AuthController {
     @Operation(summary = "Delete user", tags = {"auth", "admin", "delete"})
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> deleteUserById(@RequestParam long userId)
+    public ResponseEntity<MessageResponse> deleteUserById(@RequestParam long userId)
                             throws UserPrincipalNotFoundException {
         String responseText = userDetailsService.deleteUserById(userId);
         return ResponseEntity.ok(new MessageResponse(responseText));
@@ -73,21 +73,21 @@ public class AuthController {
     @Operation(summary = "checkAuthorization", tags = {"auth", "check"})
     @GetMapping("/check/user-role")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<?> checkAuthorizationForUserRole() {
+    public ResponseEntity<Boolean> checkAuthorizationForUserRole() {
         return ResponseEntity.ok(true);
     }
 
     @Operation(summary = "check authorization", tags = {"auth", "check"})
     @GetMapping("/check/admin-role")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> checkAuthorizationForAdminRole() {
+    public ResponseEntity<Boolean> checkAuthorizationForAdminRole() {
         return ResponseEntity.ok(true);
     }
 
     @Operation(summary = "check authorization", tags = {"auth", "check"})
     @GetMapping("/check")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> checkAuthorization() {
+    public ResponseEntity<Boolean> checkAuthorization() {
         return ResponseEntity.ok(true);
     }
 }

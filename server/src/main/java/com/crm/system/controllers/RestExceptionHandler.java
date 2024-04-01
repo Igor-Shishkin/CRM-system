@@ -15,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<Object> handleAllExceptions(Exception exception) {
+    protected ResponseEntity<MessageResponse> handleAllExceptions(Exception exception) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         String message;
 

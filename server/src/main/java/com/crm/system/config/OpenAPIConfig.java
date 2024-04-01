@@ -2,7 +2,6 @@ package com.crm.system.config;
 
 import java.util.List;
 
-import org.springdoc.core.GroupedOpenApi;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -29,7 +29,7 @@ public class EmailController {
     @PostMapping("/sent-email")
     @Operation(summary = "Sent email", tags = {"email", "sent"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody SentEmailDTO sentEmailDTO)
+    public ResponseEntity<MessageResponse> authenticateUser(@Valid @RequestBody SentEmailDTO sentEmailDTO)
                     throws UserPrincipalNotFoundException {
         emailService.sentEmail(sentEmailDTO);
         return ResponseEntity.ok(new MessageResponse("Payment is confirm"));

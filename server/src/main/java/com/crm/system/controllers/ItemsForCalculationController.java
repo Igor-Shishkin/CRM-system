@@ -27,7 +27,7 @@ public class ItemsForCalculationController {
     @Operation(summary = "Get order's items for calculation", tags = {"item", "calculation"})
     @PostMapping("/save-items")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<?> getUserHistory(@RequestBody Set<ItemForAdditionalPurchases> items, @RequestParam long orderId) {
+    public ResponseEntity<MessageResponse> getUserHistory(@RequestBody Set<ItemForAdditionalPurchases> items, @RequestParam long orderId) {
         itemsForCalculationService.saveItems(items, orderId);
         return ResponseEntity.ok(new MessageResponse("Calculations are saved"));
     }

@@ -30,7 +30,7 @@ public class HistoryMessageController {
     @Operation(summary = "Get user's history", tags = {"user", "history"})
     @GetMapping("/get-history")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> getUserHistory() throws UserPrincipalNotFoundException {
+    public ResponseEntity<Set<HistoryMessage>> getUserHistory() throws UserPrincipalNotFoundException {
         Set<HistoryMessage> history = historyMessageService.getUserHistory();
         return ResponseEntity.ok(history);
     }
@@ -38,7 +38,7 @@ public class HistoryMessageController {
     @Operation(summary = "Get tags for history message", tags = {"history", "tags"})
     @GetMapping("tags")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> getTagsForNewHistoryMessage() throws UserPrincipalNotFoundException {
+    public ResponseEntity<List<TagForHistoryMessageDTO>> getTagsForNewHistoryMessage() throws UserPrincipalNotFoundException {
         List<TagForHistoryMessageDTO> tags = historyMessageService.getListOfTags();
         return ResponseEntity.ok(tags);
     }
@@ -46,7 +46,7 @@ public class HistoryMessageController {
     @Operation(summary = "Save history message", tags = {"history", "new message"})
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> saveMessage(@RequestBody HistoryMessage message) throws UserPrincipalNotFoundException {
+    public ResponseEntity<MessageResponse> saveMessage(@RequestBody HistoryMessage message) throws UserPrincipalNotFoundException {
         historyMessageService.saveMessage(message);
         return ResponseEntity.ok(new MessageResponse("Message is saved"));
     }
@@ -54,7 +54,7 @@ public class HistoryMessageController {
     @Operation(summary = "Delete history message", tags = {"history", "delete"})
     @DeleteMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> deleteMessage(@RequestParam long messageId) {
+    public ResponseEntity<MessageResponse> deleteMessage(@RequestParam long messageId) {
         historyMessageService.deleteMessage(messageId);
         return ResponseEntity.ok(new MessageResponse("Message is deleted"));
     }
@@ -62,7 +62,7 @@ public class HistoryMessageController {
     @Operation(summary = "Change important status of message", tags = {"history", "status"})
     @PutMapping("/change-important-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> changeImportantStatus(@RequestParam long messageId) {
+    public ResponseEntity<MessageResponse> changeImportantStatus(@RequestParam long messageId) {
         historyMessageService.changeImportantStatus(messageId);
         return ResponseEntity.ok(new MessageResponse("Status is changed"));
     }
@@ -70,7 +70,7 @@ public class HistoryMessageController {
     @Operation(summary = "Change important status of message", tags = {"history", "status"})
     @PutMapping("/change-done-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<?> changeDoneStatus(@RequestParam long messageId) {
+    public ResponseEntity<MessageResponse> changeDoneStatus(@RequestParam long messageId) {
         historyMessageService.changeDoneStatus(messageId);
         return ResponseEntity.ok(new MessageResponse("Status is changed"));
     }

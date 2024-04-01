@@ -33,7 +33,7 @@ public class ClientController {
     @Operation(summary = "Add new Lead", tags = {"Client", "add"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/add-new-lead")
-    public ResponseEntity<?> addNewLead(@Valid @RequestBody AddLeadDTO addLeadRequest)
+    public ResponseEntity<Long> addNewLead(@Valid @RequestBody AddLeadDTO addLeadRequest)
                         throws UserPrincipalNotFoundException {
         long leadId = clientService.addNewLead(addLeadRequest);
         return ResponseEntity.ok(leadId);
@@ -42,7 +42,7 @@ public class ClientController {
     @Operation(summary = "Sent client to blackList by ID", tags = {"client", "lead", "black list"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/send-client-to-black-list")
-    public ResponseEntity<?> sendClientToBlackList(@RequestParam long clientId) {
+    public ResponseEntity<MessageResponse> sendClientToBlackList(@RequestParam long clientId) {
         clientService.sentToBlackList(clientId);
         return ResponseEntity.ok(new MessageResponse(String.format("Lead with %d id is in blacklist", clientId)));
     }
@@ -50,7 +50,7 @@ public class ClientController {
     @Operation(summary = "Restore client from blackList by ID", tags = {"client", "lead", "black list"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("/restore-client-from-black-list")
-    public ResponseEntity<?> restoreClientFromBlackList(@RequestParam long clientId) {
+    public ResponseEntity<MessageResponse> restoreClientFromBlackList(@RequestParam long clientId) {
         clientService.restoreClientFromBlackList(clientId);
         return ResponseEntity.ok(new MessageResponse(String.format("Client with %d id is restored from black list", clientId)));
     }
@@ -58,7 +58,7 @@ public class ClientController {
     @Operation(summary = "Get all clients", tags = {"clients", "get"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/clients")
-    public ResponseEntity<?> getAllClientsForUser()
+    public ResponseEntity<Set<ClientInfoDTO>> getAllClientsForUser()
                         throws UserPrincipalNotFoundException {
         Set<ClientInfoDTO> clients = clientService.getClientsForUser();
         return ResponseEntity.ok(clients);
@@ -67,7 +67,7 @@ public class ClientController {
     @Operation(summary = "Get all Leads", tags = {"leads", "get"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/leads")
-    public ResponseEntity<?> getAllLeadsForUser()
+    public ResponseEntity<List<ClientInfoDTO>> getAllLeadsForUser()
                         throws UserPrincipalNotFoundException {
         List<ClientInfoDTO> leads = clientService.getLeadsForUser();
         return ResponseEntity.ok(leads);
@@ -76,7 +76,7 @@ public class ClientController {
     @Operation(summary = "Get all blacklist clients", tags = {"blacklist", "get"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/get-black-list-clients")
-    public ResponseEntity<?> getBlackListClientsForUser()
+    public ResponseEntity<List<ClientInfoDTO>> getBlackListClientsForUser()
                         throws UserPrincipalNotFoundException {
         List<ClientInfoDTO> clients = clientService.getBlackListClientsForUser();
         return ResponseEntity.ok(clients);
@@ -85,7 +85,7 @@ public class ClientController {
     @Operation(summary = "Get Client's info", tags = {"client", "info"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/client-info")
-    public ResponseEntity<?> getClient(@RequestParam long clientId) {
+    public ResponseEntity<Client> getClient(@RequestParam long clientId) {
         Client client = clientService.getClient(clientId);
         return ResponseEntity.ok(client);
     }
@@ -93,10 +93,16 @@ public class ClientController {
     @Operation(summary = "Edit Client's info", tags = {"client", "info"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PutMapping("edit-client-data")
-    public ResponseEntity<?> editClientInfo(@RequestBody EditClientDataDTO request) {
+    public ResponseEntity<MessageResponse> editClientInfo(@RequestBody EditClientDataDTO request) {
         clientService.editClientData(request);
         return ResponseEntity.ok(new MessageResponse("Changes are saved!"));
     }
 
-
+    @Operation(summary = "test")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @GetMapping("test")
+    public ResponseEntity<MessageResponse> test() {
+        log.info("CLIENT CONTROLLER");
+        return ResponseEntity.ok(new MessageResponse("Changes are saved!"));
+    }
 }

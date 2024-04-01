@@ -26,7 +26,7 @@ public class UserService {
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-    public ResponseEntity<?> getPhoto() throws UserPrincipalNotFoundException, FileNotFoundException {
+    public ResponseEntity<byte[]> getPhoto() throws UserPrincipalNotFoundException, FileNotFoundException {
         User user = getActiveUser();
         if (user.getPhotoOfUser() == null) {
             throw new FileNotFoundException("This user doesn't have a photo");

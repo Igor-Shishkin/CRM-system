@@ -96,24 +96,22 @@ public class ClientService {
             throw new ClientAlreadyExistException("Lid with this email already exists");
         }
         User activeUser = userService.getActiveUser();
-        Client newLead = new Client(
+        Client savedLead = clientRepository.save(new Client(
                 addLeadDTO.getFullName(),
                 addLeadDTO.getEmail(),
                 addLeadDTO.getPhoneNumber(),
                 addLeadDTO.getAddress(),
-                activeUser);
+                activeUser));
 
-        String messageText = String.format("Lead %s is created", newLead.getFullName());
-        Client savedLead = clientRepository.save(newLead);
-
-        historyMessageService.automaticallyCreateMessage(new HistoryMessage.Builder()
-                .withMessageText(messageText)
-                .withIsDone(true)
-                .withIsImportant(true)
-                .withTagName(TagName.CLIENT)
-                .withTagId(savedLead.getClientId())
-                .withUser(activeUser)
-                .build());
+        String messageText = String.format("Lead %s is created", savedLead.getFullName());
+//        historyMessageService.automaticallyCreateMessage(new HistoryMessage.Builder()
+//                .withMessageText(messageText)
+//                .withIsDone(true)
+//                .withIsImportant(true)
+//                .withTagName(TagName.CLIENT)
+//                .withTagId(savedLead.getClientId())
+//                .withUser(activeUser)
+//                .build());
 
         return savedLead.getClientId();
     }
