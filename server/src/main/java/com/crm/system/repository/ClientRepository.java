@@ -24,6 +24,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     boolean existsByEmail(String email);
 
-    @Query("SELECT c.clientId FROM Client AS c WHERE c.user.userId = :userId")
-    Set<Long> findAllClientIdForUserById(Long userId);
+    @Query("SELECT c FROM Client AS c WHERE c.user.userId = :userId AND c.clientId = :clientId")
+    Optional<Client> findClientByClientIdAndUserId(Long userId, Long clientId);
 }

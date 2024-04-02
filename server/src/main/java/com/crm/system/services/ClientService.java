@@ -119,7 +119,7 @@ public class ClientService {
 
     public void sentToBlackList(long clientId) throws SubjectNotBelongToActiveUser {
 
-        Client client = getClientById(clientId);
+        Client client = getClientByIdForActualUser(clientId);
 
         client.setStatus(ClientStatus.BLACKLIST);
         client.setDateOfLastChange(LocalDateTime.now());
@@ -138,7 +138,7 @@ public class ClientService {
 
     public void restoreClientFromBlackList(long clientId) throws SubjectNotBelongToActiveUser {
 
-        Client client = getClientById(clientId);
+        Client client = getClientByIdForActualUser(clientId);
 
         client.setStatus(
                 (hasPaidOrders(client)) ? ClientStatus.CLIENT : ClientStatus.LEAD);
@@ -159,7 +159,7 @@ public class ClientService {
 
 
     public Client getClient(long clientId) {
-        Client client = getClientById(clientId);
+        Client client = getClientByIdForActualUser(clientId);
 
         client.getOrders()
                 .forEach(order -> {
@@ -176,7 +176,7 @@ public class ClientService {
             throw new NameOrEmailIsEmptyException("Name and email can't be empty!");
         }
 
-        Client client = getClientById(request.getClientId());
+        Client client = getClientByIdForActualUser(request.getClientId());
 
         client.setFullName(request.getFullName());
         client.setEmail(request.getEmail());
@@ -187,28 +187,15 @@ public class ClientService {
         clientRepository.save(client);
     }
 
-    public Client getClientById(long clientId) {
+    public Client getClientByIdForActualUser(long clientId) {
 
-        Client client = clientRepository.findById(clientId)
+        return clientRepository.findClientByClientIdAndUserId(userService.getActiveUserId(), clientId)
                 .orElseThrow(() -> new RequestOptionalIsEmpty
-                        (String.format("Client with %d id doesn't exist", clientId)));
-
-        if (isClientBelongsToActiveUser(client)) {
-            return client;
-        } else {
-            throw new SubjectNotBelongToActiveUser("It's not your Client. You don't have access to this Client.");
-        }
+                        (String.format("You do not have a client with %d ID", clientId)));
     }
 
     public void saveClient(Client client) {
         clientRepository.save(client);
-    }
-
-    private boolean isClientBelongsToActiveUser(Client client) {
-
-        Set<Long> allClientIdForUserById = clientRepository.findAllClientIdForUserById(userService.getActiveUserId());
-        return allClientIdForUserById.stream()
-                .anyMatch(id -> id.equals(client.getClientId()));
     }
 
     private boolean hasPaidOrders(Client client) {
