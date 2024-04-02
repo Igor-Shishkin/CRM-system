@@ -125,4 +125,17 @@ public class HistoryMessage {
                     this.user);
         }
     }
+
+
+    @Override
+    public String toString() {
+        return "HistoryMessage{" +
+                "messageId=" + messageId +
+                ", messageText='" + messageText + '\'' +
+                ", dateOfCreation=" + dateOfCreation +
+                ", deadline=" + deadline +
+                ", tagName=" + tagName +
+                ", tagId=" + tagId +
+                '}';
+    }
 }

@@ -79,4 +79,18 @@ public class Client {
                 this.dateOfLastChange = LocalDateTime.now();
                 this.status = ClientStatus.LEAD;
         }
+
+        @Override
+        public String toString() {
+                return "Client{" +
+                        "clientId=" + clientId +
+                        ", fullName='" + fullName + '\'' +
+                        ", email='" + email + '\'' +
+                        ", phoneNumber='" + phoneNumber + '\'' +
+                        ", status=" + status +
+                        ", address='" + address + '\'' +
+                        ", dateOfCreation=" + dateOfCreation +
+                        ", dateOfLastChange=" + dateOfLastChange +
+                        '}';
+        }
 }

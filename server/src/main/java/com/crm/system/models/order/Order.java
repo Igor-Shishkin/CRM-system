@@ -103,4 +103,18 @@ public class Order {
         this.dateOfLastChange = LocalDateTime.now();
         this.address = client.getAddress();
     }
+
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "orderId=" + orderId +
+                ", realNeed='" + realNeed + '\'' +
+                ", estimateBudged=" + estimateBudged +
+                ", resultPrice=" + resultPrice +
+                ", hasBeenPaid=" + hasBeenPaid +
+                ", isAgreementSigned=" + isAgreementSigned +
+                ", dateOfCreation=" + dateOfCreation +
+                '}';
+    }
 }

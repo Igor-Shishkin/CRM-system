@@ -30,4 +30,15 @@ public class ItemForAdditionalPurchases {
     @JoinColumn(name = "order_id")
     @JsonBackReference
     private Order order;
+
+    @Override
+    public String toString() {
+        return "ItemForAdditionalPurchases{" +
+                "itemId=" + itemId +
+                ", itemName='" + itemName + '\'' +
+                ", quantity=" + quantity +
+                ", unitPrice=" + unitPrice +
+                ", totalPrice=" + totalPrice +
+                '}';
+    }
 }
