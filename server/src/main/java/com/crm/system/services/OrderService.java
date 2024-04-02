@@ -165,7 +165,7 @@ public class OrderService {
     }
 
     private Client getClientById(long clientId)  {
-        return clientService.getClientById(clientId);
+        return clientService.getClientByIdForActualUser(clientId);
     }
 
     private void setChangedParameters(Order order, ChangeOrderDTO changedOrder) {

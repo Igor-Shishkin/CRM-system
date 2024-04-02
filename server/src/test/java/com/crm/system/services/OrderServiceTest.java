@@ -392,7 +392,7 @@ class OrderServiceTest {
         Order expectedOrder = new Order(request.getRealNeed(), request.getEstimateBudget(), clientExample);
         expectedOrder.setOrderId(7L);
 
-        when(clientService.getClientById(clientExample.getClientId())).thenReturn(clientExample);
+        when(clientService.getClientByIdForActualUser(clientExample.getClientId())).thenReturn(clientExample);
         when(orderRepository.save(any(Order.class))).thenReturn(expectedOrder);
 
         assertThat(orderService.createNewOrder(request)).isEqualTo(7L);
