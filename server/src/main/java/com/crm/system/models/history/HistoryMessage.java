@@ -57,7 +57,7 @@ public class HistoryMessage {
     @Column(name = "tag_id")
     private long tagId;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;

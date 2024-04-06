@@ -19,8 +19,10 @@ VALUES
     ('Piotr Kaczka', 'pitor@gmail.com', '555666777', 'LEAD', 'Poland, Poznań', '2023-12-21', '2023-12-01', 1),
     ('Monika Bałut', 'monika@gmail.com', '000666777', 'LEAD', 'Poland, Warszawa', '2023-12-24', '2023-12-04', 1),
     ('Sara Bernard', 'sara.b@gmail.com', '111699777', 'CLIENT', 'Poland, Poznań', '2023-12-27','2023-12-07', 1),
-    ('Marta Czajka', 'marta@gmail.com', '000333777', 'CLIENT', 'Poland, Kraków', '2023-12-22','2023-12-02', 1),
-    ('Solomon Duda', 'sol@gmail.com', '555666777', 'LEAD', 'Poland, Poznań', '2024-01-11','2024-01-01', 1),
+    ('Marta Czajka', 'marta@gmail.com', '000333777', 'BLACKLIST', 'Poland, Kraków', '2023-12-22','2023-12-02', 1),
+    ('Solomon Duda', 'sol@gmail.com', '555666777', 'BLACKLIST', 'Poland, Poznań', '2024-01-11','2024-01-01', 1),
+    ('Jonny Depp', 'jonny.b@gmail.com', '456699777', 'CLIENT', 'USA', '2023-11-27','2024-02-07', 1),
+    ('Sauron', 'sauron.b@gmail.com', '111000777', 'CLIENT', 'Mordor', '2024-01-27','2023-03-07', 1),
     ('Tacka Jakub', 'tacka@gmail.com', '004874677', 'LEAD', 'Poland, Poznań', '2023-12-26','2023-12-16', 2);
 
 INSERT INTO orders (real_need, estimate_budget, is_project_approved, is_measurements_taken,
@@ -34,14 +36,16 @@ VALUES
      'SHOWN_ONLINE', 'NOT_SHOWN', '2024-01-11', '2023-12-23', 3),
     ('Order a handmade table', 455, false, false, false, false, false, true, 0, false, 'Poland, Poznań', true,
      'NOT_SHOWN', 'NOT_SHOWN', '2024-01-21', '2024-01-11', 3),
-    ('install furniture in the bedroom', 4270.2, true, false, true, true, true, false, 1375, true, 'Poland, Kraków', false,
+    ('install furniture in the bedroom', 4270.2, true, false, true, true, true, false, 1375, false, 'Poland, Kraków', false,
      'SHOWN_IN_OFFICE', 'SHOWN_ONLINE', '2023-12-01', '2023-12-31', 4),
     ('design a bedroom layout', 560, true, false, false, false, false, true, 0, false, 'Poland, Poznań', true,
      'SHOWN_ONLINE', 'NOT_SHOWN', '2024-01-01', '2023-12-13', 1),
     ('install furniture in the kitchen', 1560, true, true, true, false, false, true, 0, false, 'Poland, Poznań', true,
      'SHOWN_ONLINE', 'SHOWN_IN_OFFICE', '2023-12-19', '2023-12-03', 1),
     ('Order a handmade table', 1490.3, true, true, false, true, false, true, 0, false, 'Poland, Warszawa', true,
-     'SHOWN_ONLINE', 'NOT_SHOWN', '2024-01-10', '2023-12-31', 2);
+     'SHOWN_ONLINE', 'NOT_SHOWN', '2024-01-10', '2023-12-31', 2),
+    ('PAID ORDER', 1490.3, true, true, false, true, true, true, 0, true, 'Poland, Warszawa', true,
+    'SHOWN_ONLINE', 'SHOWN_ONLINE', '2024-02-10', '2023-12-31', 5);
 
 INSERT INTO items_for_additional_purchases (item_name, quantity, unit_price, total_price, order_id)
 VALUES

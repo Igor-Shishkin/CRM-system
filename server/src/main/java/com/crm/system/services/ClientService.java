@@ -35,11 +35,11 @@ public class ClientService {
         this.historyMessageService = historyMessageService;
     }
 
-    public Set<ClientInfoDTO> getClientsForUser() throws UserPrincipalNotFoundException {
-        User user = userService.getActiveUser();
+    public Set<ClientInfoDTO> getClientsWithClientStatusForUser() {
 
-        return user.getClients().stream()
-                .filter(client -> client.getStatus().equals(ClientStatus.CLIENT))
+        Set<Client> clients = clientRepository.getClientsWithClientStatusForUser(userService.getActiveUserId());
+
+        return clients.stream()
                 .map(client -> {
                     int numberOfPaidOrders = (int) client.getOrders().stream()
                             .filter(Order::isHasBeenPaid)
@@ -58,11 +58,11 @@ public class ClientService {
                 .collect(Collectors.toSet());
     }
 
-    public List<ClientInfoDTO> getLeadsForUser() throws UserPrincipalNotFoundException {
-        User user = userService.getActiveUser();
+    public List<ClientInfoDTO> getClientsWithLeadStatusForUser() throws UserPrincipalNotFoundException {
 
-        return user.getClients().stream()
-                .filter(client -> client.getStatus().equals(ClientStatus.LEAD))
+        Set<Client> leads = clientRepository.getClientsWithLeadStatusForUser(userService.getActiveUserId());
+
+        return leads.stream()
                 .map(client -> new ClientInfoDTO.Builder()
                         .withId(client.getClientId())
                         .withFullName(client.getFullName())
@@ -76,9 +76,8 @@ public class ClientService {
     }
 
     public List<ClientInfoDTO> getBlackListClientsForUser() throws UserPrincipalNotFoundException {
-        User user = userService.getActiveUser();
-        return user.getClients().stream()
-                .filter(client -> client.getStatus().equals(ClientStatus.BLACKLIST))
+        Set<Client> clients = clientRepository.getClientsWithBlackListStatusForUser(userService.getActiveUserId());
+        return clients.stream()
                 .map(client -> new ClientInfoDTO.Builder()
                         .withId(client.getClientId())
                         .withFullName(client.getFullName())
@@ -117,7 +116,7 @@ public class ClientService {
     }
 
 
-    public void sentToBlackList(long clientId) throws SubjectNotBelongToActiveUser {
+    public void sentToBlackList(long clientId) {
 
         Client client = getClientByIdForActualUser(clientId);
 
@@ -191,7 +190,7 @@ public class ClientService {
 
         return clientRepository.findClientByClientIdAndUserId(userService.getActiveUserId(), clientId)
                 .orElseThrow(() -> new RequestOptionalIsEmpty
-                        (String.format("You do not have a client with %d ID", clientId)));
+                        (String.format("You do not have a client with ID=%d", clientId)));
     }
 
     public void saveClient(Client client) {

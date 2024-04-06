@@ -9,8 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface HistoryMessageRepository extends JpaRepository<HistoryMessage, Long> {
-    @Override
-    <S extends HistoryMessage> S save(S entity);
+//    @Override
+//    <S extends HistoryMessage> S save(S entity);
 
     @Override
     Optional<HistoryMessage> findById(Long aLong);

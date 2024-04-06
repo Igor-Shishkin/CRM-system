@@ -44,7 +44,7 @@ public class ClientController {
     @PutMapping("/send-client-to-black-list")
     public ResponseEntity<MessageResponse> sendClientToBlackList(@RequestParam long clientId) {
         clientService.sentToBlackList(clientId);
-        return ResponseEntity.ok(new MessageResponse(String.format("Lead with %d id is in blacklist", clientId)));
+        return ResponseEntity.ok(new MessageResponse(String.format("Lead with ID=%d is in blacklist", clientId)));
     }
 
     @Operation(summary = "Restore client from blackList by ID", tags = {"client", "lead", "black list"})
@@ -52,15 +52,16 @@ public class ClientController {
     @PutMapping("/restore-client-from-black-list")
     public ResponseEntity<MessageResponse> restoreClientFromBlackList(@RequestParam long clientId) {
         clientService.restoreClientFromBlackList(clientId);
-        return ResponseEntity.ok(new MessageResponse(String.format("Client with %d id is restored from black list", clientId)));
+        return ResponseEntity.ok(new MessageResponse(
+                String.format("Client with ID=%d is restored from black list", clientId))
+        );
     }
 
     @Operation(summary = "Get all clients", tags = {"clients", "get"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/clients")
-    public ResponseEntity<Set<ClientInfoDTO>> getAllClientsForUser()
-                        throws UserPrincipalNotFoundException {
-        Set<ClientInfoDTO> clients = clientService.getClientsForUser();
+    public ResponseEntity<Set<ClientInfoDTO>> getAllClientsForUser() {
+        Set<ClientInfoDTO> clients = clientService.getClientsWithClientStatusForUser();
         return ResponseEntity.ok(clients);
     }
 
@@ -69,7 +70,7 @@ public class ClientController {
     @GetMapping("/leads")
     public ResponseEntity<List<ClientInfoDTO>> getAllLeadsForUser()
                         throws UserPrincipalNotFoundException {
-        List<ClientInfoDTO> leads = clientService.getLeadsForUser();
+        List<ClientInfoDTO> leads = clientService.getClientsWithLeadStatusForUser();
         return ResponseEntity.ok(leads);
     }
 

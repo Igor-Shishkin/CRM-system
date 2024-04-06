@@ -26,4 +26,13 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
     @Query("SELECT c FROM Client AS c WHERE c.user.userId = :userId AND c.clientId = :clientId")
     Optional<Client> findClientByClientIdAndUserId(Long userId, Long clientId);
+
+    @Query("SELECT c FROM Client AS c WHERE c.user.userId = :userId AND c.status = 'CLIENT'")
+    Set<Client> getClientsWithClientStatusForUser(Long userId);
+
+    @Query("SELECT c FROM Client AS c WHERE c.user.userId = :userId AND c.status = 'LEAD'")
+    Set<Client> getClientsWithLeadStatusForUser(long userId);
+
+    @Query("SELECT c FROM Client AS c WHERE c.user.userId = :userId AND c.status = 'BLACKLIST'")
+    Set<Client> getClientsWithBlackListStatusForUser(long userId);
 }

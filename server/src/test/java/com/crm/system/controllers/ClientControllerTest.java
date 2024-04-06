@@ -1,9 +1,13 @@
 package com.crm.system.controllers;
 
+import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
+import com.crm.system.models.history.HistoryMessage;
+import com.crm.system.models.history.TagName;
 import com.crm.system.playload.request.AddLeadDTO;
 import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.HistoryMessageRepository;
+import com.crm.system.repository.UserRepository;
 import com.crm.system.services.ClientService;
 import com.crm.system.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,12 +27,17 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -49,6 +58,8 @@ class ClientControllerTest {
     private UserService userService;
     @Autowired
     HistoryMessageRepository historyMessageRepository;
+    @Autowired
+    UserRepository userRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -73,8 +84,10 @@ class ClientControllerTest {
     }
 
     @BeforeEach
-    public void initialize() {
+    public void initialize() throws UserPrincipalNotFoundException {
         when(userService.getActiveUserId()).thenReturn(1L);
+        when(userService.getActiveUser()).thenReturn(userRepository.findById(1L)
+                .orElseThrow(() -> new UserPrincipalNotFoundException("There isn't User with this ID")));
     }
 
     @BeforeAll
@@ -87,6 +100,7 @@ class ClientControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void add_lead_success() throws Exception {
+
         AddLeadDTO newLead = new AddLeadDTO();
         newLead.setFullName("test name");
         newLead.setEmail("test@gmail.com");
@@ -99,13 +113,20 @@ class ClientControllerTest {
                         .content(objectMapper.writeValueAsString(newLead))
                 .accept("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("7"));
+                .andExpect(content().json("9"));
 
-        assertThat(clientRepository.findById(7L).get().getFullName()).isEqualTo(newLead.getFullName());
-        assertThat(clientRepository.findById(7L).get().getEmail()).isEqualTo(newLead.getEmail());
+        Optional<Client> optionalClient = clientRepository.findById(9L);
+        assertThat(optionalClient).isNotEmpty();
+        assertThat(optionalClient.get().getFullName()).isEqualTo(newLead.getFullName());
+        assertThat(optionalClient.get().getEmail()).isEqualTo(newLead.getEmail());
+        assertThat(optionalClient.get().getAddress()).isEqualTo(newLead.getAddress());
 
-        assertThat(historyMessageRepository.findById(6L).get().getMessageText())
-                .isEqualTo("Lead test name is created");
+        Optional<HistoryMessage> optionalHistoryMessage = historyMessageRepository.findById(6L);
+
+        assertThat(optionalHistoryMessage).isNotEmpty();
+        assertThat(optionalHistoryMessage.get().getMessageText()).isEqualTo("Lead test name is created");
+        assertThat(optionalHistoryMessage.get().getTagName()).isEqualTo(TagName.CLIENT);
+        assertThat(optionalHistoryMessage.get().getTagId()).isEqualTo(9L);
     }
 
     @Test
@@ -189,11 +210,17 @@ class ClientControllerTest {
                 .accept("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message")
-                        .value(String.format("Lead with %d id is in blacklist", clientId)));
+                        .value(String.format("Lead with ID=%d is in blacklist", clientId)));
 
         assertThat(clientRepository.findById(3L).get().getStatus()).isEqualTo(ClientStatus.BLACKLIST);
-        assertThat(historyMessageRepository.findById(6L).get().getMessageText())
+
+        Optional<HistoryMessage> optionalHistoryMessage = historyMessageRepository.findById(6L);
+        assertThat(optionalHistoryMessage).isNotEmpty();
+
+        assertThat(optionalHistoryMessage.get().getMessageText())
                 .isEqualTo("Client Sara Bernard goes to blackList");
+        assertThat(optionalHistoryMessage.get().getTagName()).isEqualTo(TagName.CLIENT);
+        assertThat(optionalHistoryMessage.get().getTagId()).isEqualTo(clientId);
     }
 
     @Test
@@ -203,10 +230,135 @@ class ClientControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/api/user-board/send-client-to-black-list")
                         .contentType("application/json")
-                        .param("clientId", String.valueOf(6L))
+                        .param("clientId", String.valueOf(8L))
                         .accept("application/json"))
                 .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("You do not have a client with 6 ID"));
+                .andExpect(jsonPath("$.message").value("You do not have a client with ID=8"));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void sent_lead_to_blacklist_with_wrong_role() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/user-board/send-client-to-black-list")
+                        .contentType("application/json")
+                        .param("clientId", String.valueOf(3L))
+                        .accept("application/json"))
+                .andExpect(status().isForbidden());;
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void restore_client_from_blackList_status_must_be_client_success() throws Exception {
+        long clientId = 5L;
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .put("/api/user-board/restore-client-from-black-list")
+                .contentType("application/json")
+                .param("clientId", String.valueOf(clientId))
+                .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message")
+                        .value(String.format("Client with ID=%d is restored from black list", clientId)));
+
+        Optional<Client> optionalClient = clientRepository.findById(clientId);
+        assertThat(optionalClient).isNotEmpty();
+        assertThat(optionalClient.get().getStatus()).isEqualTo(ClientStatus.CLIENT);
+
+        Optional<HistoryMessage> optionalHistoryMessage = historyMessageRepository.findById(6L);
+        assertThat(optionalHistoryMessage).isNotEmpty();
+        assertThat(optionalHistoryMessage.get().getMessageText())
+                .isEqualTo("Client Solomon Duda is restored from blackList");
+        assertThat(optionalHistoryMessage.get().getTagName()).isEqualTo(TagName.CLIENT);
+        assertThat(optionalHistoryMessage.get().getTagId()).isEqualTo(clientId);
+    }
+    @Test
+    @WithMockUser(roles = "USER")
+    public void restore_client_from_blackList_status_must_be_lead_success() throws Exception {
+        long clientId = 4L;
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/user-board/restore-client-from-black-list")
+                        .contentType("application/json")
+                        .param("clientId", String.valueOf(clientId))
+                        .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message")
+                        .value(String.format("Client with ID=%d is restored from black list", clientId)));
+
+        Optional<Client> optionalClient = clientRepository.findById(clientId);
+        assertThat(optionalClient).isNotEmpty();
+        assertThat(optionalClient.get().getStatus()).isEqualTo(ClientStatus.LEAD);
+
+        Optional<HistoryMessage> optionalHistoryMessage = historyMessageRepository.findById(6L);
+        assertThat(optionalHistoryMessage).isNotEmpty();
+        assertThat(optionalHistoryMessage.get().getMessageText())
+                .isEqualTo("Client Marta Czajka is restored from blackList");
+        assertThat(optionalHistoryMessage.get().getTagName()).isEqualTo(TagName.CLIENT);
+        assertThat(optionalHistoryMessage.get().getTagId()).isEqualTo(clientId);
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void restore_client_from_blackList_user_doesnt_have_this_client() throws Exception {
+        long clientId = 8L;
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/user-board/restore-client-from-black-list")
+                        .contentType("application/json")
+                        .param("clientId", String.valueOf(clientId))
+                        .accept("application/json"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message")
+                        .value(String.format("You do not have a client with ID=%d", clientId)));
+
+    }
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void restore_client_from_blackList_wrong_role() throws Exception {
+        long clientId = 3L;
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/user-board/restore-client-from-black-list")
+                        .contentType("application/json")
+                        .param("clientId", String.valueOf(clientId))
+                        .accept("application/json"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void get_all_clients_for_user_success() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/user-board/clients")
+                .accept("application/json"))
+                .andExpect(jsonPath("$.size()").value(3))
+                .andExpect(jsonPath("$.[*].fullName")
+                        .value(containsInAnyOrder("Sara Bernard", "Jonny Depp", "Sauron")));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void get_all_clients_for_user_wrong_role() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user-board/clients")
+                        .accept("application/json"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void get_all_clients_with_lead_status_for_user_success() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user-board/leads")
+                        .accept("application/json"))
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$.[*].fullName")
+                        .value(containsInAnyOrder("Piotr Kaczka", "Monika Bałut")));
     }
 
     private String writeValueToJsonFormat(Object object) throws JsonProcessingException {
