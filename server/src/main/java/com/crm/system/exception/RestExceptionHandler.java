@@ -1,5 +1,7 @@
-package com.crm.system.controllers;
+package com.crm.system.exception;
 
+import com.crm.system.exception.ClientAlreadyExistException;
+import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.UserAlreadyExistsException;
 import com.crm.system.playload.response.MessageResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -14,22 +16,26 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({
+            AuthenticationCredentialsNotFoundException.class,
+            UserAlreadyExistsException.class,
+            RequestOptionalIsEmpty.class,
+            ClientAlreadyExistException.class})
     protected ResponseEntity<MessageResponse> handleAllExceptions(Exception exception) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        String message;
+        HttpStatus status = null;
+        String message = exception.getMessage();;
 
         if (exception instanceof AuthenticationCredentialsNotFoundException) {
-            status = HttpStatus.NOT_ACCEPTABLE;
-            message = "Authorisation Error: " + exception.getMessage();
-        } else if (exception instanceof UserAlreadyExistsException) {
-            status = HttpStatus.FORBIDDEN;
-            message = "Registration error: " + exception.getMessage();
-        } else  {
-            message = exception.getMessage();
+            status = HttpStatus.UNAUTHORIZED;
+        } else if (exception instanceof UserAlreadyExistsException ||
+                   exception instanceof ClientAlreadyExistException) {
+            status = HttpStatus.CONFLICT;
+        } else if (exception instanceof RequestOptionalIsEmpty){
+            status = HttpStatus.NOT_FOUND;
         }
 
-        log.error(message);
+        log.error( exception.getClass() + ": " + message);
+        assert status != null;
         return new ResponseEntity<>(new MessageResponse(message), status);
     }
 }

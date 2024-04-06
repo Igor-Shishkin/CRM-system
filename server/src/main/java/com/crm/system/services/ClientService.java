@@ -93,7 +93,7 @@ public class ClientService {
 
     public long addNewLead(AddLeadDTO addLeadDTO) throws UserPrincipalNotFoundException {
         if (clientRepository.existsByEmail(addLeadDTO.getEmail())) {
-            throw new ClientAlreadyExistException("Lid with this email already exists");
+            throw new ClientAlreadyExistException("Client with this email already exists");
         }
         User activeUser = userService.getActiveUser();
         Client savedLead = clientRepository.save(new Client(

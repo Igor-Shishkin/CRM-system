@@ -41,8 +41,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final JwtUtils jwtUtils;
     private final HistoryMessageService historyMessageService;
 
-    public UserDetailsServiceImpl(UserRepository userRepository, UserService userService, PasswordConfig passwordConfig,
-                                  RoleRepository roleRepository, JwtUtils jwtUtils, HistoryMessageService historyMessageService) {
+    public UserDetailsServiceImpl(UserRepository userRepository,
+                                  UserService userService,
+                                  PasswordConfig passwordConfig,
+                                  RoleRepository roleRepository,
+                                  JwtUtils jwtUtils,
+                                  HistoryMessageService historyMessageService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.passwordConfig = passwordConfig;
@@ -109,6 +113,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public ResponseCookie logoutUser() {
         return jwtUtils.getCleanJwtCookie();
     }
+
     public String deleteUserById(long userId) throws UserPrincipalNotFoundException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserPrincipalNotFoundException("User with this ID doesn't exist"));

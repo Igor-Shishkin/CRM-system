@@ -1,15 +1,10 @@
 package com.crm.system.controllers;
 
 import com.crm.system.models.ClientStatus;
-import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.playload.request.AddLeadDTO;
 import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.HistoryMessageRepository;
-import com.crm.system.repository.RoleRepository;
-import com.crm.system.repository.UserRepository;
-import com.crm.system.security.PasswordConfig;
 import com.crm.system.services.ClientService;
-import com.crm.system.services.HistoryMessageService;
 import com.crm.system.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,8 +27,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -129,8 +122,8 @@ class ClientControllerTest {
                         .contentType("application/json")
                         .content(writeValueToJsonFormat(newLead))
                         .accept("application/json"))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.message").value("Lid with this email already exists"));
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("Client with this email already exists"));
     }
 
     @Test
@@ -172,6 +165,7 @@ class ClientControllerTest {
     public void add_lead_with_wrong_role() throws Exception {
         AddLeadDTO newLead = new AddLeadDTO();
         newLead.setFullName("test name");
+        newLead.setEmail("test@gmail.com");
         newLead.setAddress("test address");
         newLead.setPhoneNumber("test +0 000 000 000");
 
@@ -180,8 +174,7 @@ class ClientControllerTest {
                         .contentType("application/json")
                         .content(writeValueToJsonFormat(newLead))
                         .accept("application/json"))
-                .andExpect(status().is4xxClientError())
-                .andExpect(jsonPath("$.detail").value("Invalid request content."));
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -205,15 +198,15 @@ class ClientControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void sent_lead_to_blacklist_client_doesnt_belong_user() throws Exception {
+    public void sent_lead_to_blacklist_user_doesnt_have_client_with_this_id() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .put("/api/user-board/send-client-to-black-list")
                         .contentType("application/json")
                         .param("clientId", String.valueOf(6L))
                         .accept("application/json"))
-                .andExpect(status().isInternalServerError())
-                .andExpect(jsonPath("$.message").value("Client with %d id doesn't exist"));
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("You do not have a client with 6 ID"));
     }
 
     private String writeValueToJsonFormat(Object object) throws JsonProcessingException {
