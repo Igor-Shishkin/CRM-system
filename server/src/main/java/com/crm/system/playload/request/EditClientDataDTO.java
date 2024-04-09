@@ -13,6 +13,7 @@ public class EditClientDataDTO {
     @NotBlank
     private String fullName;
     @Email
+    @NotBlank
     private String email;
     @NotBlank
     private String address;

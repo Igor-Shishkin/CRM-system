@@ -30,7 +30,7 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @Operation(summary = "Add new Lead", tags = {"Client", "add"})
+    @Operation(summary = "Add new Lead", tags = {"Client"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/add-new-lead")
     public ResponseEntity<Long> addNewLead(@Valid @RequestBody AddLeadDTO addLeadRequest)
@@ -57,7 +57,7 @@ public class ClientController {
         );
     }
 
-    @Operation(summary = "Get all clients", tags = {"clients", "get"})
+    @Operation(summary = "Get all clients", tags = {"clients"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/clients")
     public ResponseEntity<Set<ClientInfoDTO>> getAllClientsForUser() {
@@ -65,11 +65,10 @@ public class ClientController {
         return ResponseEntity.ok(clients);
     }
 
-    @Operation(summary = "Get all Leads", tags = {"leads", "get"})
+    @Operation(summary = "Get all Leads", tags = {"leads"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/leads")
-    public ResponseEntity<List<ClientInfoDTO>> getAllLeadsForUser()
-                        throws UserPrincipalNotFoundException {
+    public ResponseEntity<List<ClientInfoDTO>> getAllLeadsForUser() {
         List<ClientInfoDTO> leads = clientService.getClientsWithLeadStatusForUser();
         return ResponseEntity.ok(leads);
     }
@@ -77,9 +76,8 @@ public class ClientController {
     @Operation(summary = "Get all blacklist clients", tags = {"blacklist", "get"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/get-black-list-clients")
-    public ResponseEntity<List<ClientInfoDTO>> getBlackListClientsForUser()
-                        throws UserPrincipalNotFoundException {
-        List<ClientInfoDTO> clients = clientService.getBlackListClientsForUser();
+    public ResponseEntity<List<ClientInfoDTO>> getBlackListClientsForUser() {
+        List<ClientInfoDTO> clients = clientService.getClientsWithBlacklistStatusForUser();
         return ResponseEntity.ok(clients);
     }
 
@@ -96,14 +94,7 @@ public class ClientController {
     @PutMapping("edit-client-data")
     public ResponseEntity<MessageResponse> editClientInfo(@RequestBody EditClientDataDTO request) {
         clientService.editClientData(request);
-        return ResponseEntity.ok(new MessageResponse("Changes are saved!"));
+        return ResponseEntity.ok(new MessageResponse("Changes are saved"));
     }
 
-    @Operation(summary = "test")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    @GetMapping("test")
-    public ResponseEntity<MessageResponse> test() {
-        log.info("CLIENT CONTROLLER");
-        return ResponseEntity.ok(new MessageResponse("Changes are saved!"));
-    }
 }

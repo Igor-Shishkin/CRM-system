@@ -58,7 +58,7 @@ public class ClientService {
                 .collect(Collectors.toSet());
     }
 
-    public List<ClientInfoDTO> getClientsWithLeadStatusForUser() throws UserPrincipalNotFoundException {
+    public List<ClientInfoDTO> getClientsWithLeadStatusForUser() {
 
         Set<Client> leads = clientRepository.getClientsWithLeadStatusForUser(userService.getActiveUserId());
 
@@ -75,7 +75,7 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
-    public List<ClientInfoDTO> getBlackListClientsForUser() throws UserPrincipalNotFoundException {
+    public List<ClientInfoDTO> getClientsWithBlacklistStatusForUser() {
         Set<Client> clients = clientRepository.getClientsWithBlackListStatusForUser(userService.getActiveUserId());
         return clients.stream()
                 .map(client -> new ClientInfoDTO.Builder()
@@ -172,7 +172,7 @@ public class ClientService {
     public void editClientData(EditClientDataDTO request) {
         if (request.getFullName().isBlank() ||
                 request.getEmail().isBlank()) {
-            throw new NameOrEmailIsEmptyException("Name and email can't be empty!");
+            throw new NameOrEmailIsEmptyException("Name and email can't be empty");
         }
 
         Client client = getClientByIdForActualUser(request.getClientId());

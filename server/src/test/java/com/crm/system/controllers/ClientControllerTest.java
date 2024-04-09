@@ -5,6 +5,7 @@ import com.crm.system.models.ClientStatus;
 import com.crm.system.models.history.HistoryMessage;
 import com.crm.system.models.history.TagName;
 import com.crm.system.playload.request.AddLeadDTO;
+import com.crm.system.playload.request.EditClientDataDTO;
 import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.HistoryMessageRepository;
 import com.crm.system.repository.UserRepository;
@@ -27,7 +28,6 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -141,7 +141,7 @@ class ClientControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/user-board/add-new-lead")
                         .contentType("application/json")
-                        .content(writeValueToJsonFormat(newLead))
+                        .content(writeObjectToJsonFormat(newLead))
                         .accept("application/json"))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message").value("Client with this email already exists"));
@@ -158,7 +158,7 @@ class ClientControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/user-board/add-new-lead")
                 .contentType("application/json")
-                .content(writeValueToJsonFormat(newLead))
+                .content(writeObjectToJsonFormat(newLead))
                 .accept("application/json"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.detail").value("Invalid request content."));
@@ -175,7 +175,7 @@ class ClientControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                 .post("/api/user-board/add-new-lead")
                 .contentType("application/json")
-                .content(writeValueToJsonFormat(newLead))
+                .content(writeObjectToJsonFormat(newLead))
                 .accept("application/json"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.detail").value("Invalid request content."));
@@ -193,7 +193,7 @@ class ClientControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/user-board/add-new-lead")
                         .contentType("application/json")
-                        .content(writeValueToJsonFormat(newLead))
+                        .content(writeObjectToJsonFormat(newLead))
                         .accept("application/json"))
                 .andExpect(status().isForbidden());
     }
@@ -329,7 +329,7 @@ class ClientControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void get_all_clients_for_user_success() throws Exception {
+    public void get_all_clients_with_client_status_for_user_success() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/api/user-board/clients")
@@ -341,7 +341,7 @@ class ClientControllerTest {
 
     @Test
     @WithMockUser(roles = "ADMIN")
-    public void get_all_clients_for_user_wrong_role() throws Exception {
+    public void get_all_clients_with_client_status_for_user_wrong_role() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/api/user-board/clients")
@@ -361,7 +361,173 @@ class ClientControllerTest {
                         .value(containsInAnyOrder("Piotr Kaczka", "Monika Bałut")));
     }
 
-    private String writeValueToJsonFormat(Object object) throws JsonProcessingException {
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void get_all_clients_with_lead_status_for_user_wrong_role() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user-board/leads")
+                        .accept("application/json"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void get_all_clients_with_blacklist_status_for_user_success() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user-board/get-black-list-clients")
+                        .accept("application/json"))
+                .andExpect(jsonPath("$.size()").value(2))
+                .andExpect(jsonPath("$.[*].fullName")
+                        .value(containsInAnyOrder("Marta Czajka", "Solomon Duda")));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void get_all_clients_with_blacklist_status_for_user_wrong_role() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user-board/leads")
+                        .accept("application/json"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void get_client_info_success() throws Exception {
+        long clientId = 2L;
+
+        mockMvc.perform(MockMvcRequestBuilders
+                .get("/api/user-board/client-info")
+                .contentType("application/json")
+                .param("clientId", String.valueOf(clientId))
+                .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fullName").value("Monika Bałut"))
+                .andExpect(jsonPath("$.email").value("monika@gmail.com"))
+                .andExpect(jsonPath("$.phoneNumber").value("000666777"))
+                .andExpect(jsonPath("$.status").value("LEAD"))
+                .andExpect(jsonPath("$.address").value("Poland, Warszawa"))
+                .andExpect(jsonPath("$.dateOfLastChange").value("2023-12-24 00:00:00"))
+                .andExpect(jsonPath("$.dateOfCreation").value("2023-12-04 00:00:00"))
+                .andExpect(jsonPath("$.orders.size()").value("1"))
+                .andExpect(jsonPath("$.orders[0].realNeed").value("Order a handmade table"));
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void get_client_info_dont_have_client_with_this_id() throws Exception {
+        long clientId = 8L;
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user-board/client-info")
+                        .contentType("application/json")
+                        .param("clientId", String.valueOf(clientId))
+                        .accept("application/json"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message")
+                        .value(String.format("You do not have a client with ID=%d", clientId)));
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void get_client_info_with_wrong_role() throws Exception {
+        long clientId = 1L;
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user-board/client-info")
+                        .contentType("application/json")
+                        .param("clientId", String.valueOf(clientId))
+                        .accept("application/json"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void edit_client_data_success() throws Exception {
+        EditClientDataDTO editClientDataDTO = new EditClientDataDTO();
+        editClientDataDTO.setClientId(2L);
+        editClientDataDTO.setEmail("changed.mail@gmail.com");
+        editClientDataDTO.setPhoneNumber("changed phone number");
+        editClientDataDTO.setAddress("changed address");
+        editClientDataDTO.setFullName("Changed name");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/user-board/edit-client-data")
+                        .contentType("application/json")
+                        .content(writeObjectToJsonFormat(editClientDataDTO))
+                        .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Changes are saved"));
+
+        Optional<Client> optionalClient = clientRepository.findById(2L);
+        assertThat(optionalClient).isNotEmpty();
+        assertThat(optionalClient.get().getFullName()).isEqualTo("Changed name");
+        assertThat(optionalClient.get().getEmail()).isEqualTo("changed.mail@gmail.com");
+        assertThat(optionalClient.get().getPhoneNumber()).isEqualTo("changed phone number");
+        assertThat(optionalClient.get().getAddress()).isEqualTo("changed address");
+        assertThat(optionalClient.get().getDateOfLastChange().toString()).isNotEqualTo("2023-12-24 00:00:00");
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void edit_client_data_wrong_email() throws Exception {
+        EditClientDataDTO editClientDataDTO = new EditClientDataDTO();
+        editClientDataDTO.setClientId(2L);
+        editClientDataDTO.setEmail("wrong.gmail.com");
+        editClientDataDTO.setPhoneNumber("changed phone number");
+        editClientDataDTO.setAddress("changed address");
+        editClientDataDTO.setFullName("Changed name");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/user-board/edit-client-data")
+                        .contentType("application/json")
+                        .content(writeObjectToJsonFormat(editClientDataDTO))
+                        .accept("application/json"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("Could not commit JPA transaction"));
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void edit_client_data_wrong_empty_fullname() throws Exception {
+        EditClientDataDTO editClientDataDTO = new EditClientDataDTO();
+        editClientDataDTO.setClientId(2L);
+        editClientDataDTO.setEmail("test@gmail.com");
+        editClientDataDTO.setPhoneNumber("changed phone number");
+        editClientDataDTO.setAddress("changed address");
+        editClientDataDTO.setFullName("");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/user-board/edit-client-data")
+                        .contentType("application/json")
+                        .content(writeObjectToJsonFormat(editClientDataDTO))
+                        .accept("application/json"))
+                .andExpect(status().isIAmATeapot())
+                .andExpect(jsonPath("$.message").value("Name and email can't be empty"));;
+    }
+
+    @Test
+    @WithMockUser(roles = "USER")
+    public void edit_client_data_empty_email() throws Exception {
+        EditClientDataDTO editClientDataDTO = new EditClientDataDTO();
+        editClientDataDTO.setClientId(2L);
+        editClientDataDTO.setEmail("");
+        editClientDataDTO.setPhoneNumber("changed phone number");
+        editClientDataDTO.setAddress("changed address");
+        editClientDataDTO.setFullName("Changed name");
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/user-board/edit-client-data")
+                        .contentType("application/json")
+                        .content(writeObjectToJsonFormat(editClientDataDTO))
+                        .accept("application/json"))
+                .andExpect(status().isIAmATeapot())
+                .andExpect(jsonPath("$.message").value("Name and email can't be empty"));
+    }
+
+    private String writeObjectToJsonFormat(Object object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object);
     }
 
