@@ -77,7 +77,7 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message")
                         .value("You don't have order with this ID"));
     }
@@ -105,7 +105,7 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message")
                         .value("You don't have order with this ID"));
     }
@@ -133,7 +133,7 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message")
                         .value("Agreement is already signed"));
     }
@@ -150,7 +150,7 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message")
                         .value("You don't have order with this ID"));
     }
@@ -176,7 +176,7 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message")
                         .value("You don't have order with this ID"));
     }
@@ -190,7 +190,7 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message")
                         .value("Agreement isn't signed"));
     }
@@ -204,7 +204,7 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message")
                         .value("Payment was not made"));
     }
@@ -240,7 +240,7 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.message")
                         .value("Payment was not made"));
     }
@@ -255,7 +255,7 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message")
                         .value("You don't have order with this ID"));
     }
@@ -298,7 +298,7 @@ class OrderControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderDTO))
                         .with(csrf()))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message")
                         .value("You don't have order with this ID"));
     }
@@ -336,16 +336,16 @@ class OrderControllerTest {
         newOrderDTO.setRealNeed("test need");
         newOrderDTO.setEstimateBudget(1234);
 
-        doThrow(new SubjectNotBelongToActiveUser("It's not your Client. You don't have access to this Client."))
+        doThrow(new RequestOptionalIsEmpty("You do not have a client with ID=1"))
                 .when(orderService).createNewOrder(any(CreateNewOrderDTO.class));
 
         mockMvc.perform(post("/api/user-board/order/create-new-order")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newOrderDTO))
                         .with(csrf()))
-                .andExpect(status().isInternalServerError())
+                .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message")
-                   .value("It's not your Client. You don't have access to this Client."));
+                   .value("You do not have a client with ID=1"));
     }
 
     static {
