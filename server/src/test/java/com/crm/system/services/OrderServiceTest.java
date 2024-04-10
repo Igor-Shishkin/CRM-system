@@ -12,6 +12,7 @@ import com.crm.system.playload.request.CreateNewOrderDTO;
 import com.crm.system.playload.response.ItemsForAdditionalPurchasesDTO;
 import com.crm.system.playload.response.OrderInfoDTO;
 import com.crm.system.repository.OrderRepository;
+import com.crm.system.services.impl.OrderServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,7 +33,7 @@ class OrderServiceTest {
     @Mock
     private OrderRepository orderRepository;
     @InjectMocks
-    private OrderService orderService;
+    private OrderServiceImpl orderService;
     @Mock
     private UserService userService;
     @Mock
@@ -49,7 +50,7 @@ class OrderServiceTest {
         when(orderRepository.getOrderByOrderIdAndUserId(1L, userService.getActiveUserId()))
                 .thenReturn(Optional.of(orderExample));
 
-        OrderInfoDTO resultOrderInfoResponce = orderService.getOrderInfoResponce(1L);
+        OrderInfoDTO resultOrderInfoResponce = orderService.getOrderInfoResponse(1L);
 
         assertThat(resultOrderInfoResponce).isEqualTo(expectedOrderInfoDTO);
     }
@@ -60,7 +61,7 @@ class OrderServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThrows(RequestOptionalIsEmpty.class, () ->
-            orderService.getOrderInfoResponce(1L));
+            orderService.getOrderInfoResponse(1L));
     }
 
     @Test
@@ -437,7 +438,7 @@ class OrderServiceTest {
     }
 
     private void setPriceCoefficient(double value) throws NoSuchFieldException, IllegalAccessException {
-        Field field = OrderService.class.getDeclaredField("PRICE_COEFFICIENT");
+        Field field = OrderServiceImpl.class.getDeclaredField("PRICE_COEFFICIENT");
         field.setAccessible(true);
         field.setDouble(orderService, value);
     }

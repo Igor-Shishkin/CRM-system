@@ -31,7 +31,7 @@ public class OrderController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping()
     public ResponseEntity<OrderInfoDTO> getOrder(@RequestParam long orderId) {
-        OrderInfoDTO orderInfoDTO = orderService.getOrderInfoResponce(orderId);
+        OrderInfoDTO orderInfoDTO = orderService.getOrderInfoResponse(orderId);
         return ResponseEntity.ok(orderInfoDTO);
     }
 

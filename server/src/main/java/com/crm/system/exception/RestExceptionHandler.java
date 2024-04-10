@@ -23,7 +23,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             RequestOptionalIsEmpty.class,
             ClientAlreadyExistException.class,
             NameOrEmailIsEmptyException.class,
-            TransactionSystemException.class})
+            TransactionSystemException.class,
+            MismanagementOfTheClientException.class})
     protected ResponseEntity<MessageResponse> handleAllExceptions(Exception exception) {
         HttpStatus status = null;
         String message = exception.getMessage();;
@@ -32,7 +33,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             status = HttpStatus.UNAUTHORIZED;
         } else if (exception instanceof UserAlreadyExistsException ||
                    exception instanceof ClientAlreadyExistException ||
-                   exception instanceof TransactionSystemException) {
+                   exception instanceof TransactionSystemException ||
+                   exception instanceof MismanagementOfTheClientException) {
             status = HttpStatus.CONFLICT;
         } else if (exception instanceof RequestOptionalIsEmpty){
             status = HttpStatus.NOT_FOUND;

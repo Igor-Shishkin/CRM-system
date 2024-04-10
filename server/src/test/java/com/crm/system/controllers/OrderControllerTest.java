@@ -2,7 +2,6 @@ package com.crm.system.controllers;
 
 import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
-import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
 import com.crm.system.models.order.ItemForAdditionalPurchases;
 import com.crm.system.models.order.Order;
@@ -49,7 +48,7 @@ class OrderControllerTest {
     @WithMockUser(username = "user", roles = "USER")
     void get_order_by_id_success() throws Exception {
 
-        when(orderService.getOrderInfoResponce(1L)).thenReturn(expectedDTO);
+        when(orderService.getOrderInfoResponse(1L)).thenReturn(expectedDTO);
 
         mockMvc.perform(get("/api/user-board/order")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -70,7 +69,7 @@ class OrderControllerTest {
     @WithMockUser(username = "user", roles = "USER")
     void get_order_by_id_error() throws Exception {
 
-        when(orderService.getOrderInfoResponce(1L))
+        when(orderService.getOrderInfoResponse(1L))
                 .thenThrow(new RequestOptionalIsEmpty("You don't have order with this ID"));
 
         mockMvc.perform(get("/api/user-board/order")
