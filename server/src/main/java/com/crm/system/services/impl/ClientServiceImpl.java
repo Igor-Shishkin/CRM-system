@@ -7,8 +7,6 @@ import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
 import com.crm.system.models.User;
-import com.crm.system.models.logForUser.LogEntry;
-import com.crm.system.models.logForUser.TagName;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.request.AddLeadDTO;
 import com.crm.system.playload.request.EditClientDataDTO;
@@ -17,6 +15,10 @@ import com.crm.system.repository.ClientRepository;
 import com.crm.system.services.ClientService;
 import com.crm.system.services.LogEntryService;
 import com.crm.system.services.UserService;
+import com.crm.system.services.utils.logUtils.EntryType;
+import com.crm.system.services.utils.logUtils.LogEntryForClientFacade;
+import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsDoneDecorator;
+import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsImportantDecorator;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
@@ -31,11 +33,14 @@ public class ClientServiceImpl implements ClientService {
     private final UserService userService;
     private final LogEntryService logEntryService;
 
+    private final LogEntryForClientFacade logEntryFacade;
+
     public ClientServiceImpl(ClientRepository clientRepository, UserService userService,
-                         LogEntryService logEntryService) {
+                             LogEntryService logEntryService, LogEntryForClientFacade logEntryFacade) {
         this.clientRepository = clientRepository;
         this.userService = userService;
         this.logEntryService = logEntryService;
+        this.logEntryFacade = logEntryFacade;
     }
     @Override
     public Set<ClientInfoDTO> getClientsWithClientStatusForUser() {
@@ -105,15 +110,19 @@ public class ClientServiceImpl implements ClientService {
                 addLeadDTO.getAddress(),
                 activeUser));
 
-        String messageText = String.format("Lead %s is created", savedLead.getFullName());
-        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-                .withText(messageText)
-                .withIsDone(true)
-                .withIsImportant(true)
-                .withTagName(TagName.CLIENT)
-                .withTagId(savedLead.getClientId())
-                .withUser(activeUser)
-                .build());
+        logEntryFacade.createAndSaveMessage(savedLead,
+                EntryType.ADD_CLIENT,
+                new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
+
+//        String messageText = String.format("Lead %s is created", savedLead.getFullName());
+//        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
+//                .withText(messageText)
+//                .withIsDone(true)
+//                .withIsImportant(true)
+//                .withTagName(TagName.CLIENT)
+//                .withTagId(savedLead.getClientId())
+//                .withUser(activeUser)
+//                .build());
 
         return savedLead.getClientId();
     }
@@ -127,15 +136,19 @@ public class ClientServiceImpl implements ClientService {
         client.setDateOfLastChange(LocalDateTime.now());
         clientRepository.save(client);
 
-        String messageText = String.format("Client %s goes to blackList", client.getFullName());
-        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-                .withText(messageText)
-                .withIsDone(true)
-                .withIsImportant(true)
-                .withTagName(TagName.CLIENT)
-                .withTagId(clientId)
-                .withUser(client.getUser())
-                .build());
+        logEntryFacade.createAndSaveMessage(client,
+                EntryType.SENT_CLIENT_TO_BLACKLIST,
+                new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
+
+//        String messageText = String.format("Client %s goes to blackList", client.getFullName());
+//        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
+//                .withText(messageText)
+//                .withIsDone(true)
+//                .withIsImportant(true)
+//                .withTagName(TagName.CLIENT)
+//                .withTagId(clientId)
+//                .withUser(client.getUser())
+//                .build());
     }
 
     public void restoreClientFromBlackList(long clientId) throws SubjectNotBelongToActiveUser {
@@ -148,15 +161,19 @@ public class ClientServiceImpl implements ClientService {
         client.setDateOfLastChange(LocalDateTime.now());
         clientRepository.save(client);
 
-        String messageText = String.format("Client %s is restored from blackList", client.getFullName());
-        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-                .withText(messageText)
-                .withIsDone(true)
-                .withIsImportant(true)
-                .withTagName(TagName.CLIENT)
-                .withTagId(clientId)
-                .withUser(client.getUser())
-                .build());
+        logEntryFacade.createAndSaveMessage(client,
+                EntryType.RESTORE_CLIENT_FROM_BLACKLIST,
+                new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
+
+//        String messageText = String.format("Client %s is restored from blackList", client.getFullName());
+//        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
+//                .withText(messageText)
+//                .withIsDone(true)
+//                .withIsImportant(true)
+//                .withTagName(TagName.CLIENT)
+//                .withTagId(clientId)
+//                .withUser(client.getUser())
+//                .build());
     }
 
 

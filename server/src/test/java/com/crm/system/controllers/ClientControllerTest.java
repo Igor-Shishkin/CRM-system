@@ -124,7 +124,7 @@ class ClientControllerTest {
         Optional<LogEntry> optionalLogEntry = logEntryRepository.findById(6L);
 
         assertThat(optionalLogEntry).isNotEmpty();
-        assertThat(optionalLogEntry.get().getText()).isEqualTo("Lead test name is created");
+        assertThat(optionalLogEntry.get().getText()).isEqualTo("Client test name is created");
         assertThat(optionalLogEntry.get().getTagName()).isEqualTo(TagName.CLIENT);
         assertThat(optionalLogEntry.get().getTagId()).isEqualTo(9L);
     }
