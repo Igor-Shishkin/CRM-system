@@ -1,9 +1,9 @@
 package com.crm.system.controllers;
 
-import com.crm.system.models.history.HistoryMessage;
+import com.crm.system.models.history.LogEntry;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.playload.response.TagForHistoryMessageDTO;
-import com.crm.system.services.HistoryMessageService;
+import com.crm.system.services.LogEntryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -20,18 +20,18 @@ import java.util.Set;
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("api/history-message")
-public class HistoryMessageController {
-    private final HistoryMessageService historyMessageService;
+public class LogEntryController {
+    private final LogEntryService logEntryService;
 
-    public HistoryMessageController(HistoryMessageService historyMessageService) {
-        this.historyMessageService = historyMessageService;
+    public LogEntryController(LogEntryService logEntryService) {
+        this.logEntryService = logEntryService;
     }
 
     @Operation(summary = "Get user's history", tags = {"user", "history"})
     @GetMapping("/get-history")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Set<HistoryMessage>> getUserHistory() throws UserPrincipalNotFoundException {
-        Set<HistoryMessage> history = historyMessageService.getUserHistory();
+    public ResponseEntity<Set<LogEntry>> getUserHistory() throws UserPrincipalNotFoundException {
+        Set<LogEntry> history = logEntryService.getUserHistory();
         return ResponseEntity.ok(history);
     }
 
@@ -39,15 +39,15 @@ public class HistoryMessageController {
     @GetMapping("tags")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<TagForHistoryMessageDTO>> getTagsForNewHistoryMessage() throws UserPrincipalNotFoundException {
-        List<TagForHistoryMessageDTO> tags = historyMessageService.getListOfTags();
+        List<TagForHistoryMessageDTO> tags = logEntryService.getListOfTags();
         return ResponseEntity.ok(tags);
     }
 
     @Operation(summary = "Save history message", tags = {"history", "new message"})
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<MessageResponse> saveMessage(@RequestBody HistoryMessage message) throws UserPrincipalNotFoundException {
-        historyMessageService.saveMessage(message);
+    public ResponseEntity<MessageResponse> saveMessage(@RequestBody LogEntry message) throws UserPrincipalNotFoundException {
+        logEntryService.saveMessage(message);
         return ResponseEntity.ok(new MessageResponse("Message is saved"));
     }
 
@@ -55,7 +55,7 @@ public class HistoryMessageController {
     @DeleteMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> deleteMessage(@RequestParam long messageId) {
-        historyMessageService.deleteMessage(messageId);
+        logEntryService.deleteMessage(messageId);
         return ResponseEntity.ok(new MessageResponse("Message is deleted"));
     }
 
@@ -63,7 +63,7 @@ public class HistoryMessageController {
     @PutMapping("/change-important-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> changeImportantStatus(@RequestParam long messageId) {
-        historyMessageService.changeImportantStatus(messageId);
+        logEntryService.changeImportantStatus(messageId);
         return ResponseEntity.ok(new MessageResponse("Status is changed"));
     }
 
@@ -71,7 +71,7 @@ public class HistoryMessageController {
     @PutMapping("/change-done-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> changeDoneStatus(@RequestParam long messageId) {
-        historyMessageService.changeDoneStatus(messageId);
+        logEntryService.changeDoneStatus(messageId);
         return ResponseEntity.ok(new MessageResponse("Status is changed"));
     }
 }

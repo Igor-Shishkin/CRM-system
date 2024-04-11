@@ -58,7 +58,7 @@ VALUES
     ('chipboard sheet 100*250', 2, 300, 660, 4),
     ('white kitchen countertop 70*300', 1, 450, 495, 4);
 
-INSERT INTO history_messages(text_of_message, date_of_creation, is_important, is_done, note, tag_name, tag_id, user_id)
+INSERT INTO log_for_user (text, date_of_creation, is_important, is_done, additional_information, tag_name, tag_id, user_id)
 VALUES
     ('Installation of kitchen furniture completed', '2023-12-31', true, true, NULL, 'CLIENT', 3, 1),
     ('Bedroom layout design requested', '2023-12-23', true, false, 'Pending approval', 'CLIENT', 3, 1),

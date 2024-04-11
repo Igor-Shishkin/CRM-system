@@ -1,10 +1,9 @@
 package com.crm.system.models;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.crm.system.models.history.HistoryMessage;
+import com.crm.system.models.history.LogEntry;
 import com.crm.system.models.security.Role;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -52,7 +51,7 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonManagedReference
-    private Set<HistoryMessage> history;
+    private Set<LogEntry> history;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

@@ -2,12 +2,12 @@ package com.crm.system.controllers;
 
 import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
-import com.crm.system.models.history.HistoryMessage;
+import com.crm.system.models.history.LogEntry;
 import com.crm.system.models.history.TagName;
 import com.crm.system.playload.request.AddLeadDTO;
 import com.crm.system.playload.request.EditClientDataDTO;
 import com.crm.system.repository.ClientRepository;
-import com.crm.system.repository.HistoryMessageRepository;
+import com.crm.system.repository.LogEntryRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.services.ClientService;
 import com.crm.system.services.UserService;
@@ -57,7 +57,7 @@ class ClientControllerTest {
     @MockBean
     private UserService userService;
     @Autowired
-    HistoryMessageRepository historyMessageRepository;
+    LogEntryRepository logEntryRepository;
     @Autowired
     UserRepository userRepository;
 
@@ -121,12 +121,12 @@ class ClientControllerTest {
         assertThat(optionalClient.get().getEmail()).isEqualTo(newLead.getEmail());
         assertThat(optionalClient.get().getAddress()).isEqualTo(newLead.getAddress());
 
-        Optional<HistoryMessage> optionalHistoryMessage = historyMessageRepository.findById(6L);
+        Optional<LogEntry> optionalLogEntry = logEntryRepository.findById(6L);
 
-        assertThat(optionalHistoryMessage).isNotEmpty();
-        assertThat(optionalHistoryMessage.get().getMessageText()).isEqualTo("Lead test name is created");
-        assertThat(optionalHistoryMessage.get().getTagName()).isEqualTo(TagName.CLIENT);
-        assertThat(optionalHistoryMessage.get().getTagId()).isEqualTo(9L);
+        assertThat(optionalLogEntry).isNotEmpty();
+        assertThat(optionalLogEntry.get().getText()).isEqualTo("Lead test name is created");
+        assertThat(optionalLogEntry.get().getTagName()).isEqualTo(TagName.CLIENT);
+        assertThat(optionalLogEntry.get().getTagId()).isEqualTo(9L);
     }
 
     @Test
@@ -214,13 +214,13 @@ class ClientControllerTest {
 
         assertThat(clientRepository.findById(3L).get().getStatus()).isEqualTo(ClientStatus.BLACKLIST);
 
-        Optional<HistoryMessage> optionalHistoryMessage = historyMessageRepository.findById(6L);
-        assertThat(optionalHistoryMessage).isNotEmpty();
+        Optional<LogEntry> optionalLogEntry = logEntryRepository.findById(6L);
+        assertThat(optionalLogEntry).isNotEmpty();
 
-        assertThat(optionalHistoryMessage.get().getMessageText())
+        assertThat(optionalLogEntry.get().getText())
                 .isEqualTo("Client Sara Bernard goes to blackList");
-        assertThat(optionalHistoryMessage.get().getTagName()).isEqualTo(TagName.CLIENT);
-        assertThat(optionalHistoryMessage.get().getTagId()).isEqualTo(clientId);
+        assertThat(optionalLogEntry.get().getTagName()).isEqualTo(TagName.CLIENT);
+        assertThat(optionalLogEntry.get().getTagId()).isEqualTo(clientId);
     }
 
     @Test
@@ -266,12 +266,12 @@ class ClientControllerTest {
         assertThat(optionalClient).isNotEmpty();
         assertThat(optionalClient.get().getStatus()).isEqualTo(ClientStatus.CLIENT);
 
-        Optional<HistoryMessage> optionalHistoryMessage = historyMessageRepository.findById(6L);
-        assertThat(optionalHistoryMessage).isNotEmpty();
-        assertThat(optionalHistoryMessage.get().getMessageText())
+        Optional<LogEntry> optionalLogEntry = logEntryRepository.findById(6L);
+        assertThat(optionalLogEntry).isNotEmpty();
+        assertThat(optionalLogEntry.get().getText())
                 .isEqualTo("Client Solomon Duda is restored from blackList");
-        assertThat(optionalHistoryMessage.get().getTagName()).isEqualTo(TagName.CLIENT);
-        assertThat(optionalHistoryMessage.get().getTagId()).isEqualTo(clientId);
+        assertThat(optionalLogEntry.get().getTagName()).isEqualTo(TagName.CLIENT);
+        assertThat(optionalLogEntry.get().getTagId()).isEqualTo(clientId);
     }
     @Test
     @WithMockUser(roles = "USER")
@@ -291,12 +291,12 @@ class ClientControllerTest {
         assertThat(optionalClient).isNotEmpty();
         assertThat(optionalClient.get().getStatus()).isEqualTo(ClientStatus.LEAD);
 
-        Optional<HistoryMessage> optionalHistoryMessage = historyMessageRepository.findById(6L);
-        assertThat(optionalHistoryMessage).isNotEmpty();
-        assertThat(optionalHistoryMessage.get().getMessageText())
+        Optional<LogEntry> optionalLogEntry = logEntryRepository.findById(6L);
+        assertThat(optionalLogEntry).isNotEmpty();
+        assertThat(optionalLogEntry.get().getText())
                 .isEqualTo("Client Marta Czajka is restored from blackList");
-        assertThat(optionalHistoryMessage.get().getTagName()).isEqualTo(TagName.CLIENT);
-        assertThat(optionalHistoryMessage.get().getTagId()).isEqualTo(clientId);
+        assertThat(optionalLogEntry.get().getTagName()).isEqualTo(TagName.CLIENT);
+        assertThat(optionalLogEntry.get().getTagId()).isEqualTo(clientId);
     }
 
     @Test

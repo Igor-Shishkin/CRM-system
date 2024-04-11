@@ -1,9 +1,9 @@
 package com.crm.system.services.impl;
 
-import com.crm.system.models.history.HistoryMessage;
+import com.crm.system.models.history.LogEntry;
 import com.crm.system.playload.request.SentEmailDTO;
 import com.crm.system.services.EmailService;
-import com.crm.system.services.HistoryMessageService;
+import com.crm.system.services.LogEntryService;
 import com.crm.system.services.UserService;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -13,13 +13,13 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 @Service
 public class EmailServiceImpl implements EmailService {
-    private final HistoryMessageService historyMessageService;
+    private final LogEntryService logEntryService;
     private final JavaMailSender javaMailSender;
     private final UserService userService;
 
-    public EmailServiceImpl(UserService userService, HistoryMessageService historyMessageService,
+    public EmailServiceImpl(UserService userService, LogEntryService logEntryService,
                         JavaMailSender javaMailSender) {
-        this.historyMessageService = historyMessageService;
+        this.logEntryService = logEntryService;
         this.javaMailSender = javaMailSender;
         this.userService = userService;
     }
@@ -37,7 +37,7 @@ public class EmailServiceImpl implements EmailService {
     private void createHistoryMessage(SentEmailDTO sentEmailDTO) throws UserPrincipalNotFoundException {
         String messageText = "Send email: " + sentEmailDTO.getSubjectOfMail() + "'";
 
-        historyMessageService.automaticallyCreateMessage(new HistoryMessage.Builder()
+        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
                 .withMessageText(messageText)
                 .withIsDone(true)
                 .withIsImportant(false)

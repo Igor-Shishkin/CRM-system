@@ -7,7 +7,7 @@ import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
 import com.crm.system.models.User;
-import com.crm.system.models.history.HistoryMessage;
+import com.crm.system.models.history.LogEntry;
 import com.crm.system.models.history.TagName;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.request.AddLeadDTO;
@@ -15,7 +15,7 @@ import com.crm.system.playload.request.EditClientDataDTO;
 import com.crm.system.playload.response.ClientInfoDTO;
 import com.crm.system.repository.ClientRepository;
 import com.crm.system.services.ClientService;
-import com.crm.system.services.HistoryMessageService;
+import com.crm.system.services.LogEntryService;
 import com.crm.system.services.UserService;
 import org.springframework.stereotype.Service;
 
@@ -29,15 +29,15 @@ import java.util.stream.Collectors;
 public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
     private final UserService userService;
-    private final HistoryMessageService historyMessageService;
+    private final LogEntryService logEntryService;
 
     public ClientServiceImpl(ClientRepository clientRepository, UserService userService,
-                         HistoryMessageService historyMessageService) {
+                         LogEntryService logEntryService) {
         this.clientRepository = clientRepository;
         this.userService = userService;
-        this.historyMessageService = historyMessageService;
+        this.logEntryService = logEntryService;
     }
-
+    @Override
     public Set<ClientInfoDTO> getClientsWithClientStatusForUser() {
 
         Set<Client> clients = clientRepository.getClientsWithClientStatusForUser(userService.getActiveUserId());
@@ -106,7 +106,7 @@ public class ClientServiceImpl implements ClientService {
                 activeUser));
 
         String messageText = String.format("Lead %s is created", savedLead.getFullName());
-        historyMessageService.automaticallyCreateMessage(new HistoryMessage.Builder()
+        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
                 .withMessageText(messageText)
                 .withIsDone(true)
                 .withIsImportant(true)
@@ -128,7 +128,7 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(client);
 
         String messageText = String.format("Client %s goes to blackList", client.getFullName());
-        historyMessageService.automaticallyCreateMessage(new HistoryMessage.Builder()
+        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
                 .withMessageText(messageText)
                 .withIsDone(true)
                 .withIsImportant(true)
@@ -149,7 +149,7 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(client);
 
         String messageText = String.format("Client %s is restored from blackList", client.getFullName());
-        historyMessageService.automaticallyCreateMessage(new HistoryMessage.Builder()
+        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
                 .withMessageText(messageText)
                 .withIsDone(true)
                 .withIsImportant(true)

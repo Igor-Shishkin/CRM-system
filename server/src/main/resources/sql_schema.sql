@@ -68,18 +68,18 @@ CREATE TABLE orders (
                         FOREIGN KEY (client_id) REFERENCES clients(client_id)
 );
 
-CREATE TABLE history_messages (
-                                  message_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                  text_of_message VARCHAR(255) NOT NULL,
-                                  date_of_creation DATETIME,
-                                  deadline DATETIME,
-                                  is_important BOOLEAN,
-                                  is_done BOOLEAN,
-                                  note TEXT,
-                                  tag_name VARCHAR(30),
-                                  tag_id BIGINT,
-                                  user_id BIGINT,
-                                  FOREIGN KEY (user_id) REFERENCES users(user_id)
+CREATE TABLE log_for_user (
+                        entry_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        text VARCHAR(255) NOT NULL,
+                        date_of_creation DATETIME,
+                        deadline DATETIME,
+                        is_important BOOLEAN,
+                        is_done BOOLEAN,
+                        additional_information TEXT,
+                        tag_name VARCHAR(30),
+                        tag_id BIGINT,
+                        user_id BIGINT,
+                        FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE items_for_additional_purchases (
@@ -148,7 +148,7 @@ VALUES
     ('chipboard sheet 100*250', 2, 300, 660, 4),
     ('white kitchen countertop 70*300', 1, 450, 495, 4);
 
-INSERT INTO history_messages(text_of_message, date_of_creation, is_important, is_done, note, tag_name, tag_id, user_id)
+INSERT INTO log_for_user(text, date_of_creation, is_important, is_done, additional_information, tag_name, tag_id, user_id)
 VALUES
 ('Installation of kitchen furniture completed', '2023-12-31', true, true, NULL, 'CLIENT', 3, 1),
 ('Bedroom layout design requested', '2023-12-23', true, false, 'Pending approval', 'CLIENT', 3, 1),

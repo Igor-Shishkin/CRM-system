@@ -1,29 +1,29 @@
 DROP TABLE IF EXISTS user_roles;
 DROP TABLE IF EXISTS items_for_additional_purchases;
 DROP TABLE IF EXISTS roles;
-DROP TABLE IF EXISTS history_messages;
+DROP TABLE IF EXISTS log_for_user;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS clients;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
-                       user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                       username VARCHAR(20) NOT NULL,
-                       email VARCHAR(50) NOT NULL,
-                       user_photo LONGBLOB,
-                       password VARCHAR(120) NOT NULL
+                         user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         username VARCHAR(20) NOT NULL,
+                         email VARCHAR(50) NOT NULL,
+                         user_photo LONGBLOB DEFAULT NULL,
+                         password VARCHAR(120) NOT NULL
 );
 
 CREATE TABLE roles (
-                       role_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                       name VARCHAR(20) NOT NULL
+                         role_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                         name VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE user_roles (
-                            user_id BIGINT,
-                            role_id BIGINT,
-                            FOREIGN KEY (user_id) REFERENCES users(user_id),
-                            FOREIGN KEY (role_id) REFERENCES roles(role_id)
+                         user_id BIGINT,
+                         role_id BIGINT,
+                         FOREIGN KEY (user_id) REFERENCES users(user_id),
+                         FOREIGN KEY (role_id) REFERENCES roles(role_id)
 );
 
 CREATE TABLE clients (
@@ -61,26 +61,26 @@ CREATE TABLE orders (
                         FOREIGN KEY (client_id) REFERENCES clients(client_id)
 );
 
-CREATE TABLE history_messages (
-                                  message_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                  text_of_message VARCHAR(255) NOT NULL,
-                                  date_of_creation DATETIME,
-                                  deadline DATETIME,
-                                  is_important BOOLEAN,
-                                  is_done BOOLEAN,
-                                  note TEXT,
-                                  tag_name VARCHAR(30),
-                                  tag_id BIGINT,
-                                  user_id BIGINT,
-                                  FOREIGN KEY (user_id) REFERENCES users(user_id)
+CREATE TABLE log_for_user (
+                        entry_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        text VARCHAR(255) NOT NULL,
+                        date_of_creation DATETIME,
+                        deadline DATETIME,
+                        is_important BOOLEAN,
+                        is_done BOOLEAN,
+                        additional_information TEXT,
+                        tag_name VARCHAR(30),
+                        tag_id BIGINT,
+                        user_id BIGINT,
+                        FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE items_for_additional_purchases (
-                                                item_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                                item_name TEXT,
-                                                quantity INT,
-                                                unit_price DOUBLE,
-                                                total_price DOUBLE,
-                                                order_id BIGINT,
-                                                FOREIGN KEY (order_id) REFERENCES orders(order_id)
+                        item_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                        item_name TEXT,
+                        quantity INT,
+                        unit_price DOUBLE,
+                        total_price DOUBLE,
+                        order_id BIGINT,
+                        FOREIGN KEY (order_id) REFERENCES orders(order_id)
 );

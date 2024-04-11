@@ -3,7 +3,7 @@ package com.crm.system.services;
 import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.models.Client;
-import com.crm.system.models.history.HistoryMessage;
+import com.crm.system.models.history.LogEntry;
 import com.crm.system.models.order.InfoIsShown;
 import com.crm.system.models.order.ItemForAdditionalPurchases;
 import com.crm.system.models.order.Order;
@@ -37,7 +37,7 @@ class OrderServiceTest {
     @Mock
     private UserService userService;
     @Mock
-    private HistoryMessageService historyMessageService;
+    private LogEntryService logEntryService;
     @Mock
     private ClientService clientService;
 
@@ -243,7 +243,7 @@ class OrderServiceTest {
         orderService.signAgreement(orderExample.getOrderId());
 
         verify(orderRepository).save(orderExample);
-        verify(historyMessageService).automaticallyCreateMessage(any(HistoryMessage.class));
+        verify(logEntryService).automaticallyCreateMessage(any(LogEntry.class));
         verify(clientService).saveClient(orderExample.getClient());
 
         assertThat(orderExample.isAgreementSigned()).isTrue();
@@ -287,7 +287,7 @@ class OrderServiceTest {
         orderService.cancelAgreement(orderExample.getOrderId());
 
         verify(orderRepository).save(orderExample);
-        verify(historyMessageService).automaticallyCreateMessage(any(HistoryMessage.class));
+        verify(logEntryService).automaticallyCreateMessage(any(LogEntry.class));
         verify(clientService).saveClient(orderExample.getClient());
 
         assertThat(orderExample.isAgreementSigned()).isFalse();
@@ -331,7 +331,7 @@ class OrderServiceTest {
         orderService.confirmPayment(orderExample.getOrderId());
 
         verify(orderRepository).save(orderExample);
-        verify(historyMessageService).automaticallyCreateMessage(any(HistoryMessage.class));
+        verify(logEntryService).automaticallyCreateMessage(any(LogEntry.class));
         verify(clientService).saveClient(orderExample.getClient());
 
         assertThat(orderExample.isHasBeenPaid()).isTrue();
@@ -359,7 +359,7 @@ class OrderServiceTest {
         orderService.cancelPayment(orderExample.getOrderId());
 
         verify(orderRepository).save(orderExample);
-        verify(historyMessageService).automaticallyCreateMessage(any(HistoryMessage.class));
+        verify(logEntryService).automaticallyCreateMessage(any(LogEntry.class));
         verify(clientService).saveClient(orderExample.getClient());
 
         assertThat(orderExample.isHasBeenPaid()).isFalse();
@@ -399,7 +399,7 @@ class OrderServiceTest {
         assertThat(orderService.createNewOrder(request)).isEqualTo(7L);
 
         verify(orderRepository).save(any(Order.class));
-        verify(historyMessageService).automaticallyCreateMessage(any(HistoryMessage.class));
+        verify(logEntryService).automaticallyCreateMessage(any(LogEntry.class));
         verify(clientService).saveClient(orderExample.getClient());
 
     }

@@ -2,7 +2,7 @@ package com.crm.system.security.services;
 
 import com.crm.system.exception.UserAlreadyExistsException;
 import com.crm.system.models.User;
-import com.crm.system.models.history.HistoryMessage;
+import com.crm.system.models.history.LogEntry;
 import com.crm.system.models.history.TagName;
 import com.crm.system.models.security.ERole;
 import com.crm.system.models.security.Role;
@@ -12,7 +12,7 @@ import com.crm.system.repository.RoleRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.PasswordConfig;
 import com.crm.system.security.jwt.JwtUtils;
-import com.crm.system.services.HistoryMessageService;
+import com.crm.system.services.LogEntryService;
 import com.crm.system.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -39,20 +39,20 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final PasswordConfig passwordConfig;
     private final RoleRepository roleRepository;
     private final JwtUtils jwtUtils;
-    private final HistoryMessageService historyMessageService;
+    private final LogEntryService logEntryService;
 
     public UserDetailsServiceImpl(UserRepository userRepository,
                                   UserService userService,
                                   PasswordConfig passwordConfig,
                                   RoleRepository roleRepository,
                                   JwtUtils jwtUtils,
-                                  HistoryMessageService historyMessageService) {
+                                  LogEntryService logEntryService) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.passwordConfig = passwordConfig;
         this.roleRepository = roleRepository;
         this.jwtUtils = jwtUtils;
-        this.historyMessageService = historyMessageService;
+        this.logEntryService = logEntryService;
     }
 
     @Override
@@ -100,7 +100,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         String messageText = String.format("User %s is added", user.getUsername());
 
-        historyMessageService.automaticallyCreateMessage(new HistoryMessage.Builder()
+        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
                 .withMessageText(messageText)
                 .withIsDone(true)
                 .withIsImportant(true)

@@ -2,11 +2,11 @@ package com.crm.system.services.impl;
 
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.models.User;
-import com.crm.system.models.history.HistoryMessage;
+import com.crm.system.models.history.LogEntry;
 import com.crm.system.models.history.TagName;
 import com.crm.system.playload.response.TagForHistoryMessageDTO;
-import com.crm.system.repository.HistoryMessageRepository;
-import com.crm.system.services.HistoryMessageService;
+import com.crm.system.repository.LogEntryRepository;
+import com.crm.system.services.LogEntryService;
 import com.crm.system.services.UserService;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +17,16 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class HistoryMessageServiceImpl implements HistoryMessageService {
-    private final HistoryMessageRepository historyMessageRepository;
+public class LogEntryServiceImpl implements LogEntryService {
+    private final LogEntryRepository logEntryRepository;
     private final UserService userService;
 
-    public HistoryMessageServiceImpl(HistoryMessageRepository historyMessageRepository, UserService userService) {
-        this.historyMessageRepository = historyMessageRepository;
+    public LogEntryServiceImpl(LogEntryRepository logEntryRepository, UserService userService) {
+        this.logEntryRepository = logEntryRepository;
         this.userService = userService;
     }
 
-    public Set<HistoryMessage> getUserHistory() throws UserPrincipalNotFoundException {
+    public Set<LogEntry> getUserHistory() throws UserPrincipalNotFoundException {
         User activeUser = getActiveUser();
         return activeUser.getHistory();
     }
@@ -40,38 +40,38 @@ public class HistoryMessageServiceImpl implements HistoryMessageService {
                 .collect(Collectors.toList());
     }
 
-    public void saveMessage(HistoryMessage message) throws UserPrincipalNotFoundException {
-        message.setMessageId(null);
+    public void saveMessage(LogEntry message) throws UserPrincipalNotFoundException {
+        message.setEntryId(null);
         message.setDateOfCreation(LocalDateTime.now());
         message.setUser(userService.getActiveUser());
 
-        historyMessageRepository.save(message);
+        logEntryRepository.save(message);
     }
 
-    public void automaticallyCreateMessage(HistoryMessage message) {
-        historyMessageRepository.save(message);
+    public void automaticallyCreateMessage(LogEntry message) {
+        logEntryRepository.save(message);
     }
 
     public void deleteMessage(long messageId)  {
-        HistoryMessage messageForDeleting = getMessageById(messageId);
-        historyMessageRepository.delete(messageForDeleting);
+        LogEntry messageForDeleting = getMessageById(messageId);
+        logEntryRepository.delete(messageForDeleting);
     }
 
     public void changeImportantStatus(long messageId) {
-        HistoryMessage message = getMessageById(messageId);
+        LogEntry message = getMessageById(messageId);
         message.setImportant(!message.isImportant());
-        historyMessageRepository.save(message);
+        logEntryRepository.save(message);
     }
 
     public void changeDoneStatus(long messageId) {
-        HistoryMessage message = getMessageById(messageId);
+        LogEntry message = getMessageById(messageId);
         message.setDone(!message.isDone());
-        historyMessageRepository.save(message);
+        logEntryRepository.save(message);
     }
 
-    private HistoryMessage getMessageById(long messageId) {
+    private LogEntry getMessageById(long messageId) {
         long activeUserId = userService.getActiveUserId();
-        return historyMessageRepository.getHistoryMessageByMessageIdAndUserId(messageId, activeUserId)
+        return logEntryRepository.getHistoryMessageByMessageIdAndUserId(messageId, activeUserId)
                 .orElseThrow(() -> new RequestOptionalIsEmpty("You don't have message with this ID"));
     }
 

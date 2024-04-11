@@ -15,20 +15,20 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "history_messages")
+@Table(name = "log_for_user")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class HistoryMessage {
+public class LogEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "message_id")
-    private Long messageId;
+    @Column(name = "entry_id")
+    private Long entryId;
 
     @NotBlank
-    @Column(name = "text_of_message")
-    private String messageText;
+    @Column(name = "text")
+    private String text;
 
     @Column(name = "date_of_creation")
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -47,7 +47,8 @@ public class HistoryMessage {
     @JsonProperty("isDone")
     private boolean isDone;
 
-    private String note;
+    @Column(name = "additional_information")
+    private String additionalInformation;
 
     @Column(name = "tag_name")
     @Enumerated(EnumType.STRING)
@@ -62,8 +63,8 @@ public class HistoryMessage {
     @JsonBackReference
     private User user;
 
-    public HistoryMessage(String messageText) {
-        this.messageText = messageText;
+    public LogEntry(String text) {
+        this.text = text;
         this.dateOfCreation = LocalDateTime.now();
     }
     public static class Builder {
@@ -76,7 +77,7 @@ public class HistoryMessage {
         private TagName tagName;
         private long tagId;
         private User user;
-        public Builder withMessageId(long messageId) {
+        public Builder withEntryId(long messageId) {
             this.messageId = messageId;
             return this;
         }
@@ -96,7 +97,7 @@ public class HistoryMessage {
             this.isDone = isDone;
             return this;
         }
-        public Builder withNote(String note) {
+        public Builder withAdditionalInformation(String note) {
             this.note = note;
             return this;
         }
@@ -112,8 +113,8 @@ public class HistoryMessage {
             this.user = user;
             return this;
         }
-        public HistoryMessage build(){
-            return new HistoryMessage(this.messageId,
+        public LogEntry build(){
+            return new LogEntry(this.messageId,
                     this.messageText,
                     LocalDateTime.now(),
                     this.deadline,
@@ -126,12 +127,12 @@ public class HistoryMessage {
         }
     }
 
-
     @Override
     public String toString() {
         return "HistoryMessage{" +
-                "messageId=" + messageId +
-                ", messageText='" + messageText + '\'' +
+                "messageId=" + entryId +
+                ", text='" + text + '\'' +
+                ", additionalInformation='" + text + '\'' +
                 ", dateOfCreation=" + dateOfCreation +
                 ", deadline=" + deadline +
                 ", tagName=" + tagName +

@@ -4,7 +4,7 @@ import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
-import com.crm.system.models.history.HistoryMessage;
+import com.crm.system.models.history.LogEntry;
 import com.crm.system.models.history.TagName;
 import com.crm.system.models.order.InfoIsShown;
 import com.crm.system.models.order.ItemForAdditionalPurchases;
@@ -15,7 +15,7 @@ import com.crm.system.playload.response.ItemsForAdditionalPurchasesDTO;
 import com.crm.system.playload.response.OrderInfoDTO;
 import com.crm.system.repository.OrderRepository;
 import com.crm.system.services.ClientService;
-import com.crm.system.services.HistoryMessageService;
+import com.crm.system.services.LogEntryService;
 import com.crm.system.services.OrderService;
 import com.crm.system.services.UserService;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,15 +28,15 @@ import java.util.function.Predicate;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserService userService;
-    private final HistoryMessageService historyMessageService;
+    private final LogEntryService logEntryService;
     private final ClientService clientService;
     @Value("${app.crm.price.coefficient}")
     private double PRICE_COEFFICIENT;
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserService userService, HistoryMessageService historyMessageService, ClientService clientService) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserService userService, LogEntryService logEntryService, ClientService clientService) {
         this.orderRepository = orderRepository;
         this.userService = userService;
-        this.historyMessageService = historyMessageService;
+        this.logEntryService = logEntryService;
         this.clientService = clientService;
     }
 
@@ -223,7 +223,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new RequestOptionalIsEmpty("You don't have order with this ID"));
     }
     private void createNewHistoryMessage(Client client, String textMessage) {
-        historyMessageService.automaticallyCreateMessage(new HistoryMessage.Builder()
+        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
                 .withMessageText(textMessage)
                 .withIsDone(true)
                 .withIsImportant(true)
