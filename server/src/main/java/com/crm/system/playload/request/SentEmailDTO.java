@@ -1,6 +1,6 @@
 package com.crm.system.playload.request;
 
-import com.crm.system.models.history.TagName;
+import com.crm.system.models.logForUser.TagName;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,4 +1,4 @@
-package com.crm.system.models.history;
+package com.crm.system.models.logForUser;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;

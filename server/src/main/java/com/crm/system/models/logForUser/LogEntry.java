@@ -1,4 +1,4 @@
-package com.crm.system.models.history;
+package com.crm.system.models.logForUser;
 
 import com.crm.system.models.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -67,22 +67,38 @@ public class LogEntry {
         this.text = text;
         this.dateOfCreation = LocalDateTime.now();
     }
+
+
     public static class Builder {
-        private Long messageId;
-        private String messageText;
+        private Long entryId;
+        private String text;
         private LocalDateTime deadline;
         private boolean isImportant;
         private boolean isDone;
-        private String note;
+        private String additionalInformation;
         private TagName tagName;
         private long tagId;
         private User user;
-        public Builder withEntryId(long messageId) {
-            this.messageId = messageId;
+
+        public Builder() {
+        }
+        public Builder(LogEntry logEntry) {
+            this.text = logEntry.getText();
+            this.deadline = logEntry.getDeadline();
+            this.isImportant = logEntry.isImportant();
+            this.isDone = logEntry.isDone();
+            this.additionalInformation = logEntry.getAdditionalInformation();
+            this.tagId = logEntry.getTagId();
+            this.tagName = logEntry.getTagName();
+            this.user = logEntry.getUser();
+        }
+
+        public Builder withEntryId(long entryId) {
+            this.entryId = entryId;
             return this;
         }
-        public Builder withMessageText(String messageText) {
-            this.messageText = messageText;
+        public Builder withText(String text) {
+            this.text = text;
             return this;
         }
         public Builder withDeadline(LocalDateTime deadline) {
@@ -98,7 +114,7 @@ public class LogEntry {
             return this;
         }
         public Builder withAdditionalInformation(String note) {
-            this.note = note;
+            this.additionalInformation = note;
             return this;
         }
         public Builder withTagName(TagName tagName) {
@@ -114,18 +130,20 @@ public class LogEntry {
             return this;
         }
         public LogEntry build(){
-            return new LogEntry(this.messageId,
-                    this.messageText,
+            return new LogEntry(this.entryId,
+                    this.text,
                     LocalDateTime.now(),
                     this.deadline,
                     this.isImportant,
                     this.isDone,
-                    this.note,
+                    this.additionalInformation,
                     this.tagName,
                     this.tagId,
                     this.user);
         }
     }
+
+
 
     @Override
     public String toString() {

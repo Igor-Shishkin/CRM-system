@@ -4,8 +4,8 @@ import com.crm.system.exception.MismanagementOfTheClientException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
-import com.crm.system.models.history.LogEntry;
-import com.crm.system.models.history.TagName;
+import com.crm.system.models.logForUser.LogEntry;
+import com.crm.system.models.logForUser.TagName;
 import com.crm.system.models.order.InfoIsShown;
 import com.crm.system.models.order.ItemForAdditionalPurchases;
 import com.crm.system.models.order.Order;
@@ -224,7 +224,7 @@ public class OrderServiceImpl implements OrderService {
     }
     private void createNewHistoryMessage(Client client, String textMessage) {
         logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-                .withMessageText(textMessage)
+                .withText(textMessage)
                 .withIsDone(true)
                 .withIsImportant(true)
                 .withTagName(TagName.CLIENT)

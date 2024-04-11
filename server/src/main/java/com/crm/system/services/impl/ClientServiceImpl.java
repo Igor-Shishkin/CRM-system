@@ -7,8 +7,8 @@ import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
 import com.crm.system.models.User;
-import com.crm.system.models.history.LogEntry;
-import com.crm.system.models.history.TagName;
+import com.crm.system.models.logForUser.LogEntry;
+import com.crm.system.models.logForUser.TagName;
 import com.crm.system.models.order.Order;
 import com.crm.system.playload.request.AddLeadDTO;
 import com.crm.system.playload.request.EditClientDataDTO;
@@ -107,7 +107,7 @@ public class ClientServiceImpl implements ClientService {
 
         String messageText = String.format("Lead %s is created", savedLead.getFullName());
         logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-                .withMessageText(messageText)
+                .withText(messageText)
                 .withIsDone(true)
                 .withIsImportant(true)
                 .withTagName(TagName.CLIENT)
@@ -129,7 +129,7 @@ public class ClientServiceImpl implements ClientService {
 
         String messageText = String.format("Client %s goes to blackList", client.getFullName());
         logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-                .withMessageText(messageText)
+                .withText(messageText)
                 .withIsDone(true)
                 .withIsImportant(true)
                 .withTagName(TagName.CLIENT)
@@ -150,7 +150,7 @@ public class ClientServiceImpl implements ClientService {
 
         String messageText = String.format("Client %s is restored from blackList", client.getFullName());
         logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-                .withMessageText(messageText)
+                .withText(messageText)
                 .withIsDone(true)
                 .withIsImportant(true)
                 .withTagName(TagName.CLIENT)

@@ -1,6 +1,6 @@
 package com.crm.system.services;
 
-import com.crm.system.models.history.LogEntry;
+import com.crm.system.models.logForUser.LogEntry;
 import com.crm.system.playload.response.TagForHistoryMessageDTO;
 import org.springframework.stereotype.Service;
 import java.nio.file.attribute.UserPrincipalNotFoundException;

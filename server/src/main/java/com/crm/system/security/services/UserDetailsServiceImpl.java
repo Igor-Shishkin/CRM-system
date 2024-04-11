@@ -2,8 +2,8 @@ package com.crm.system.security.services;
 
 import com.crm.system.exception.UserAlreadyExistsException;
 import com.crm.system.models.User;
-import com.crm.system.models.history.LogEntry;
-import com.crm.system.models.history.TagName;
+import com.crm.system.models.logForUser.LogEntry;
+import com.crm.system.models.logForUser.TagName;
 import com.crm.system.models.security.ERole;
 import com.crm.system.models.security.Role;
 import com.crm.system.playload.request.SignUpDTO;
@@ -101,7 +101,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         String messageText = String.format("User %s is added", user.getUsername());
 
         logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-                .withMessageText(messageText)
+                .withText(messageText)
                 .withIsDone(true)
                 .withIsImportant(true)
                 .withTagName(TagName.ADMINISTRATION)

@@ -2,8 +2,8 @@ package com.crm.system.services.impl;
 
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.models.User;
-import com.crm.system.models.history.LogEntry;
-import com.crm.system.models.history.TagName;
+import com.crm.system.models.logForUser.LogEntry;
+import com.crm.system.models.logForUser.TagName;
 import com.crm.system.playload.response.TagForHistoryMessageDTO;
 import com.crm.system.repository.LogEntryRepository;
 import com.crm.system.services.LogEntryService;

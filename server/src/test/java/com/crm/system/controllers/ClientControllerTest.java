@@ -2,8 +2,8 @@ package com.crm.system.controllers;
 
 import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
-import com.crm.system.models.history.LogEntry;
-import com.crm.system.models.history.TagName;
+import com.crm.system.models.logForUser.LogEntry;
+import com.crm.system.models.logForUser.TagName;
 import com.crm.system.playload.request.AddLeadDTO;
 import com.crm.system.playload.request.EditClientDataDTO;
 import com.crm.system.repository.ClientRepository;

@@ -1,6 +1,6 @@
 package com.crm.system.controllers;
 
-import com.crm.system.models.history.LogEntry;
+import com.crm.system.models.logForUser.LogEntry;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.playload.response.TagForHistoryMessageDTO;
 import com.crm.system.services.LogEntryService;
@@ -27,7 +27,7 @@ public class LogEntryController {
         this.logEntryService = logEntryService;
     }
 
-    @Operation(summary = "Get user's history", tags = {"user", "history"})
+    @Operation(summary = "Get user's logForUser", tags = {"user", "logForUser"})
     @GetMapping("/get-history")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Set<LogEntry>> getUserHistory() throws UserPrincipalNotFoundException {
@@ -35,7 +35,7 @@ public class LogEntryController {
         return ResponseEntity.ok(history);
     }
 
-    @Operation(summary = "Get tags for history message", tags = {"history", "tags"})
+    @Operation(summary = "Get tags for logForUser message", tags = {"logForUser", "tags"})
     @GetMapping("tags")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<TagForHistoryMessageDTO>> getTagsForNewHistoryMessage() throws UserPrincipalNotFoundException {
@@ -43,7 +43,7 @@ public class LogEntryController {
         return ResponseEntity.ok(tags);
     }
 
-    @Operation(summary = "Save history message", tags = {"history", "new message"})
+    @Operation(summary = "Save logForUser message", tags = {"logForUser", "new message"})
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> saveMessage(@RequestBody LogEntry message) throws UserPrincipalNotFoundException {
@@ -51,7 +51,7 @@ public class LogEntryController {
         return ResponseEntity.ok(new MessageResponse("Message is saved"));
     }
 
-    @Operation(summary = "Delete history message", tags = {"history", "delete"})
+    @Operation(summary = "Delete logForUser message", tags = {"logForUser", "delete"})
     @DeleteMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> deleteMessage(@RequestParam long messageId) {
@@ -59,7 +59,7 @@ public class LogEntryController {
         return ResponseEntity.ok(new MessageResponse("Message is deleted"));
     }
 
-    @Operation(summary = "Change important status of message", tags = {"history", "status"})
+    @Operation(summary = "Change important status of message", tags = {"logForUser", "status"})
     @PutMapping("/change-important-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> changeImportantStatus(@RequestParam long messageId) {
@@ -67,7 +67,7 @@ public class LogEntryController {
         return ResponseEntity.ok(new MessageResponse("Status is changed"));
     }
 
-    @Operation(summary = "Change important status of message", tags = {"history", "status"})
+    @Operation(summary = "Change important status of message", tags = {"logForUser", "status"})
     @PutMapping("/change-done-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> changeDoneStatus(@RequestParam long messageId) {

@@ -1,6 +1,6 @@
 package com.crm.system.playload.response;
 
-import com.crm.system.models.history.TagName;
+import com.crm.system.models.logForUser.TagName;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
