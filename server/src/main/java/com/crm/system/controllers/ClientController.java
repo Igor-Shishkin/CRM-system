@@ -1,7 +1,7 @@
 package com.crm.system.controllers;
 
 import com.crm.system.models.Client;
-import com.crm.system.playload.request.AddLeadDTO;
+import com.crm.system.playload.request.AddClientDTO;
 import com.crm.system.playload.request.EditClientDataDTO;
 import com.crm.system.playload.response.ClientInfoDTO;
 import com.crm.system.playload.response.MessageResponse;
@@ -15,7 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -32,8 +31,8 @@ public class ClientController {
 
     @Operation(summary = "Add new Lead", tags = {"Client"})
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/add-new-lead")
-    public ResponseEntity<Long> addNewLead(@Valid @RequestBody AddLeadDTO addLeadRequest)
+    @PostMapping("/add-new-client")
+    public ResponseEntity<Long> addNewClient(@Valid @RequestBody AddClientDTO addLeadRequest)
                         throws UserPrincipalNotFoundException {
         long leadId = clientService.addNewLead(addLeadRequest);
         return ResponseEntity.ok(leadId);
@@ -68,16 +67,16 @@ public class ClientController {
     @Operation(summary = "Get all Leads", tags = {"leads"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/leads")
-    public ResponseEntity<List<ClientInfoDTO>> getAllLeadsForUser() {
-        List<ClientInfoDTO> leads = clientService.getClientsWithLeadStatusForUser();
+    public ResponseEntity<Set<ClientInfoDTO>> getAllLeadsForUser() {
+        Set<ClientInfoDTO> leads = clientService.getClientsWithLeadStatusForUser();
         return ResponseEntity.ok(leads);
     }
 
     @Operation(summary = "Get all blacklist clients", tags = {"blacklist", "get"})
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/get-black-list-clients")
-    public ResponseEntity<List<ClientInfoDTO>> getBlackListClientsForUser() {
-        List<ClientInfoDTO> clients = clientService.getClientsWithBlacklistStatusForUser();
+    public ResponseEntity<Set<ClientInfoDTO>> getBlackListClientsForUser() {
+        Set<ClientInfoDTO> clients = clientService.getClientsWithBlacklistStatusForUser();
         return ResponseEntity.ok(clients);
     }
 
@@ -85,7 +84,7 @@ public class ClientController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @GetMapping("/client-info")
     public ResponseEntity<Client> getClient(@RequestParam long clientId) {
-        Client client = clientService.getClient(clientId);
+        Client client = clientService.getInfoWithOrdersClient(clientId);
         return ResponseEntity.ok(client);
     }
 

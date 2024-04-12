@@ -4,7 +4,7 @@ import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
 import com.crm.system.models.logForUser.LogEntry;
 import com.crm.system.models.logForUser.TagName;
-import com.crm.system.playload.request.AddLeadDTO;
+import com.crm.system.playload.request.AddClientDTO;
 import com.crm.system.playload.request.EditClientDataDTO;
 import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.LogEntryRepository;
@@ -101,25 +101,25 @@ class ClientControllerTest {
     @WithMockUser(roles = "USER")
     public void add_lead_success() throws Exception {
 
-        AddLeadDTO newLead = new AddLeadDTO();
-        newLead.setFullName("test name");
-        newLead.setEmail("test@gmail.com");
-        newLead.setAddress("test address");
-        newLead.setPhoneNumber("test +0 000 000 000");
+        AddClientDTO newClient = new AddClientDTO();
+        newClient.setFullName("test name");
+        newClient.setEmail("test@gmail.com");
+        newClient.setAddress("test address");
+        newClient.setPhoneNumber("test +0 000 000 000");
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/user-board/add-new-lead")
+                .post("/api/user-board/add-new-client")
                         .contentType("application/json")
-                        .content(objectMapper.writeValueAsString(newLead))
+                        .content(objectMapper.writeValueAsString(newClient))
                 .accept("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("9"));
 
         Optional<Client> optionalClient = clientRepository.findById(9L);
         assertThat(optionalClient).isNotEmpty();
-        assertThat(optionalClient.get().getFullName()).isEqualTo(newLead.getFullName());
-        assertThat(optionalClient.get().getEmail()).isEqualTo(newLead.getEmail());
-        assertThat(optionalClient.get().getAddress()).isEqualTo(newLead.getAddress());
+        assertThat(optionalClient.get().getFullName()).isEqualTo(newClient.getFullName());
+        assertThat(optionalClient.get().getEmail()).isEqualTo(newClient.getEmail());
+        assertThat(optionalClient.get().getAddress()).isEqualTo(newClient.getAddress());
 
         Optional<LogEntry> optionalLogEntry = logEntryRepository.findById(6L);
 
@@ -131,15 +131,15 @@ class ClientControllerTest {
 
     @Test
     @WithMockUser(roles = "USER")
-    public void add_lead_email_already_exist() throws Exception {
-        AddLeadDTO newLead = new AddLeadDTO();
+    public void add_client_email_already_exist() throws Exception {
+        AddClientDTO newLead = new AddClientDTO();
         newLead.setFullName("test name");
         newLead.setEmail("pitor@gmail.com");
         newLead.setAddress("test address");
         newLead.setPhoneNumber("test +0 000 000 000");
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/user-board/add-new-lead")
+                        .post("/api/user-board/add-new-client")
                         .contentType("application/json")
                         .content(writeObjectToJsonFormat(newLead))
                         .accept("application/json"))
@@ -150,13 +150,13 @@ class ClientControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void add_lead_with_empty_user_name() throws Exception {
-        AddLeadDTO newLead = new AddLeadDTO();
+        AddClientDTO newLead = new AddClientDTO();
         newLead.setEmail("pitor@gmail.com");
         newLead.setAddress("test address");
         newLead.setPhoneNumber("test +0 000 000 000");
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/user-board/add-new-lead")
+                .post("/api/user-board/add-new-client")
                 .contentType("application/json")
                 .content(writeObjectToJsonFormat(newLead))
                 .accept("application/json"))
@@ -167,13 +167,13 @@ class ClientControllerTest {
     @Test
     @WithMockUser(roles = "USER")
     public void add_lead_with_empty_email() throws Exception {
-        AddLeadDTO newLead = new AddLeadDTO();
+        AddClientDTO newLead = new AddClientDTO();
         newLead.setFullName("test name");
         newLead.setAddress("test address");
         newLead.setPhoneNumber("test +0 000 000 000");
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/api/user-board/add-new-lead")
+                .post("/api/user-board/add-new-client")
                 .contentType("application/json")
                 .content(writeObjectToJsonFormat(newLead))
                 .accept("application/json"))
@@ -184,14 +184,14 @@ class ClientControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     public void add_lead_with_wrong_role() throws Exception {
-        AddLeadDTO newLead = new AddLeadDTO();
+        AddClientDTO newLead = new AddClientDTO();
         newLead.setFullName("test name");
         newLead.setEmail("test@gmail.com");
         newLead.setAddress("test address");
         newLead.setPhoneNumber("test +0 000 000 000");
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/user-board/add-new-lead")
+                        .post("/api/user-board/add-new-client")
                         .contentType("application/json")
                         .content(writeObjectToJsonFormat(newLead))
                         .accept("application/json"))

@@ -1,6 +1,8 @@
 package com.crm.system.models;
 
 import com.crm.system.models.order.Order;
+import com.crm.system.playload.request.AddClientDTO;
+import com.crm.system.playload.request.EditClientDataDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -79,6 +81,24 @@ public class Client {
                 this.dateOfLastChange = LocalDateTime.now();
                 this.status = ClientStatus.LEAD;
         }
+        public Client(AddClientDTO clientDTO, User user) {
+                this.fullName = clientDTO.getFullName();
+                this.email = clientDTO.getEmail();
+                this.phoneNumber = clientDTO.getPhoneNumber();
+                this.address = clientDTO.getAddress();
+                this.user = user;
+                this.dateOfLastChange = LocalDateTime.now();
+                this.status = ClientStatus.LEAD;
+        }
+
+        public void editClientData(EditClientDataDTO request){
+                this.setFullName(request.getFullName());
+                this.setEmail(request.getEmail());
+                this.setPhoneNumber(request.getPhoneNumber());
+                this.setAddress(request.getAddress());
+                this.setDateOfLastChange(LocalDateTime.now());
+        }
+
 
         @Override
         public String toString() {
