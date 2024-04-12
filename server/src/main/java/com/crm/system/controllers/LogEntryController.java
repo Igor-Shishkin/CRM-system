@@ -47,7 +47,7 @@ public class LogEntryController {
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> saveMessage(@RequestBody LogEntry message) throws UserPrincipalNotFoundException {
-        logEntryService.saveMessage(message);
+        logEntryService.saveNewMessage(message);
         return ResponseEntity.ok(new MessageResponse("Message is saved"));
     }
 

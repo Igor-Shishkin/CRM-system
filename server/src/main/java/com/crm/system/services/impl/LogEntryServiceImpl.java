@@ -40,7 +40,7 @@ public class LogEntryServiceImpl implements LogEntryService {
                 .collect(Collectors.toList());
     }
 
-    public void saveMessage(LogEntry message) throws UserPrincipalNotFoundException {
+    public void saveNewMessage(LogEntry message) throws UserPrincipalNotFoundException {
         message.setEntryId(null);
         message.setDateOfCreation(LocalDateTime.now());
         message.setUser(userService.getActiveUser());

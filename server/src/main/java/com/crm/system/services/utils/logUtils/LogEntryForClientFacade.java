@@ -4,6 +4,7 @@ import com.crm.system.models.Client;
 import com.crm.system.models.logForUser.LogEntry;
 import com.crm.system.models.logForUser.TagName;
 import com.crm.system.repository.LogEntryRepository;
+import com.crm.system.services.LogEntryService;
 import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.LogEntryDecorator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -11,11 +12,12 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class LogEntryForClientFacade implements LogEntryFacade{
-    private final LogEntryRepository logEntryRepository;
+    private final LogEntryService logEntryService;
     private final LogEntryTextFactory logEntryTextFactory;
 
-    public LogEntryForClientFacade(LogEntryRepository logEntryRepository, LogEntryTextForClientFactory logEntryTextFactory) {
-        this.logEntryRepository = logEntryRepository;
+    public LogEntryForClientFacade(LogEntryService logEntryService,
+                                   LogEntryTextForClientFactory logEntryTextFactory) {
+        this.logEntryService = logEntryService;
         this.logEntryTextFactory = logEntryTextFactory;
     }
 
@@ -35,7 +37,7 @@ public class LogEntryForClientFacade implements LogEntryFacade{
             logEntry = decorator.decorate(logEntry);
         }
 
-        logEntryRepository.save(logEntry);
+        logEntryService.automaticallyCreateMessage(logEntry);
     }
 
     private Client getClientFromData(Object data) {
