@@ -114,16 +114,6 @@ public class ClientServiceImpl implements ClientService {
                 EntryType.ADD_CLIENT,
                 new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
 
-//        String messageText = String.format("Lead %s is created", savedLead.getFullName());
-//        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-//                .withText(messageText)
-//                .withIsDone(true)
-//                .withIsImportant(true)
-//                .withTagName(TagName.CLIENT)
-//                .withTagId(savedLead.getClientId())
-//                .withUser(activeUser)
-//                .build());
-
         return savedLead.getClientId();
     }
 
@@ -140,15 +130,6 @@ public class ClientServiceImpl implements ClientService {
                 EntryType.SENT_CLIENT_TO_BLACKLIST,
                 new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
 
-//        String messageText = String.format("Client %s goes to blackList", client.getFullName());
-//        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-//                .withText(messageText)
-//                .withIsDone(true)
-//                .withIsImportant(true)
-//                .withTagName(TagName.CLIENT)
-//                .withTagId(clientId)
-//                .withUser(client.getUser())
-//                .build());
     }
 
     public void restoreClientFromBlackList(long clientId) throws SubjectNotBelongToActiveUser {
@@ -165,15 +146,6 @@ public class ClientServiceImpl implements ClientService {
                 EntryType.RESTORE_CLIENT_FROM_BLACKLIST,
                 new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
 
-//        String messageText = String.format("Client %s is restored from blackList", client.getFullName());
-//        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-//                .withText(messageText)
-//                .withIsDone(true)
-//                .withIsImportant(true)
-//                .withTagName(TagName.CLIENT)
-//                .withTagId(clientId)
-//                .withUser(client.getUser())
-//                .build());
     }
 
 
