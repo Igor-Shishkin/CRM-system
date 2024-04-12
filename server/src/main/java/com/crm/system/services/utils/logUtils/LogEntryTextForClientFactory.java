@@ -1,12 +1,15 @@
 package com.crm.system.services.utils.logUtils;
 
 import com.crm.system.models.Client;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
-public class LogEntryTextForClientFactory implements LogEntryTextFactory{
+public class LogEntryTextForClientFactory implements LogEntryTextFactory<Client>{
     @Override
     public String generateText(Client client, EntryType entryType) {
+
         switch (entryType) {
             case ADD_CLIENT -> {
                 return String.format("Client %s is created", client.getFullName());

@@ -4,6 +4,6 @@ import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.LogEntryDeco
 import org.springframework.stereotype.Component;
 
 @Component
-public interface LogEntryFacade {
-    void createAndSaveMessage(Object data, EntryType entryType, LogEntryDecorator... decorators);
+public interface LogEntryFacade<T> {
+    void createAndSaveMessage(T data, EntryType entryType, LogEntryDecorator... decorators);
 }

@@ -11,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
-
 @Slf4j
 @Tag(name = "Email controller", description = "Email management APIs")
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
@@ -29,8 +27,7 @@ public class EmailController {
     @PostMapping("/sent-email")
     @Operation(summary = "Sent email", tags = {"email", "sent"})
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
-    public ResponseEntity<MessageResponse> authenticateUser(@Valid @RequestBody SentEmailDTO sentEmailDTO)
-                    throws UserPrincipalNotFoundException {
+    public ResponseEntity<MessageResponse> authenticateUser(@Valid @RequestBody SentEmailDTO sentEmailDTO) {
         emailService.sentEmail(sentEmailDTO);
         return ResponseEntity.ok(new MessageResponse("Payment is confirm"));
     }

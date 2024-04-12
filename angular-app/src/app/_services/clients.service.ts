@@ -49,7 +49,7 @@ export class ClientsService {
   }
   addLead(fullName : string, address : string, email : string, phoneNumber : string):
     Observable<number> {
-      return this.http.post<number>(CLIENTS_API + '/add-new-lead',
+      return this.http.post<number>(CLIENTS_API + '/add-new-client',
         {
           fullName,
           address,

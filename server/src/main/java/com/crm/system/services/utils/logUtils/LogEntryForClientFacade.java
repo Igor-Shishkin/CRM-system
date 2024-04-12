@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class LogEntryForClientFacade implements LogEntryFacade{
+public class LogEntryForClientFacade implements LogEntryFacade<Client>{
     private final LogEntryService logEntryService;
-    private final LogEntryTextFactory logEntryTextFactory;
+    private final LogEntryTextFactory<Client> logEntryTextFactory;
 
     public LogEntryForClientFacade(LogEntryService logEntryService,
                                    LogEntryTextForClientFactory logEntryTextFactory) {
@@ -22,8 +22,9 @@ public class LogEntryForClientFacade implements LogEntryFacade{
     }
 
     @Override
-    public void createAndSaveMessage(Object data, EntryType entryType, LogEntryDecorator... decorators) {
-        Client client = getClientFromData(data);
+    public void createAndSaveMessage(Client client, EntryType entryType, LogEntryDecorator... decorators) {
+
+        assert (client != null);
         String text = logEntryTextFactory.generateText(client, entryType);
 
         LogEntry logEntry = new LogEntry.Builder()
@@ -40,11 +41,11 @@ public class LogEntryForClientFacade implements LogEntryFacade{
         logEntryService.automaticallyCreateMessage(logEntry);
     }
 
-    private Client getClientFromData(Object data) {
-        if (!(data instanceof Client)) {
-            log.error("LofEntryFacade: Entity isn't instance of Client");
-            throw new IllegalArgumentException("Expected CLIENT data");
-        }
-        return (Client) data;
-    }
+//    private Client getClientFromData(Object data) {
+//        if (!(data instanceof Client)) {
+//            log.error("LofEntryFacade: Entity isn't instance of Client");
+//            throw new IllegalArgumentException("Expected CLIENT data");
+//        }
+//        return (Client) data;
+//    }
 }

@@ -1,29 +1,25 @@
 package com.crm.system.services.impl;
 
-import com.crm.system.models.logForUser.LogEntry;
 import com.crm.system.playload.request.SentEmailDTO;
 import com.crm.system.services.EmailService;
-import com.crm.system.services.LogEntryService;
-import com.crm.system.services.UserService;
+import com.crm.system.services.utils.logUtils.EntryType;
+import com.crm.system.services.utils.logUtils.LogEntryForEmailFacade;
+import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsDoneDecorator;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
-
 @Service
 public class EmailServiceImpl implements EmailService {
-    private final LogEntryService logEntryService;
     private final JavaMailSender javaMailSender;
-    private final UserService userService;
+    private final LogEntryForEmailFacade facade;
 
-    public EmailServiceImpl(UserService userService, LogEntryService logEntryService,
-                        JavaMailSender javaMailSender) {
-        this.logEntryService = logEntryService;
+    public EmailServiceImpl(JavaMailSender javaMailSender,
+                            LogEntryForEmailFacade facade) {
         this.javaMailSender = javaMailSender;
-        this.userService = userService;
+        this.facade = facade;
     }
-    public void sentEmail(SentEmailDTO sentEmailDTO) throws UserPrincipalNotFoundException {
+    public void sentEmail(SentEmailDTO sentEmailDTO) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(sentEmailDTO.getEmail());
         message.setSubject(sentEmailDTO.getSubjectOfMail());
@@ -31,19 +27,8 @@ public class EmailServiceImpl implements EmailService {
 
         javaMailSender.send(message);
 
-        createHistoryMessage(sentEmailDTO);
-    }
-
-    private void createHistoryMessage(SentEmailDTO sentEmailDTO) throws UserPrincipalNotFoundException {
-        String messageText = "Send email: " + sentEmailDTO.getSubjectOfMail() + "'";
-
-        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-                .withText(messageText)
-                .withIsDone(true)
-                .withIsImportant(false)
-                .withTagName(sentEmailDTO.getTagName())
-                .withTagId(sentEmailDTO.getTagId())
-                .withUser(userService.getActiveUser())
-                .build());
+        facade.createAndSaveMessage(sentEmailDTO,
+                EntryType.EMAIL_IS_SENT,
+                new MarkAsDoneDecorator());
     }
 }
