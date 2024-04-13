@@ -24,7 +24,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             ClientAlreadyExistException.class,
             NameOrEmailIsEmptyException.class,
             TransactionSystemException.class,
-            MismanagementOfTheClientException.class})
+            MismanagementOfTheClientException.class,
+            TextOrEmailIsEmptyException.class})
     protected ResponseEntity<MessageResponse> handleAllExceptions(Exception exception) {
         HttpStatus status = null;
         String message = exception.getMessage();;
@@ -38,7 +39,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             status = HttpStatus.CONFLICT;
         } else if (exception instanceof RequestOptionalIsEmpty){
             status = HttpStatus.NOT_FOUND;
-        } else if (exception instanceof NameOrEmailIsEmptyException){
+        } else if (exception instanceof NameOrEmailIsEmptyException ||
+                   exception instanceof TextOrEmailIsEmptyException){
             status = HttpStatus.I_AM_A_TEAPOT;
         }
 

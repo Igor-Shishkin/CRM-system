@@ -10,6 +10,5 @@ public class SentEmailDTO {
     private String email;
     private String subjectOfMail;
     private String textOfEmail;
-    private TagName tagName;
-    private long tagId;
+    private TagName tagName = TagName.EMAIL;
 }

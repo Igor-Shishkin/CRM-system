@@ -26,9 +26,9 @@ public class EmailController {
 
     @PostMapping("/sent-email")
     @Operation(summary = "Sent email", tags = {"email", "sent"})
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> authenticateUser(@Valid @RequestBody SentEmailDTO sentEmailDTO) {
         emailService.sentEmail(sentEmailDTO);
-        return ResponseEntity.ok(new MessageResponse("Payment is confirm"));
+        return ResponseEntity.ok(new MessageResponse("Email sent successfully"));
     }
 }
