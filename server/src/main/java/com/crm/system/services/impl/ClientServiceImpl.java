@@ -143,11 +143,6 @@ public class ClientServiceImpl implements ClientService {
             throw new ClientAlreadyExistException("Client with this email already exists");
         }
     }
-    private void checkWhetherClientBelongsToActualUser(long clientId) {
-        if (clientRepository.checkWhetherClientBelongToActiveUser(userService.getActiveUserId(), clientId)) {
-            throw new SubjectNotBelongToActiveUser(String.format("You do not have a client with ID=%d", clientId));
-        }
-    }
     private void checkFullNameAndEmailFields(EditClientDataDTO request) {
         if (request.getFullName().isBlank() ||
                 request.getEmail().isBlank()) {

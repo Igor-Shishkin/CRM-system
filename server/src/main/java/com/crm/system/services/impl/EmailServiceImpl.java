@@ -9,7 +9,6 @@ import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsDoneDe
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 public class EmailServiceImpl implements EmailService {

@@ -212,7 +212,9 @@ class ClientControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value(String.format("Lead with ID=%d is in blacklist", clientId)));
 
-        assertThat(clientRepository.findById(3L).get().getStatus()).isEqualTo(ClientStatus.BLACKLIST);
+        Optional<Client> optionalClient = clientRepository.findById(3L);
+        assertThat(optionalClient).isNotEmpty();
+        assertThat(optionalClient.get().getStatus()).isEqualTo(ClientStatus.BLACKLIST);
 
         Optional<LogEntry> optionalLogEntry = logEntryRepository.findById(6L);
         assertThat(optionalLogEntry).isNotEmpty();
@@ -245,7 +247,7 @@ class ClientControllerTest {
                         .contentType("application/json")
                         .param("clientId", String.valueOf(3L))
                         .accept("application/json"))
-                .andExpect(status().isForbidden());;
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -505,7 +507,7 @@ class ClientControllerTest {
                         .content(writeObjectToJsonFormat(editClientDataDTO))
                         .accept("application/json"))
                 .andExpect(status().isIAmATeapot())
-                .andExpect(jsonPath("$.message").value("Name and email can't be empty"));;
+                .andExpect(jsonPath("$.message").value("Name and email can't be empty"));
     }
 
     @Test
