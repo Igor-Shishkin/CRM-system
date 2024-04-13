@@ -1,4 +1,4 @@
-package com.crm.system.services.utils.logUtils;
+package com.crm.system.services.utils.logUtils.textFactoryLogEntry;
 
 import com.crm.system.models.Client;
 import lombok.extern.slf4j.Slf4j;

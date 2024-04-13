@@ -1,4 +1,4 @@
-package com.crm.system.services.utils.logUtils;
+package com.crm.system.services.utils.logUtils.textFactoryLogEntry;
 
 public enum EntryType {
     ADD_CLIENT,

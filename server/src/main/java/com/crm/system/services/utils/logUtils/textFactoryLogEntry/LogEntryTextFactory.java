@@ -1,4 +1,4 @@
-package com.crm.system.services.utils.logUtils;
+package com.crm.system.services.utils.logUtils.textFactoryLogEntry;
 
 import org.springframework.stereotype.Component;
 

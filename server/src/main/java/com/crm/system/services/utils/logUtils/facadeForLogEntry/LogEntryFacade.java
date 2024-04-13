@@ -1,6 +1,7 @@
-package com.crm.system.services.utils.logUtils;
+package com.crm.system.services.utils.logUtils.facadeForLogEntry;
 
 import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.LogEntryDecorator;
+import com.crm.system.services.utils.logUtils.textFactoryLogEntry.EntryType;
 import org.springframework.stereotype.Component;
 
 @Component

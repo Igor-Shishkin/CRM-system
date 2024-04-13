@@ -2,8 +2,8 @@ package com.crm.system.services.impl;
 
 import com.crm.system.playload.request.SentEmailDTO;
 import com.crm.system.services.EmailService;
-import com.crm.system.services.utils.logUtils.EntryType;
-import com.crm.system.services.utils.logUtils.LogEntryForEmailFacade;
+import com.crm.system.services.utils.logUtils.textFactoryLogEntry.EntryType;
+import com.crm.system.services.utils.logUtils.facadeForLogEntry.LogEntryForEmailFacade;
 import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsDoneDecorator;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

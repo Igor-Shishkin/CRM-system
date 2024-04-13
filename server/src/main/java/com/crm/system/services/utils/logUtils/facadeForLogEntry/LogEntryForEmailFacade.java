@@ -1,4 +1,4 @@
-package com.crm.system.services.utils.logUtils;
+package com.crm.system.services.utils.logUtils.facadeForLogEntry;
 
 import com.crm.system.models.User;
 import com.crm.system.models.logForUser.LogEntry;
@@ -7,6 +7,9 @@ import com.crm.system.playload.request.SentEmailDTO;
 import com.crm.system.services.LogEntryService;
 import com.crm.system.services.UserService;
 import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.LogEntryDecorator;
+import com.crm.system.services.utils.logUtils.textFactoryLogEntry.EntryType;
+import com.crm.system.services.utils.logUtils.textFactoryLogEntry.LogEntryTextFactory;
+import com.crm.system.services.utils.logUtils.textFactoryLogEntry.LogEntryTextForEmailFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
