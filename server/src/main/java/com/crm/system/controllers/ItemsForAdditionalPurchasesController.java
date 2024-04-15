@@ -2,7 +2,7 @@ package com.crm.system.controllers;
 
 import com.crm.system.models.order.ItemForAdditionalPurchases;
 import com.crm.system.playload.response.MessageResponse;
-import com.crm.system.services.ItemsForCalculationService;
+import com.crm.system.services.ItemsForAdditionalPurchasesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -17,18 +17,18 @@ import java.util.Set;
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("api/user-board/items-for-addition-purchases")
-public class ItemsForCalculationController {
-    private final ItemsForCalculationService itemsForCalculationService;
+public class ItemsForAdditionalPurchasesController {
+    private final ItemsForAdditionalPurchasesService itemsForAdditionalPurchasesService;
 
-    public ItemsForCalculationController(ItemsForCalculationService itemsForCalculationService) {
-        this.itemsForCalculationService = itemsForCalculationService;
+    public ItemsForAdditionalPurchasesController(ItemsForAdditionalPurchasesService itemsForAdditionalPurchasesService) {
+        this.itemsForAdditionalPurchasesService = itemsForAdditionalPurchasesService;
     }
 
     @Operation(summary = "Get order's items for calculation", tags = {"item", "calculation"})
     @PostMapping("/save-items")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MessageResponse> getUserHistory(@RequestBody Set<ItemForAdditionalPurchases> items, @RequestParam long orderId) {
-        itemsForCalculationService.saveItems(items, orderId);
+        itemsForAdditionalPurchasesService.saveItems(items, orderId);
         return ResponseEntity.ok(new MessageResponse("Calculations are saved"));
     }
 }

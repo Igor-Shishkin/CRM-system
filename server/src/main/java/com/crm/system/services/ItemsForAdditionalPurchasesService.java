@@ -5,6 +5,6 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 @Service
-public interface ItemsForCalculationService {
+public interface ItemsForAdditionalPurchasesService {
     public void saveItems(Set<ItemForAdditionalPurchases> items, long orderId);
 }
