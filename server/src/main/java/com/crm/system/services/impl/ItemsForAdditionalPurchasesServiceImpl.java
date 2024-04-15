@@ -34,7 +34,8 @@ public class ItemsForAdditionalPurchasesServiceImpl implements ItemsForAdditiona
 
     private void checkIfTheOrderHasBeenSigned(Order order) {
         if (order.isAgreementSigned()) {
-            throw new MismanagementOfTheClientException("You can't changes item's calculation if agreement is signed");
+            throw new MismanagementOfTheClientException
+                    ("You can't changes item's for addition purchases when agreement is signed");
         }
     }
 }

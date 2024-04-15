@@ -49,10 +49,10 @@ VALUES
 
 INSERT INTO items_for_additional_purchases (item_name, quantity, unit_price, total_price, order_id)
 VALUES
-    ('chipboard sheet 400*200', 3, 231.5, 717.65, 1),
-    ('chipboard sheet 100*150', 5, 100, 550, 1),
-    ('white kitchen countertop 80*300', 1, 450, 495, 1),
-    ('door hinge without closer', 10, 12, 132, 1),
+    ('chipboard sheet 400*200', 3, 231.5, 717.65, 2),
+    ('chipboard sheet 100*150', 5, 100, 550, 2),
+    ('white kitchen countertop 80*300', 1, 450, 495, 2),
+    ('door hinge without closer', 10, 12, 132, 2),
 
     ('chipboard sheet 200*200', 1, 200, 220, 4),
     ('chipboard sheet 100*250', 2, 300, 660, 4),

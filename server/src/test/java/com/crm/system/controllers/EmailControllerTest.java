@@ -82,7 +82,7 @@ class EmailControllerTest {
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders
-                .standaloneSetup(ClientController.class)
+                .standaloneSetup(EmailController.class)
                 .build();
     }
 

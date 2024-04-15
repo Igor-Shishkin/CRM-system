@@ -31,6 +31,16 @@ public class ItemForAdditionalPurchases {
     @JsonBackReference
     private Order order;
 
+    public ItemForAdditionalPurchases() {
+    }
+
+    public ItemForAdditionalPurchases(String itemName, int quantity, double unitPrice, double totalPrice) {
+        this.itemName = itemName;
+        this.quantity = quantity;
+        this.unitPrice = unitPrice;
+        this.totalPrice = totalPrice;
+    }
+
     @Override
     public String toString() {
         return "ItemForAdditionalPurchases{" +
