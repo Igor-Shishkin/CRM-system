@@ -51,7 +51,7 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     @JsonManagedReference
-    private Set<LogEntry> history;
+    private Set<LogEntry> log;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",

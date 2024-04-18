@@ -1,15 +1,9 @@
 package com.crm.system.controllers;
 
-import com.crm.system.models.Client;
-import com.crm.system.models.logForUser.LogEntry;
-import com.crm.system.models.logForUser.TagName;
 import com.crm.system.models.order.ItemForAdditionalPurchases;
 import com.crm.system.models.order.Order;
-import com.crm.system.playload.request.AddClientDTO;
 import com.crm.system.repository.*;
-import com.crm.system.services.ClientService;
 import com.crm.system.services.UserService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.data.Percentage;
 import org.junit.Before;
@@ -39,7 +33,6 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 

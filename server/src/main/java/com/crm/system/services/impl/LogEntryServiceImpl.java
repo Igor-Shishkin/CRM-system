@@ -3,41 +3,41 @@ package com.crm.system.services.impl;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.models.User;
 import com.crm.system.models.logForUser.LogEntry;
-import com.crm.system.models.logForUser.TagName;
-import com.crm.system.playload.response.TagForHistoryMessageDTO;
+import com.crm.system.playload.response.TagForUserLogDTO;
 import com.crm.system.repository.LogEntryRepository;
 import com.crm.system.services.LogEntryService;
 import com.crm.system.services.UserService;
+import com.crm.system.services.utils.logUtils.LogTagsCreator;
+import com.crm.system.services.utils.logUtils.LogTagsCreatorImpl;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class LogEntryServiceImpl implements LogEntryService {
     private final LogEntryRepository logEntryRepository;
     private final UserService userService;
+    private final LogTagsCreator logTagsCreator;
 
-    public LogEntryServiceImpl(LogEntryRepository logEntryRepository, UserService userService) {
+    public LogEntryServiceImpl(LogEntryRepository logEntryRepository,
+                               UserService userService,
+                               LogTagsCreatorImpl logTagsCreator) {
         this.logEntryRepository = logEntryRepository;
         this.userService = userService;
+        this.logTagsCreator = logTagsCreator;
     }
 
-    public Set<LogEntry> getUserHistory() throws UserPrincipalNotFoundException {
+    public Set<LogEntry> getUserLog() throws UserPrincipalNotFoundException {
         User activeUser = getActiveUser();
-        return activeUser.getHistory();
+        return activeUser.getLog();
     }
 
-    public List<TagForHistoryMessageDTO> getListOfTags() throws UserPrincipalNotFoundException {
+    public Set<TagForUserLogDTO> getSetOfTags() throws UserPrincipalNotFoundException {
         User activeUser = getActiveUser();
-        return activeUser.getClients().stream()
-                .map(client -> new TagForHistoryMessageDTO(TagName.CLIENT,
-                        client.getClientId(),
-                        client.getFullName()))
-                .collect(Collectors.toList());
+
+        return logTagsCreator.getTags(activeUser);
     }
 
     public void saveNewMessage(LogEntry message) throws UserPrincipalNotFoundException {

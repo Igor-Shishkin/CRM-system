@@ -1,6 +1,5 @@
 package com.crm.system.controllers;
 
-import com.crm.system.models.ClientStatus;
 import com.crm.system.models.logForUser.LogEntry;
 import com.crm.system.models.logForUser.TagName;
 import com.crm.system.playload.request.SentEmailDTO;
@@ -37,7 +36,6 @@ import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
