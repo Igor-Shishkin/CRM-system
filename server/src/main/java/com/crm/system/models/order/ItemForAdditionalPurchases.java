@@ -2,12 +2,14 @@ package com.crm.system.models.order;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@EqualsAndHashCode
 @Table(name = "items_for_additional_purchases")
 public class ItemForAdditionalPurchases {
     @Id
