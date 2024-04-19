@@ -2,7 +2,7 @@ package com.crm.system.controllers;
 
 import com.crm.system.models.logForUser.LogEntry;
 import com.crm.system.playload.response.MessageResponse;
-import com.crm.system.playload.response.TagForHistoryMessageDTO;
+import com.crm.system.playload.response.TagForUserLogDTO;
 import com.crm.system.services.LogEntryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,14 +12,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.util.List;
 import java.util.Set;
 
 @Slf4j
 @Tag(name = "Client controller", description = "Client management APIs")
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
 @RestController
-@RequestMapping("api/history-message")
+@RequestMapping("api/log")
 public class LogEntryController {
     private final LogEntryService logEntryService;
 
@@ -27,19 +26,19 @@ public class LogEntryController {
         this.logEntryService = logEntryService;
     }
 
-    @Operation(summary = "Get user's logForUser", tags = {"user", "logForUser"})
-    @GetMapping("/get-history")
+    @Operation(summary = "Get user's log", tags = {"user", "log"})
+    @GetMapping("/get-user-log")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Set<LogEntry>> getUserHistory() throws UserPrincipalNotFoundException {
-        Set<LogEntry> history = logEntryService.getUserHistory();
+    public ResponseEntity<Set<LogEntry>> getUserLog() throws UserPrincipalNotFoundException {
+        Set<LogEntry> history = logEntryService.getUserLog();
         return ResponseEntity.ok(history);
     }
 
-    @Operation(summary = "Get tags for logForUser message", tags = {"logForUser", "tags"})
+    @Operation(summary = "Get tags for log", tags = {"log", "tags"})
     @GetMapping("tags")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<TagForHistoryMessageDTO>> getTagsForNewHistoryMessage() throws UserPrincipalNotFoundException {
-        List<TagForHistoryMessageDTO> tags = logEntryService.getListOfTags();
+    public ResponseEntity<Set<TagForUserLogDTO>> getTagsForNewHistoryMessage() throws UserPrincipalNotFoundException {
+        Set<TagForUserLogDTO> tags = logEntryService.getSetOfTags();
         return ResponseEntity.ok(tags);
     }
 

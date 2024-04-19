@@ -62,6 +62,6 @@ INSERT INTO log_for_user (text, date_of_creation, is_important, is_done, additio
 VALUES
     ('Installation of kitchen furniture completed', '2023-12-31', true, true, NULL, 'CLIENT', 3, 1),
     ('Bedroom layout design requested', '2023-12-23', true, false, 'Pending approval', 'CLIENT', 3, 1),
-    ('Handmade table order placed', '2024-01-11', false, false, NULL, 'CLIENT', 3, 1),
+    ('Create new user', '2024-01-11', false, false, NULL, 'ADMINISTRATION', 3, 1),
     ('Bedroom furniture installation started', '2023-12-31', true, false, NULL, 'CLIENT', 4, 1),
-    ('Design for bedroom layout completed', '2023-12-13', true, false, 'Pending client review', 'CLIENT', 1, 1) ;
+    ('Design for bedroom layout completed', '2023-12-13', true, false, 'Pending client review', 'CLIENT', 1, 2) ;
