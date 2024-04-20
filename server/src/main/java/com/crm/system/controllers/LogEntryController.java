@@ -9,13 +9,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.Set;
 
 @Slf4j
-@Tag(name = "Client controller", description = "Client management APIs")
+@Tag(name = "Log controller", description = "Log management APIs")
 @CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
 @RestController
 @RequestMapping("api/log")
@@ -26,23 +27,24 @@ public class LogEntryController {
         this.logEntryService = logEntryService;
     }
 
-    @Operation(summary = "Get user's log", tags = {"user", "log"})
+    @Operation(summary = "Get user's log", tags = {"log for user", "log"})
     @GetMapping("/get-user-log")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Set<LogEntry>> getUserLog() throws UserPrincipalNotFoundException {
-        Set<LogEntry> history = logEntryService.getUserLog();
-        return ResponseEntity.ok(history);
+        Set<LogEntry> log = logEntryService.getUserLog();
+        return ResponseEntity.ok(log);
     }
 
-    @Operation(summary = "Get tags for log", tags = {"log", "tags"})
+    @Operation(summary = "Get tags for log", tags = {"log for user", "tags"})
     @GetMapping("tags")
+    @Transactional
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Set<TagForUserLogDTO>> getTagsForNewHistoryMessage() throws UserPrincipalNotFoundException {
+    public ResponseEntity<Set<TagForUserLogDTO>> getTagsForNewEntry() throws UserPrincipalNotFoundException {
         Set<TagForUserLogDTO> tags = logEntryService.getSetOfTags();
         return ResponseEntity.ok(tags);
     }
 
-    @Operation(summary = "Save logForUser message", tags = {"logForUser", "new message"})
+    @Operation(summary = "Save logForUser message", tags = {"log for user", "new message"})
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> saveMessage(@RequestBody LogEntry message) throws UserPrincipalNotFoundException {
@@ -50,7 +52,7 @@ public class LogEntryController {
         return ResponseEntity.ok(new MessageResponse("Message is saved"));
     }
 
-    @Operation(summary = "Delete logForUser message", tags = {"logForUser", "delete"})
+    @Operation(summary = "Delete logForUser message", tags = {"log for user", "delete"})
     @DeleteMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> deleteMessage(@RequestParam long messageId) {
@@ -58,7 +60,7 @@ public class LogEntryController {
         return ResponseEntity.ok(new MessageResponse("Message is deleted"));
     }
 
-    @Operation(summary = "Change important status of message", tags = {"logForUser", "status"})
+    @Operation(summary = "Change important status of message", tags = {"log for user", "status"})
     @PutMapping("/change-important-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> changeImportantStatus(@RequestParam long messageId) {
@@ -66,7 +68,7 @@ public class LogEntryController {
         return ResponseEntity.ok(new MessageResponse("Status is changed"));
     }
 
-    @Operation(summary = "Change important status of message", tags = {"logForUser", "status"})
+    @Operation(summary = "Change important status of message", tags = {"log for user", "status"})
     @PutMapping("/change-done-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> changeDoneStatus(@RequestParam long messageId) {

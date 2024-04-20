@@ -79,6 +79,7 @@ class LogEntryControllerTest {
 
     @BeforeEach
     public void initialize() throws UserPrincipalNotFoundException {
+        when(userService.getActiveUserId()).thenReturn(1L);
         User user = userRepository.findById(1L)
                 .orElseThrow(() -> new UserPrincipalNotFoundException("There isn't User with this ID"));
         when(userService.getActiveUser()).thenReturn(user);

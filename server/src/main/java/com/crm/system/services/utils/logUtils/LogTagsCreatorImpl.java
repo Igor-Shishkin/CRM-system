@@ -4,7 +4,9 @@ import com.crm.system.models.User;
 import com.crm.system.models.logForUser.TagName;
 import com.crm.system.models.security.Role;
 import com.crm.system.playload.response.TagForUserLogDTO;
+import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.UserRepository;
+import com.crm.system.services.ClientService;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
@@ -14,9 +16,11 @@ import java.util.stream.Collectors;
 @Component
 public class LogTagsCreatorImpl implements LogTagsCreator {
     private final UserRepository userRepository;
+    private final ClientService clientService;
 
-    public LogTagsCreatorImpl(UserRepository userRepository) {
+    public LogTagsCreatorImpl(UserRepository userRepository, ClientRepository clientRepository, ClientService clientService) {
         this.userRepository = userRepository;
+        this.clientService = clientService;
     }
 
     public Set<TagForUserLogDTO> getTags(User activeUser) {
@@ -43,7 +47,9 @@ public class LogTagsCreatorImpl implements LogTagsCreator {
     }
 
     private Set<TagForUserLogDTO> getTagsForUserRole(User activeUser) {
-        return activeUser.getClients().stream()
+
+        return clientService.getAllClientsForUser(activeUser.getUserId())
+                .stream()
                 .map(client -> new TagForUserLogDTO(TagName.CLIENT,
                         client.getClientId(),
                         client.getFullName()))

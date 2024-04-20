@@ -29,9 +29,9 @@ public class LogEntryServiceImpl implements LogEntryService {
         this.logTagsCreator = logTagsCreator;
     }
 
-    public Set<LogEntry> getUserLog() throws UserPrincipalNotFoundException {
-        User activeUser = getActiveUser();
-        return activeUser.getLog();
+    public Set<LogEntry> getUserLog() {
+        long activeUserId = userService.getActiveUserId();
+        return logEntryRepository.getLogForUser(activeUserId);
     }
 
     public Set<TagForUserLogDTO> getSetOfTags() throws UserPrincipalNotFoundException {
