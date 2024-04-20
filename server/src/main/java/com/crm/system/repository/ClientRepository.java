@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -54,4 +53,10 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     void updateClientStatusAndDateOfLastChange(@Param("clientId") long clientId,
                                                @Param("status") ClientStatus status,
                                                @Param("dateOfLastChange") LocalDateTime dateOfLastChange);
+
+    @Query("SELECT c FROM Client AS c WHERE c.user.userId = :userId")
+    Set<Client> getAllClientsForUser(Long userId);
+
+    @Query("SELECT COUNT(c) FROM Client AS c WHERE c.user.userId = :userId")
+    int getNumberOfClientsForUser(long userId);
 }

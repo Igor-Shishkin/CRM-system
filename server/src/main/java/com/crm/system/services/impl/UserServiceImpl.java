@@ -2,8 +2,10 @@ package com.crm.system.services.impl;
 
 import com.crm.system.models.User;
 import com.crm.system.playload.response.UserInfoDTO;
+import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.services.UserDetailsImpl;
+import com.crm.system.services.ClientService;
 import com.crm.system.services.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,9 +25,11 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final ClientRepository clientRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, ClientRepository clientRepository) {
         this.userRepository = userRepository;
+        this.clientRepository = clientRepository;
     }
     public ResponseEntity<byte[]> getPhoto() throws UserPrincipalNotFoundException, FileNotFoundException {
         User user = getActiveUser();
@@ -61,7 +65,7 @@ public class UserServiceImpl implements UserService {
                             .withUsername(user.getUsername())
                             .withEmail(user.getEmail())
                             .withRoles(roles)
-                            .withLidsNumber(user.getClients().size())
+                            .withLidsNumber(clientRepository.getNumberOfClientsForUser(user.getUserId()))
                             .build();
                 })
                 .collect(Collectors.toList());
