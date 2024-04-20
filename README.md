@@ -1,4 +1,4 @@
-# Welcome to my final java course project.
+# Welcome to my graduation java course project.
 
 ### To get acquainted with the capabilities of the application, you can watch this video: https://youtu.be/bUJOEkyztsk
 
