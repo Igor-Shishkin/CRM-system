@@ -131,12 +131,6 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(client);
     }
 
-    @Override
-    public Set<Client> getAllClientsForUser(Long userId) {
-
-        return clientRepository.getAllClientsForUser(userId);
-    }
-
     private boolean hasPaidOrders(Client client) {
         return client.getOrders().stream()
                 .anyMatch(Order::isHasBeenPaid);

@@ -43,15 +43,6 @@ public class User {
     @Size(max = 120)
     private String password;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JsonManagedReference
-//    private Set<Client> clients = new HashSet<>();
-
-//    @OneToMany(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id")
-//    @JsonManagedReference
-//    private Set<LogEntry> log;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
@@ -37,22 +36,22 @@ public class LogEntryController {
 
     @Operation(summary = "Get tags for log", tags = {"log for user", "tags"})
     @GetMapping("tags")
-    @Transactional
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<Set<TagForUserLogDTO>> getTagsForNewEntry() throws UserPrincipalNotFoundException {
         Set<TagForUserLogDTO> tags = logEntryService.getSetOfTags();
         return ResponseEntity.ok(tags);
     }
 
-    @Operation(summary = "Save logForUser message", tags = {"log for user", "new message"})
+    @Operation(summary = "Save new entry to log", tags = {"log for user", "new entry"})
     @PostMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<MessageResponse> saveMessage(@RequestBody LogEntry message) throws UserPrincipalNotFoundException {
-        logEntryService.saveNewMessage(message);
-        return ResponseEntity.ok(new MessageResponse("Message is saved"));
+    public ResponseEntity<MessageResponse> saveNewEntryForLog(@RequestBody LogEntry entry)
+            throws UserPrincipalNotFoundException {
+        logEntryService.saveNewEntryToLog(entry);
+        return ResponseEntity.ok(new MessageResponse("Entry is saved"));
     }
 
-    @Operation(summary = "Delete logForUser message", tags = {"log for user", "delete"})
+    @Operation(summary = "Delete entry", tags = {"log for user", "delete"})
     @DeleteMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> deleteMessage(@RequestParam long messageId) {
@@ -60,7 +59,7 @@ public class LogEntryController {
         return ResponseEntity.ok(new MessageResponse("Message is deleted"));
     }
 
-    @Operation(summary = "Change important status of message", tags = {"log for user", "status"})
+    @Operation(summary = "Change important status of entry", tags = {"log for user", "status"})
     @PutMapping("/change-important-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> changeImportantStatus(@RequestParam long messageId) {
@@ -68,7 +67,7 @@ public class LogEntryController {
         return ResponseEntity.ok(new MessageResponse("Status is changed"));
     }
 
-    @Operation(summary = "Change important status of message", tags = {"log for user", "status"})
+    @Operation(summary = "Change important status of entry", tags = {"log for user", "status"})
     @PutMapping("/change-done-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<MessageResponse> changeDoneStatus(@RequestParam long messageId) {

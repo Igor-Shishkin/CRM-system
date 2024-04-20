@@ -72,12 +72,19 @@ public class LogEntry {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
         LogEntry logEntry = (LogEntry) object;
-        return isImportant() == logEntry.isImportant() && isDone() == logEntry.isDone() && getTagId() == logEntry.getTagId() && Objects.equals(getEntryId(), logEntry.getEntryId()) && Objects.equals(getText(), logEntry.getText()) && Objects.equals(getDateOfCreation(), logEntry.getDateOfCreation()) && Objects.equals(getDeadline(), logEntry.getDeadline()) && Objects.equals(getAdditionalInformation(), logEntry.getAdditionalInformation()) && getTagName() == logEntry.getTagName();
+        return isImportant() == logEntry.isImportant() && isDone() == logEntry.isDone() &&
+                getTagId() == logEntry.getTagId() && Objects.equals(getEntryId(), logEntry.getEntryId()) &&
+                Objects.equals(getText(), logEntry.getText()) &&
+                Objects.equals(getDateOfCreation(), logEntry.getDateOfCreation()) &&
+                Objects.equals(getDeadline(), logEntry.getDeadline()) &&
+                Objects.equals(getAdditionalInformation(), logEntry.getAdditionalInformation()) &&
+                getTagName() == logEntry.getTagName();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getEntryId(), getText(), getDateOfCreation(), getDeadline(), isImportant(), isDone(), getAdditionalInformation(), getTagName(), getTagId());
+        return Objects.hash(getEntryId(), getText(), getDateOfCreation(), getDeadline(), isImportant(), isDone(),
+                getAdditionalInformation(), getTagName(), getTagId());
     }
 
     public static class Builder {

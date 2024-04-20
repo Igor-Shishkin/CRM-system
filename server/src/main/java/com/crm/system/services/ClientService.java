@@ -7,7 +7,6 @@ import com.crm.system.playload.response.ClientInfoDTO;
 import org.springframework.stereotype.Service;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.util.Collection;
 import java.util.Set;
 
 @Service
@@ -23,5 +22,4 @@ public interface ClientService {
     void editClientData(EditClientDataDTO request);
     Client getClientByIdForActualUser(long clientId);
     void saveClient(Client client);
-    Set<Client> getAllClientsForUser(Long userId);
 }

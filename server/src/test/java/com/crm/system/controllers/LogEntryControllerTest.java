@@ -1,6 +1,8 @@
 package com.crm.system.controllers;
 
 import com.crm.system.models.User;
+import com.crm.system.models.logForUser.LogEntry;
+import com.crm.system.models.logForUser.TagName;
 import com.crm.system.repository.ClientRepository;
 import com.crm.system.repository.LogEntryRepository;
 import com.crm.system.repository.UserRepository;
@@ -8,6 +10,8 @@ import com.crm.system.services.ClientService;
 import com.crm.system.services.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Before;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,7 +34,10 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -86,7 +93,10 @@ class LogEntryControllerTest {
     }
 
     @BeforeAll
-    static void beforeAll() {  mySQLContainer.start(); }
+    static void beforeAll() {
+        mySQLContainer.start();
+    }
+
     @AfterAll
     static void afterAll() {
         mySQLContainer.stop();
@@ -99,9 +109,9 @@ class LogEntryControllerTest {
     public void get_log_with_user_role_success() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/api/log/get-user-log")
-                .contentType("application/json")
-                .accept("application/json"))
+                        .get("/api/log/get-user-log")
+                        .contentType("application/json")
+                        .accept("application/json"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(4))
                 .andExpect(jsonPath("$[*].text", containsInAnyOrder(
@@ -163,6 +173,17 @@ class LogEntryControllerTest {
 
     @Transactional
     @Test
+    public void get_log_without_authorization() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/log/get-user-log")
+                        .contentType("application/json")
+                        .accept("application/json"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Transactional
+    @Test
     @WithMockUser(roles = "USER")
     public void get_tags_with_user_role_success() throws Exception {
 
@@ -185,8 +206,77 @@ class LogEntryControllerTest {
                         "CLIENT", "CLIENT", "CLIENT", "CLIENT", "CLIENT", "ADMINISTRATION", "ADMINISTRATION")));
     }
 
+    @Transactional
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void get_tags_with_admin_role_success() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/log/tags")
+                        .contentType("application/json")
+                        .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(9))
+                .andExpect(jsonPath("$[*].entityName", containsInAnyOrder("Piotr Kaczka",
+                        "Sara Bernard",
+                        "Monika Bałut",
+                        "Marta Czajka",
+                        "Solomon Duda",
+                        "Jonny Depp",
+                        "Sauron",
+                        "user-admin",
+                        "user")))
+                .andExpect(jsonPath("$[*].tagName", containsInAnyOrder("CLIENT", "CLIENT",
+                        "CLIENT", "CLIENT", "CLIENT", "CLIENT", "CLIENT", "ADMINISTRATION", "ADMINISTRATION")));
+    }
+
+    @Transactional
+    @Test
+    public void get_tags_without_authorization() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/log/tags")
+                        .contentType("application/json")
+                        .accept("application/json"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Transactional
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void save_new_entry_to_log_with_user_role_success() throws Exception {
+
+        LogEntry entry = new LogEntry.Builder()
+                .withText("test text")
+                .withTagName(TagName.CLIENT)
+                .withIsDone(true)
+                .withTagId(2)
+                .withAdditionalInformation("test additional information")
+                .withDeadline(LocalDateTime.of(2023, 12, 23, 1, 2, 3))
+                .build();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/api/log")
+                        .contentType("application/json")
+                        .content(writeObjectToJsonFormat(entry))
+                        .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Entry is saved"));
+
+        Optional<LogEntry> savedEntryOptional = logEntryRepository.findById(6L);
+        assertThat(savedEntryOptional).isNotEmpty();
+        assertThat(savedEntryOptional.get().getText()).isEqualTo(entry.getText());
+        assertThat(savedEntryOptional.get().isImportant()).isEqualTo(entry.isImportant());
+        assertThat(savedEntryOptional.get().isDone()).isEqualTo(entry.isDone());
+        assertThat(savedEntryOptional.get().getDateOfCreation()).isNotNull();
+        assertThat(savedEntryOptional.get().getDeadline()).isEqualTo(entry.getDeadline());
+        assertThat(savedEntryOptional.get().getAdditionalInformation()).isEqualTo(entry.getAdditionalInformation());
+    }
 
     private String writeObjectToJsonFormat(Object object) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(object);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule()); // Register JavaTimeModule to handle LocalDateTime
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Serialize LocalDateTime as ISO-8601 strings
+        return mapper.writeValueAsString(object);
     }
 }

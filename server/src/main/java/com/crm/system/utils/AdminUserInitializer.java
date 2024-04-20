@@ -2,7 +2,6 @@ package com.crm.system.utils;
 
 import com.crm.system.models.User;
 import com.crm.system.models.security.ERole;
-import com.crm.system.models.security.Role;
 import com.crm.system.repository.RoleRepository;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.PasswordConfig;
@@ -34,7 +33,7 @@ public class AdminUserInitializer implements ApplicationRunner {
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
 
         try {
             if (!userRepository.existsByUsername(userName)) {
