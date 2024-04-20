@@ -18,15 +18,15 @@
 go to the home page ('Home' button), where you can select the section you are interested in. 
 Or immediately click the 'Actions' button and select a section from the drop-down list.<br>
 On the right side of the navigation menu you can use the 'Profile' and "Log out" icons.
-- **Notes panel**<br>
-  On the left is your notes panel. Notes are sorted by creation time.
-  By clicking on a note you can edit it - mark it as important or as done, change the text or set the deadline.
+- **Log panel**<br>
+  On the left is your log panel. Entries are sorted by creation time.
+  By clicking on a entry you can edit it - mark it as important or as done, change the text or set the deadline.
   By clicking on the filter button, you can turn on and off sorting filters - for a specific section, for a specific entity, only important or only not done. Filters can be combined.
   The new message button allows you to create a new message
 - **Main workspace**
   Here you can perform basic actions for working with the CRM system. 
   From the HOME page you can select the branch you are interested in. 
-  At the moment, only the CLIENTS, LEADS and ADMINISTRATION sections are active, the rest are still under development.
+  At the moment, only the CLIENTS and ADMINISTRATION sections are active, the rest are still under development.
 
 <br><br>
 
@@ -70,7 +70,7 @@ Here you can view all users, add them and delete them.
 <br>Be very careful - deleting a user deletes all the information with which he worked.
 
 ### General
-all users can use THEIR notes and view their profile data.<br><br><br>
+all users can use THEIR log and view their profile data.<br><br><br>
 
 #### I wish you pleasant and productive use of the program!
 
