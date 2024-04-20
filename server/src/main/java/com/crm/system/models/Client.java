@@ -10,18 +10,17 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
 @Table(name = "clients",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = "email")
@@ -101,6 +100,18 @@ public class Client {
                 this.setDateOfLastChange(LocalDateTime.now());
         }
 
+        @Override
+        public boolean equals(Object object) {
+                if (this == object) return true;
+                if (object == null || getClass() != object.getClass()) return false;
+                Client client = (Client) object;
+                return Objects.equals(getClientId(), client.getClientId()) && Objects.equals(getFullName(), client.getFullName()) && Objects.equals(getEmail(), client.getEmail()) && Objects.equals(getPhoneNumber(), client.getPhoneNumber()) && getStatus() == client.getStatus() && Objects.equals(getAddress(), client.getAddress()) && Objects.equals(getDateOfCreation(), client.getDateOfCreation()) && Objects.equals(getDateOfLastChange(), client.getDateOfLastChange());
+        }
+
+        @Override
+        public int hashCode() {
+                return Objects.hash(getClientId(), getFullName(), getEmail(), getPhoneNumber(), getStatus(), getAddress(), getDateOfCreation(), getDateOfLastChange());
+        }
 
         @Override
         public String toString() {

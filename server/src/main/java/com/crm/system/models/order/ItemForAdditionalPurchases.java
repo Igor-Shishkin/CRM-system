@@ -2,14 +2,14 @@ package com.crm.system.models.order;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Objects;
 
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
 @Table(name = "items_for_additional_purchases")
 public class ItemForAdditionalPurchases {
     @Id
@@ -41,6 +41,19 @@ public class ItemForAdditionalPurchases {
         this.quantity = quantity;
         this.unitPrice = unitPrice;
         this.totalPrice = totalPrice;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        ItemForAdditionalPurchases that = (ItemForAdditionalPurchases) object;
+        return getQuantity() == that.getQuantity() && Double.compare(getUnitPrice(), that.getUnitPrice()) == 0 && Double.compare(getTotalPrice(), that.getTotalPrice()) == 0 && Objects.equals(getItemId(), that.getItemId()) && Objects.equals(getItemName(), that.getItemName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getItemId(), getItemName(), getQuantity(), getUnitPrice(), getTotalPrice());
     }
 
     @Override

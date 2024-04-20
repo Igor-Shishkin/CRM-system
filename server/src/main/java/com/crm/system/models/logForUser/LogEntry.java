@@ -11,12 +11,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "log_for_user")
 @Getter
 @Setter
-@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class LogEntry {
@@ -67,6 +67,18 @@ public class LogEntry {
         this.dateOfCreation = LocalDateTime.now();
     }
 
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        LogEntry logEntry = (LogEntry) object;
+        return isImportant() == logEntry.isImportant() && isDone() == logEntry.isDone() && getTagId() == logEntry.getTagId() && Objects.equals(getEntryId(), logEntry.getEntryId()) && Objects.equals(getText(), logEntry.getText()) && Objects.equals(getDateOfCreation(), logEntry.getDateOfCreation()) && Objects.equals(getDeadline(), logEntry.getDeadline()) && Objects.equals(getAdditionalInformation(), logEntry.getAdditionalInformation()) && getTagName() == logEntry.getTagName();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEntryId(), getText(), getDateOfCreation(), getDeadline(), isImportant(), isDone(), getAdditionalInformation(), getTagName(), getTagId());
+    }
 
     public static class Builder {
         private Long entryId;

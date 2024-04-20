@@ -7,18 +7,17 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode
 @Table(name = "orders")
 public class Order {
     @Id
@@ -106,6 +105,20 @@ public class Order {
         this.address = client.getAddress();
     }
 
+
+    @Override
+    public boolean equals(Object object) {
+
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Order order = (Order) object;
+        return Double.compare(getEstimateBudged(), order.getEstimateBudged()) == 0 && isProjectApproved() == order.isProjectApproved() && isWasMeetingInOffice() == order.isWasMeetingInOffice() && Double.compare(getResultPrice(), order.getResultPrice()) == 0 && isHasBeenPaid() == order.isHasBeenPaid() && isMeasurementsTaken() == order.isMeasurementsTaken() && isMeasurementOffered() == order.isMeasurementOffered() && isCalculationPromised() == order.isCalculationPromised() && isAgreementPrepared() == order.isAgreementPrepared() && isAgreementSigned() == order.isAgreementSigned() && Objects.equals(getOrderId(), order.getOrderId()) && Objects.equals(getRealNeed(), order.getRealNeed()) && Objects.equals(getAddress(), order.getAddress()) && getIsProjectShown() == order.getIsProjectShown() && getIsCalculationShown() == order.getIsCalculationShown() && Objects.equals(getDateOfCreation(), order.getDateOfCreation()) && Objects.equals(getDateOfLastChange(), order.getDateOfLastChange());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getOrderId(), getRealNeed(), getEstimateBudged(), isProjectApproved(), isWasMeetingInOffice(), getResultPrice(), isHasBeenPaid(), getAddress(), isMeasurementsTaken(), isMeasurementOffered(), isCalculationPromised(), getIsProjectShown(), getIsCalculationShown(), isAgreementPrepared(), isAgreementSigned(), getDateOfCreation(), getDateOfLastChange());
+    }
 
     @Override
     public String toString() {
