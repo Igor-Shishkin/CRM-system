@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MessageMenuComponent } from './message-menu.component';
+import { LogMenuComponent } from './log-menu.component';
 
 describe('MessageMenuComponent', () => {
-  let component: MessageMenuComponent;
-  let fixture: ComponentFixture<MessageMenuComponent>;
+  let component: LogMenuComponent;
+  let fixture: ComponentFixture<LogMenuComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MessageMenuComponent]
+      declarations: [LogMenuComponent]
     });
-    fixture = TestBed.createComponent(MessageMenuComponent);
+    fixture = TestBed.createComponent(LogMenuComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

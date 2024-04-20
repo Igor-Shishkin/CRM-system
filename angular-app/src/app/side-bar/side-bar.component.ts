@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
-import { HistoryMessage } from '../../entities/HistoryMessage';
+import { LogEntry } from '../../entities/LogEntry';
 import { StorageService } from '../_services/storage.service';
 import { BehaviorSubject, Subscription, combineLatest } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { HistoryService } from '../_services/history.service';
-import { MessageMenuComponent } from './message-menu/message-menu.component';
-import { HistoryTag } from 'src/entities/HistoryTag';
-import { SaveMessageDialogComponent } from './save-message-dialog/save-message-dialog.component';
+import { LogMenuComponent } from './message-menu/log-menu.component';
+import { LogTag } from 'src/entities/LogTag';
+import { SaveEntryDialogComponent } from './save-entry-dialog/save-entry-dialog.component';
 import { HistoryFilterParameters } from 'src/entities/HistoryFilterParameters';
 
 // import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -19,13 +19,13 @@ import { HistoryFilterParameters } from 'src/entities/HistoryFilterParameters';
 })
 export class SideBarComponent implements OnInit{
 
-filteredHistory?: HistoryMessage[];
+filteredHistory?: LogEntry[];
 
-history: HistoryMessage[] = [];
-history$: BehaviorSubject<HistoryMessage[]> = new BehaviorSubject<HistoryMessage[]>([]);
+history: LogEntry[] = [];
+history$: BehaviorSubject<LogEntry[]> = new BehaviorSubject<LogEntry[]>([]);
 private historySubscription: Subscription;
 
-activeHistoryTag = new HistoryTag;
+activeHistoryTag = new LogTag;
 private activeHistoryTagSubscription: Subscription;
 
 content?: string;
@@ -41,14 +41,14 @@ private isLoggedInSubscription: Subscription;
       private storageService: StorageService,
       public dialog: MatDialog,
       private historyService: HistoryService) {
-        this.historySubscription = this.storageService.history$.subscribe((userHistory: HistoryMessage[]) => {
+        this.historySubscription = this.storageService.history$.subscribe((userHistory: LogEntry[]) => {
           this.history = userHistory;
           this.delayFilterHistory();
         });
         this.isLoggedInSubscription = this.storageService.isLoggedIn$.subscribe((isLoggedIn: boolean) => {
           this.isLoggedIn = isLoggedIn;
         });
-        this.activeHistoryTagSubscription = this.storageService.activeHistoryTag$.subscribe((historyTag: HistoryTag) => {
+        this.activeHistoryTagSubscription = this.storageService.activeHistoryTag$.subscribe((historyTag: LogTag) => {
           this.activeHistoryTag = historyTag;
 
           this.filterParameters.byCategory = (this.activeHistoryTag.tagName !== 'EMPTY');
@@ -61,7 +61,7 @@ private isLoggedInSubscription: Subscription;
 
   ngOnInit(){
 
-    this.storageService.history$.subscribe((history: HistoryMessage[]) => {
+    this.storageService.history$.subscribe((history: LogEntry[]) => {
       this.history = history;
       this.filteredHistory = history;
     });
@@ -89,23 +89,23 @@ private isLoggedInSubscription: Subscription;
   }
 
 
-  openDialog(messageToEdit: HistoryMessage): void {
+  openDialog(messageToEdit: LogEntry): void {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = { message: messageToEdit };
     dialogConfig.width = '350px'; 
-    const dialogRef = this.dialog.open(MessageMenuComponent, dialogConfig);
+    const dialogRef = this.dialog.open(LogMenuComponent, dialogConfig);
  
     dialogRef.afterClosed().subscribe(result => {
       this.refreshHistory();
     });
   }
-  editMessage(selectedMessage: HistoryMessage): void {
+  editMessage(selectedMessage: LogEntry): void {
     this.openDialog(selectedMessage);
   }
   
   createNewMessage() {
-    const message = new HistoryMessage;
-    message.messageId = -1;
+    const message = new LogEntry;
+    message.entryId = -1;
     message.tagName = this.activeHistoryTag.tagName;
     if (this.activeHistoryTag.entityId != -1) {
       message.tagId = this.activeHistoryTag.entityId;
@@ -114,7 +114,7 @@ private isLoggedInSubscription: Subscription;
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '500px'; 
     dialogConfig.data = { message: message };
-    const dialogRef = this.dialog.open(SaveMessageDialogComponent, dialogConfig);
+    const dialogRef = this.dialog.open(SaveEntryDialogComponent, dialogConfig);
  
     dialogRef.afterClosed().subscribe(() => {
       this.refreshHistory();

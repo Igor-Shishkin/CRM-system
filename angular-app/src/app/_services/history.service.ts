@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, tap } from 'rxjs';
-import { HistoryMessage } from 'src/entities/HistoryMessage';
-import { HistoryTag } from 'src/entities/HistoryTag';
+import { LogEntry } from 'src/entities/LogEntry';
+import { LogTag } from 'src/entities/LogTag';
 
-const HISTORY_URL = 'http://localhost:8080/api/history-message';
+const HISTORY_URL = 'http://localhost:8080/api/log';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +13,8 @@ export class HistoryService {
 
   constructor(private http: HttpClient) { }
 
-  getHistory(): Observable<HistoryMessage[]> {
-    return this.http.get<any[]>(HISTORY_URL + '/get-history').pipe(
+  getHistory(): Observable<LogEntry[]> {
+    return this.http.get<any[]>(HISTORY_URL + '/get-user-log').pipe(
       catchError((error: any) => {
         console.error(error);
         throw error;
@@ -22,15 +22,15 @@ export class HistoryService {
     );
   }
   getTagsForNewHistoryMessage(): Observable<any> {
-    return this.http.get<HistoryTag[]>(HISTORY_URL + '/tags').pipe(
+    return this.http.get<LogTag[]>(HISTORY_URL + '/tags').pipe(
       catchError((error: any) => {
         console.error('Loading HistoryTags error: ' + error);
         throw error;
       })
     );
   }
-  saveNewHistoryMessage(message: HistoryMessage) {
-    return this.http.post<HistoryMessage>(HISTORY_URL, message).pipe(
+  saveNewHistoryMessage(message: LogEntry) {
+    return this.http.post<LogEntry>(HISTORY_URL, message).pipe(
       tap((response) => {
         console.log('Request sent successfully:', response);
       }),
@@ -49,7 +49,7 @@ export class HistoryService {
     );
   }
   changeImportantStatus(messageId: number | undefined) {
-    return this.http.put<HistoryMessage>(HISTORY_URL + `/change-important-status?messageId=${messageId}`, null).pipe(
+    return this.http.put<LogEntry>(HISTORY_URL + `/change-important-status?messageId=${messageId}`, null).pipe(
       catchError((error: any) => {
         console.error('Change important status HistoryMessage error: ' + error);
         throw error;

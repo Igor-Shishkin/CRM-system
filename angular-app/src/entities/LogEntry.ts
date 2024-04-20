@@ -1,12 +1,12 @@
 
-export class HistoryMessage {
-    messageId: number | undefined;
-   messageText: string | undefined;
+export class LogEntry {
+    entryId: number | undefined;
+    text: string | undefined;
     dateOfCreation: string | undefined;
     deadline: string | undefined;
     isImportant: boolean | undefined;
     isDone: boolean | undefined;
-    note: string | undefined;
+    additionalInformation: string | undefined;
     tagName: string | undefined;
     tagId: number | undefined;
 }

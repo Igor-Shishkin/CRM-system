@@ -19,7 +19,7 @@ import { ClientWorkplaceComponent } from './board-user/client-workplace/client-w
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { SaveMessageDialogComponent } from './side-bar/save-message-dialog/save-message-dialog.component';
+import { SaveEntryDialogComponent } from './side-bar/save-entry-dialog/save-entry-dialog.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -29,8 +29,8 @@ import { OrderWorkplaceComponent } from './board-user/order-workplace/order-work
 import { ItemForAdditionalPurchasesComponent } from './board-user/order-workplace/item-for-additional-purchases/item-for-additional-purchases.component';
 import { ConfirmSigningContractComponent } from './board-user/order-workplace/confirm-signing-contract/confirm-signing-contract.component';
 import { ConfirmPainmentComponent } from './board-user/order-workplace/confirm-painment/confirm-painment.component';
-import { MessageMenuComponent } from './side-bar/message-menu/message-menu.component';
-import { ConfirmDeleteMessageComponent } from './side-bar/message-menu/confirm-delete-messsage/confirm-delete-message.component';
+import { LogMenuComponent } from './side-bar/message-menu/log-menu.component';
+import { ConfirmDeleteEntryComponent } from './side-bar/message-menu/confirm-delete-entry/confirm-delete-entry.component';
 import { CreateNewOrderComponent } from './board-user/client-workplace/create-new-order/create-new-order.component';
 import { RegisterNewUserComponent } from './board-admin/register-new-user/register-new-user.component';
 import { ConfirmDeleteUserComponent } from './board-admin/confirm-delete-user/confirm-delete-user.component';
@@ -54,14 +54,14 @@ import { BlackListOfClientsComponent } from './board-user/black-list-of-clients/
     ClientsComponent,
     AddLeadComponent,
     ClientWorkplaceComponent,
-    SaveMessageDialogComponent,
+    SaveEntryDialogComponent,
     NotPermissionComponent,
     OrderWorkplaceComponent,
     ItemForAdditionalPurchasesComponent,
     ConfirmSigningContractComponent,
     ConfirmPainmentComponent,
-    MessageMenuComponent,
-    ConfirmDeleteMessageComponent,
+    LogMenuComponent,
+    ConfirmDeleteEntryComponent,
     CreateNewOrderComponent,
     RegisterNewUserComponent,
     ConfirmDeleteUserComponent,

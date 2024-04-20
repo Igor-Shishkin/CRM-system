@@ -4,9 +4,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ClientsService } from 'src/app/_services/clients.service';
 import { HistoryService } from 'src/app/_services/history.service';
 import { StorageService } from 'src/app/_services/storage.service';
-import { SaveMessageDialogComponent } from 'src/app/side-bar/save-message-dialog/save-message-dialog.component';
+import { SaveEntryDialogComponent } from 'src/app/side-bar/save-entry-dialog/save-entry-dialog.component';
 import { Client } from 'src/entities/Client';
-import { HistoryMessage } from 'src/entities/HistoryMessage';
+import { LogEntry } from 'src/entities/LogEntry';
 import { Order } from 'src/entities/Order';
 import { CreateNewOrderComponent } from './create-new-order/create-new-order.component';
 import { SentEmailComponent } from 'src/app/sent-email/sent-email.component';
@@ -118,15 +118,15 @@ export class ClientWorkplaceComponent {
     }
   }
   createNewMessage() {
-    const message = new HistoryMessage;
-    message.messageId = -1;
+    const message = new LogEntry;
+    message.entryId = -1;
     message.tagName = 'CLIENT';
     message.tagId = this.clientId;
 
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '500px'; 
     dialogConfig.data = { message: message };
-    const dialogRef = this.dialog.open(SaveMessageDialogComponent, dialogConfig);
+    const dialogRef = this.dialog.open(SaveEntryDialogComponent, dialogConfig);
  
     dialogRef.afterClosed().subscribe(() => {
 

@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SaveMessageDialogComponent } from './save-message-dialog.component';
+import { SaveEntryDialogComponent } from './save-entry-dialog.component';
 
 describe('MessageDialogComponent', () => {
-  let component: SaveMessageDialogComponent;
-  let fixture: ComponentFixture<SaveMessageDialogComponent>;
+  let component: SaveEntryDialogComponent;
+  let fixture: ComponentFixture<SaveEntryDialogComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SaveMessageDialogComponent]
+      declarations: [SaveEntryDialogComponent]
     });
-    fixture = TestBed.createComponent(SaveMessageDialogComponent);
+    fixture = TestBed.createComponent(SaveEntryDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

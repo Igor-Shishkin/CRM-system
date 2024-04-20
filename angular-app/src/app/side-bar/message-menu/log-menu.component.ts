@@ -1,17 +1,17 @@
 import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
-import { HistoryMessage } from 'src/entities/HistoryMessage';
-import { SaveMessageDialogComponent } from '../save-message-dialog/save-message-dialog.component';
+import { LogEntry } from 'src/entities/LogEntry';
+import { SaveEntryDialogComponent } from '../save-entry-dialog/save-entry-dialog.component';
 import { HistoryService } from 'src/app/_services/history.service';
-import { ConfirmDeleteMessageComponent } from './confirm-delete-messsage/confirm-delete-message.component';
+import { ConfirmDeleteEntryComponent } from './confirm-delete-entry/confirm-delete-entry.component';
 
 @Component({
-  selector: 'app-message-menu',
-  templateUrl: './message-menu.component.html',
-  styleUrls: ['./message-menu.component.css']
+  selector: 'app-log-menu',
+  templateUrl: './log-menu.component.html',
+  styleUrls: ['./log-menu.component.css']
 })
-export class MessageMenuComponent {
-  message?: HistoryMessage;
+export class LogMenuComponent {
+  message?: LogEntry;
   isSuccess = false;
   successMessage = '';
   isFailed = false;
@@ -19,9 +19,9 @@ export class MessageMenuComponent {
   isDeleted = false;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { message: HistoryMessage },
+    @Inject(MAT_DIALOG_DATA) public data: { message: LogEntry },
     public dialog: MatDialog,
-    public dialogRef: MatDialogRef<MessageMenuComponent>,
+    public dialogRef: MatDialogRef<LogMenuComponent>,
     private historyService: HistoryService,
     private cdr: ChangeDetectorRef
   ) {
@@ -31,7 +31,7 @@ export class MessageMenuComponent {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '500px'; 
     dialogConfig.data = { message: this.message };
-    const dialogRef = this.dialog.open(SaveMessageDialogComponent, dialogConfig);
+    const dialogRef = this.dialog.open(SaveEntryDialogComponent, dialogConfig);
  
     dialogRef.afterClosed().subscribe(result => {
       this.dialogRef.close();
@@ -39,7 +39,7 @@ export class MessageMenuComponent {
   }
   changeImportantStatus() {
     this.isProcess = true;
-    this.historyService.changeImportantStatus(this.message?.messageId).subscribe({
+    this.historyService.changeImportantStatus(this.message?.entryId).subscribe({
       next: () => {
         this.message!.isImportant = !this.message?.isImportant;
         this.isSuccess = true;
@@ -59,7 +59,7 @@ export class MessageMenuComponent {
   }
   changeDoneStatus() {
     this.isProcess = true;
-    this.historyService.changeDoneStatus(this.message?.messageId).subscribe({
+    this.historyService.changeDoneStatus(this.message?.entryId).subscribe({
       next: () => {
         this.message!.isDone = !this.message?.isDone;
         this.isSuccess = true;
@@ -81,12 +81,12 @@ export class MessageMenuComponent {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = { message: this.message };
     dialogConfig.width = '350px'; 
-    const dialogRef = this.dialog.open(ConfirmDeleteMessageComponent, dialogConfig);
+    const dialogRef = this.dialog.open(ConfirmDeleteEntryComponent, dialogConfig);
  
     dialogRef.afterClosed().subscribe(result => {
       this.cdr.markForCheck();
       console.log(this.message);
-      if (this.message && this.message.messageId === -1) {
+      if (this.message && this.message.entryId === -1) {
         this.isDeleted = true;
         this.delayCloserDialogBox();
       }

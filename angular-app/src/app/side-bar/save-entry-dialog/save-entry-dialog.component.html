@@ -5,7 +5,7 @@
       <label for="text-of-message-input" class="form-label">History message</label>
       <textarea style="width: 100%;" class="form-control custom-textarea custom-input-area" 
         id="text-of-message-input"
-        rows="3" [(ngModel)]="message!.messageText"
+        rows="3" [(ngModel)]="entry!.text"
         [ngModelOptions]="{ standalone: true }">
       </textarea>
     </div>
@@ -13,7 +13,7 @@
       <label for="note-input" class="form-label">Note</label>
       <input type="text" id="note-input"
         class="form-control custom-input-area" 
-        [(ngModel)]="message!.note"
+        [(ngModel)]="entry!.additionalInformation"
         [ngModelOptions]="{ standalone: true }"
         >
     </div>
@@ -50,7 +50,7 @@
       <div class="form-check form-switch">
         <input class="form-check-input" type="checkbox" id="is-important-checkbox"
           role="switch" style="margin-bottom: 7px;"
-          [(ngModel)]="message!.isImportant" [ngModelOptions]="{ standalone: true }">
+          [(ngModel)]="entry!.isImportant" [ngModelOptions]="{ standalone: true }">
         <label class="form-check-label" 
           for="is-important-checkbox">
           Import
@@ -60,7 +60,7 @@
       <div class="form-check form-switch" style="display: flex; margin-left: 20px;">
         <input class="form-check-input" type="checkbox" 
           id="is-done-checkbox" role="switch"
-          [(ngModel)]="message!.isDone" style="margin-bottom: 7px;" 
+          [(ngModel)]="entry!.isDone" style="margin-bottom: 7px;" 
           [ngModelOptions]="{ standalone: true }"
         >
         <label class="form-check-label" for="is-done-checkbox">Done</label>

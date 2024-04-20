@@ -3,7 +3,7 @@ import { AuthService } from '../_services/auth.service';
 import { StorageService } from '../_services/storage.service';
 import { Router } from '@angular/router';
 import { delay } from 'rxjs';
-import { HistoryMessage } from '../../entities/HistoryMessage';
+import { LogEntry } from '../../entities/LogEntry';
 import { UserService } from '../_services/user.service';
 import { HistoryService } from '../_services/history.service';
 
@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
       }
     });
   }
-  updateHistory(newHistory: HistoryMessage[]) {
+  updateHistory(newHistory: LogEntry[]) {
     this.storageService.setHistory(newHistory);
   }
 }

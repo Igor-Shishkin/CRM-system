@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { HistoryMessage } from 'src/entities/HistoryMessage';
-import { HistoryTag } from 'src/entities/HistoryTag';
+import { LogEntry } from 'src/entities/LogEntry';
+import { LogTag } from 'src/entities/LogTag';
 
 const USER_KEY = 'auth-user';
 const ACTIVE_TAG = 'acive-history-tag';
@@ -13,19 +13,19 @@ const ACTIVE_TAG = 'acive-history-tag';
 export class StorageService {
   private isLoggedInSubject: BehaviorSubject<boolean>;
   public isLoggedIn$: Observable<boolean>;
-  private historySubject: Subject<HistoryMessage[]> = new Subject<HistoryMessage[]>();
+  private historySubject: Subject<LogEntry[]> = new Subject<LogEntry[]>();
   history$ = this.historySubject.asObservable();
-  private userHistory: HistoryMessage[] = [];
+  private userHistory: LogEntry[] = [];
 
-  private activeHistoryTagSubject: BehaviorSubject<HistoryTag>;
-  activeHistoryTag$: Observable<HistoryTag>;
+  private activeHistoryTagSubject: BehaviorSubject<LogTag>;
+  activeHistoryTag$: Observable<LogTag>;
   
 
   constructor() {
     this.isLoggedInSubject = new BehaviorSubject<boolean>(this.getLoggedInStatus());
     this.isLoggedIn$ = this.isLoggedInSubject.asObservable();
     
-    this.activeHistoryTagSubject = new BehaviorSubject<HistoryTag>(this.getActiveHistoryTag());
+    this.activeHistoryTagSubject = new BehaviorSubject<LogTag>(this.getActiveHistoryTag());
     this.activeHistoryTag$ = this.activeHistoryTagSubject.asObservable();
   }
 
@@ -67,7 +67,7 @@ export class StorageService {
     this.isLoggedInSubject.next(isLoggedIn);
   }
   setActiveHistoryTag(tagName: string, entityId: number) {
-    const historyTag = new HistoryTag();
+    const historyTag = new LogTag();
     historyTag.tagName = tagName;
     historyTag.entityId = entityId;
 
@@ -77,22 +77,22 @@ export class StorageService {
       this.activeHistoryTagSubject.next(historyTag);
     }
   }
-  getActiveHistoryTag(): HistoryTag {
+  getActiveHistoryTag(): LogTag {
     const historyTagString = window.sessionStorage.getItem(ACTIVE_TAG);
     if (historyTagString) {
       try {
-        return JSON.parse(historyTagString) as HistoryTag;
+        return JSON.parse(historyTagString) as LogTag;
       } catch (error) {
         console.error('Error parsing HistoryTag:', error);
       }
     }
-    return {} as HistoryTag;
+    return {} as LogTag;
   }
-  getHistory(): HistoryMessage[] {
+  getHistory(): LogEntry[] {
     return this.userHistory;
   }
 
-  setHistory(history: HistoryMessage[]) {
+  setHistory(history: LogEntry[]) {
     this.userHistory = history;
     this.historySubject.next(history); 
   }

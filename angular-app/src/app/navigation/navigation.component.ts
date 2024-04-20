@@ -3,7 +3,7 @@ import { StorageService } from '../_services/storage.service';
 import { AuthService } from '../_services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { HistoryMessage } from 'src/entities/HistoryMessage';
+import { LogEntry } from 'src/entities/LogEntry';
 
 @Component({
   selector: 'app-navigation',
@@ -60,7 +60,7 @@ export class NavigationComponent {
     this.isAdminRole = false;
     this.isUserRole = false;
     this.storageService.clean();
-    this.storageService.setHistory([new HistoryMessage()]);
+    this.storageService.setHistory([new LogEntry()]);
     this.storageService.setLoggedInStatus(false);
     window.sessionStorage.clear();
     this.isLoggedIn = false;
