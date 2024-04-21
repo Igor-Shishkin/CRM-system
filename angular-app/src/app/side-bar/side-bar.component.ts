@@ -3,7 +3,7 @@ import { LogEntry } from '../../entities/LogEntry';
 import { StorageService } from '../_services/storage.service';
 import { BehaviorSubject, Subscription, combineLatest } from 'rxjs';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { HistoryService } from '../_services/history.service';
+import { UserLogService } from '../_services/user-log.service';
 import { LogMenuComponent } from './message-menu/log-menu.component';
 import { LogTag } from 'src/entities/LogTag';
 import { SaveEntryDialogComponent } from './save-entry-dialog/save-entry-dialog.component';
@@ -40,7 +40,7 @@ private isLoggedInSubscription: Subscription;
   constructor(
       private storageService: StorageService,
       public dialog: MatDialog,
-      private historyService: HistoryService) {
+      private historyService: UserLogService) {
         this.historySubscription = this.storageService.history$.subscribe((userHistory: LogEntry[]) => {
           this.history = userHistory;
           this.delayFilterHistory();
@@ -130,7 +130,7 @@ private isLoggedInSubscription: Subscription;
     console.log(this.activeHistoryTag.entityId);
   }
   refreshHistory(){
-    this.historyService.getHistory().subscribe({
+    this.historyService.getLog().subscribe({
       next: data => {
         this.history = data;
         console.log(this.filterParameters)

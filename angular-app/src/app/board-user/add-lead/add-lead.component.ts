@@ -3,7 +3,7 @@ import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTr
 import { Observable } from 'rxjs';
 import { AuthService } from 'src/app/_services/auth.service';
 import { ClientsService } from 'src/app/_services/clients.service';
-import { HistoryService } from 'src/app/_services/history.service';
+import { UserLogService } from 'src/app/_services/user-log.service';
 import { StorageService } from 'src/app/_services/storage.service';
 
 @Component({
@@ -21,7 +21,7 @@ export class AddLeadComponent{
     private clientsService: ClientsService, 
     private router: Router, private zone: NgZone,
     private storageService: StorageService,
-    private historyService: HistoryService
+    private historyService: UserLogService
     ) {}
 
   save(fullName: HTMLInputElement, address: HTMLInputElement, email: HTMLInputElement, phoneNumber: HTMLInputElement) {
@@ -47,7 +47,7 @@ export class AddLeadComponent{
       }, 2000);
   }
   refreshHistoryMessages() {
-    this.historyService.getHistory().subscribe({
+    this.historyService.getLog().subscribe({
       next: data => {
         this.storageService.setHistory(data);
       }, error: err => {

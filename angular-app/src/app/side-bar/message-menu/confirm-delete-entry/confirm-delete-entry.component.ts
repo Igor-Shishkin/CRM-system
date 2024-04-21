@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { HistoryService } from 'src/app/_services/history.service';
+import { UserLogService } from 'src/app/_services/user-log.service';
 import { LogEntry } from 'src/entities/LogEntry';
 
 @Component({
@@ -15,7 +15,7 @@ export class ConfirmDeleteEntryComponent {
 
   constructor (
     @Inject(MAT_DIALOG_DATA) public data: { message: LogEntry },
-    private historyService: HistoryService,
+    private historyService: UserLogService,
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<ConfirmDeleteEntryComponent>
   ) {
@@ -23,7 +23,7 @@ export class ConfirmDeleteEntryComponent {
   }
   deleteMessage() {
     this.isProcess = true;
-    this.historyService.deleteMessage(this.message?.entryId || -1).subscribe({
+    this.historyService.deleteEntry(this.message?.entryId || -1).subscribe({
       next: () => {
         this.cleanMessage();
         this.dialogRef.close();

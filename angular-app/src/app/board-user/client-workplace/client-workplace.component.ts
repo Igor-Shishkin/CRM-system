@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClientsService } from 'src/app/_services/clients.service';
-import { HistoryService } from 'src/app/_services/history.service';
+import { UserLogService } from 'src/app/_services/user-log.service';
 import { StorageService } from 'src/app/_services/storage.service';
 import { SaveEntryDialogComponent } from 'src/app/side-bar/save-entry-dialog/save-entry-dialog.component';
 import { Client } from 'src/entities/Client';
@@ -35,7 +35,7 @@ export class ClientWorkplaceComponent {
       private router: Router ,
       private route: ActivatedRoute,
       private storageService: StorageService,
-      private historyService: HistoryService) {}
+      private historyService: UserLogService) {}
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -130,7 +130,7 @@ export class ClientWorkplaceComponent {
  
     dialogRef.afterClosed().subscribe(() => {
 
-      this.historyService.getHistory().subscribe({
+      this.historyService.getLog().subscribe({
         next: data => {
           this.storageService.setHistory(data);
         }

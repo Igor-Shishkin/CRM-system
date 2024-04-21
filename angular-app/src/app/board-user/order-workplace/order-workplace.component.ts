@@ -8,7 +8,7 @@ import { ItemForAdditionalPurchasesComponent } from './item-for-additional-purch
 import { ConfirmSigningContractComponent } from './confirm-signing-contract/confirm-signing-contract.component';
 import { ConfirmPainmentComponent } from './confirm-painment/confirm-painment.component';
 import { StorageService } from 'src/app/_services/storage.service';
-import { HistoryService } from 'src/app/_services/history.service';
+import { UserLogService } from 'src/app/_services/user-log.service';
 import { SentEmailComponent } from 'src/app/sent-email/sent-email.component';
 
 @Component({
@@ -36,7 +36,7 @@ export class OrderWorkplaceComponent implements OnInit{
     private orderService: OrderService,
     public dialog: MatDialog,
     private storageService: StorageService,
-    private historyService: HistoryService
+    private historyService: UserLogService
   ) {}
   
     ngOnInit(): void {
@@ -160,7 +160,7 @@ export class OrderWorkplaceComponent implements OnInit{
       });
     }
     refreshHistoryMessages() {
-      this.historyService.getHistory().subscribe({
+      this.historyService.getLog().subscribe({
         next: data => {
           this.storageService.setHistory(data);
         }, error: err => {

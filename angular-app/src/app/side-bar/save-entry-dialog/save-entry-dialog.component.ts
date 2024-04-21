@@ -2,7 +2,7 @@ import { DatePipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { HistoryService } from 'src/app/_services/history.service';
+import { UserLogService } from 'src/app/_services/user-log.service';
 import { LogEntry } from 'src/entities/LogEntry';
 import { LogTag } from 'src/entities/LogTag';
 
@@ -25,7 +25,7 @@ export class SaveEntryDialogComponent implements OnInit{
 
   constructor(
     public dialogRef: MatDialogRef<SaveEntryDialogComponent>,
-    private historyService: HistoryService,
+    private historyService: UserLogService,
     private datePipe: DatePipe,
     @Inject(MAT_DIALOG_DATA) public data: { message: LogEntry }
   ) {
@@ -34,7 +34,7 @@ export class SaveEntryDialogComponent implements OnInit{
 
  
   ngOnInit(): void {
-    this.historyService.getTagsForNewHistoryMessage().subscribe({
+    this.historyService.getTagsForNewLogEntry().subscribe({
       next: data => {
         this.historyTags = data;
         if (this.entry) {
@@ -90,7 +90,7 @@ export class SaveEntryDialogComponent implements OnInit{
 
   saveMessage() {
     if (this.entry) {
-      this.historyService.saveNewHistoryMessage(this.entry).subscribe({
+      this.historyService.saveNewLogEntry(this.entry).subscribe({
         next: () => {
           this.isSuccess = true;
           this.delayHidingCloseDialoge()

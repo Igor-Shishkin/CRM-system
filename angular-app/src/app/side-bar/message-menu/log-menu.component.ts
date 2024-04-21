@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatDialogRef } from '@angular/material/dialog';
 import { LogEntry } from 'src/entities/LogEntry';
 import { SaveEntryDialogComponent } from '../save-entry-dialog/save-entry-dialog.component';
-import { HistoryService } from 'src/app/_services/history.service';
+import { UserLogService } from 'src/app/_services/user-log.service';
 import { ConfirmDeleteEntryComponent } from './confirm-delete-entry/confirm-delete-entry.component';
 
 @Component({
@@ -22,7 +22,7 @@ export class LogMenuComponent {
     @Inject(MAT_DIALOG_DATA) public data: { message: LogEntry },
     public dialog: MatDialog,
     public dialogRef: MatDialogRef<LogMenuComponent>,
-    private historyService: HistoryService,
+    private historyService: UserLogService,
     private cdr: ChangeDetectorRef
   ) {
     this.message = data.message;

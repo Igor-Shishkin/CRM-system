@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { HistoryService } from 'src/app/_services/history.service';
+import { UserLogService } from 'src/app/_services/user-log.service';
 import { OrderService } from 'src/app/_services/order.service';
 import { StorageService } from 'src/app/_services/storage.service';
 
@@ -23,7 +23,7 @@ export class CreateNewOrderComponent{
     public dialogRef: MatDialogRef<CreateNewOrderComponent>,
     private orderService: OrderService,
     private router: Router,
-    private historyService: HistoryService,
+    private historyService: UserLogService,
     private storageService: StorageService,
     @Inject(MAT_DIALOG_DATA) public data: { clientId: number }
   ) {
@@ -45,7 +45,7 @@ export class CreateNewOrderComponent{
     })
   }
   refreshHistoryMessages() {
-    this.historyService.getHistory().subscribe({
+    this.historyService.getLog().subscribe({
       next: data => {
         this.storageService.setHistory(data);
       }, error: err => {
