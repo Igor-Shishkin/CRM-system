@@ -243,7 +243,7 @@ class LogEntryControllerTest {
 
     @Transactional
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(roles = "USER")
     public void save_new_entry_to_log_with_user_role_success() throws Exception {
 
         LogEntry entry = new LogEntry.Builder()
@@ -272,6 +272,244 @@ class LogEntryControllerTest {
         assertThat(savedEntryOptional.get().getDeadline()).isEqualTo(entry.getDeadline());
         assertThat(savedEntryOptional.get().getAdditionalInformation()).isEqualTo(entry.getAdditionalInformation());
     }
+
+    @Transactional
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void save_new_entry_to_log_with_admin_role_success() throws Exception {
+
+        LogEntry entry = new LogEntry.Builder()
+                .withText("test text")
+                .withTagName(TagName.CLIENT)
+                .withIsDone(true)
+                .withTagId(2)
+                .withAdditionalInformation("test additional information")
+                .withDeadline(LocalDateTime.of(2023, 12, 23, 1, 2, 3))
+                .build();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/api/log")
+                        .contentType("application/json")
+                        .content(writeObjectToJsonFormat(entry))
+                        .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Entry is saved"));
+
+        Optional<LogEntry> savedEntryOptional = logEntryRepository.findById(6L);
+        assertThat(savedEntryOptional).isNotEmpty();
+        assertThat(savedEntryOptional.get().getText()).isEqualTo(entry.getText());
+        assertThat(savedEntryOptional.get().isImportant()).isEqualTo(entry.isImportant());
+        assertThat(savedEntryOptional.get().isDone()).isEqualTo(entry.isDone());
+        assertThat(savedEntryOptional.get().getDateOfCreation()).isNotNull();
+        assertThat(savedEntryOptional.get().getDeadline()).isEqualTo(entry.getDeadline());
+        assertThat(savedEntryOptional.get().getAdditionalInformation()).isEqualTo(entry.getAdditionalInformation());
+    }
+
+    @Transactional
+    @Test
+    public void save_new_entry_to_log_without_authorization() throws Exception {
+
+        LogEntry entry = new LogEntry.Builder()
+                .withText("test text")
+                .withTagName(TagName.CLIENT)
+                .withIsDone(true)
+                .withTagId(2)
+                .withAdditionalInformation("test additional information")
+                .withDeadline(LocalDateTime.of(2023, 12, 23, 1, 2, 3))
+                .build();
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/api/log")
+                        .contentType("application/json")
+                        .content(writeObjectToJsonFormat(entry))
+                        .accept("application/json"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Transactional
+    @Test
+    @WithMockUser(roles = "USER")
+    public void delete_entry_with_user_role_success() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/log")
+                        .contentType("application/json")
+                        .param("entryId", String.valueOf(2))
+                        .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Entry is deleted"));
+
+        Optional<LogEntry> entryOptional = logEntryRepository.findById(2L);
+        assertThat(entryOptional).isEmpty();
+    }
+
+    @Transactional
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void delete_entry_with_admin_role_success() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/log")
+                        .contentType("application/json")
+                        .param("entryId", String.valueOf(2))
+                        .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Entry is deleted"));
+
+        Optional<LogEntry> entryOptional = logEntryRepository.findById(2L);
+        assertThat(entryOptional).isEmpty();
+    }
+
+    @Transactional
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void delete_entry_with_wrong_id_success() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/log")
+                        .contentType("application/json")
+                        .param("entryId", String.valueOf(5))
+                        .accept("application/json"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("You don't have entry with this ID"));
+    }
+
+    @Transactional
+    @Test
+    public void delete_entry_without_authorization() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .delete("/api/log")
+                        .contentType("application/json")
+                        .param("entryId", String.valueOf(2))
+                        .accept("application/json"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Transactional
+    @Test
+    @WithMockUser(roles = "USER")
+    public void change_is_important_with_user_role_success() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/log/change-important-status")
+                        .contentType("application/json")
+                        .param("entryId", String.valueOf(1))
+                        .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Status is changed"));
+
+        Optional<LogEntry> entryOptional = logEntryRepository.findById(1L);
+        assertThat(entryOptional).isNotEmpty();
+        assertThat(entryOptional.get().isImportant()).isFalse();
+    }
+
+    @Transactional
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void change_is_important_with_admin_role_success() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/log/change-important-status")
+                        .contentType("application/json")
+                        .param("entryId", String.valueOf(1))
+                        .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Status is changed"));
+
+        Optional<LogEntry> entryOptional = logEntryRepository.findById(1L);
+        assertThat(entryOptional).isNotEmpty();
+        assertThat(entryOptional.get().isImportant()).isFalse();
+    }
+
+    @Transactional
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void change_is_important_with_wrong_id() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/log/change-important-status")
+                        .contentType("application/json")
+                        .param("entryId", String.valueOf(5))
+                        .accept("application/json"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("You don't have entry with this ID"));
+
+    }
+    @Transactional
+    @Test
+    public void change_is_important_without_authorization() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/log/change-important-status")
+                        .contentType("application/json")
+                        .param("entryId", String.valueOf(5))
+                        .accept("application/json"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Transactional
+    @Test
+    @WithMockUser(roles = "USER")
+    public void change_is_done_with_user_role_success() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/log/change-done-status")
+                        .contentType("application/json")
+                        .param("entryId", String.valueOf(1))
+                        .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Status is changed"));
+
+        Optional<LogEntry> entryOptional = logEntryRepository.findById(1L);
+        assertThat(entryOptional).isNotEmpty();
+        assertThat(entryOptional.get().isDone()).isFalse();
+    }
+
+    @Transactional
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void change_is_done_with_admin_role_success() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/log/change-done-status")
+                        .contentType("application/json")
+                        .param("entryId", String.valueOf(1))
+                        .accept("application/json"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Status is changed"));
+
+        Optional<LogEntry> entryOptional = logEntryRepository.findById(1L);
+        assertThat(entryOptional).isNotEmpty();
+        assertThat(entryOptional.get().isDone()).isFalse();
+    }
+
+    @Transactional
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    public void change_is_done_with_wrong_id() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/log/change-done-status")
+                        .contentType("application/json")
+                        .param("entryId", String.valueOf(5))
+                        .accept("application/json"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("You don't have entry with this ID"));
+
+    }
+
+    @Test
+    public void change_is_done_without_authorization() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .put("/api/log/change-done-status")
+                        .contentType("application/json")
+                        .param("entryId", String.valueOf(5))
+                        .accept("application/json"))
+                .andExpect(status().isUnauthorized());
+    }
+
 
     private String writeObjectToJsonFormat(Object object) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();

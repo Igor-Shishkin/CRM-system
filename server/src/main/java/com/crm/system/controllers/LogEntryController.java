@@ -54,24 +54,24 @@ public class LogEntryController {
     @Operation(summary = "Delete entry", tags = {"log for user", "delete"})
     @DeleteMapping()
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<MessageResponse> deleteMessage(@RequestParam long messageId) {
-        logEntryService.deleteMessage(messageId);
-        return ResponseEntity.ok(new MessageResponse("Message is deleted"));
+    public ResponseEntity<MessageResponse> deleteMessage(@RequestParam long entryId) {
+        logEntryService.deleteMessage(entryId);
+        return ResponseEntity.ok(new MessageResponse("Entry is deleted"));
     }
 
     @Operation(summary = "Change important status of entry", tags = {"log for user", "status"})
     @PutMapping("/change-important-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<MessageResponse> changeImportantStatus(@RequestParam long messageId) {
-        logEntryService.changeImportantStatus(messageId);
+    public ResponseEntity<MessageResponse> changeImportantStatus(@RequestParam long entryId) {
+        logEntryService.changeImportantStatus(entryId);
         return ResponseEntity.ok(new MessageResponse("Status is changed"));
     }
 
     @Operation(summary = "Change important status of entry", tags = {"log for user", "status"})
     @PutMapping("/change-done-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    public ResponseEntity<MessageResponse> changeDoneStatus(@RequestParam long messageId) {
-        logEntryService.changeDoneStatus(messageId);
+    public ResponseEntity<MessageResponse> changeDoneStatus(@RequestParam long entryId) {
+        logEntryService.changeDoneStatus(entryId);
         return ResponseEntity.ok(new MessageResponse("Status is changed"));
     }
 }

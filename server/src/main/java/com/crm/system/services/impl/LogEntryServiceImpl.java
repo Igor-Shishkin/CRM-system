@@ -72,7 +72,7 @@ public class LogEntryServiceImpl implements LogEntryService {
     private LogEntry getMessageById(long messageId) {
         long activeUserId = userService.getActiveUserId();
         return logEntryRepository.getHistoryMessageByMessageIdAndUserId(messageId, activeUserId)
-                .orElseThrow(() -> new RequestOptionalIsEmpty("You don't have message with this ID"));
+                .orElseThrow(() -> new RequestOptionalIsEmpty("You don't have entry with this ID"));
     }
 
     private User getActiveUser() throws UserPrincipalNotFoundException {
