@@ -6,6 +6,7 @@ import java.util.*;
 import com.crm.system.playload.request.LoginDTO;
 import com.crm.system.playload.request.SignUpDTO;
 import com.crm.system.playload.response.MessageResponse;
+import com.crm.system.playload.response.UserInfoDTO;
 import com.crm.system.security.services.UserDetailsServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,9 +38,11 @@ public class AuthController {
     @Operation(summary = "Login in system", tags = {"auth", "login"})
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDTO loginDTO) {
         Authentication authentication = authenticationManager
-              .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
-        ResponseEntity<?> responseEntity = userDetailsService.authenticateUser(authentication);
+                .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
+
+        ResponseEntity<UserInfoDTO> responseEntity = userDetailsService.authenticateUser(authentication);
         log.info("User {} is logged", Objects.requireNonNull(responseEntity.getBody()));
+
         return responseEntity;
     }
 

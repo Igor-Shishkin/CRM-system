@@ -2,18 +2,15 @@ package com.crm.system.security.services;
 
 import com.crm.system.exception.UserAlreadyExistsException;
 import com.crm.system.models.User;
-import com.crm.system.models.logForUser.LogEntry;
-import com.crm.system.models.logForUser.TagName;
-import com.crm.system.models.security.ERole;
-import com.crm.system.models.security.Role;
 import com.crm.system.playload.request.SignUpDTO;
 import com.crm.system.playload.response.UserInfoDTO;
-import com.crm.system.repository.RoleRepository;
 import com.crm.system.repository.UserRepository;
-import com.crm.system.security.PasswordConfig;
 import com.crm.system.security.jwt.JwtUtils;
-import com.crm.system.services.LogEntryService;
-import com.crm.system.services.UserService;
+import com.crm.system.security.services.utils.NewUserProcessing;
+import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsDoneDecorator;
+import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsImportantDecorator;
+import com.crm.system.services.utils.logUtils.facadeForLogEntry.LogEntryForUserFacade;
+import com.crm.system.services.utils.logUtils.textFactoryLogEntry.EntryType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
@@ -26,7 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.file.attribute.UserPrincipalNotFoundException;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -35,24 +32,18 @@ import java.util.stream.Collectors;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final UserService userService;
-    private final PasswordConfig passwordConfig;
-    private final RoleRepository roleRepository;
+    private final NewUserProcessing newUserProcessing;
     private final JwtUtils jwtUtils;
-    private final LogEntryService logEntryService;
+    private final LogEntryForUserFacade logEntryForUserFacade;
 
     public UserDetailsServiceImpl(UserRepository userRepository,
-                                  UserService userService,
-                                  PasswordConfig passwordConfig,
-                                  RoleRepository roleRepository,
+                                  NewUserProcessing newUserProcessing,
                                   JwtUtils jwtUtils,
-                                  LogEntryService logEntryService) {
+                                  LogEntryForUserFacade logEntryForUserFacade) {
         this.userRepository = userRepository;
-        this.userService = userService;
-        this.passwordConfig = passwordConfig;
-        this.roleRepository = roleRepository;
+        this.newUserProcessing = newUserProcessing;
+        this.logEntryForUserFacade = logEntryForUserFacade;
         this.jwtUtils = jwtUtils;
-        this.logEntryService = logEntryService;
     }
 
     @Override
@@ -67,15 +58,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public ResponseEntity<UserInfoDTO> authenticateUser(Authentication authentication) {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(userDetails);
 
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtUtils.generateJwtCookie(userDetails).toString())
                 .body(new UserInfoDTO.Builder()
                         .withId(userDetails.getId())
                         .withEmail(userDetails.getEmail())
@@ -84,30 +73,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         .build());
     }
 
-    public void registerUser(SignUpDTO signUpRequest) throws UserAlreadyExistsException, UserPrincipalNotFoundException {
-        if (doesUsernameExist(signUpRequest.getUsername()) && doesEmailExist(signUpRequest.getEmail())) {
-            throw new UserAlreadyExistsException("Error: Username or email is already taken!");
-        }
+    public void registerUser(SignUpDTO signUpRequest) throws UserAlreadyExistsException {
 
-        User user = new User(signUpRequest.getUsername(),
-                signUpRequest.getEmail(),
-                passwordConfig.passwordEncoder().encode(signUpRequest.getPassword()));
 
-        Set<Role> roles = identifyRoles(signUpRequest.getRole());
-        user.setRoles(roles);
+        User newUser = newUserProcessing.getNewUser(signUpRequest);
+        User savedUser = userRepository.save(newUser);
 
-        User savedUser = userRepository.save(user);
-
-        String messageText = String.format("User %s is added", user.getUsername());
-
-        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-                .withText(messageText)
-                .withIsDone(true)
-                .withIsImportant(true)
-                .withTagName(TagName.ADMINISTRATION)
-                .withTagId(savedUser.getUserId())
-                .withUser(userService.getActiveUser())
-                .build());
+        logEntryForUserFacade.createAndSaveMessage(savedUser,
+                EntryType.SAVE_NEW_USER,
+                new MarkAsDoneDecorator(), new MarkAsImportantDecorator());
     }
 
     public ResponseCookie logoutUser() {
@@ -117,40 +91,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public String deleteUserById(long userId) throws UserPrincipalNotFoundException {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserPrincipalNotFoundException("User with this ID doesn't exist"));
-        String username = user.getUsername();
         userRepository.deleteById(userId);
-        return String.format("User '%s' is deleted", username);
-    }
 
-    private Set<Role> identifyRoles(Set<String> strRoles) {
-        Set<Role> roles = new HashSet<>();
+        logEntryForUserFacade.createAndSaveMessage(user,
+                EntryType.DELETE_USER,
+                new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
 
-        if (strRoles == null) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                switch (role) {
-                    case "Admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-
-                        break;
-                    default:
-                        Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
-                }
-            });
-        }
-        return roles;
-    }
-    private boolean doesEmailExist(String email) {
-        return userRepository.existsByEmail(email);
-    }
-    private boolean doesUsernameExist(String username) {
-        return userRepository.existsByUsername(username);
+        return String.format("User '%s' is deleted", user.getUsername());
     }
 }
