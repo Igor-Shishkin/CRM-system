@@ -6,8 +6,8 @@ VALUES
 INSERT INTO users (username, email, password)
 VALUES
     ('user-admin', 'user@gmail.com', '$2a$10$Urd6P/dEZG4KgygviRIaf.RNtgy.vPAhy.A0xxdWYrCHIGmxWqFLa'),
-    ('user', 'xxx@gmail.com', '$2a$10$4TxwZzZs4nrVyWdLhjaQku0WIWAQFqpHkj.A1S/LWaF7E1mUHqbBu');
-
+    ('user', 'xxx@gmail.com', '$2a$10$4TxwZzZs4nrVyWdLhjaQku0WIWAQFqpHkj.A1S/LWaF7E1mUHqbBu'),
+    ('test-user', 'test@gmail.com', '$2a$10$pHnOAw8ZxYgQ59ODCH8ZCO8yICrV2wYE7imOS5aWf5ip1dw/8/6CG');
 INSERT INTO user_roles (user_id, role_id)
 VALUES
     (1,1),

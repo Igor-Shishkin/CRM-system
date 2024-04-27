@@ -7,6 +7,7 @@ import com.crm.system.security.services.UserDetailsImpl;
 import com.crm.system.services.UserService;
 import com.crm.system.services.utils.userServiceUtils.PhotoDetailsManager;
 import com.crm.system.services.utils.userServiceUtils.UserInformationProcessor;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -39,9 +41,11 @@ public class UserServiceImpl implements UserService {
         HttpHeaders headers = photoDetailsManager.getHeaders(photoOfUser);
         return new ResponseEntity<>(photoOfUser, headers, HttpStatus.OK);
     }
+    @Transactional
     public void uploadPhoto(MultipartFile file) throws IOException {
-        byte[] bytes = file.getBytes();
-        userRepository.updatePhotoForUserById(bytes, getActiveUserId());
+        User activeUser = getActiveUser();
+        activeUser.setPhotoOfUser(file.getBytes());
+        userRepository.save(activeUser);
     }
     public List<UserInfoDTO> getInfoAllUsers() {
 
