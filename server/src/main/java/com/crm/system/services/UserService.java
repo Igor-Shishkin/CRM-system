@@ -14,7 +14,7 @@ import java.util.*;
 @Service
 public interface UserService {
     ResponseEntity<byte[]> getPhoto() throws UserPrincipalNotFoundException, FileNotFoundException;
-    String uploadPhoto(MultipartFile file) throws IOException;
+    void uploadPhoto(MultipartFile file) throws IOException;
     List<UserInfoDTO> getInfoAllUsers();
     long getActiveUserId();
     User getActiveUser() throws UserPrincipalNotFoundException;

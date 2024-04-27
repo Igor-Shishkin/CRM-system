@@ -43,7 +43,7 @@ public class UserInfoDTO {
             this.roles = roles;
             return this;
         }
-        public Builder withLidsNumber(int clientsNumber) {
+        public Builder withClientsNumber(int clientsNumber) {
             this.clientsNumber = clientsNumber;
             return this;
         }
