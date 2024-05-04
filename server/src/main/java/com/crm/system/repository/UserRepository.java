@@ -25,4 +25,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Override
     List<User> findAll();
+
+    @Query("SELECT u.photoOfUser FROM User u WHERE u.userId = :activeUserId")
+    Optional<byte[]> getPhotoForUserById(@Param("activeUserId") Long activeUserId);
 }

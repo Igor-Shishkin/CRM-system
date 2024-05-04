@@ -513,8 +513,8 @@ class LogEntryControllerTest {
 
     private String writeObjectToJsonFormat(Object object) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule()); // Register JavaTimeModule to handle LocalDateTime
-        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Serialize LocalDateTime as ISO-8601 strings
+        mapper.registerModule(new JavaTimeModule());
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         return mapper.writeValueAsString(object);
     }
 }

@@ -16,9 +16,8 @@ public class UserInformationProcessor {
         this.clientRepository = clientRepository;
     }
 
-    public List<UserInfoDTO> getUsersInformationDTO(List<User> allUsers, long activeUserId) {
+    public List<UserInfoDTO> getUsersInformationDTO(List<User> allUsers) {
         return allUsers.stream()
-                .filter(user -> user.getUserId()!=activeUserId)
                 .map(user -> {
                     List<String> roles = user.getRoles().stream()
                             .map(Object::toString)

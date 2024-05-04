@@ -31,10 +31,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @Operation(summary = "Get all users", tags = {"auth", "admin", "users"})
+    @Operation(summary = "Get all users info", tags = {"auth", "admin", "users"})
     @GetMapping("/users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<UserInfoDTO>> getAllUsers() {
+    public ResponseEntity<List<UserInfoDTO>> getInfoAllUsers() {
         List<UserInfoDTO> userInfoDTOList = userService.getInfoAllUsers();
         return ResponseEntity.ok(userInfoDTOList);
     }
@@ -50,7 +50,7 @@ public class UserController {
 
     @Operation(summary = "Photo request", tags = {"user", "photo", "avatar"})
     @GetMapping(value = "/photo", produces = MediaType.IMAGE_JPEG_VALUE)
-    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<byte[]> getPhoto() throws UserPrincipalNotFoundException, FileNotFoundException {
         return userService.getPhoto();
     }

@@ -9,12 +9,6 @@ import java.io.FileNotFoundException;
 
 @Component
 public class PhotoDetailsManager {
-    public byte[] getPhotoOfUser(User user) throws FileNotFoundException {
-        if (user.getPhotoOfUser() == null) {
-            throw new FileNotFoundException("This user doesn't have a photo");
-        }
-        return user.getPhotoOfUser();
-    }
 
     public HttpHeaders getHeaders(byte[] photoOfUser) {
         HttpHeaders headers = new HttpHeaders();
