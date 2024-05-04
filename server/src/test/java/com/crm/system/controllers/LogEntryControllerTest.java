@@ -192,7 +192,7 @@ class LogEntryControllerTest {
                         .contentType("application/json")
                         .accept("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(9))
+                .andExpect(jsonPath("$.size()").value(10))
                 .andExpect(jsonPath("$[*].entityName", containsInAnyOrder("Piotr Kaczka",
                         "Sara Bernard",
                         "Monika Bałut",
@@ -201,9 +201,10 @@ class LogEntryControllerTest {
                         "Jonny Depp",
                         "Sauron",
                         "user-admin",
-                        "user")))
+                        "user",
+                        "test-user")))
                 .andExpect(jsonPath("$[*].tagName", containsInAnyOrder("CLIENT", "CLIENT",
-                        "CLIENT", "CLIENT", "CLIENT", "CLIENT", "CLIENT", "ADMINISTRATION", "ADMINISTRATION")));
+                        "CLIENT", "CLIENT", "CLIENT", "CLIENT", "CLIENT", "ADMINISTRATION", "ADMINISTRATION", "ADMINISTRATION")));
     }
 
     @Transactional
@@ -216,7 +217,7 @@ class LogEntryControllerTest {
                         .contentType("application/json")
                         .accept("application/json"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.size()").value(9))
+                .andExpect(jsonPath("$.size()").value(10))
                 .andExpect(jsonPath("$[*].entityName", containsInAnyOrder("Piotr Kaczka",
                         "Sara Bernard",
                         "Monika Bałut",
@@ -225,9 +226,10 @@ class LogEntryControllerTest {
                         "Jonny Depp",
                         "Sauron",
                         "user-admin",
-                        "user")))
+                        "user",
+                        "test-user")))
                 .andExpect(jsonPath("$[*].tagName", containsInAnyOrder("CLIENT", "CLIENT",
-                        "CLIENT", "CLIENT", "CLIENT", "CLIENT", "CLIENT", "ADMINISTRATION", "ADMINISTRATION")));
+                        "CLIENT", "CLIENT", "CLIENT", "CLIENT", "CLIENT", "ADMINISTRATION", "ADMINISTRATION", "ADMINISTRATION")));
     }
 
     @Transactional

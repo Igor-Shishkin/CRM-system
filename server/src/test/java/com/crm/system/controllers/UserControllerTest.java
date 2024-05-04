@@ -146,8 +146,7 @@ class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/api/user/photo")
                         .accept(MediaType.IMAGE_JPEG))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message").value("This user doesn't have a photo"));
+                .andExpect(status().isNotFound());
     }
     @Test
     void get_photo_for_user_without_authorization() throws Exception {

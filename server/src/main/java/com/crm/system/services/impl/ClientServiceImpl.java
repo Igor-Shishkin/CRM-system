@@ -3,7 +3,6 @@ package com.crm.system.services.impl;
 import com.crm.system.exception.ClientAlreadyExistException;
 import com.crm.system.exception.NameOrEmailIsEmptyException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
-import com.crm.system.exception.SubjectNotBelongToActiveUser;
 import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
 import com.crm.system.models.order.Order;
@@ -86,7 +85,7 @@ public class ClientServiceImpl implements ClientService {
 
 
 
-    public void restoreClientFromBlackList(long clientId) throws SubjectNotBelongToActiveUser {
+    public void restoreClientFromBlackList(long clientId)  {
 
         Client client = getClientByIdForActualUser(clientId);
 

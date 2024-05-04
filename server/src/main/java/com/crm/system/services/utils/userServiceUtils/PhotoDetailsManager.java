@@ -1,11 +1,8 @@
 package com.crm.system.services.utils.userServiceUtils;
 
-import com.crm.system.models.User;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-
-import java.io.FileNotFoundException;
 
 @Component
 public class PhotoDetailsManager {

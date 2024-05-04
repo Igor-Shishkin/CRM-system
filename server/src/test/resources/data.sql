@@ -12,7 +12,8 @@ INSERT INTO user_roles (user_id, role_id)
 VALUES
     (1,1),
     (1,2),
-    (2,1);
+    (2,1),
+    (3,1);
 
 INSERT INTO clients (full_name, email, phone_number, status, address, data_of_last_change, data_of_creation, user_id)
 VALUES
