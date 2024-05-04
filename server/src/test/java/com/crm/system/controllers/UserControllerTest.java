@@ -3,8 +3,6 @@ package com.crm.system.controllers;
 import com.crm.system.models.User;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.utils.mockAnnotations.WithMockCustomUserByUsername;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
@@ -21,13 +20,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
@@ -41,8 +40,6 @@ class UserControllerTest {
     MockMvc mockMvc;
     @Autowired
     UserRepository userRepository;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Container
     static MySQLContainer mySQLContainer = new MySQLContainer("mysql:8.0")
@@ -73,7 +70,6 @@ class UserControllerTest {
 
 
     @Test
-    @Transactional
     @WithMockCustomUserByUsername(username = "user-admin")
     void upload_photo_for_user_success() throws Exception {
 
@@ -119,7 +115,6 @@ class UserControllerTest {
     }
 
     @Test
-    @Transactional
     @WithMockCustomUserByUsername(username = "user-admin")
     void get_photo_for_user_success() throws Exception {
         MockMultipartFile file = new MockMultipartFile("file",
@@ -144,9 +139,57 @@ class UserControllerTest {
         assertThat(file.getBytes()).isEqualTo(responseContent);
     }
 
-    private String writeObjectToJsonFormat(Object object) throws JsonProcessingException {
-        return objectMapper.writeValueAsString(object);
+    @Test
+    @WithMockCustomUserByUsername(username = "user-admin")
+    void get_photo_for_user_photo_is_null() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user/photo")
+                        .accept(MediaType.IMAGE_JPEG))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("This user doesn't have a photo"));
     }
+    @Test
+    void get_photo_for_user_without_authorization() throws Exception {
 
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user/photo"))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.message")
+                        .value("Full authentication is required to access this resource"));
+    }
+    @Test
+    @WithMockCustomUserByUsername(username = "user-admin")
+    void get_all_users_info_success() throws Exception {
 
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user/users")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$[*].id").exists())
+                .andExpect(jsonPath("$[*].username").exists())
+                .andExpect(jsonPath("$[*].email").exists())
+                .andExpect(jsonPath("$[*].roles").isArray())
+                .andExpect(jsonPath("$[*].clientsNumber").exists());
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user/users")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].username",
+                        containsInAnyOrder("user-admin", "user", "test-user")))
+                .andExpect(jsonPath("$[*].email",
+                        containsInAnyOrder("user@gmail.com", "xxx@gmail.com", "test@gmail.com")));
+    }
+    @Test
+    @WithMockUser
+    void get_all_users_info_with_wrong_role() throws Exception {
+
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/api/user/users")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isForbidden());
+    }
 }
