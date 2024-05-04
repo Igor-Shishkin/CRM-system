@@ -5,39 +5,29 @@ import com.crm.system.models.logForUser.LogEntry;
 import com.crm.system.models.logForUser.TagName;
 import com.crm.system.playload.request.SentEmailDTO;
 import com.crm.system.services.LogEntryService;
-import com.crm.system.services.UserService;
 import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.LogEntryDecorator;
-import com.crm.system.services.utils.logUtils.textFactoryLogEntry.EntryType;
-import com.crm.system.services.utils.logUtils.textFactoryLogEntry.LogEntryTextFactory;
-import com.crm.system.services.utils.logUtils.textFactoryLogEntry.LogEntryTextForEmailFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 @Slf4j
 @Component
 public class LogEntryForEmailFacade implements LogEntryFacade<SentEmailDTO> {
     private final LogEntryService logEntryService;
-    private final LogEntryTextFactory<SentEmailDTO> logEntryTextFactory;
-    private final UserService userService;
 
-    public LogEntryForEmailFacade(LogEntryService logEntryService,
-                                  LogEntryTextForEmailFactory logEntryTextFactory,
-                                  UserService userService) {
+    public LogEntryForEmailFacade(LogEntryService logEntryService) {
         this.logEntryService = logEntryService;
-        this.logEntryTextFactory = logEntryTextFactory;
-        this.userService = userService;
     }
     @Override
-    public void createAndSaveMessage(SentEmailDTO emailDTO, EntryType entryType, LogEntryDecorator... decorators){
-        String text = logEntryTextFactory.generateText(emailDTO, entryType);
+    public void createAndSaveMessage(SentEmailDTO emailDTO,
+                                     EntryType entryType,
+                                     User user,
+                                     LogEntryDecorator... decorators){
 
         LogEntry logEntry = new LogEntry.Builder()
-                .withText(text)
+                .withText(entryType.getTextForEntry(emailDTO.getEmail()))
                 .withTagName(TagName.EMAIL)
                 .withAdditionalInformation(emailDTO.getTextOfEmail())
-                .withUser(getActiveUser())
+                .withUser(user)
                 .build();
 
         for (LogEntryDecorator decorator : decorators) {
@@ -45,14 +35,5 @@ public class LogEntryForEmailFacade implements LogEntryFacade<SentEmailDTO> {
         }
 
         logEntryService.automaticallyCreateMessage(logEntry);
-    }
-    private User getActiveUser() {
-        User user = null;
-        try {
-            user = userService.getActiveUser();
-        } catch (UserPrincipalNotFoundException e){
-            log.error(this.getClass() + ". Exception: " + e);
-        }
-        return user;
     }
 }

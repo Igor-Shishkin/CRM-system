@@ -13,7 +13,7 @@ import com.crm.system.repository.ClientRepository;
 import com.crm.system.services.ClientService;
 import com.crm.system.services.UserService;
 import com.crm.system.services.utils.clientUtils.ClientInfoDTOMapper;
-import com.crm.system.services.utils.logUtils.textFactoryLogEntry.EntryType;
+import com.crm.system.services.utils.logUtils.facadeForLogEntry.EntryType;
 import com.crm.system.services.utils.logUtils.facadeForLogEntry.LogEntryForClientFacade;
 import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsDoneDecorator;
 import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsImportantDecorator;
@@ -61,15 +61,16 @@ public class ClientServiceImpl implements ClientService {
 
         checkIfThereIsClientWithThisEmail(addClientDTO.getEmail());
 
-        Client savedLead = clientRepository.save(
+        Client savedClient = clientRepository.save(
                 new Client(addClientDTO, userService.getActiveUser()));
 
         logEntryFacade.createAndSaveMessage(
-                savedLead,
+                savedClient,
                 EntryType.ADD_CLIENT,
+                savedClient.getUser(),
                 new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
 
-        return savedLead.getClientId();
+        return savedClient.getClientId();
     }
 
     public void sentToBlackList(long clientId) {
@@ -80,6 +81,7 @@ public class ClientServiceImpl implements ClientService {
 
         logEntryFacade.createAndSaveMessage(client,
                 EntryType.SENT_CLIENT_TO_BLACKLIST,
+                client.getUser(),
                 new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
     }
 
@@ -94,6 +96,7 @@ public class ClientServiceImpl implements ClientService {
 
         logEntryFacade.createAndSaveMessage(client,
                 EntryType.RESTORE_CLIENT_FROM_BLACKLIST,
+                client.getUser(),
                 new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
     }
 

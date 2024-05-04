@@ -3,24 +3,29 @@ package com.crm.system.services.impl;
 import com.crm.system.exception.TextOrEmailIsEmptyException;
 import com.crm.system.playload.request.SentEmailDTO;
 import com.crm.system.services.EmailService;
-import com.crm.system.services.utils.logUtils.textFactoryLogEntry.EntryType;
+import com.crm.system.services.UserService;
+import com.crm.system.services.utils.logUtils.facadeForLogEntry.EntryType;
 import com.crm.system.services.utils.logUtils.facadeForLogEntry.LogEntryForEmailFacade;
 import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsDoneDecorator;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+
 @Service
 public class EmailServiceImpl implements EmailService {
     private final JavaMailSender javaMailSender;
     private final LogEntryForEmailFacade facade;
+    private final UserService userService;
 
     public EmailServiceImpl(JavaMailSender javaMailSender,
-                            LogEntryForEmailFacade facade) {
+                            LogEntryForEmailFacade facade, UserService userService) {
         this.javaMailSender = javaMailSender;
         this.facade = facade;
+        this.userService = userService;
     }
-    public void sentEmail(SentEmailDTO sentEmailDTO) {
+    public void sentEmail(SentEmailDTO sentEmailDTO) throws UserPrincipalNotFoundException {
         checkWhetherRequestIsGood(sentEmailDTO);
 
         SimpleMailMessage message = new SimpleMailMessage();
@@ -32,6 +37,7 @@ public class EmailServiceImpl implements EmailService {
 
         facade.createAndSaveMessage(sentEmailDTO,
                 EntryType.EMAIL_IS_SENT,
+                userService.getActiveUser(),
                 new MarkAsDoneDecorator());
     }
 

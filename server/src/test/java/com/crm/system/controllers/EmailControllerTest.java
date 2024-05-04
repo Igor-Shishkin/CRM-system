@@ -123,8 +123,7 @@ class EmailControllerTest {
         assertThat(optionalLogEntry.get().getTagName()).isEqualTo(TagName.EMAIL);
         assertThat(optionalLogEntry.get().isDone()).isTrue();
         assertThat(optionalLogEntry.get().getText())
-                .isEqualTo(String.format("Message sent. Subject: %s. Email: %s",
-                        sentEmailDTO.getSubjectOfMail(),
+                .isEqualTo(String.format("Message sent. Email address: %s",
                         sentEmailDTO.getEmail()));
     }
 
@@ -153,7 +152,7 @@ class EmailControllerTest {
         assertThat(optionalLogEntry.get().getTagName()).isEqualTo(TagName.EMAIL);
         assertThat(optionalLogEntry.get().isDone()).isTrue();
         assertThat(optionalLogEntry.get().getText())
-                .isEqualTo(String.format("Message sent. Subject: %s. Email: %s",
+                .isEqualTo(String.format("Message sent. Email address: test@email.com",
                         sentEmailDTO.getSubjectOfMail(),
                         sentEmailDTO.getEmail()));
     }

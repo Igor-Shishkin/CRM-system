@@ -1,13 +1,11 @@
 package com.crm.system.services.utils.logUtils.facadeForLogEntry;
 
 import com.crm.system.models.Client;
+import com.crm.system.models.User;
 import com.crm.system.models.logForUser.LogEntry;
 import com.crm.system.models.logForUser.TagName;
 import com.crm.system.services.LogEntryService;
 import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.LogEntryDecorator;
-import com.crm.system.services.utils.logUtils.textFactoryLogEntry.EntryType;
-import com.crm.system.services.utils.logUtils.textFactoryLogEntry.LogEntryTextFactory;
-import com.crm.system.services.utils.logUtils.textFactoryLogEntry.LogEntryTextForClientFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -15,22 +13,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class LogEntryForClientFacade implements LogEntryFacade<Client>{
     private final LogEntryService logEntryService;
-    private final LogEntryTextFactory<Client> logEntryTextFactory;
 
-    public LogEntryForClientFacade(LogEntryService logEntryService,
-                                   LogEntryTextForClientFactory logEntryTextFactory) {
+    public LogEntryForClientFacade(LogEntryService logEntryService) {
         this.logEntryService = logEntryService;
-        this.logEntryTextFactory = logEntryTextFactory;
     }
 
     @Override
-    public void createAndSaveMessage(Client client, EntryType entryType, LogEntryDecorator... decorators) {
-
-        assert (client != null);
-        String text = logEntryTextFactory.generateText(client, entryType);
+    public void createAndSaveMessage(Client client,
+                                     EntryType entryType,
+                                     User activeUser,
+                                     LogEntryDecorator... decorators) {
 
         LogEntry logEntry = new LogEntry.Builder()
-                .withText(text)
+                .withText(entryType.getTextForEntry(client.getFullName()))
                 .withTagId(client.getClientId())
                 .withTagName(TagName.CLIENT)
                 .withUser(client.getUser())
@@ -42,12 +37,4 @@ public class LogEntryForClientFacade implements LogEntryFacade<Client>{
 
         logEntryService.automaticallyCreateMessage(logEntry);
     }
-
-//    private Client getClientFromData(Object data) {
-//        if (!(data instanceof Client)) {
-//            log.error("LofEntryFacade: Entity isn't instance of Client");
-//            throw new IllegalArgumentException("Expected CLIENT data");
-//        }
-//        return (Client) data;
-//    }
 }

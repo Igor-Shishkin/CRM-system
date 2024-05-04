@@ -7,10 +7,11 @@ import com.crm.system.playload.response.UserInfoDTO;
 import com.crm.system.repository.UserRepository;
 import com.crm.system.security.jwt.JwtUtils;
 import com.crm.system.security.services.utils.NewUserProcessing;
+import com.crm.system.services.UserService;
 import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsDoneDecorator;
 import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsImportantDecorator;
 import com.crm.system.services.utils.logUtils.facadeForLogEntry.LogEntryForUserFacade;
-import com.crm.system.services.utils.logUtils.textFactoryLogEntry.EntryType;
+import com.crm.system.services.utils.logUtils.facadeForLogEntry.EntryType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
@@ -35,15 +36,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final NewUserProcessing newUserProcessing;
     private final JwtUtils jwtUtils;
     private final LogEntryForUserFacade logEntryForUserFacade;
+    private final UserService userService;
 
     public UserDetailsServiceImpl(UserRepository userRepository,
                                   NewUserProcessing newUserProcessing,
                                   JwtUtils jwtUtils,
-                                  LogEntryForUserFacade logEntryForUserFacade) {
+                                  LogEntryForUserFacade logEntryForUserFacade, UserService userService) {
         this.userRepository = userRepository;
         this.newUserProcessing = newUserProcessing;
         this.logEntryForUserFacade = logEntryForUserFacade;
         this.jwtUtils = jwtUtils;
+        this.userService = userService;
     }
 
     @Override
@@ -73,7 +76,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         .build());
     }
 
-    public void registerUser(SignUpDTO signUpRequest) throws UserAlreadyExistsException {
+    public void registerUser(SignUpDTO signUpRequest) throws UserAlreadyExistsException, UserPrincipalNotFoundException {
 
 
         User newUser = newUserProcessing.getNewUser(signUpRequest);
@@ -81,6 +84,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         logEntryForUserFacade.createAndSaveMessage(savedUser,
                 EntryType.SAVE_NEW_USER,
+                userService.getActiveUser(),
                 new MarkAsDoneDecorator(), new MarkAsImportantDecorator());
     }
 
@@ -95,8 +99,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         logEntryForUserFacade.createAndSaveMessage(user,
                 EntryType.DELETE_USER,
-                new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
+                userService.getActiveUser(),
+                new MarkAsDoneDecorator(), new MarkAsImportantDecorator());
 
-        return String.format("User '%s' is deleted", user.getUsername());
+        return String.format("User with ID=%d is deleted", userId);
     }
 }
