@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.io.FileNotFoundException;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 @Slf4j
 @ControllerAdvice
@@ -27,7 +28,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             TransactionSystemException.class,
             MismanagementOfTheClientException.class,
             TextOrEmailIsEmptyException.class,
-            FileNotFoundException.class})
+            FileNotFoundException.class,
+            UserPrincipalNotFoundException.class})
     protected ResponseEntity<MessageResponse> handleJsonExceptions(Exception exception) {
         HttpStatus status = null;
         String message = exception.getMessage();
@@ -45,6 +47,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         } else if (exception instanceof NameOrEmailIsEmptyException ||
                 exception instanceof TextOrEmailIsEmptyException) {
             status = HttpStatus.I_AM_A_TEAPOT;
+        } else if (exception instanceof UserPrincipalNotFoundException) {
+            status = HttpStatus.FORBIDDEN;
         }
 
         log.error(exception.getClass() + ": " + message);

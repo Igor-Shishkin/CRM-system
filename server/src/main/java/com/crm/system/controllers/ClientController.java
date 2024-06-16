@@ -7,6 +7,7 @@ import com.crm.system.playload.response.ClientInfoDTO;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.services.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,55 +34,100 @@ public class ClientController {
         this.clientService = clientService;
     }
 
+
+
+    @PostMapping("/add-new-client")
     @Operation(summary = "Add new Lead",
-            description = "Endpoint allows you to add a new client to active user")
+            description = "Endpoint allows you to add a new client to active user and add entry to log about it")
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "201",
-                    description = "Client created successfully",
-                    content = @Content(
-                            schema = @Schema(ref = "#/components/schemas/LeadId"),
-                            mediaType = "application/json"
-                    )
+                    responseCode = "201", description = "Client created successfully",
+                    content = @Content(schema = @Schema(type = "integer", format = "int64", name = "leadId",
+                            description = "Returns the new client ID"),
+                            mediaType = "application/json")),
+            @ApiResponse(
+                    responseCode = "409", description = "Client with this email already exists",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")
             ),
             @ApiResponse(
-                    responseCode = "409",
-                    description = "Client with this email already exists",
-                    content = @Content(
-                            schema = @Schema(ref = "#/components/schemas/MessageResponse"),
-                            mediaType = "application/json"
-                    )
+                    responseCode = "403", description = "Unable to find active user",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")
             ),
             @ApiResponse(
-                    responseCode = "404",
-                    description = "Resource not found",
-                    content = @Content(schema = @Schema())
-            ),
-            @ApiResponse(
-                    responseCode = "500",
-                    description = "Internal server error",
-                    content = @Content(schema = @Schema())
-            )
+                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json"))
     })
     @PreAuthorize("hasRole('ROLE_USER')")
-    @PostMapping("/add-new-client")
     public ResponseEntity<Long> addNewClient(@Valid @RequestBody AddClientDTO addLeadRequest)
                         throws UserPrincipalNotFoundException {
         long leadId = clientService.addNewLead(addLeadRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(leadId);
     }
 
-    @Operation(summary = "Sent client to blackList by ID", tags = {"client", "lead", "black list"})
-    @PreAuthorize("hasRole('ROLE_USER')")
+
+
+
+
     @PutMapping("/send-client-to-black-list")
+    @Operation(summary = "Sent client to blackList",
+            description = "Sends client by ID to the blacklist without deleting any data and add entry to log about it")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "The client has been blacklisted",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")),
+            @ApiResponse(
+                    responseCode = "404", description = "Active User doesn't have client with this ID",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403", description = "Unable to find active user",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json"))
+    })
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MessageResponse> sendClientToBlackList(@RequestParam long clientId) {
         clientService.sentToBlackList(clientId);
         return ResponseEntity.ok(new MessageResponse(String.format("Lead with ID=%d is in blacklist", clientId)));
     }
 
-    @Operation(summary = "Restore client from blackList by ID", tags = {"client", "lead", "black list"})
-    @PreAuthorize("hasRole('ROLE_USER')")
+
+
+
+
     @PutMapping("/restore-client-from-black-list")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Restore client from blackList",
+            description = "Restore client from blackList by ID and add entry to log about it")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "The client is returned from blacklist",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")),
+            @ApiResponse(
+                    responseCode = "404", description = "Active User doesn't have client with this ID",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403", description = "Unable to find active user",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json"))
+    })
     public ResponseEntity<MessageResponse> restoreClientFromBlackList(@RequestParam long clientId) {
         clientService.restoreClientFromBlackList(clientId);
         return ResponseEntity.ok(new MessageResponse(
@@ -89,44 +135,153 @@ public class ClientController {
         );
     }
 
-    @Operation(summary = "Get all clients", tags = {"clients"})
-    @PreAuthorize("hasRole('ROLE_USER')")
+
+
+
     @GetMapping("/clients")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Get clients info",
+            description = "Get main information about all the user's clients with Status.CLIENT")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "Clients information successfully sent",
+                    content = @Content(
+                            array = @ArraySchema(schema = @Schema(implementation = ClientInfoDTO.class,
+                             description = "Returns main information about all the user's clients with Status.CLIENT")),
+                            mediaType = "application/json"
+                    )),
+            @ApiResponse(
+                    responseCode = "403", description = "Unable to find active user",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json"))
+    })
     public ResponseEntity<Set<ClientInfoDTO>> getAllClientsForUser() {
         Set<ClientInfoDTO> clients = clientService.getClientsWithClientStatusForUser();
         return ResponseEntity.ok(clients);
     }
 
-    @Operation(summary = "Get all Leads", tags = {"leads"})
-    @PreAuthorize("hasRole('ROLE_USER')")
+
+
+
+
+
     @GetMapping("/leads")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Get leads info",
+            description = "Get main information about all the user's clients with Status.LEAD")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "Leads information successfully sent",
+                    content = @Content(
+                            array = @ArraySchema(schema = @Schema(implementation = ClientInfoDTO.class,
+                              description = "Returns main information about all the user's clients with Status.LEAD")),
+                            mediaType = "application/json"
+                    )),
+            @ApiResponse(
+                    responseCode = "403", description = "Unable to find active user",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json"))
+    })
     public ResponseEntity<Set<ClientInfoDTO>> getAllLeadsForUser() {
         Set<ClientInfoDTO> leads = clientService.getClientsWithLeadStatusForUser();
         return ResponseEntity.ok(leads);
     }
 
-    @Operation(summary = "Get all blacklist clients", tags = {"blacklist", "get"})
-    @PreAuthorize("hasRole('ROLE_USER')")
+
+
+
+
     @GetMapping("/get-black-list-clients")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Get blacklist clients info",
+            description = "Get main information about all the user's clients with Status.BLACKLIST")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "Clients information successfully sent",
+                    content = @Content(
+                         array = @ArraySchema(schema = @Schema(implementation = ClientInfoDTO.class,
+                          description = "Returns main information about all the user's clients with Status.BLACKLIST")),
+                         mediaType = "application/json"
+                    )),
+            @ApiResponse(
+                    responseCode = "403", description = "Unable to find active user",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json"))
+    })
     public ResponseEntity<Set<ClientInfoDTO>> getBlackListClientsForUser() {
         Set<ClientInfoDTO> clients = clientService.getClientsWithBlacklistStatusForUser();
         return ResponseEntity.ok(clients);
     }
 
-    @Operation(summary = "Get Client's info", tags = {"client", "info"})
-    @PreAuthorize("hasRole('ROLE_USER')")
+
+
+
+
     @GetMapping("/client-info")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Get Client's info",
+            description = "Get detailed information about the client and his/her orders by ID")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "Client's information successfully sent",
+                    content = @Content(schema = @Schema(implementation = Client.class,
+                            description = "Returns detailed information about the client and his/her orders"),
+                            mediaType = "application/json")),
+            @ApiResponse(
+                    responseCode = "404", description = "Active User doesn't have client with this ID",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")
+            )
+    })
     public ResponseEntity<Client> getClient(@RequestParam long clientId) {
         Client client = clientService.getInfoWithOrdersClient(clientId);
         return ResponseEntity.ok(client);
     }
 
-    @Operation(summary = "Edit Client's info", tags = {"client", "info"})
-    @PreAuthorize("hasRole('ROLE_USER')")
+
+
+
+
     @PutMapping("edit-client-data")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "Edit Client's info", description = "Edit client information by ID")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "Client's information was successfully edited",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")),
+            @ApiResponse(
+                    responseCode = "404", description = "Active User doesn't have client with this ID",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "403", description = "Unable to find active user",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json"))
+    })
     public ResponseEntity<MessageResponse> editClientInfo(@RequestBody EditClientDataDTO request) {
         clientService.editClientData(request);
         return ResponseEntity.ok(new MessageResponse("Changes are saved"));
     }
-
 }
