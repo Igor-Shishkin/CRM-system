@@ -62,6 +62,6 @@ public class UserServiceImpl implements UserService {
 
     public User getActiveUser() throws UserPrincipalNotFoundException {
         return userRepository.findById(getActiveUserId())
-                .orElseThrow(() -> new UserPrincipalNotFoundException("There isn't User with this ID"));
+                .orElseThrow(() -> new UserPrincipalNotFoundException("Unable to find active user"));
     }
 }

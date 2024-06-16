@@ -88,7 +88,7 @@ class EmailControllerTest {
     public void initialize() throws UserPrincipalNotFoundException {
         when(userService.getActiveUserId()).thenReturn(1L);
         when(userService.getActiveUser()).thenReturn(userRepository.findById(1L)
-                .orElseThrow(() -> new UserPrincipalNotFoundException("There isn't User with this ID")));
+                .orElseThrow(() -> new UserPrincipalNotFoundException("Unable to find active user"))z);
     }
 
     @BeforeAll

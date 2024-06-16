@@ -7,9 +7,14 @@ import com.crm.system.playload.response.ClientInfoDTO;
 import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.services.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -28,13 +33,42 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @Operation(summary = "Add new Lead", tags = {"Client"})
+    @Operation(summary = "Add new Lead",
+            description = "Endpoint allows you to add a new client to active user")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201",
+                    description = "Client created successfully",
+                    content = @Content(
+                            schema = @Schema(ref = "#/components/schemas/LeadId"),
+                            mediaType = "application/json"
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "409",
+                    description = "Client with this email already exists",
+                    content = @Content(
+                            schema = @Schema(ref = "#/components/schemas/MessageResponse"),
+                            mediaType = "application/json"
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Resource not found",
+                    content = @Content(schema = @Schema())
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal server error",
+                    content = @Content(schema = @Schema())
+            )
+    })
     @PreAuthorize("hasRole('ROLE_USER')")
     @PostMapping("/add-new-client")
     public ResponseEntity<Long> addNewClient(@Valid @RequestBody AddClientDTO addLeadRequest)
                         throws UserPrincipalNotFoundException {
         long leadId = clientService.addNewLead(addLeadRequest);
-        return ResponseEntity.ok(leadId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(leadId);
     }
 
     @Operation(summary = "Sent client to blackList by ID", tags = {"client", "lead", "black list"})
