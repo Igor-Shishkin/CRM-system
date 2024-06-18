@@ -1,5 +1,6 @@
 package com.crm.system.security.services;
 
+import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.exception.UserAlreadyExistsException;
 import com.crm.system.models.User;
 import com.crm.system.playload.request.SignUpDTO;
@@ -94,7 +95,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public String deleteUserById(long userId) throws UserPrincipalNotFoundException {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserPrincipalNotFoundException("User with this ID doesn't exist"));
+                .orElseThrow(() -> new RequestOptionalIsEmpty("User with this ID doesn't exist"));
         userRepository.deleteById(userId);
 
         logEntryForUserFacade.createAndSaveMessage(user,

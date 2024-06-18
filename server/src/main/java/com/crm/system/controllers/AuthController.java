@@ -9,6 +9,10 @@ import com.crm.system.playload.response.MessageResponse;
 import com.crm.system.playload.response.UserInfoDTO;
 import com.crm.system.security.services.UserDetailsServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +38,20 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
     }
 
+
+
     @PostMapping("/signin")
-    @Operation(summary = "Login in system", tags = {"auth", "login"})
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDTO loginDTO) {
+    @Operation(summary = "Login in system", description = "Allows you to register in the system")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "The client is returned from blacklist",
+                    content = @Content(schema = @Schema(implementation = UserInfoDTO.class),
+                            mediaType = "application/json")),
+            @ApiResponse(
+                    responseCode = "401", description = "Unauthorized - bad credentials",
+                    content = @Content(schema = @Schema()))
+    })
+    public ResponseEntity<UserInfoDTO> authenticateUser(@Valid @RequestBody LoginDTO loginDTO) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword()));
 
@@ -46,50 +61,141 @@ public class AuthController {
         return responseEntity;
     }
 
+
+
+
+
     @PostMapping("/signup")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "New user registration", tags = {"auth", "registration"})
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "201", description = "New user has been successfully added to the database",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")),
+            @ApiResponse(
+                    responseCode = "403", description = "ROLE_ADMIN is required",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(
+                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(
+                    responseCode = "400", description = "Invalid request content.",
+                    content = @Content(schema = @Schema())),
+    })
     public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignUpDTO signUpRequest)
                             throws UserPrincipalNotFoundException {
         userDetailsService.registerUser(signUpRequest);
         log.info("User registered successfully!");
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.status(201).body(new MessageResponse("User registered successfully!"));
     }
 
-    @Operation(summary = "Logout", tags = {"auth", "logout"})
+
+
+
+
     @PostMapping("/signout")
+    @Operation(summary = "Logout", description = "Allows the user to Logout")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "Allows you to register in the system",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json"))
+    })
     public ResponseEntity<MessageResponse> logoutUser() {
         ResponseCookie cookie = userDetailsService.logoutUser();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(new MessageResponse("You've been signed out!"));
     }
 
-    @Operation(summary = "Delete user", tags = {"auth", "admin", "delete"})
+
+
+
     @DeleteMapping("/delete")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Delete user", tags = {"auth", "admin", "delete"})
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "Delete user by ID",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                            mediaType = "application/json")),
+            @ApiResponse(
+                    responseCode = "403", description = "ROLE_ADMIN is required",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(
+                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(
+                    responseCode = "404", description = "User with this ID doesn't exist",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class))),
+    })
     public ResponseEntity<MessageResponse> deleteUserById(@RequestParam long userId)
                             throws UserPrincipalNotFoundException {
         String responseText = userDetailsService.deleteUserById(userId);
         return ResponseEntity.ok(new MessageResponse(responseText));
     }
 
-    @Operation(summary = "checkAuthorization", tags = {"auth", "check"})
+
+
+
+
+
     @GetMapping("/check/user-role")
     @PreAuthorize("hasRole('ROLE_USER')")
+    @Operation(summary = "check authorization", description = "Returns true if a user has ROLE_USER")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "User has ROLE_USER",
+                    content = @Content(schema = @Schema(type = "boolean"),
+                            mediaType = "application/json")),
+            @ApiResponse(
+                    responseCode = "403", description = "ROLE_USER is required",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(
+                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    content = @Content(schema = @Schema())),
+    })
     public ResponseEntity<Boolean> checkAuthorizationForUserRole() {
         return ResponseEntity.ok(true);
     }
 
-    @Operation(summary = "check authorization", tags = {"auth", "check"})
+
+
+
     @GetMapping("/check/admin-role")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "check authorization", tags = {"auth", "check"})
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "User has ROLE_ADMIN",
+                    content = @Content(schema = @Schema(type = "boolean"),
+                            mediaType = "application/json")),
+            @ApiResponse(
+                    responseCode = "403", description = "ROLE_ADMIN is required",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(
+                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    content = @Content(schema = @Schema())),
+    })
     public ResponseEntity<Boolean> checkAuthorizationForAdminRole() {
         return ResponseEntity.ok(true);
     }
 
+
+
+
     @Operation(summary = "check authorization", tags = {"auth", "check"})
     @GetMapping("/check")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200", description = "User is authorized",
+                    content = @Content(schema = @Schema(type = "boolean"),
+                            mediaType = "application/json")),
+            @ApiResponse(
+                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    content = @Content(schema = @Schema()))
+    })
     public ResponseEntity<Boolean> checkAuthorization() {
         return ResponseEntity.ok(true);
     }
