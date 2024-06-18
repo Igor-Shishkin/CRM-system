@@ -111,7 +111,7 @@ public class AuthController {
 
 
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/delete-user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Delete user", tags = {"auth", "admin", "delete"})
     @ApiResponses({
@@ -140,7 +140,7 @@ public class AuthController {
 
 
 
-    @GetMapping("/check/user-role")
+    @GetMapping("/check-authorization/user-role")
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "check authorization", description = "Returns true if a user has ROLE_USER")
     @ApiResponses({
@@ -162,7 +162,7 @@ public class AuthController {
 
 
 
-    @GetMapping("/check/admin-role")
+    @GetMapping("/check-authorization/admin-role")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "check authorization", tags = {"auth", "check"})
     @ApiResponses({
@@ -185,7 +185,7 @@ public class AuthController {
 
 
     @Operation(summary = "check authorization", tags = {"auth", "check"})
-    @GetMapping("/check")
+    @GetMapping("/check-authorization")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @ApiResponses({
             @ApiResponse(

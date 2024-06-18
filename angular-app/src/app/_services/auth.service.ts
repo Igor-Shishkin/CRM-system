@@ -40,7 +40,7 @@ export class AuthService {
     );
   }
   deleteUser(userId: number): Observable<any> {
-    return this.http.delete(AUTH_API + `delete?userId=${userId}`, { responseType: 'text'});
+    return this.http.delete(AUTH_API + `delete-user?userId=${userId}`, { responseType: 'text'});
   } 
 
   logout(): Observable<any> {
@@ -48,16 +48,13 @@ export class AuthService {
   }
 
   isAuthenticatedAsUser(): Observable<boolean> {
-    return this.http.get<boolean>(AUTH_API + 'check/user-role', { });
-  }
-  isAuthenticatedAsModerator(): Observable<boolean> {
-    return this.http.get<boolean>(AUTH_API + 'check/moderator-role', { });
+    return this.http.get<boolean>(AUTH_API + 'check-authorization/user-role', { });
   }
   isAuthenticatedAsAdmin(): Observable<boolean> {
-    return this.http.get<boolean>(AUTH_API + 'check/admin-role', { });
+    return this.http.get<boolean>(AUTH_API + 'check-authorization/admin-role', { });
   }
   isAuthenticated(): Observable<boolean> {
-    return this.http.get<boolean>(AUTH_API + 'check', { });
+    return this.http.get<boolean>(AUTH_API + 'check-authorization', { });
   }
 
 }
