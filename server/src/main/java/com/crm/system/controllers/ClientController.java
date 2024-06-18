@@ -51,14 +51,13 @@ public class ClientController {
                             mediaType = "application/json")
             ),
             @ApiResponse(
-                    responseCode = "403", description = "Unable to find active user",
+                    responseCode = "403", description = "ROLE_USER is required",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
                             mediaType = "application/json")
             ),
             @ApiResponse(
-                    responseCode = "401", description = "Full authentication is required to access this resource",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json"))
+                    responseCode = "401", description = "Unauthorized - User not found",
+                    content = @Content(schema = @Schema()))
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Long> addNewClient(@Valid @RequestBody AddClientDTO addLeadRequest)
@@ -85,14 +84,13 @@ public class ClientController {
                             mediaType = "application/json")
             ),
             @ApiResponse(
-                    responseCode = "403", description = "Unable to find active user",
+                    responseCode = "403", description = "ROLE_USER is required",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
                             mediaType = "application/json")
             ),
             @ApiResponse(
-                    responseCode = "401", description = "Full authentication is required to access this resource",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json"))
+                    responseCode = "401", description = "Unauthorized - User not found",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class)))
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MessageResponse> sendClientToBlackList(@RequestParam long clientId) {
@@ -119,14 +117,13 @@ public class ClientController {
                             mediaType = "application/json")
             ),
             @ApiResponse(
-                    responseCode = "403", description = "Unable to find active user",
+                    responseCode = "403", description = "ROLE_USER is required",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
                             mediaType = "application/json")
             ),
             @ApiResponse(
-                    responseCode = "401", description = "Full authentication is required to access this resource",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json"))
+                    responseCode = "401", description = "Unauthorized - User not found",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class)))
     })
     public ResponseEntity<MessageResponse> restoreClientFromBlackList(@RequestParam long clientId) {
         clientService.restoreClientFromBlackList(clientId);
@@ -151,14 +148,13 @@ public class ClientController {
                             mediaType = "application/json"
                     )),
             @ApiResponse(
-                    responseCode = "403", description = "Unable to find active user",
+                    responseCode = "403", description = "ROLE_USER is required",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
                             mediaType = "application/json")
             ),
             @ApiResponse(
-                    responseCode = "401", description = "Full authentication is required to access this resource",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json"))
+                    responseCode = "401", description = "Unauthorized - User not found",
+                    content = @Content(schema = @Schema(implementation = MessageResponse.class)))
     })
     public ResponseEntity<Set<ClientInfoDTO>> getAllClientsForUser() {
         Set<ClientInfoDTO> clients = clientService.getClientsWithClientStatusForUser();
@@ -183,14 +179,13 @@ public class ClientController {
                             mediaType = "application/json"
                     )),
             @ApiResponse(
-                    responseCode = "403", description = "Unable to find active user",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                    responseCode = "403", description = "ROLE_USER is required",
+                    content = @Content(schema = @Schema(),
                             mediaType = "application/json")
             ),
             @ApiResponse(
-                    responseCode = "401", description = "Full authentication is required to access this resource",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json"))
+                    responseCode = "401", description = "Unauthorized - User not found",
+                    content = @Content(schema = @Schema()))
     })
     public ResponseEntity<Set<ClientInfoDTO>> getAllLeadsForUser() {
         Set<ClientInfoDTO> leads = clientService.getClientsWithLeadStatusForUser();
@@ -214,12 +209,12 @@ public class ClientController {
                          mediaType = "application/json"
                     )),
             @ApiResponse(
-                    responseCode = "403", description = "Unable to find active user",
+                    responseCode = "403", description = "ROLE_USER is required",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
                             mediaType = "application/json")
             ),
             @ApiResponse(
-                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    responseCode = "401", description = "Unauthorized - User not found",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
                             mediaType = "application/json"))
     })
@@ -271,12 +266,12 @@ public class ClientController {
                             mediaType = "application/json")
             ),
             @ApiResponse(
-                    responseCode = "403", description = "Unable to find active user",
+                    responseCode = "403", description = "ROLE_USER is required",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
                             mediaType = "application/json")
             ),
             @ApiResponse(
-                    responseCode = "401", description = "Full authentication is required to access this resource",
+                    responseCode = "401", description = "Unauthorized - User not found",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
                             mediaType = "application/json"))
     })

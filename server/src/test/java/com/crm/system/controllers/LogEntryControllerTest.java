@@ -88,7 +88,7 @@ class LogEntryControllerTest {
     public void initialize() throws UserPrincipalNotFoundException {
         when(userService.getActiveUserId()).thenReturn(1L);
         User user = userRepository.findById(1L)
-                .orElseThrow(() -> new UserPrincipalNotFoundException("Unable to find active user"));
+                .orElseThrow(() -> new UserPrincipalNotFoundException("Unauthorized - User not found"));
         when(userService.getActiveUser()).thenReturn(user);
     }
 

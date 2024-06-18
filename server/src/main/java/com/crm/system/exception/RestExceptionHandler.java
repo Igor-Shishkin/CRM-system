@@ -48,7 +48,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 exception instanceof TextOrEmailIsEmptyException) {
             status = HttpStatus.I_AM_A_TEAPOT;
         } else if (exception instanceof UserPrincipalNotFoundException) {
-            status = HttpStatus.FORBIDDEN;
+            status = HttpStatus.UNAUTHORIZED;
         }
 
         log.error(exception.getClass() + ": " + message);
