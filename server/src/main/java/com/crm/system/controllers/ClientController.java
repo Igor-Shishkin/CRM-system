@@ -52,8 +52,7 @@ public class ClientController {
             ),
             @ApiResponse(
                     responseCode = "403", description = "ROLE_USER is required",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json")
+                    content = @Content(schema = @Schema())
             ),
             @ApiResponse(
                     responseCode = "401", description = "Unauthorized - User not found",
@@ -85,12 +84,11 @@ public class ClientController {
             ),
             @ApiResponse(
                     responseCode = "403", description = "ROLE_USER is required",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json")
+                    content = @Content(schema = @Schema())
             ),
             @ApiResponse(
                     responseCode = "401", description = "Unauthorized - User not found",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+                    content = @Content())
     })
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<MessageResponse> sendClientToBlackList(@RequestParam long clientId) {
@@ -118,12 +116,11 @@ public class ClientController {
             ),
             @ApiResponse(
                     responseCode = "403", description = "ROLE_USER is required",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json")
+                    content = @Content(schema = @Schema())
             ),
             @ApiResponse(
                     responseCode = "401", description = "Unauthorized - User not found",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+                    content = @Content(schema = @Schema()))
     })
     public ResponseEntity<MessageResponse> restoreClientFromBlackList(@RequestParam long clientId) {
         clientService.restoreClientFromBlackList(clientId);
@@ -131,6 +128,7 @@ public class ClientController {
                 String.format("Client with ID=%d is restored from black list", clientId))
         );
     }
+
 
 
 
@@ -149,12 +147,11 @@ public class ClientController {
                     )),
             @ApiResponse(
                     responseCode = "403", description = "ROLE_USER is required",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json")
+                    content = @Content(schema = @Schema())
             ),
             @ApiResponse(
                     responseCode = "401", description = "Unauthorized - User not found",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class)))
+                    content = @Content(schema = @Schema()))
     })
     public ResponseEntity<Set<ClientInfoDTO>> getAllClientsForUser() {
         Set<ClientInfoDTO> clients = clientService.getClientsWithClientStatusForUser();
@@ -180,8 +177,7 @@ public class ClientController {
                     )),
             @ApiResponse(
                     responseCode = "403", description = "ROLE_USER is required",
-                    content = @Content(schema = @Schema(),
-                            mediaType = "application/json")
+                    content = @Content(schema = @Schema())
             ),
             @ApiResponse(
                     responseCode = "401", description = "Unauthorized - User not found",
