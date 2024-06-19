@@ -5,6 +5,7 @@ import com.crm.system.playload.request.AddClientDTO;
 import com.crm.system.playload.request.EditClientDataDTO;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -67,7 +68,7 @@ public class Client {
         
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "user_id")
-        @JsonBackReference
+        @JsonIgnore
         private User user;
 
         public Client() {
