@@ -18,5 +18,6 @@ public class AddClientDTO {
     private String email;
     @Size(max = 50)
     private String phoneNumber;
+    @Size(max = 300)
     private String address;
 }

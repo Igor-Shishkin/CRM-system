@@ -24,10 +24,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             UserAlreadyExistsException.class,
             RequestOptionalIsEmpty.class,
             ClientAlreadyExistException.class,
-            NameOrEmailIsEmptyException.class,
             TransactionSystemException.class,
             MismanagementOfTheClientException.class,
-            TextOrEmailIsEmptyException.class,
             FileNotFoundException.class,
             UserPrincipalNotFoundException.class})
     protected ResponseEntity<MessageResponse> handleJsonExceptions(Exception exception) {
@@ -44,9 +42,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         } else if (exception instanceof RequestOptionalIsEmpty ||
                 exception instanceof FileNotFoundException) {
             status = HttpStatus.NOT_FOUND;
-        } else if (exception instanceof NameOrEmailIsEmptyException ||
-                exception instanceof TextOrEmailIsEmptyException) {
-            status = HttpStatus.I_AM_A_TEAPOT;
         } else if (exception instanceof UserPrincipalNotFoundException) {
             status = HttpStatus.UNAUTHORIZED;
         }
@@ -55,6 +50,9 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         assert status != null;
         return new ResponseEntity<>(new MessageResponse(message), status);
     }
+
+
+
 
     @ExceptionHandler({
             UserDoesNotHavePhotoException.class})

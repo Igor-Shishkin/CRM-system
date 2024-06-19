@@ -1,7 +1,6 @@
 package com.crm.system.services.impl;
 
 import com.crm.system.exception.ClientAlreadyExistException;
-import com.crm.system.exception.NameOrEmailIsEmptyException;
 import com.crm.system.exception.RequestOptionalIsEmpty;
 import com.crm.system.models.Client;
 import com.crm.system.models.ClientStatus;
@@ -114,8 +113,6 @@ public class ClientServiceImpl implements ClientService {
 
     public void editClientData(EditClientDataDTO request) {
 
-        checkFullNameAndEmailFields(request);
-
         Client client = getClientByIdForActualUser(request.getClientId());
         client.editClientData(request);
 
@@ -142,11 +139,4 @@ public class ClientServiceImpl implements ClientService {
             throw new ClientAlreadyExistException("Client with this email already exists");
         }
     }
-    private void checkFullNameAndEmailFields(EditClientDataDTO request) {
-        if (request.getFullName().isBlank() ||
-                request.getEmail().isBlank()) {
-            throw new NameOrEmailIsEmptyException("Name and email can't be empty");
-        }
-    }
-
 }
