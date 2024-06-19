@@ -23,5 +23,4 @@ public class SignUpDTO {
     @NotBlank(message = "Password is mandatory")
     @Size(min = 6, max = 40, message = "The password must contain from 6 to 40 characters")
     private String password;
-
 }

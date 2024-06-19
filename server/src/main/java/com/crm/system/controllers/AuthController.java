@@ -41,10 +41,17 @@ public class AuthController {
 
 
     @PostMapping("/signin")
-    @Operation(summary = "Login in system", description = "Allows you to register in the system")
+    @Operation(        summary = "Login to the system",
+            description = "Authenticates a user in the system with the provided credentials. " +
+                    "<br/><br/>" +
+                    "**Request Body:**<br/>" +
+                    "- `username` (String): The username of the user. Must not be null, empty, or consist solely of " +
+                    "whitespace.<br/>" +
+                    "- `password` (String): The password for the user. Must not be null, empty, or consist solely of " +
+                    "whitespace. Must be between 6 and 40 characters.<br/><br/>")
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "200", description = "The client is returned from blacklist",
+                    responseCode = "200", description = "User is successfully registered in the system",
                     content = @Content(schema = @Schema(implementation = UserInfoDTO.class),
                             mediaType = "application/json")),
             @ApiResponse(
@@ -67,7 +74,19 @@ public class AuthController {
 
     @PostMapping("/signup")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "New user registration", tags = {"auth", "registration"})
+    @Operation(summary = "New user registration",
+            description = "Adds a new user to the system with the provided details. " +
+                    "<br/><br/>" +
+                    "**Request Body:**<br/>" +
+                    "- `username` (String): The username of the user. Must not be null, empty, or consist solely of " +
+                    "whitespace. Must be between 3 and 20 characters.<br/>" +
+                    "- `email` (String): The email address of the user. Must be a valid email format and must not be " +
+                    "null, empty, or consist solely of whitespace. Maximum length is 50 characters.<br/>" +
+                    "- `role` (String[]): The set of roles assigned to the user. Options: __USER__, __ADMIN__. " +
+                    "if nothing is specified, the default " +
+                    "role will be ROLE_USER.<br/>" +
+                    "- `password` (String): The password for the user. Must not be null, empty, or consist solely of " +
+                    "whitespace. Must be between 6 and 40 characters.<br/><br/>")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201", description = "New user has been successfully added to the database",
@@ -113,10 +132,10 @@ public class AuthController {
 
     @DeleteMapping("/delete-user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Delete user", tags = {"auth", "admin", "delete"})
+    @Operation(summary = "Delete user", description = "Delete user by ID")
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "200", description = "Delete user by ID",
+                    responseCode = "200", description = "User is successfully deleted",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
                             mediaType = "application/json")),
             @ApiResponse(
@@ -167,7 +186,7 @@ public class AuthController {
     @Operation(summary = "check authorization", tags = {"auth", "check"})
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "200", description = "User has ROLE_ADMIN",
+                    responseCode = "200", description = "Returns true if a user has ROLE_ADMIN",
                     content = @Content(schema = @Schema(type = "boolean"),
                             mediaType = "application/json")),
             @ApiResponse(
@@ -184,7 +203,7 @@ public class AuthController {
 
 
 
-    @Operation(summary = "check authorization", tags = {"auth", "check"})
+    @Operation(summary = "check authorization", description = "Returns true if a user has authorization")
     @GetMapping("/check-authorization")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @ApiResponses({
