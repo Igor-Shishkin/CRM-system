@@ -39,21 +39,20 @@ public class ClientController {
 
     @PostMapping("/add-new-client")
     @Operation(summary = "Add new Lead",
-            description = "Endpoint allows you to add a new client to active user and add entry to log about it")
+            description = "Adds a new client to the system with the provided details. " +
+            "<br/><br/>" +
+            "**Request Body:**<br/>" +
+            "- `fullName` (String): The full name of the client. Must not be null, empty, or consist " +
+            "solely of whitespace. Maximum length is 50 characters.<br/>" +
+            "- `email` (String): The email address of the client. Must be a valid email format and must " +
+            "not be null, empty, or consist solely of whitespace. Maximum length is 80 characters.<br/>" +
+            "- `phoneNumber` (String): The phone number of the client. " +
+            "The maximum length is 50 characters.<br/>" +
+            "- `address` (String): The address of the client. " +
+            "The maximum length is 300 characters.<br/><br/>")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201",
-                    description = "Adds a new client to the system with the provided details. " +
-                            "<br/><br/>" +
-                            "**Request Body:**<br/>" +
-                            "- `fullName` (String): The full name of the client. Must not be null, empty, or consist " +
-                            "solely of whitespace. Maximum length is 50 characters.<br/>" +
-                            "- `email` (String): The email address of the client. Must be a valid email format and must " +
-                            "not be null, empty, or consist solely of whitespace. Maximum length is 80 characters.<br/>" +
-                            "- `phoneNumber` (String): The phone number of the client. " +
-                            "The maximum length is 50 characters.<br/>" +
-                            "- `address` (String): The address of the client. " +
-                            "The maximum length is 300 characters.<br/><br/>",
                     content = @Content(schema = @Schema(type = "integer", format = "int64", name = "leadId",
                             description = "Returns the new client ID"),
                             mediaType = "application/json")),
