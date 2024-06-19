@@ -1,6 +1,5 @@
 package com.crm.system.services.impl;
 
-import com.crm.system.exception.TextOrEmailIsEmptyException;
 import com.crm.system.playload.request.SentEmailDTO;
 import com.crm.system.services.EmailService;
 import com.crm.system.services.UserService;
@@ -26,7 +25,6 @@ public class EmailServiceImpl implements EmailService {
         this.userService = userService;
     }
     public void sentEmail(SentEmailDTO sentEmailDTO) throws UserPrincipalNotFoundException {
-        checkWhetherRequestIsGood(sentEmailDTO);
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(sentEmailDTO.getEmail());
@@ -39,12 +37,5 @@ public class EmailServiceImpl implements EmailService {
                 EntryType.EMAIL_IS_SENT,
                 userService.getActiveUser(),
                 new MarkAsDoneDecorator());
-    }
-
-    private void checkWhetherRequestIsGood(SentEmailDTO sentEmailDTO) {
-        if (sentEmailDTO.getEmail().isEmpty() ||
-            sentEmailDTO.getTextOfEmail().isEmpty()) {
-            throw new TextOrEmailIsEmptyException("Email address or text of email is empty");
-        }
     }
 }

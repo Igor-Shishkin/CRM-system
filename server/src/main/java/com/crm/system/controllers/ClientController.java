@@ -36,26 +36,36 @@ public class ClientController {
 
 
 
+
     @PostMapping("/add-new-client")
     @Operation(summary = "Add new Lead",
             description = "Endpoint allows you to add a new client to active user and add entry to log about it")
     @ApiResponses({
             @ApiResponse(
-                    responseCode = "201", description = "Client created successfully",
+                    responseCode = "201",
+                    description = "Adds a new client to the system with the provided details. " +
+                            "<br/><br/>" +
+                            "**Request Body:**<br/>" +
+                            "- `fullName` (String): The full name of the client. Must not be null, empty, or consist " +
+                            "solely of whitespace. Maximum length is 50 characters.<br/>" +
+                            "- `email` (String): The email address of the client. Must be a valid email format and must " +
+                            "not be null, empty, or consist solely of whitespace. Maximum length is 80 characters.<br/>" +
+                            "- `phoneNumber` (String): The phone number of the client. " +
+                            "The maximum length is 50 characters.<br/>" +
+                            "- `address` (String): The address of the client. " +
+                            "The maximum length is 300 characters.<br/><br/>",
                     content = @Content(schema = @Schema(type = "integer", format = "int64", name = "leadId",
                             description = "Returns the new client ID"),
                             mediaType = "application/json")),
             @ApiResponse(
                     responseCode = "409", description = "Client with this email already exists",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json")
-            ),
+                            mediaType = "application/json")),
             @ApiResponse(
                     responseCode = "403", description = "ROLE_USER is required",
-                    content = @Content(schema = @Schema())
-            ),
+                    content = @Content(schema = @Schema())),
             @ApiResponse(
-                    responseCode = "401", description = "Unauthorized - User not found",
+                    responseCode = "401", description = "Unauthorized -  you must log in",
                     content = @Content(schema = @Schema()))
     })
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -64,6 +74,7 @@ public class ClientController {
         long leadId = clientService.addNewLead(addLeadRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(leadId);
     }
+
 
 
 
@@ -80,14 +91,12 @@ public class ClientController {
             @ApiResponse(
                     responseCode = "404", description = "Active User doesn't have client with this ID",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json")
-            ),
+                            mediaType = "application/json")),
             @ApiResponse(
                     responseCode = "403", description = "ROLE_USER is required",
-                    content = @Content(schema = @Schema())
-            ),
+                    content = @Content(schema = @Schema())),
             @ApiResponse(
-                    responseCode = "401", description = "Unauthorized - User not found",
+                    responseCode = "401", description = "Unauthorized -  you must log in",
                     content = @Content())
     })
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -95,6 +104,7 @@ public class ClientController {
         clientService.sentToBlackList(clientId);
         return ResponseEntity.ok(new MessageResponse(String.format("Lead with ID=%d is in blacklist", clientId)));
     }
+
 
 
 
@@ -112,14 +122,12 @@ public class ClientController {
             @ApiResponse(
                     responseCode = "404", description = "Active User doesn't have client with this ID",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json")
-            ),
+                            mediaType = "application/json")),
             @ApiResponse(
                     responseCode = "403", description = "ROLE_USER is required",
-                    content = @Content(schema = @Schema())
-            ),
+                    content = @Content(schema = @Schema())),
             @ApiResponse(
-                    responseCode = "401", description = "Unauthorized - User not found",
+                    responseCode = "401", description = "Unauthorized -  you must log in",
                     content = @Content(schema = @Schema()))
     })
     public ResponseEntity<MessageResponse> restoreClientFromBlackList(@RequestParam long clientId) {
@@ -128,6 +136,7 @@ public class ClientController {
                 String.format("Client with ID=%d is restored from black list", clientId))
         );
     }
+
 
 
 
@@ -142,15 +151,13 @@ public class ClientController {
                     responseCode = "200", description = "Clients information successfully sent",
                     content = @Content(
                             array = @ArraySchema(schema = @Schema(implementation = ClientInfoDTO.class,
-                             description = "Returns main information about all the user's clients with Status.CLIENT")),
-                            mediaType = "application/json"
-                    )),
+                            description = "Returns main information about all the user's clients with Status.CLIENT")),
+                            mediaType = "application/json")),
             @ApiResponse(
                     responseCode = "403", description = "ROLE_USER is required",
-                    content = @Content(schema = @Schema())
-            ),
+                    content = @Content(schema = @Schema())),
             @ApiResponse(
-                    responseCode = "401", description = "Unauthorized - User not found",
+                    responseCode = "401", description = "Unauthorized -  you must log in",
                     content = @Content(schema = @Schema()))
     })
     public ResponseEntity<Set<ClientInfoDTO>> getAllClientsForUser() {
@@ -173,20 +180,19 @@ public class ClientController {
                     content = @Content(
                             array = @ArraySchema(schema = @Schema(implementation = ClientInfoDTO.class,
                               description = "Returns main information about all the user's clients with Status.LEAD")),
-                            mediaType = "application/json"
-                    )),
+                            mediaType = "application/json")),
             @ApiResponse(
                     responseCode = "403", description = "ROLE_USER is required",
-                    content = @Content(schema = @Schema())
-            ),
+                    content = @Content(schema = @Schema())),
             @ApiResponse(
-                    responseCode = "401", description = "Unauthorized - User not found",
+                    responseCode = "401", description = "Unauthorized -  you must log in",
                     content = @Content(schema = @Schema()))
     })
     public ResponseEntity<Set<ClientInfoDTO>> getAllLeadsForUser() {
         Set<ClientInfoDTO> leads = clientService.getClientsWithLeadStatusForUser();
         return ResponseEntity.ok(leads);
     }
+
 
 
 
@@ -202,22 +208,19 @@ public class ClientController {
                     content = @Content(
                          array = @ArraySchema(schema = @Schema(implementation = ClientInfoDTO.class,
                           description = "Returns main information about all the user's clients with Status.BLACKLIST")),
-                         mediaType = "application/json"
-                    )),
+                         mediaType = "application/json")),
             @ApiResponse(
                     responseCode = "403", description = "ROLE_USER is required",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json")
-            ),
+                    content = @Content(schema = @Schema())),
             @ApiResponse(
-                    responseCode = "401", description = "Unauthorized - User not found",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json"))
+                    responseCode = "401", description = "Unauthorized -  you must log in",
+                    content = @Content(schema = @Schema()))
     })
     public ResponseEntity<Set<ClientInfoDTO>> getBlackListClientsForUser() {
         Set<ClientInfoDTO> clients = clientService.getClientsWithBlacklistStatusForUser();
         return ResponseEntity.ok(clients);
     }
+
 
 
 
@@ -236,8 +239,13 @@ public class ClientController {
             @ApiResponse(
                     responseCode = "404", description = "Active User doesn't have client with this ID",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json")
-            )
+                            mediaType = "application/json")),
+            @ApiResponse(
+                    responseCode = "403", description = "ROLE_USER is required",
+                    content = @Content(schema = @Schema())),
+            @ApiResponse(
+                    responseCode = "401", description = "Unauthorized -  you must log in",
+                    content = @Content(schema = @Schema()))
     })
     public ResponseEntity<Client> getClient(@RequestParam long clientId) {
         Client client = clientService.getInfoWithOrdersClient(clientId);
@@ -248,9 +256,21 @@ public class ClientController {
 
 
 
+
     @PutMapping("edit-client-data")
     @PreAuthorize("hasRole('ROLE_USER')")
-    @Operation(summary = "Edit Client's info", description = "Edit client information by ID")
+    @Operation(summary = "Edit Client's info",
+                description = "Adds a new client to the system with the provided details. " +
+                        "<br/><br/>" +
+                        "**Request Body:**<br/>" +
+                        "- `clientId` (Long): The unique identifier for the client. Must not be null or empty.<br/>" +
+                        "- `fullName` (String): The full name of the client. Must not be null, empty, or consist solely " +
+                        "of whitespace.<br/>" +
+                        "- `email` (String): The email address of the client. Must be a valid email format and must not " +
+                        "be null, empty, or consist solely of whitespace.<br/>" +
+                        "- `address` (String): The address of the client. The maximum length is 300 characters.<br/>" +
+                        "- `phoneNumber` (String): The phone number of the client. The maximum length is 50 characters." +
+                        "<br/><br/>")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200", description = "Client's information was successfully edited",
@@ -259,17 +279,13 @@ public class ClientController {
             @ApiResponse(
                     responseCode = "404", description = "Active User doesn't have client with this ID",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json")
-            ),
+                            mediaType = "application/json")),
             @ApiResponse(
                     responseCode = "403", description = "ROLE_USER is required",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json")
-            ),
+                    content = @Content(schema = @Schema())),
             @ApiResponse(
-                    responseCode = "401", description = "Unauthorized - User not found",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json"))
+                    responseCode = "401", description = "Unauthorized -  you must log in",
+                    content = @Content(schema = @Schema()))
     })
     public ResponseEntity<MessageResponse> editClientInfo(@RequestBody EditClientDataDTO request) {
         clientService.editClientData(request);
