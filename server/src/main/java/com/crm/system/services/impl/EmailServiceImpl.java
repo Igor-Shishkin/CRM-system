@@ -35,7 +35,6 @@ public class EmailServiceImpl implements EmailService {
 
         facade.createAndSaveMessage(sentEmailDTO,
                 EntryType.EMAIL_IS_SENT,
-                userService.getActiveUser(),
                 new MarkAsDoneDecorator());
     }
 }

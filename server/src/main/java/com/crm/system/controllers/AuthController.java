@@ -121,6 +121,9 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
                             mediaType = "application/json"))
     })
+
+
+
     public ResponseEntity<MessageResponse> logoutUser() {
         ResponseCookie cookie = userDetailsService.logoutUser();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())

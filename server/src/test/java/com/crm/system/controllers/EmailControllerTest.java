@@ -88,7 +88,7 @@ class EmailControllerTest {
     public void initialize() throws UserPrincipalNotFoundException {
         when(userService.getActiveUserId()).thenReturn(1L);
         when(userService.getActiveUser()).thenReturn(userRepository.findById(1L)
-                .orElseThrow(() -> new UserPrincipalNotFoundException("Unauthorized - User not found"))z);
+                .orElseThrow(() -> new UserPrincipalNotFoundException("Unauthorized - User not found")));
     }
 
     @BeforeAll

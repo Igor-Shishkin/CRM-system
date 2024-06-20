@@ -59,6 +59,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return UserDetailsImpl.build(user);
     }
 
+
+
     public ResponseEntity<UserInfoDTO> authenticateUser(Authentication authentication) {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -77,21 +79,25 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         .build());
     }
 
-    public void registerUser(SignUpDTO signUpRequest) throws UserAlreadyExistsException, UserPrincipalNotFoundException {
 
+
+    public void registerUser(SignUpDTO signUpRequest) throws UserAlreadyExistsException, UserPrincipalNotFoundException {
 
         User newUser = newUserProcessing.getNewUser(signUpRequest);
         User savedUser = userRepository.save(newUser);
 
         logEntryForUserFacade.createAndSaveMessage(savedUser,
                 EntryType.SAVE_NEW_USER,
-                userService.getActiveUser(),
                 new MarkAsDoneDecorator(), new MarkAsImportantDecorator());
     }
+
+
 
     public ResponseCookie logoutUser() {
         return jwtUtils.getCleanJwtCookie();
     }
+
+
 
     public String deleteUserById(long userId) throws UserPrincipalNotFoundException {
         User user = userRepository.findById(userId)
@@ -100,7 +106,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         logEntryForUserFacade.createAndSaveMessage(user,
                 EntryType.DELETE_USER,
-                userService.getActiveUser(),
                 new MarkAsDoneDecorator(), new MarkAsImportantDecorator());
 
         return String.format("User with ID=%d is deleted", userId);

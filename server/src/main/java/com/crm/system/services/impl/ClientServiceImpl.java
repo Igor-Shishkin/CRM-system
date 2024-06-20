@@ -38,6 +38,8 @@ public class ClientServiceImpl implements ClientService {
         this.logEntryFacade = logEntryFacade;
         this.clientInfoDTOMapper = clientInfoDTOMapper;
     }
+
+
     @Override
     public Set<ClientInfoDTO> getClientsWithClientStatusForUser() {
 
@@ -45,16 +47,19 @@ public class ClientServiceImpl implements ClientService {
         return clientInfoDTOMapper.mapClientsToClientInfoDTOWithNumberPaidOrders(clients);
     }
 
+
     public Set<ClientInfoDTO> getClientsWithLeadStatusForUser() {
 
         Set<Client> clients = clientRepository.getClientsWithLeadStatusForUser(userService.getActiveUserId());
         return clientInfoDTOMapper.mapClientsToClientInfoDTO(clients);
     }
 
+
     public Set<ClientInfoDTO> getClientsWithBlacklistStatusForUser() {
         Set<Client> clients = clientRepository.getClientsWithBlackListStatusForUser(userService.getActiveUserId());
         return clientInfoDTOMapper.mapClientsToClientInfoDTO(clients);
     }
+
 
     public long addNewLead(AddClientDTO addClientDTO) throws UserPrincipalNotFoundException {
 
@@ -66,13 +71,13 @@ public class ClientServiceImpl implements ClientService {
         logEntryFacade.createAndSaveMessage(
                 savedClient,
                 EntryType.ADD_CLIENT,
-                savedClient.getUser(),
                 new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
 
         return savedClient.getClientId();
     }
 
-    public void sentToBlackList(long clientId) {
+
+    public void sentToBlackList(long clientId) throws UserPrincipalNotFoundException {
 
         Client client = getClientByIdForActualUser(clientId);
 
@@ -80,13 +85,12 @@ public class ClientServiceImpl implements ClientService {
 
         logEntryFacade.createAndSaveMessage(client,
                 EntryType.SENT_CLIENT_TO_BLACKLIST,
-                client.getUser(),
                 new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
     }
 
 
 
-    public void restoreClientFromBlackList(long clientId)  {
+    public void restoreClientFromBlackList(long clientId) throws UserPrincipalNotFoundException {
 
         Client client = getClientByIdForActualUser(clientId);
 
@@ -95,7 +99,6 @@ public class ClientServiceImpl implements ClientService {
 
         logEntryFacade.createAndSaveMessage(client,
                 EntryType.RESTORE_CLIENT_FROM_BLACKLIST,
-                client.getUser(),
                 new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
     }
 
@@ -111,6 +114,7 @@ public class ClientServiceImpl implements ClientService {
         return client;
     }
 
+
     public void editClientData(EditClientDataDTO request) {
 
         Client client = getClientByIdForActualUser(request.getClientId());
@@ -119,6 +123,7 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(client);
     }
 
+
     public Client getClientByIdForActualUser(long clientId) {
 
         return clientRepository.findClientByClientIdAndUserId(userService.getActiveUserId(), clientId)
@@ -126,14 +131,18 @@ public class ClientServiceImpl implements ClientService {
                         (String.format("You do not have a client with ID=%d", clientId)));
     }
 
+
     public void saveClient(Client client) {
         clientRepository.save(client);
     }
+
 
     private boolean hasPaidOrders(Client client) {
         return client.getOrders().stream()
                 .anyMatch(Order::isHasBeenPaid);
     }
+
+
     private void checkIfThereIsClientWithThisEmail(String email) {
         if (clientRepository.existsByEmail(email)) {
             throw new ClientAlreadyExistException("Client with this email already exists");

@@ -12,7 +12,7 @@ public interface LogEntryService {
     Set<LogEntry> getUserLog() throws UserPrincipalNotFoundException;
     Set<TagForUserLogDTO> getSetOfTags() throws UserPrincipalNotFoundException;
     void saveNewEntryToLog(LogEntry message) throws UserPrincipalNotFoundException;
-    void automaticallyCreateMessage(LogEntry message);
+    void automaticallyCreateMessage(LogEntry message) throws UserPrincipalNotFoundException;
     void deleteMessage(long messageId);
     void changeImportantStatus(long messageId);
     void changeDoneStatus(long messageId);

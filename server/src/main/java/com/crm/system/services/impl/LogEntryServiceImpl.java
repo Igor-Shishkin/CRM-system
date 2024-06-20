@@ -36,42 +36,42 @@ public class LogEntryServiceImpl implements LogEntryService {
 
     public Set<TagForUserLogDTO> getSetOfTags() throws UserPrincipalNotFoundException {
         User activeUser = getActiveUser();
-
         return logTagsCreator.getTags(activeUser);
     }
 
-    public void saveNewEntryToLog(LogEntry message) throws UserPrincipalNotFoundException {
-        message.setEntryId(null);
-        message.setDateOfCreation(LocalDateTime.now());
-        message.setUser(userService.getActiveUser());
+    public void saveNewEntryToLog(LogEntry entry) throws UserPrincipalNotFoundException {
+        entry.setEntryId(null);
+        entry.setDateOfCreation(LocalDateTime.now());
+        entry.setUser(userService.getActiveUser());
 
-        logEntryRepository.save(message);
+        logEntryRepository.save(entry);
     }
 
-    public void automaticallyCreateMessage(LogEntry message) {
-        logEntryRepository.save(message);
+    public void automaticallyCreateMessage(LogEntry entry) throws UserPrincipalNotFoundException {
+        entry.setUser(getActiveUser());
+        logEntryRepository.save(entry);
     }
 
-    public void deleteMessage(long messageId)  {
-        LogEntry messageForDeleting = getMessageById(messageId);
+    public void deleteMessage(long entryId)  {
+        LogEntry messageForDeleting = getMessageById(entryId);
         logEntryRepository.delete(messageForDeleting);
     }
 
-    public void changeImportantStatus(long messageId) {
-        LogEntry message = getMessageById(messageId);
+    public void changeImportantStatus(long entryId) {
+        LogEntry message = getMessageById(entryId);
         message.setImportant(!message.isImportant());
         logEntryRepository.save(message);
     }
 
-    public void changeDoneStatus(long messageId) {
-        LogEntry message = getMessageById(messageId);
+    public void changeDoneStatus(long entryId) {
+        LogEntry message = getMessageById(entryId);
         message.setDone(!message.isDone());
         logEntryRepository.save(message);
     }
 
-    private LogEntry getMessageById(long messageId) {
+    private LogEntry getMessageById(long entryId) {
         long activeUserId = userService.getActiveUserId();
-        return logEntryRepository.getHistoryMessageByMessageIdAndUserId(messageId, activeUserId)
+        return logEntryRepository.getHistoryMessageByMessageIdAndUserId(entryId, activeUserId)
                 .orElseThrow(() -> new RequestOptionalIsEmpty("You don't have entry with this ID"));
     }
 

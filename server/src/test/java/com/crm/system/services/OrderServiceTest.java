@@ -54,6 +54,8 @@ class OrderServiceTest {
 
         assertThat(resultOrderInfoResponce).isEqualTo(expectedOrderInfoDTO);
     }
+
+
     @Test
     void get_order_info_response_error() {
         when(userService.getActiveUserId()).thenReturn(1L);
@@ -63,6 +65,7 @@ class OrderServiceTest {
         assertThrows(RequestOptionalIsEmpty.class, () ->
             orderService.getOrderInfoResponse(1L));
     }
+
 
     @Test
     void get_order_success() {
@@ -74,6 +77,8 @@ class OrderServiceTest {
 
         assertThat(resultOrder).isEqualTo(orderExample);
     }
+
+
     @Test
     void get_order_error() {
         when(userService.getActiveUserId()).thenReturn(1L);
@@ -85,11 +90,11 @@ class OrderServiceTest {
         assertThat(exception.getMessage()).isEqualTo("You don't have order with this ID");
     }
 
+
     @Test
     void get_calculations_success() {
-        ItemsForAdditionalPurchasesDTO expectedCalculation = new ItemsForAdditionalPurchasesDTO();
-        expectedCalculation.setItems(orderExample.getAdditionalPurchases());
-        expectedCalculation.setResultPrice(orderExample.getResultPrice());
+        ItemsForAdditionalPurchasesDTO expectedCalculation =
+                new ItemsForAdditionalPurchasesDTO(orderExample);
 
         when(userService.getActiveUserId()).thenReturn(1L);
         when(orderRepository.getOrderByOrderIdAndUserId(1L, userService.getActiveUserId()))
@@ -99,6 +104,8 @@ class OrderServiceTest {
 
         assertThat(resultCalculations).isEqualTo(expectedCalculation);
     }
+
+
     @Test
     void get_calculations_error() {
         when(orderRepository.getOrderByOrderIdAndUserId(1L, userService.getActiveUserId()))
@@ -108,6 +115,7 @@ class OrderServiceTest {
                 orderService.getAdditionalPurchases(1L));
     }
 
+
     @Test
     void changeOrder() {
         orderService.changeOrder(orderExample);
@@ -115,6 +123,8 @@ class OrderServiceTest {
         verify(orderRepository).save(orderExample);
         verify(clientService).saveClient(orderExample.getClient());
     }
+
+
     @Test
     void sign_agreement_already_sign_error() {
         orderExample.setAgreementSigned(true);
@@ -128,6 +138,8 @@ class OrderServiceTest {
         assertThat(exception.getMessage())
                 .isEqualTo("Agreement is already signed") ;
     }
+
+
     @Test
     void sign_agreement_calculation_not_shown_error() {
         orderExample.setAgreementSigned(false);
@@ -143,6 +155,8 @@ class OrderServiceTest {
                 .isEqualTo("To sign the contract, you must fill out the calculations " +
                         "correctly and show it to Client.") ;
     }
+
+
     @Test
     void sign_agreement_calculation_thing_wrong_error() {
         orderExample.setAgreementSigned(false);
@@ -159,6 +173,8 @@ class OrderServiceTest {
                 .isEqualTo("To sign the contract, you must fill out the calculations " +
                         "correctly and show it to Client.") ;
     }
+
+
     @Test
     void sign_agreement_calculation_quantity_wrong_error() {
         orderExample.setAgreementSigned(false);
@@ -175,6 +191,8 @@ class OrderServiceTest {
                 .isEqualTo("To sign the contract, you must fill out the calculations " +
                         "correctly and show it to Client.") ;
     }
+
+
     @Test
     void sign_agreement_calculation_unit_price_wrong_error() {
         orderExample.setAgreementSigned(false);
@@ -191,6 +209,8 @@ class OrderServiceTest {
                 .isEqualTo("To sign the contract, you must fill out the calculations " +
                         "correctly and show it to Client.") ;
     }
+
+
     @Test
     void sign_agreement_calculation_total_price_zero_error() {
         orderExample.setAgreementSigned(false);
@@ -207,6 +227,8 @@ class OrderServiceTest {
                 .isEqualTo("To sign the contract, you must fill out the calculations " +
                         "correctly and show it to Client.") ;
     }
+
+
     @Test
     void sign_agreement_calculation_total_price_not_validate_error() {
         orderExample.setAgreementSigned(false);
@@ -223,6 +245,7 @@ class OrderServiceTest {
                 .isEqualTo("To sign the contract, you must fill out the calculations " +
                         "correctly and show it to Client.") ;
     }
+
 
     @Test
     void sign_agreement_success() throws NoSuchFieldException, IllegalAccessException {
@@ -250,6 +273,7 @@ class OrderServiceTest {
         assertThat(orderExample.isAgreementPrepared()).isTrue();
     }
 
+
     @Test
     void cancel_agreement_is_not_signed_error() {
         orderExample.setAgreementSigned(false);
@@ -262,6 +286,8 @@ class OrderServiceTest {
                 () -> orderService.cancelAgreement(orderExample.getOrderId()));
         assertThat(exception.getMessage()).isEqualTo("Agreement isn't signed");
     }
+
+
     @Test
     void cancel_agreement_has_been_paid_error() {
         orderExample.setAgreementSigned(true);
@@ -275,6 +301,8 @@ class OrderServiceTest {
                 () -> orderService.cancelAgreement(orderExample.getOrderId()));
         assertThat(exception.getMessage()).isEqualTo("Order is already paid");
     }
+
+
     @Test
     void cancel_agreement_success() {
         orderExample.setAgreementSigned(true);
@@ -292,6 +320,8 @@ class OrderServiceTest {
 
         assertThat(orderExample.isAgreementSigned()).isFalse();
     }
+
+
     @Test
     void confirm_payment_was_paid_error() {
         orderExample.setHasBeenPaid(true);
@@ -304,6 +334,8 @@ class OrderServiceTest {
                 () -> orderService.confirmPayment(orderExample.getOrderId()));
         assertThat(exception.getMessage()).isEqualTo("payment was already made");
     }
+
+
 
     @Test
     void confirm_payment_agreement_is_not_signed_error() {
@@ -318,6 +350,7 @@ class OrderServiceTest {
                 () -> orderService.confirmPayment(orderExample.getOrderId()));
         assertThat(exception.getMessage()).isEqualTo("Agreement is not signed");
     }
+
 
     @Test
     void confirm_payment_success() {
@@ -336,6 +369,8 @@ class OrderServiceTest {
 
         assertThat(orderExample.isHasBeenPaid()).isTrue();
     }
+
+
     @Test
     void cancel_payment_not_paid_error() {
         orderExample.setHasBeenPaid(false);
@@ -348,6 +383,8 @@ class OrderServiceTest {
                 () -> orderService.cancelPayment(orderExample.getOrderId()));
         assertThat(exception.getMessage()).isEqualTo("Payment was not made");
     }
+
+
     @Test
     void cancel_payment_success() {
         orderExample.setHasBeenPaid(true);
@@ -364,6 +401,8 @@ class OrderServiceTest {
 
         assertThat(orderExample.isHasBeenPaid()).isFalse();
     }
+
+
     @Test
     void save_order_changes_success() {
         ChangeOrderDTO changedOrderDTO = new ChangeOrderDTO();
@@ -382,6 +421,7 @@ class OrderServiceTest {
         assertThat(orderExample.getRealNeed()).isEqualTo("new need");
         assertThat(orderExample.getEstimateBudged()).isEqualTo(10000);
     }
+
 
     @Test
     void create_new_order_success() {
@@ -403,6 +443,7 @@ class OrderServiceTest {
         verify(clientService).saveClient(orderExample.getClient());
 
     }
+
 
     private static final Order orderExample;
     private static final Client clientExample;
@@ -436,6 +477,7 @@ class OrderServiceTest {
         orderExample.setAdditionalPurchases(Set.of(itemOne, itemTwo));
 
     }
+
 
     private void setPriceCoefficient(double value) throws NoSuchFieldException, IllegalAccessException {
         Field field = OrderServiceImpl.class.getDeclaredField("PRICE_COEFFICIENT");

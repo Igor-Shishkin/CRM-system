@@ -21,6 +21,7 @@ import com.crm.system.services.UserService;
 import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsDoneDecorator;
 import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsImportantDecorator;
 import com.crm.system.services.utils.logUtils.facadeForLogEntry.EntryType;
+import com.crm.system.services.utils.logUtils.facadeForLogEntry.LogEntryFacade;
 import com.crm.system.services.utils.logUtils.facadeForLogEntry.LogEntryForOrderFacade;
 import com.crm.system.services.utils.orderUtils.OrderProcessor;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,16 +35,18 @@ import java.util.function.Predicate;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final UserService userService;
-    private final LogEntryService logEntryService;
     private final ClientService clientService;
     private final OrderProcessor orderProcessor;
     private final LogEntryForOrderFacade logFacade;
 
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserService userService, LogEntryService logEntryService, ClientService clientService, OrderProcessor orderProcessor, LogEntryForOrderFacade logFacade) {
+    public OrderServiceImpl(OrderRepository orderRepository,
+                            UserService userService,
+                            ClientService clientService,
+                            OrderProcessor orderProcessor,
+                            LogEntryForOrderFacade logFacade) {
         this.orderRepository = orderRepository;
         this.userService = userService;
-        this.logEntryService = logEntryService;
         this.clientService = clientService;
         this.orderProcessor = orderProcessor;
         this.logFacade = logFacade;

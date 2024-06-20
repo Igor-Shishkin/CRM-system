@@ -99,7 +99,8 @@ public class ClientController {
                     content = @Content())
     })
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<MessageResponse> sendClientToBlackList(@RequestParam long clientId) {
+    public ResponseEntity<MessageResponse> sendClientToBlackList(@RequestParam long clientId)
+            throws UserPrincipalNotFoundException {
         clientService.sentToBlackList(clientId);
         return ResponseEntity.ok(new MessageResponse(String.format("Lead with ID=%d is in blacklist", clientId)));
     }
@@ -129,7 +130,8 @@ public class ClientController {
                     responseCode = "401", description = "Unauthorized -  you must log in",
                     content = @Content(schema = @Schema()))
     })
-    public ResponseEntity<MessageResponse> restoreClientFromBlackList(@RequestParam long clientId) {
+    public ResponseEntity<MessageResponse> restoreClientFromBlackList(@RequestParam long clientId)
+            throws UserPrincipalNotFoundException {
         clientService.restoreClientFromBlackList(clientId);
         return ResponseEntity.ok(new MessageResponse(
                 String.format("Client with ID=%d is restored from black list", clientId))

@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+
 @RestController
 @RequestMapping("api/user-board/order")
 @Slf4j
@@ -119,7 +121,7 @@ public class OrderController {
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Sign order agreement",
             description = """
-                    Signs an agreement for the specified order identified by orderId. 
+                    Signs an agreement for the specified order identified by orderId.
                     Requires ROLE_USER authorization.
                     Ensures calculations are correct and shown to the client before signing.
 
@@ -156,7 +158,8 @@ public class OrderController {
                     responseCode = "401", description = "Unauthorized -  you must log in",
                     content = @Content(schema = @Schema()))
     })
-    public ResponseEntity<MessageResponse> signAgreement(@Valid @RequestParam long orderId) {
+    public ResponseEntity<MessageResponse> signAgreement(@Valid @RequestParam long orderId)
+            throws UserPrincipalNotFoundException {
         orderService.signAgreement(orderId);
         return ResponseEntity.ok(new MessageResponse("Agreement's signed"));
     }
@@ -205,7 +208,8 @@ public class OrderController {
                     responseCode = "401", description = "Unauthorized -  you must log in",
                     content = @Content(schema = @Schema()))
     })
-    public ResponseEntity<MessageResponse> cancelAgreement(@Valid @RequestParam long orderId) {
+    public ResponseEntity<MessageResponse> cancelAgreement(@Valid @RequestParam long orderId)
+            throws UserPrincipalNotFoundException {
         orderService.cancelAgreement(orderId);
         return ResponseEntity.ok(new MessageResponse("Agreement's status is canceled"));
     }
@@ -255,7 +259,8 @@ public class OrderController {
                     responseCode = "401", description = "Unauthorized -  you must log in",
                     content = @Content(schema = @Schema()))
     })
-    public ResponseEntity<MessageResponse> cancelPayment(@Valid @RequestParam long orderId){
+    public ResponseEntity<MessageResponse> cancelPayment(@Valid @RequestParam long orderId)
+            throws UserPrincipalNotFoundException {
         orderService.cancelPayment(orderId);
         return ResponseEntity.ok(new MessageResponse("Payment by client is canceled"));
     }
@@ -305,7 +310,8 @@ public class OrderController {
                     responseCode = "401", description = "Unauthorized -  you must log in",
                     content = @Content(schema = @Schema()))
     })
-    public ResponseEntity<MessageResponse> confirmPayment(@Valid @RequestParam long orderId) {
+    public ResponseEntity<MessageResponse> confirmPayment(@Valid @RequestParam long orderId)
+            throws UserPrincipalNotFoundException {
         orderService.confirmPayment(orderId);
         return ResponseEntity.ok(new MessageResponse("Payment is confirm"));
     }
@@ -398,7 +404,7 @@ public class OrderController {
                     responseCode = "401", description = "Unauthorized -  you must log in",
                     content = @Content(schema = @Schema()))
     })
-    public ResponseEntity<Long> createNewOrder(@Valid @RequestBody CreateNewOrderDTO createNewOrderDTO) {
+    public ResponseEntity<Long> createNewOrder(@Valid @RequestBody CreateNewOrderDTO createNewOrderDTO) throws UserPrincipalNotFoundException {
         long newOrderID = orderService.createNewOrder(createNewOrderDTO);
         return ResponseEntity.ok(newOrderID);
     }
