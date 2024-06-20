@@ -9,6 +9,8 @@ import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.LogEntryDeco
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
+
 @Slf4j
 @Component
 public class LogEntryForClientFacade implements LogEntryFacade<Client>{
@@ -21,14 +23,12 @@ public class LogEntryForClientFacade implements LogEntryFacade<Client>{
     @Override
     public void createAndSaveMessage(Client client,
                                      EntryType entryType,
-                                     User activeUser,
-                                     LogEntryDecorator... decorators) {
+                                     LogEntryDecorator... decorators) throws UserPrincipalNotFoundException {
 
         LogEntry logEntry = new LogEntry.Builder()
                 .withText(entryType.getTextForEntry(client.getFullName()))
                 .withTagId(client.getClientId())
                 .withTagName(TagName.CLIENT)
-                .withUser(client.getUser())
                 .build();
 
         for (LogEntryDecorator decorator : decorators) {
