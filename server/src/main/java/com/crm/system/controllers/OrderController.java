@@ -115,7 +115,7 @@ public class OrderController {
 
 
 
-    @PostMapping("/sign-agreement")
+    @PatchMapping("/sign-agreement")
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Sign order agreement",
             description = """
@@ -165,7 +165,7 @@ public class OrderController {
 
 
 
-    @PostMapping("/cancel-agreement")
+    @PatchMapping("/cancel-agreement")
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Cancel agreement",
             description = """
@@ -215,7 +215,7 @@ public class OrderController {
 
 
 
-    @PostMapping("/cancel-payment")
+    @PatchMapping("/cancel-payment")
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Cancel payment",
             description = """
@@ -264,7 +264,7 @@ public class OrderController {
 
 
 
-    @PostMapping("/confirm-payment")
+    @PatchMapping("/confirm-payment")
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Confirm payment",
             description = """
@@ -313,7 +313,7 @@ public class OrderController {
 
 
 
-    @PostMapping("/save-order-changes")
+    @PatchMapping("/save-order-changes")
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(    summary = "Save order's changes",
             description = """

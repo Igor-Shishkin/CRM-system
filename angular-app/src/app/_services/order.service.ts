@@ -36,7 +36,7 @@ export class OrderService {
     )
   }
   signAgreement(orderId: number) {
-    return this.http.post<any>(`${ORDER_API}/sign-agreement?orderId=${orderId}`, { responseType: 'text' }).pipe(
+    return this.http.patch<any>(`${ORDER_API}/sign-agreement?orderId=${orderId}`, { responseType: 'text' }).pipe(
       catchError((error: any) => {
         console.log(error);
         throw error;
@@ -44,7 +44,7 @@ export class OrderService {
     )
   }
   cancelAgreement(orderId: number) {
-    return this.http.post<any>(`${ORDER_API}/cancel-agreement?orderId=${orderId}`, { responseType: 'text' }).pipe(
+    return this.http.patch<any>(`${ORDER_API}/cancel-agreement?orderId=${orderId}`, { responseType: 'text' }).pipe(
       catchError((error: any) => {
         console.log(error);
         throw error;
@@ -52,7 +52,7 @@ export class OrderService {
     )
   }
   confirmPayment(orderId: number) {
-    return this.http.post<any>(`${ORDER_API}/confirm-payment?orderId=${orderId}`, { responseType: 'text' }).pipe(
+    return this.http.patch<any>(`${ORDER_API}/confirm-payment?orderId=${orderId}`, { responseType: 'text' }).pipe(
       catchError((error: any) => {
         console.log(error);
         throw error;
@@ -60,7 +60,7 @@ export class OrderService {
     )
   }
   cancelPayment(orderId: number) {
-    return this.http.post<any>(`${ORDER_API}/cancel-payment?orderId=${orderId}`, { responseType: 'text' }).pipe(
+    return this.http.patch<any>(`${ORDER_API}/cancel-payment?orderId=${orderId}`, { responseType: 'text' }).pipe(
       catchError((error: any) => {
         console.log(error);
         throw error;
@@ -84,7 +84,7 @@ export class OrderService {
 
   console.log(orderCopy.orderId)
 
-    return this.http.post<any>(`${ORDER_API}/save-order-changes`,  orderCopy , httpOptions).pipe(
+    return this.http.patch<any>(`${ORDER_API}/save-order-changes`,  orderCopy , httpOptions).pipe(
       catchError((error: any) => {
         console.log(error);
         throw error;
