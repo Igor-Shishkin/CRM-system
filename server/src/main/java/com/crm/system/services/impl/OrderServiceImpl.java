@@ -33,6 +33,7 @@ public class OrderServiceImpl implements OrderService {
     @Value("${app.crm.price.coefficient}")
     private double PRICE_COEFFICIENT;
 
+
     public OrderServiceImpl(OrderRepository orderRepository, UserService userService, LogEntryService logEntryService, ClientService clientService) {
         this.orderRepository = orderRepository;
         this.userService = userService;
@@ -40,10 +41,12 @@ public class OrderServiceImpl implements OrderService {
         this.clientService = clientService;
     }
 
+
     public OrderInfoDTO getOrderInfoResponse(long orderId) {
         Order order = getOrderById(orderId);
         return new OrderInfoDTO(order);
     }
+
 
     public Order getOrder(long orderId) {
         return getOrderById(orderId);
@@ -57,10 +60,12 @@ public class OrderServiceImpl implements OrderService {
         return calculations;
     }
 
+
     public void changeOrder(Order order) {
         orderRepository.save(order);
         saveDateOfLastChangeForClient(order.getClient());
     }
+
 
     public void signAgreement(long orderId){
         Order order = getOrderById(orderId);
@@ -84,6 +89,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+
     public void cancelAgreement(long orderId) {
         Order order = getOrderById(orderId);
         if (!order.isAgreementSigned()) {
@@ -103,6 +109,7 @@ public class OrderServiceImpl implements OrderService {
             throw new MismanagementOfTheClientException("Order is already paid");
         }
     }
+
 
     public void confirmPayment(long orderId){
         Order order = getOrderById(orderId);
@@ -125,6 +132,7 @@ public class OrderServiceImpl implements OrderService {
             throw new MismanagementOfTheClientException("Agreement is not signed");
         }
     }
+
 
     public void cancelPayment(long orderId){
         Order order = getOrderById(orderId);
@@ -155,6 +163,7 @@ public class OrderServiceImpl implements OrderService {
         saveDateOfLastChangeForClient(order.getClient());
     }
 
+
     public long createNewOrder(CreateNewOrderDTO request) {
         Client currentClient = getClientById(request.getClientId());
         Order newOrder = new Order(request.getRealNeed(), request.getEstimateBudget(), currentClient);
@@ -167,9 +176,11 @@ public class OrderServiceImpl implements OrderService {
         return savedOrder.getOrderId();
     }
 
+
     private Client getClientById(long clientId)  {
         return clientService.getClientByIdForActualUser(clientId);
     }
+
 
     private void setChangedParameters(Order order, ChangeOrderDTO changedOrder) {
         order.setIsCalculationShown(changedOrder.getIsCalculationShown());
@@ -185,6 +196,8 @@ public class OrderServiceImpl implements OrderService {
         order.setWasMeetingInOffice(changedOrder.isWasMeetingInOffice());
     }
 
+
+
     private void setClientStatus(Order order) {
 
         if ( order.getClient().getOrders().stream().noneMatch(Order::isHasBeenPaid) )  {
@@ -193,6 +206,8 @@ public class OrderServiceImpl implements OrderService {
             order.getClient().setStatus(ClientStatus.LEAD);
         }
     }
+
+
     private boolean checkIfCalculationIsShownToClient(Order order) {
         if (!order.getIsCalculationShown().equals(InfoIsShown.NOT_SHOWN)) {
             return true;
@@ -200,8 +215,8 @@ public class OrderServiceImpl implements OrderService {
         throw new MismanagementOfTheClientException("You must show calculation to the client");
     }
 
-    private boolean checkIfCalculationIsRight(Order order) {
 
+    private boolean checkIfCalculationIsRight(Order order) {
         Predicate<ItemForAdditionalPurchases> isValidItem = item ->
                 item.getItemName() != null && !item.getItemName().isEmpty() &&
                         item.getUnitPrice() > 0 &&
@@ -217,11 +232,16 @@ public class OrderServiceImpl implements OrderService {
 
     }
 
+
+
     private Order getOrderById(long orderId) {
         long activeUserId = userService.getActiveUserId();
         return orderRepository.getOrderByOrderIdAndUserId(orderId, activeUserId)
                 .orElseThrow(() -> new RequestOptionalIsEmpty("You don't have order with this ID"));
     }
+
+
+
     private void createNewHistoryMessage(Client client, String textMessage) {
         logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
                 .withText(textMessage)
@@ -232,6 +252,9 @@ public class OrderServiceImpl implements OrderService {
                 .withUser(client.getUser())
                 .build());
     }
+
+
+
     private void saveDateOfLastChangeForClient(Client client) {
         client.setDateOfLastChange(LocalDateTime.now());
         clientService.saveClient(client);
