@@ -18,10 +18,15 @@ import com.crm.system.services.ClientService;
 import com.crm.system.services.LogEntryService;
 import com.crm.system.services.OrderService;
 import com.crm.system.services.UserService;
+import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsDoneDecorator;
+import com.crm.system.services.utils.logUtils.decoratorsForLogEntry.MarkAsImportantDecorator;
+import com.crm.system.services.utils.logUtils.facadeForLogEntry.EntryType;
+import com.crm.system.services.utils.logUtils.facadeForLogEntry.LogEntryForOrderFacade;
 import com.crm.system.services.utils.orderUtils.OrderProcessor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDateTime;
 import java.util.function.Predicate;
 
@@ -32,14 +37,16 @@ public class OrderServiceImpl implements OrderService {
     private final LogEntryService logEntryService;
     private final ClientService clientService;
     private final OrderProcessor orderProcessor;
+    private final LogEntryForOrderFacade logFacade;
 
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserService userService, LogEntryService logEntryService, ClientService clientService, OrderProcessor orderProcessor) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserService userService, LogEntryService logEntryService, ClientService clientService, OrderProcessor orderProcessor, LogEntryForOrderFacade logFacade) {
         this.orderRepository = orderRepository;
         this.userService = userService;
         this.logEntryService = logEntryService;
         this.clientService = clientService;
         this.orderProcessor = orderProcessor;
+        this.logFacade = logFacade;
     }
 
 
@@ -55,10 +62,7 @@ public class OrderServiceImpl implements OrderService {
 
     public ItemsForAdditionalPurchasesDTO getAdditionalPurchases(long orderId) {
         Order order = getOrderById(orderId);
-        ItemsForAdditionalPurchasesDTO calculations = new ItemsForAdditionalPurchasesDTO();
-        calculations.setItems(order.getAdditionalPurchases());
-        calculations.setResultPrice(order.getResultPrice());
-        return calculations;
+        return new ItemsForAdditionalPurchasesDTO(order);
     }
 
 
@@ -68,51 +72,55 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    public void signAgreement(long orderId) {
+    public void signAgreement(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
         orderProcessor.signAgreementForOrder(order);
         orderRepository.save(order);
 
-        createNewHistoryMessage(order.getClient(),
-                "Signed an agreement with ".concat(order.getClient().getFullName()));
+        logFacade.createAndSaveMessage(order,
+                EntryType.SIGN_AGREEMENT_FOR_ORDER,
+                new MarkAsDoneDecorator(), new MarkAsImportantDecorator());
 
         saveDateOfLastChangeForClient(order.getClient());
     }
 
 
-    public void cancelAgreement(long orderId) {
+    public void cancelAgreement(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
         orderProcessor.canselAgreement(order);
         orderRepository.save(order);
 
-        createNewHistoryMessage(order.getClient(),
-                String.format("The contract with %s was canceled", order.getClient().getFullName()));
+        logFacade.createAndSaveMessage(order,
+                EntryType.CANCEL_AGREEMENT,
+                new MarkAsDoneDecorator(), new MarkAsImportantDecorator());
 
         saveDateOfLastChangeForClient(order.getClient());
     }
 
 
-    public void confirmPayment(long orderId) {
+    public void confirmPayment(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
         orderProcessor.confirmPayment(order);
         orderRepository.save(order);
 
-        String historyMessage = String.format("'You have confirmed payment by %s", order.getClient().getFullName());
-        createNewHistoryMessage(order.getClient(), historyMessage);
+        logFacade.createAndSaveMessage(order,
+                EntryType.CONFIRM_AGREEMENT,
+                new MarkAsDoneDecorator(), new MarkAsImportantDecorator());
 
         saveDateOfLastChangeForClient(order.getClient());
     }
 
 
-    public void cancelPayment(long orderId) {
+    public void cancelPayment(long orderId) throws UserPrincipalNotFoundException {
         Order order = getOrderById(orderId);
         orderProcessor.cancelPayment(order);
         orderRepository.save(order);
 
         saveDateOfLastChangeForClient(order.getClient());
 
-        createNewHistoryMessage(order.getClient(),
-                String.format("'You have canceled payment by %s", order.getClient().getFullName()));
+        logFacade.createAndSaveMessage(order,
+                EntryType.CANCEL_PAYMENT,
+                new MarkAsDoneDecorator(), new MarkAsImportantDecorator());
     }
 
 
@@ -126,15 +134,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    public long createNewOrder(CreateNewOrderDTO request) {
+    public long createNewOrder(CreateNewOrderDTO request) throws UserPrincipalNotFoundException {
         Client currentClient = getClientById(request.getClientId());
         Order newOrder = new Order(request.getRealNeed(), request.getEstimateBudget(), currentClient);
         Order savedOrder = orderRepository.save(newOrder);
 
         saveDateOfLastChangeForClient(currentClient);
 
-        createNewHistoryMessage(currentClient,
-                String.format("You have a new order from %s client. Congratulations!", currentClient.getFullName()));
+        logFacade.createAndSaveMessage(savedOrder,
+                EntryType.CREATE_NEW_ORDER,
+                new MarkAsDoneDecorator(), new MarkAsImportantDecorator());
 
         return savedOrder.getOrderId();
     }
@@ -144,26 +153,15 @@ public class OrderServiceImpl implements OrderService {
         return clientService.getClientByIdForActualUser(clientId);
     }
 
+
     private Order getOrderById(long orderId) {
         long activeUserId = userService.getActiveUserId();
         return orderRepository.getOrderByOrderIdAndUserId(orderId, activeUserId)
                 .orElseThrow(() -> new RequestOptionalIsEmpty("You don't have order with this ID"));
     }
 
-    private void createNewHistoryMessage(Client client, String textMessage) {
-        logEntryService.automaticallyCreateMessage(new LogEntry.Builder()
-                .withText(textMessage)
-                .withIsDone(true)
-                .withIsImportant(true)
-                .withTagName(TagName.CLIENT)
-                .withTagId(client.getClientId())
-                .withUser(client.getUser())
-                .build());
-    }
-
     private void saveDateOfLastChangeForClient(Client client) {
         client.setDateOfLastChange(LocalDateTime.now());
         clientService.saveClient(client);
     }
-
 }
