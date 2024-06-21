@@ -25,6 +25,8 @@ public class ItemProcessing {
                 .collect(Collectors.toSet());
     }
 
+
+
     public void changeSetOfItemsInOrder(Order order, Set<ItemForAdditionalPurchases> items) {
         order.getAdditionalPurchases().clear();
 
@@ -34,6 +36,9 @@ public class ItemProcessing {
 
         order.getClient().setDateOfLastChange(LocalDateTime.now());
     }
+
+
+
     private double calculateResultSum(Set<ItemForAdditionalPurchases> items) {
         return items.stream()
                 .filter(item -> item.getTotalPrice() > 0)

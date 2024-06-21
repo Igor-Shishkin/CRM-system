@@ -35,17 +35,20 @@ public class ItemsForAdditionalPurchasesController {
     @PostMapping("/save-items")
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(
-            summary = "Get order's items for addition purchases",
-            description = "Adds a new items for purchases to the order. " +
-                    "<br/><br/>" +
-                    "**Request Body:**<br/> " +
-                    "__Array__ [ <br/>" +
-                    "- `itemId` (String): The name of the item. Can be null (For already existing items).<br/>" +
-                    "- `itemName` (String): The name of the item. Must not be null or empty.<br/>" +
-                    "- `quantity` (int): The quantity of the item. Must be a positive integer.<br/>" +
-                    "- `unitPrice` (double): The unit price of the item. Must be a positive number.<br/>" +
-                    "- `totalPrice` (double): The total price of the item. ]<br/> <br/>" +
-                    "- `orderId` (long): order ID.<br/><br/>")
+            summary = "Save items for additional purchases",
+            description = """
+                    Allows the active user to save items for additional purchases associated with a specific order.
+                    Requires ROLE_USER authorization.
+
+                    Expects a set of ItemForAdditionalPurchases objects and an orderId.
+                    Throws a RequestOptionalIsEmpty exception if user doesn't have order or client with this ID
+                    Throws a MismanagementOfTheClientException if the agreement for the order has been signed.
+
+                    If successful:
+                    - The items are saved to the database.
+                    - The order is updated with the new items and recalculated total price.
+                    - The date of last change for the order and the associated client is updated.
+                    - A confirmation message is returned.""")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201", description = "Item successfully added",
