@@ -120,10 +120,12 @@ public class ClientServiceImpl implements ClientService {
     public Client getInfoWithOrdersClient(long clientId) {
         Client client = getClientByIdForActualUser(clientId);
 
-        return client.getOrders()
+        client.getOrders()
                 .forEach(order -> {
                     order.setAdditionalPurchases(null);
                 });
+
+        return client;
     }
 
 
