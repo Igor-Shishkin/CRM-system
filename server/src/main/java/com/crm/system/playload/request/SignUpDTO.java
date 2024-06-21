@@ -9,12 +9,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SignUpDTO {
-    @NotBlank(message = "Username is mandatory")
-    @Size(min = 3, max = 20)
+    @NotEmpty(message = "Username is mandatory")
+    @Size(min = 3, max = 30)
     private String username;
 
-    @NotBlank(message = "Email is mandatory")
-    @Size(max = 50)
+    @NotEmpty(message = "Email is mandatory")
+    @Size(max = 100)
     @Email
     private String email;
 

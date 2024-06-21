@@ -74,19 +74,30 @@ public class AuthController {
 
     @PostMapping("/signup")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "New user registration",
-            description = "Adds a new user to the system with the provided details. " +
-                    "<br/><br/>" +
-                    "**Request Body:**<br/>" +
-                    "- `username` (String): The username of the user. Must not be null, empty, or consist solely of " +
-                    "whitespace. Must be between 3 and 20 characters.<br/>" +
-                    "- `email` (String): The email address of the user. Must be a valid email format and must not be " +
-                    "null, empty, or consist solely of whitespace. Maximum length is 50 characters.<br/>" +
-                    "- `role` (String[]): The set of roles assigned to the user. Options: __USER__, __ADMIN__. " +
-                    "if nothing is specified, the default " +
-                    "role will be ROLE_USER.<br/>" +
-                    "- `password` (String): The password for the user. Must not be null, empty, or consist solely of " +
-                    "whitespace. Must be between 6 and 40 characters.<br/><br/>")
+    @Operation(summary = "Register a new user",
+            description = """
+                    Allows an admin to register a new user. Requires ROLE_ADMIN authorization.
+
+                    Expects a SignUpDTO object containing the details for the new user.
+                    - email must be unique
+
+                    Throws a UserPrincipalNotFoundException if:
+                    - The active user cannot be found.
+                    
+                    Throws a UserAlreadyExistsException if:
+                    - There is already a user with this e-mail in the database
+
+                    If successful in registering the new user:
+                    - Saves the new user to the database.
+                    - Logs an entry indicating the new user registration.
+                    - Returns a message indicating successful registration: 'User registered successfully.'
+
+                    The SignUpDTO object should include:
+                    - `username` (String, min = 3, max 30 characters): The username of the new user.
+                    - `email` (String, valid email format, must be unique, max 100 characters): The email address of the new user.
+                    - `password` (String, min 6, max 120 characters): The password for the new user account.
+                    - `roles` (Set<Role>): The roles assigned to the new user (ROLE_USER, ROLE_ADMIN). If no roles are entered, the default role will be USER.
+                    """)
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201", description = "New user has been successfully added to the database",
@@ -106,7 +117,7 @@ public class AuthController {
                             throws UserPrincipalNotFoundException {
         userDetailsService.registerUser(signUpRequest);
         log.info("User registered successfully!");
-        return ResponseEntity.status(201).body(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.status(201).body(new MessageResponse("User registered successfully."));
     }
 
 
@@ -121,9 +132,6 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = MessageResponse.class),
                             mediaType = "application/json"))
     })
-
-
-
     public ResponseEntity<MessageResponse> logoutUser() {
         ResponseCookie cookie = userDetailsService.logoutUser();
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
@@ -135,7 +143,21 @@ public class AuthController {
 
     @DeleteMapping("/delete-user")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Delete user", description = "Delete user by ID")
+    @Operation(summary = "Delete user by ID",
+            description = """
+                    Allows an admin to delete a user by their ID. Requires ROLE_ADMIN authorization.
+
+                    Expects a userId as a request parameter to identify the user to be deleted.
+
+                    Throws a UserPrincipalNotFoundException if:
+                    - The user with the given ID does not exist.
+
+                    If successful in deleting the user:
+                    - Removes the user from the database.
+                    - Logs an entry indicating the user deletion.
+                    - Returns a message indicating successful deletion.
+                    - Does not delete data that was written by this user
+                    """)
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200", description = "User is successfully deleted",

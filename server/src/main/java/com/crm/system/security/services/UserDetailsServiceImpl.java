@@ -81,7 +81,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 
 
-    public void registerUser(SignUpDTO signUpRequest) throws UserAlreadyExistsException, UserPrincipalNotFoundException {
+    public void registerUser(SignUpDTO signUpRequest) throws
+            UserAlreadyExistsException,
+            UserPrincipalNotFoundException {
 
         User newUser = newUserProcessing.getNewUser(signUpRequest);
         User savedUser = userRepository.save(newUser);
