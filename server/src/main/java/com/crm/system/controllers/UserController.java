@@ -31,6 +31,7 @@ public class UserController {
         this.userService = userService;
     }
 
+
     @Operation(summary = "Get all users info", tags = {"auth", "admin", "users"})
     @GetMapping("/users")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -39,8 +40,10 @@ public class UserController {
         return ResponseEntity.ok(userInfoDTOList);
     }
 
+
+
     @Operation(summary = "Add photo to user", tags = {"user", "photo", "avatar"})
-    @PostMapping("/photo")
+    @PutMapping("/photo")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @Transactional
     public ResponseEntity<MessageResponse> uploadPhoto(@RequestParam("file") MultipartFile file) throws IOException {

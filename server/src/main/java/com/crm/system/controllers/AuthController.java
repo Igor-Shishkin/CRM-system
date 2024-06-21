@@ -228,9 +228,9 @@ public class AuthController {
 
 
 
-    @Operation(summary = "check authorization", description = "Returns true if a user has authorization")
     @GetMapping("/check-authorization")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+    @Operation(summary = "check authorization", description = "Returns true if a user has authorization")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "200", description = "User is authorized",

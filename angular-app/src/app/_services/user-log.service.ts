@@ -21,6 +21,9 @@ export class UserLogService {
       })
     );
   }
+
+
+
   getTagsForNewLogEntry(): Observable<any> {
     return this.http.get<LogTag[]>(LOG_URL + '/tags').pipe(
       catchError((error: any) => {
@@ -29,6 +32,9 @@ export class UserLogService {
       })
     );
   }
+
+
+
   saveNewLogEntry(entry: LogEntry) {
     return this.http.post<LogEntry>(LOG_URL, entry).pipe(
       tap((response) => {
@@ -40,6 +46,9 @@ export class UserLogService {
       })
     );
   }
+
+
+
   deleteEntry(entryId: number): any {
     return this.http.delete<any>(LOG_URL + `?entryId=${entryId}`).pipe(
       catchError((error: any) => {
@@ -48,16 +57,22 @@ export class UserLogService {
       })
     );
   }
+
+
+
   changeImportantStatus(entryId: number | undefined) {
-    return this.http.put<LogEntry>(LOG_URL + `/change-important-status?entryId=${entryId}`, null).pipe(
+    return this.http.patch<LogEntry>(LOG_URL + `/change-important-status?entryId=${entryId}`, null).pipe(
       catchError((error: any) => {
         console.error('Change important status log entry error: ' + error);
         throw error;
       })
     );
   }
+
+
+
   changeDoneStatus(entryId: number | undefined) {
-    return this.http.put<any>(LOG_URL + `/change-done-status?entryId=${entryId}`, null).pipe(
+    return this.http.patch<any>(LOG_URL + `/change-done-status?entryId=${entryId}`, null).pipe(
       catchError((error: any) => {
         console.error('Change important status HistoryMessage error: ' + error);
         throw error;

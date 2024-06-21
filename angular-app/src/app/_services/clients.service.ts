@@ -42,11 +42,15 @@ export class ClientsService {
   }
   
   sentClientToBlackList(clientId : number) {
-    return this.http.put(`${CLIENTS_API}/send-client-to-black-list?clientId=${clientId}`, { responseType: 'text' });
+    return this.http.patch(`${CLIENTS_API}/send-client-to-black-list?clientId=${clientId}`, { responseType: 'text' });
   }
+
+
   restoreClientToBlackList(clientId : number) {
-    return this.http.put(`${CLIENTS_API}/restore-client-from-black-list?clientId=${clientId}`, { responseType: 'text' });
+    return this.http.patch(`${CLIENTS_API}/restore-client-from-black-list?clientId=${clientId}`, { responseType: 'text' });
   }
+
+
   addLead(fullName : string, address : string, email : string, phoneNumber : string):
     Observable<number> {
       return this.http.post<number>(CLIENTS_API + '/add-new-client',
@@ -58,6 +62,8 @@ export class ClientsService {
         },
         httpOptions );
     }
+
+
   getClientInformarion(clientId: number): Observable<Client> {
     return this.http.get<Client>(`${CLIENTS_API}/client-info?clientId=${clientId}`).pipe(
       catchError((error: any) => {
@@ -66,9 +72,11 @@ export class ClientsService {
       })
     );
   }
+
+
   editClientData(clientId: number, fullName: string, email: string, 
     address: string, phoneNumber: string): Observable<string> {
-    return this.http.put<string>(
+    return this.http.patch<string>(
       CLIENTS_API + '/edit-client-data',
       {
         clientId,

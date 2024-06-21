@@ -86,7 +86,7 @@ public class ClientController {
 
 
 
-    @PutMapping("/send-client-to-black-list")
+    @PatchMapping("/send-client-to-black-list")
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Sends client by ID to the blacklist",
             description = """
@@ -130,7 +130,7 @@ public class ClientController {
 
 
 
-    @PutMapping("/restore-client-from-black-list")
+    @PatchMapping("/restore-client-from-black-list")
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Restore client from blackList",
             description = """
@@ -306,7 +306,7 @@ public class ClientController {
 
 
 
-    @PutMapping("edit-client-data")
+    @PatchMapping("edit-client-data")
     @PreAuthorize("hasRole('ROLE_USER')")
     @Operation(summary = "Edit Client's info",
             description = """

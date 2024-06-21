@@ -128,7 +128,7 @@ public class LogEntryController {
 
 
 
-    @PutMapping("/change-important-status")
+    @PatchMapping("/change-important-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @Operation(summary = "Change __IMPORTANT__ status of entry",
             description = "Change the status of the entry __IMPORTANT__ to the opposite. Required entry ID.")
@@ -154,7 +154,7 @@ public class LogEntryController {
 
 
 
-    @PutMapping("/change-done-status")
+    @PatchMapping("/change-done-status")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @Operation(summary = "Change __DONE__ status of entry",
             description = "Change the status of the entry __DONE__ to the opposite. Required entry ID.")
