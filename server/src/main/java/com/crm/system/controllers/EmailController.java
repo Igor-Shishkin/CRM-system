@@ -34,20 +34,32 @@ public class EmailController {
 
     @PostMapping("/sent-email")
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    @Operation(summary = "Sent email", description = "Sends an e-mail to the specified address. " +
-            "The email address must be valid and not blank. " +
-            "The subject and text of the email must not be blank.")
-    @ApiResponses({
-            @ApiResponse(
-                    responseCode = "200", description = "Email successfully sent",
-                    content = @Content(schema = @Schema(implementation = MessageResponse.class),
-                            mediaType = "application/json")),
-            @ApiResponse(responseCode = "400", description = "Invalid request content.",
-                content = @Content(schema = @Schema())),
-            @ApiResponse(
-                    responseCode = "401", description = "Unauthorized - User not found",
-                    content = @Content(schema = @Schema()))
-    })
+    @Operation(summary = "Send an email to a specified recipient",
+            description = """
+                    Allows the active user to send an email to a specified recipient. \
+                    Requires ROLE_USER or ROLE_ADMIN authorization.
+
+                    Expects a SentEmailDTO object containing the details of the email to be sent. \
+                    The SentEmailDTO object should include:
+                    - `email` (String, NotEmpty, verified as Email): The recipient's email address.
+                    - `subjectOfMail` (String, NotEmpty): The subject of the email.
+                    - `textOfEmail` (String, NotEmpty): The body text of the email.
+
+                    If successful:
+                    - The email is sent to the recipient
+                    - Logs an entry indicating sending email.
+                    - A confirmation message is returned.""",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200", description = "Email successfully sent",
+                            content = @Content(schema = @Schema(implementation = MessageResponse.class),
+                                    mediaType = "application/json")),
+                    @ApiResponse(responseCode = "400", description = "Invalid request content.",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "401", description = "Unauthorized - User not found",
+                            content = @Content(schema = @Schema()))
+            })
     public ResponseEntity<MessageResponse> sentEmail(@Valid @RequestBody SentEmailDTO sentEmailDTO)
             throws UserPrincipalNotFoundException {
         emailService.sentEmail(sentEmailDTO);

@@ -10,12 +10,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SentEmailDTO {
-    @NotBlank
+    @NotEmpty
     @Email
     private String email;
-    @NotBlank
+    @NotEmpty
     private String subjectOfMail;
-    @NotBlank
+    @NotEmpty
     private String textOfEmail;
     private TagName tagName = TagName.EMAIL;
 }
