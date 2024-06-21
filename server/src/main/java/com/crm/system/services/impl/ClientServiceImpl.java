@@ -40,12 +40,17 @@ public class ClientServiceImpl implements ClientService {
     }
 
 
+
+
     @Override
     public Set<ClientInfoDTO> getClientsWithClientStatusForUser() {
 
         Set<Client> clients = clientRepository.getClientsWithClientStatusForUser(userService.getActiveUserId());
         return clientInfoDTOMapper.mapClientsToClientInfoDTOWithNumberPaidOrders(clients);
     }
+
+
+
 
 
     public Set<ClientInfoDTO> getClientsWithLeadStatusForUser() {
@@ -55,13 +60,17 @@ public class ClientServiceImpl implements ClientService {
     }
 
 
+
+
     public Set<ClientInfoDTO> getClientsWithBlacklistStatusForUser() {
         Set<Client> clients = clientRepository.getClientsWithBlackListStatusForUser(userService.getActiveUserId());
         return clientInfoDTOMapper.mapClientsToClientInfoDTO(clients);
     }
 
 
-    public long addNewLead(AddClientDTO addClientDTO) throws UserPrincipalNotFoundException {
+
+
+    public long addNewClient(AddClientDTO addClientDTO) throws UserPrincipalNotFoundException {
 
         checkIfThereIsClientWithThisEmail(addClientDTO.getEmail());
 
@@ -77,6 +86,8 @@ public class ClientServiceImpl implements ClientService {
     }
 
 
+
+
     public void sentToBlackList(long clientId) throws UserPrincipalNotFoundException {
 
         Client client = getClientByIdForActualUser(clientId);
@@ -87,6 +98,7 @@ public class ClientServiceImpl implements ClientService {
                 EntryType.SENT_CLIENT_TO_BLACKLIST,
                 new MarkAsImportantDecorator(), new MarkAsDoneDecorator());
     }
+
 
 
 
@@ -103,16 +115,18 @@ public class ClientServiceImpl implements ClientService {
     }
 
 
+
+
     public Client getInfoWithOrdersClient(long clientId) {
         Client client = getClientByIdForActualUser(clientId);
 
-        client.getOrders()
+        return client.getOrders()
                 .forEach(order -> {
                     order.setAdditionalPurchases(null);
-                    order.setClient(null);
                 });
-        return client;
     }
+
+
 
 
     public void editClientData(EditClientDataDTO request) {
@@ -124,6 +138,8 @@ public class ClientServiceImpl implements ClientService {
     }
 
 
+
+
     public Client getClientByIdForActualUser(long clientId) {
 
         return clientRepository.findClientByClientIdAndUserId(userService.getActiveUserId(), clientId)
@@ -132,15 +148,21 @@ public class ClientServiceImpl implements ClientService {
     }
 
 
+
+
     public void saveClient(Client client) {
         clientRepository.save(client);
     }
+
+
 
 
     private boolean hasPaidOrders(Client client) {
         return client.getOrders().stream()
                 .anyMatch(Order::isHasBeenPaid);
     }
+
+
 
 
     private void checkIfThereIsClientWithThisEmail(String email) {

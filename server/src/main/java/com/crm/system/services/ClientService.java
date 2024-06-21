@@ -15,7 +15,7 @@ public interface ClientService {
     Set<ClientInfoDTO> getClientsWithClientStatusForUser();
     Set<ClientInfoDTO> getClientsWithLeadStatusForUser();
     Set<ClientInfoDTO> getClientsWithBlacklistStatusForUser();
-    long addNewLead(AddClientDTO addClientDTO) throws UserPrincipalNotFoundException ;
+    long addNewClient(AddClientDTO addClientDTO) throws UserPrincipalNotFoundException ;
     void sentToBlackList(long clientId) throws UserPrincipalNotFoundException;
     void restoreClientFromBlackList(long clientId) throws UserPrincipalNotFoundException;
     Client getInfoWithOrdersClient(long clientId);
