@@ -74,6 +74,8 @@ public class Client {
         public Client() {
         }
 
+
+
         public Client(String fullName, String email, String phoneNumber, String address, User user) {
                 this.fullName = fullName;
                 this.email = email;
@@ -83,6 +85,8 @@ public class Client {
                 this.dateOfLastChange = LocalDateTime.now();
                 this.status = ClientStatus.LEAD;
         }
+
+
         public Client(AddClientDTO clientDTO, User user) {
                 this.fullName = clientDTO.getFullName();
                 this.email = clientDTO.getEmail();
@@ -93,6 +97,8 @@ public class Client {
                 this.status = ClientStatus.LEAD;
         }
 
+
+
         public void editClientData(EditClientDataDTO request){
                 this.setFullName(request.getFullName());
                 this.setEmail(request.getEmail());
@@ -100,6 +106,8 @@ public class Client {
                 this.setAddress(request.getAddress());
                 this.setDateOfLastChange(LocalDateTime.now());
         }
+
+
 
         @Override
         public boolean equals(Object object) {
