@@ -36,6 +36,8 @@ public class UserServiceImpl implements UserService {
         this.userInformationProcessor = userInformationProcessor;
     }
 
+
+
     public ResponseEntity<byte[]> getPhoto() throws UserPrincipalNotFoundException, FileNotFoundException {
         byte[] photoOfUser = userRepository.getPhotoForUserById(getActiveUserId())
                 .orElseThrow(() -> new UserDoesNotHavePhotoException("This user doesn't have a photo"));
@@ -43,22 +45,31 @@ public class UserServiceImpl implements UserService {
         return new ResponseEntity<>(photoOfUser, headers, HttpStatus.OK);
     }
 
-    @Transactional
+
+
     public void uploadPhoto(MultipartFile file) throws IOException {
         User activeUser = getActiveUser();
         activeUser.setPhotoOfUser(file.getBytes());
         userRepository.save(activeUser);
     }
 
+
+
     public List<UserInfoDTO> getInfoAllUsers() {
         List<User> allUsers = userRepository.findAll();
         return userInformationProcessor.getUsersInformationDTO(allUsers);
     }
 
+
+
+
     public long getActiveUserId() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return ((UserDetailsImpl) authentication.getPrincipal()).getId();
     }
+
+
+
 
     public User getActiveUser() throws UserPrincipalNotFoundException {
         return userRepository.findById(getActiveUserId())
