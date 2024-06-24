@@ -26,8 +26,7 @@ import java.util.Set;
 import static org.mockito.Mockito.*;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
@@ -43,6 +42,9 @@ class OrderControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private static final OrderInfoDTO expectedDTO;
     private static final ItemsForAdditionalPurchasesDTO expectedItemsForAdditionalPurchasesDTO;
+
+
+
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
@@ -65,6 +67,9 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.resultPrice"). value(expectedDTO.getResultPrice()))
                 .andExpect(jsonPath("$.estimateBudged").value(0.0));
     }
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void get_order_by_id_error() throws Exception {
@@ -81,6 +86,9 @@ class OrderControllerTest {
                         .value("You don't have order with this ID"));
     }
 
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void get_calculations_by_order_id_success() throws Exception {
@@ -94,6 +102,9 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.resultPrice").value(expectedItemsForAdditionalPurchasesDTO.getResultPrice()))
                 .andExpect( jsonPath("$.items").isArray());
     }
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void get_calculations_by_order_id_error() throws Exception {
@@ -109,17 +120,23 @@ class OrderControllerTest {
                         .value("You don't have order with this ID"));
     }
 
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void sign_agreement_by_order_id_success() throws Exception {
 
-        mockMvc.perform(post("/api/user-board/order/sign-agreement")
+        mockMvc.perform(patch("/api/user-board/order/sign-agreement")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Agreement's signed"));
     }
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void sign_agreement_by_order_id_mismanagement_error() throws Exception {
@@ -128,7 +145,7 @@ class OrderControllerTest {
                 .when(orderService).signAgreement(1);
 
 
-        mockMvc.perform(post("/api/user-board/order/sign-agreement")
+        mockMvc.perform(patch("/api/user-board/order/sign-agreement")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
@@ -136,6 +153,9 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("Agreement is already signed"));
     }
+
+
+
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
@@ -145,7 +165,7 @@ class OrderControllerTest {
                 .when(orderService).signAgreement(1);
 
 
-        mockMvc.perform(post("/api/user-board/order/sign-agreement")
+        mockMvc.perform(patch("/api/user-board/order/sign-agreement")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
@@ -154,16 +174,24 @@ class OrderControllerTest {
                         .value("You don't have order with this ID"));
     }
 
+
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void cancel_agreement_by_id_success() throws Exception {
-        mockMvc.perform(post("/api/user-board/order/cancel-agreement")
+        mockMvc.perform(patch("/api/user-board/order/cancel-agreement")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Agreement's status is canceled"));
     }
+
+
+
+
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
@@ -171,7 +199,7 @@ class OrderControllerTest {
         doThrow(new RequestOptionalIsEmpty("You don't have order with this ID"))
                 .when(orderService).cancelAgreement(1);
 
-        mockMvc.perform(post("/api/user-board/order/cancel-agreement")
+        mockMvc.perform(patch("/api/user-board/order/cancel-agreement")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
@@ -179,13 +207,17 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("You don't have order with this ID"));
     }
+
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void cancel_agreement_by_id_mismanagement_error() throws Exception {
         doThrow(new MismanagementOfTheClientException("Agreement isn't signed"))
                 .when(orderService).cancelAgreement(1);
 
-        mockMvc.perform(post("/api/user-board/order/cancel-agreement")
+        mockMvc.perform(patch("/api/user-board/order/cancel-agreement")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
@@ -193,13 +225,17 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("Agreement isn't signed"));
     }
+
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void cancel_payment_by_order_id_error() throws Exception {
         doThrow(new MismanagementOfTheClientException("Payment was not made"))
                 .when(orderService).cancelPayment(1);
 
-        mockMvc.perform(post("/api/user-board/order/cancel-payment")
+        mockMvc.perform(patch("/api/user-board/order/cancel-payment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
@@ -207,10 +243,14 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("Payment was not made"));
     }
+
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void cancel_payment_by_order_id_success() throws Exception {
-        mockMvc.perform(post("/api/user-board/order/cancel-agreement")
+    void cancel_agreement_by_order_id_success() throws Exception {
+        mockMvc.perform(patch("/api/user-board/order/cancel-agreement")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
@@ -218,16 +258,24 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.message").value("Agreement's status is canceled"));
     }
 
+
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void confirm_payment_by_order_id_success() throws Exception {
-        mockMvc.perform(post("/api/user-board/order/confirm-payment")
+        mockMvc.perform(patch("/api/user-board/order/confirm-payment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Payment is confirm"));
     }
+
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void confirm_payment_by_order_id_mismanagement_error() throws Exception {
@@ -235,7 +283,7 @@ class OrderControllerTest {
         doThrow(new MismanagementOfTheClientException("Payment was not made"))
                 .when(orderService).confirmPayment(1);
 
-        mockMvc.perform(post("/api/user-board/order/confirm-payment")
+        mockMvc.perform(patch("/api/user-board/order/confirm-payment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
@@ -243,6 +291,10 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("Payment was not made"));
     }
+
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void confirm_payment_by_order_id_optional_empty_error() throws Exception {
@@ -250,7 +302,7 @@ class OrderControllerTest {
         doThrow(new RequestOptionalIsEmpty("You don't have order with this ID"))
                 .when(orderService).confirmPayment(1);
 
-        mockMvc.perform(post("/api/user-board/order/confirm-payment")
+        mockMvc.perform(patch("/api/user-board/order/confirm-payment")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                         .param("orderId", String.valueOf(expectedDTO.getOrderId())))
@@ -258,6 +310,10 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("You don't have order with this ID"));
     }
+
+
+
+
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
@@ -267,21 +323,29 @@ class OrderControllerTest {
         orderDTO.setOrderId(1L);
         orderDTO.setEstimateBudged(765);
 
-        mockMvc.perform(post("/api/user-board/order/save-order-changes")
+        mockMvc.perform(patch("/api/user-board/order/save-order-changes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderDTO))
                         .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.message").value("Changes are saved"));
     }
+
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void save_order_changes_without_body() throws Exception {
-        mockMvc.perform(post("/api/user-board/order/save-order-changes")
+        mockMvc.perform(patch("/api/user-board/order/save-order-changes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isBadRequest());
     }
+
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void save_order_changes_error() throws Exception {
@@ -293,7 +357,7 @@ class OrderControllerTest {
         doThrow(new RequestOptionalIsEmpty("You don't have order with this ID"))
                 .when(orderService).saveOrderChanges(any(ChangeOrderDTO.class));
 
-        mockMvc.perform(post("/api/user-board/order/save-order-changes")
+        mockMvc.perform(patch("/api/user-board/order/save-order-changes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(orderDTO))
                         .with(csrf()))
@@ -301,6 +365,9 @@ class OrderControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("You don't have order with this ID"));
     }
+
+
+
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
@@ -319,14 +386,21 @@ class OrderControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("10"));
     }
+
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    void create_new_order_without_body() throws Exception {
-        mockMvc.perform(post("/api/user-board/order/save-order-changes")
+    void edit_order_without_body() throws Exception {
+        mockMvc.perform(patch("/api/user-board/order/save-order-changes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .with(csrf()))
                 .andExpect(status().isBadRequest());
     }
+
+
+
     @Test
     @WithMockUser(username = "user", roles = "USER")
     void create_new_order_error() throws Exception {
@@ -372,8 +446,6 @@ class OrderControllerTest {
         orderExample.setResultPrice(38.5);
 
         expectedDTO = new OrderInfoDTO(orderExample);
-        expectedItemsForAdditionalPurchasesDTO = new ItemsForAdditionalPurchasesDTO();
-        expectedItemsForAdditionalPurchasesDTO.setItems(orderExample.getAdditionalPurchases());
-        expectedItemsForAdditionalPurchasesDTO.setResultPrice(orderExample.getResultPrice());
+        expectedItemsForAdditionalPurchasesDTO = new ItemsForAdditionalPurchasesDTO(orderExample);
     }
 }

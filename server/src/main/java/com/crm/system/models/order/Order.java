@@ -93,6 +93,7 @@ public class Order {
 
     public Order() {
     }
+
     public Order(String realNeed, double estimateBudged, Client client) {
         this.realNeed = realNeed;
         this.estimateBudged = estimateBudged;

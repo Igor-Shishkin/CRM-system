@@ -9,7 +9,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateNewOrderDTO {
-    @NotEmpty
     @NotNull
     private long clientId;
     @NotBlank
