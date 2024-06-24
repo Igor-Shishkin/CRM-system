@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -48,8 +47,8 @@ public class ItemsForAdditionalPurchasesController {
                     - The items are saved to the database.
                     - The order is updated with the new items and recalculated total price.
                     - The date of last change for the order and the associated client is updated.
-                    - A confirmation message is returned.""")
-    @ApiResponses({
+                    - A confirmation message is returned.""",
+    responses = {
             @ApiResponse(
                     responseCode = "201", description = "Item successfully added",
                     content = @Content(schema = @Schema(implementation = MessageResponse.class), mediaType = "application/json")
