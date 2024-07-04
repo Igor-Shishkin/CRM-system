@@ -54,19 +54,17 @@ class UserControllerTest {
         registry.add("spring.datasource.password", mySQLContainer::getPassword);
     }
 
-    @Before
-    public void setup() {
-        this.mockMvc = MockMvcBuilders
-                .standaloneSetup(ClientController.class)
-                .build();
-    }
+
+
 
     @BeforeAll
     static void beforeAll() {  mySQLContainer.start(); }
+
     @AfterAll
     static void afterAll() {
         mySQLContainer.stop();
     }
+
 
 
     @Test
@@ -90,6 +88,10 @@ class UserControllerTest {
         assertThat(optionalUser.get().getPhotoOfUser()).isNotNull();
         assertThat(optionalUser.get().getPhotoOfUser()).isEqualTo("test".getBytes());
     }
+
+
+
+
     @Test
     @WithMockCustomUserByUsername(username = "user-admin")
     void upload_photo_for_user_without_file() throws Exception {
@@ -99,6 +101,10 @@ class UserControllerTest {
                         .accept("application/json"))
                 .andExpect(status().isBadRequest());
     }
+
+
+
+
     @Test
     void upload_photo_for_user_without_authorization() throws Exception {
 
@@ -114,6 +120,9 @@ class UserControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
+
+
+
     @Test
     @WithMockCustomUserByUsername(username = "user-admin")
     void get_photo_for_user_success() throws Exception {
@@ -122,6 +131,7 @@ class UserControllerTest {
                 "image/jpeg",
                 "test".getBytes());
         Optional<User> optionalUser = userRepository.findById(1L);
+        assertThat(optionalUser).isNotEmpty();
         User user = optionalUser.get();
         user.setPhotoOfUser(file.getBytes());
         userRepository.save(user);
@@ -139,6 +149,9 @@ class UserControllerTest {
         assertThat(file.getBytes()).isEqualTo(responseContent);
     }
 
+
+
+
     @Test
     @WithMockCustomUserByUsername(username = "user-admin")
     void get_photo_for_user_photo_is_null() throws Exception {
@@ -148,6 +161,10 @@ class UserControllerTest {
                         .accept(MediaType.IMAGE_JPEG))
                 .andExpect(status().isNotFound());
     }
+
+
+
+
     @Test
     void get_photo_for_user_without_authorization() throws Exception {
 
@@ -157,6 +174,10 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("Full authentication is required to access this resource"));
     }
+
+
+
+
     @Test
     @WithMockCustomUserByUsername(username = "user-admin")
     void get_all_users_info_success() throws Exception {
@@ -171,17 +192,15 @@ class UserControllerTest {
                 .andExpect(jsonPath("$[*].username").exists())
                 .andExpect(jsonPath("$[*].email").exists())
                 .andExpect(jsonPath("$[*].roles").isArray())
-                .andExpect(jsonPath("$[*].clientsNumber").exists());
-
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/user/users")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[*].clientsNumber").exists())
                 .andExpect(jsonPath("$[*].username",
                         containsInAnyOrder("user-admin", "user", "test-user")))
                 .andExpect(jsonPath("$[*].email",
                         containsInAnyOrder("user@gmail.com", "xxx@gmail.com", "test@gmail.com")));
     }
+
+
+
     @Test
     @WithMockUser
     void get_all_users_info_with_wrong_role() throws Exception {
@@ -191,4 +210,5 @@ class UserControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden());
     }
+
 }

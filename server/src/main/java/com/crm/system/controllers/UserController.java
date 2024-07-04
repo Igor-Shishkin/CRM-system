@@ -78,7 +78,7 @@ public class UserController {
 
 
     @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
-    @PutMapping("/photo")
+    @PostMapping("/photo")
     @Operation(
             summary = "Add photo to user",
             description = """
