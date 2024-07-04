@@ -41,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Testcontainers
 @Sql({"/schema.sql", "/data.sql"})
 class ItemsForAdditionalPurchasesControllerTest {
+
     @Autowired
     MockMvc mockMvc;
     @MockBean
@@ -53,11 +54,13 @@ class ItemsForAdditionalPurchasesControllerTest {
     ItemForAdditionPurchasesRepository itemRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+
     @Container
     static MySQLContainer mySQLContainer = new MySQLContainer("mysql:8.0")
             .withUsername("root")
             .withPassword("00000000A!")
             .withDatabaseName("marton_db");
+
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -66,12 +69,7 @@ class ItemsForAdditionalPurchasesControllerTest {
         registry.add("spring.datasource.password", mySQLContainer::getPassword);
     }
 
-    @Before
-    public void setup() {
-        this.mockMvc = MockMvcBuilders
-                .standaloneSetup(ItemsForAdditionalPurchasesController.class)
-                .build();
-    }
+
 
     @BeforeEach
     public void initialize() throws UserPrincipalNotFoundException {
@@ -86,6 +84,8 @@ class ItemsForAdditionalPurchasesControllerTest {
     static void afterAll() {
         mySQLContainer.stop();
     }
+
+
 
     @Test
     @WithMockUser(roles = "USER")
@@ -104,6 +104,7 @@ class ItemsForAdditionalPurchasesControllerTest {
         ItemForAdditionalPurchases itemSixWithoutUnitPrice = new ItemForAdditionalPurchases(
                 "Item without unit price", 5, -1, 10);
 
+
         Set<ItemForAdditionalPurchases> receivedItems = Set.of(itemOneCorrect,
                 itemTwoCorrect,
                 itemThreeCorrect,
@@ -111,27 +112,31 @@ class ItemsForAdditionalPurchasesControllerTest {
                 itemFiveWithoutQuantity,
                 itemSixWithoutUnitPrice);
 
+
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/user-board/items-for-addition-purchases/save-items")
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(receivedItems))
                         .param("orderId", String.valueOf(2))
                         .accept("application/json"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.message").value("Items are saved"));
 
         Set<ItemForAdditionalPurchases> savedItems = itemRepository.findAll().stream()
                 .filter(item -> item.getOrder().getOrderId() == 2)
                 .collect(Collectors.toSet());
 
+
         assertThat(savedItems.size()).isEqualTo(3);
         assertThat(savedItems).extracting("itemName")
                 .containsAll ( Set.of("ItemTwo", "ItemThree", "ItemOne"));
+
 
         assertThatThrownBy(() -> assertThat(savedItems).extracting("itemName")
                 .containsAnyOf ("Item without quantity", "Item without unit price", ""))
                 .isInstanceOf(AssertionError.class)
                 .hasMessageContaining("Item without quantity");
+
 
         Optional<ItemForAdditionalPurchases> optionalItemOne = savedItems.stream()
                 .filter(item -> item.getItemName().equals("ItemOne"))
@@ -142,10 +147,14 @@ class ItemsForAdditionalPurchasesControllerTest {
         assertThat(itemOne.getUnitPrice()).isEqualTo(3);
         assertThat(itemOne.getTotalPrice()).isEqualTo(16.5);
 
+
         Optional<Order> optionalOrder = orderRepository.findById(2L);
         assertThat(optionalOrder).isNotEmpty();
         assertThat(optionalOrder.get().getResultPrice()).isCloseTo(133.1, Percentage.withPercentage(0.1));
     }
+
+
+
 
     @Test
     @WithMockUser(roles = "USER")
@@ -165,6 +174,11 @@ class ItemsForAdditionalPurchasesControllerTest {
                 .andExpect(jsonPath("$.message")
                         .value("You can't changes item's for addition purchases when agreement is signed"));
     }
+
+
+
+
+
     @Test
     @WithMockUser(roles = "ADMIN")
     public void save_new_set_of_items_with_wrong_role() throws Exception {
