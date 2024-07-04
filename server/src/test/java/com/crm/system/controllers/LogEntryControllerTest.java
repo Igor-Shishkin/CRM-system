@@ -64,11 +64,13 @@ class LogEntryControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+
     @Container
     static MySQLContainer mySQLContainer = new MySQLContainer("mysql:8.0")
             .withUsername("root")
             .withPassword("00000000A!")
             .withDatabaseName("marton_db");
+
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -77,12 +79,6 @@ class LogEntryControllerTest {
         registry.add("spring.datasource.password", mySQLContainer::getPassword);
     }
 
-    @Before
-    public void setup() {
-        this.mockMvc = MockMvcBuilders
-                .standaloneSetup(LogEntryController.class)
-                .build();
-    }
 
     @BeforeEach
     public void initialize() throws UserPrincipalNotFoundException {
@@ -91,6 +87,7 @@ class LogEntryControllerTest {
                 .orElseThrow(() -> new UserPrincipalNotFoundException("Unauthorized - User not found"));
         when(userService.getActiveUser()).thenReturn(user);
     }
+
 
     @BeforeAll
     static void beforeAll() {
@@ -101,6 +98,9 @@ class LogEntryControllerTest {
     static void afterAll() {
         mySQLContainer.stop();
     }
+
+
+
 
 
     @Transactional
@@ -137,6 +137,10 @@ class LogEntryControllerTest {
                 .andExpect(jsonPath("$[*].tagId", containsInAnyOrder(3, 3, 3, 4)));
     }
 
+
+
+
+
     @Transactional
     @Test
     @WithMockUser(roles = "ADMIN")
@@ -171,6 +175,10 @@ class LogEntryControllerTest {
                 .andExpect(jsonPath("$[*].tagId", containsInAnyOrder(3, 3, 3, 4)));
     }
 
+
+
+
+
     @Transactional
     @Test
     public void get_log_without_authorization() throws Exception {
@@ -181,6 +189,10 @@ class LogEntryControllerTest {
                         .accept("application/json"))
                 .andExpect(status().isUnauthorized());
     }
+
+
+
+
 
     @Transactional
     @Test
@@ -207,6 +219,10 @@ class LogEntryControllerTest {
                         "CLIENT", "CLIENT", "CLIENT", "CLIENT", "CLIENT", "ADMINISTRATION", "ADMINISTRATION", "ADMINISTRATION")));
     }
 
+
+
+
+
     @Transactional
     @Test
     @WithMockUser(roles = "ADMIN")
@@ -232,6 +248,10 @@ class LogEntryControllerTest {
                         "CLIENT", "CLIENT", "CLIENT", "CLIENT", "CLIENT", "ADMINISTRATION", "ADMINISTRATION", "ADMINISTRATION")));
     }
 
+
+
+
+
     @Transactional
     @Test
     public void get_tags_without_authorization() throws Exception {
@@ -242,6 +262,10 @@ class LogEntryControllerTest {
                         .accept("application/json"))
                 .andExpect(status().isUnauthorized());
     }
+
+
+
+
 
     @Transactional
     @Test
@@ -275,6 +299,11 @@ class LogEntryControllerTest {
         assertThat(savedEntryOptional.get().getAdditionalInformation()).isEqualTo(entry.getAdditionalInformation());
     }
 
+
+
+
+
+
     @Transactional
     @Test
     @WithMockUser(roles = "ADMIN")
@@ -307,6 +336,11 @@ class LogEntryControllerTest {
         assertThat(savedEntryOptional.get().getAdditionalInformation()).isEqualTo(entry.getAdditionalInformation());
     }
 
+
+
+
+
+
     @Transactional
     @Test
     public void save_new_entry_to_log_without_authorization() throws Exception {
@@ -328,6 +362,11 @@ class LogEntryControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
+
+
+
+
+
     @Transactional
     @Test
     @WithMockUser(roles = "USER")
@@ -344,6 +383,10 @@ class LogEntryControllerTest {
         Optional<LogEntry> entryOptional = logEntryRepository.findById(2L);
         assertThat(entryOptional).isEmpty();
     }
+
+
+
+
 
     @Transactional
     @Test
@@ -362,6 +405,10 @@ class LogEntryControllerTest {
         assertThat(entryOptional).isEmpty();
     }
 
+
+
+
+
     @Transactional
     @Test
     @WithMockUser(roles = "ADMIN")
@@ -376,6 +423,10 @@ class LogEntryControllerTest {
                 .andExpect(jsonPath("$.message").value("You don't have entry with this ID"));
     }
 
+
+
+
+
     @Transactional
     @Test
     public void delete_entry_without_authorization() throws Exception {
@@ -388,13 +439,16 @@ class LogEntryControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
+
+
+
     @Transactional
     @Test
     @WithMockUser(roles = "USER")
     public void change_is_important_with_user_role_success() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/log/change-important-status")
+                        .patch("/api/log/change-important-status")
                         .contentType("application/json")
                         .param("entryId", String.valueOf(1))
                         .accept("application/json"))
@@ -405,6 +459,10 @@ class LogEntryControllerTest {
         assertThat(entryOptional).isNotEmpty();
         assertThat(entryOptional.get().isImportant()).isFalse();
     }
+
+
+
+
 
     @Transactional
     @Test
@@ -412,7 +470,7 @@ class LogEntryControllerTest {
     public void change_is_important_with_admin_role_success() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/log/change-important-status")
+                        .patch("/api/log/change-important-status")
                         .contentType("application/json")
                         .param("entryId", String.valueOf(1))
                         .accept("application/json"))
@@ -424,13 +482,16 @@ class LogEntryControllerTest {
         assertThat(entryOptional.get().isImportant()).isFalse();
     }
 
+
+
+
     @Transactional
     @Test
     @WithMockUser(roles = "ADMIN")
     public void change_is_important_with_wrong_id() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/log/change-important-status")
+                        .patch("/api/log/change-important-status")
                         .contentType("application/json")
                         .param("entryId", String.valueOf(5))
                         .accept("application/json"))
@@ -438,12 +499,16 @@ class LogEntryControllerTest {
                 .andExpect(jsonPath("$.message").value("You don't have entry with this ID"));
 
     }
+
+
+
+
     @Transactional
     @Test
     public void change_is_important_without_authorization() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/log/change-important-status")
+                        .patch("/api/log/change-important-status")
                         .contentType("application/json")
                         .param("entryId", String.valueOf(5))
                         .accept("application/json"))
@@ -456,7 +521,7 @@ class LogEntryControllerTest {
     public void change_is_done_with_user_role_success() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/log/change-done-status")
+                        .patch("/api/log/change-done-status")
                         .contentType("application/json")
                         .param("entryId", String.valueOf(1))
                         .accept("application/json"))
@@ -467,6 +532,9 @@ class LogEntryControllerTest {
         assertThat(entryOptional).isNotEmpty();
         assertThat(entryOptional.get().isDone()).isFalse();
     }
+
+
+
 
     @Transactional
     @Test
@@ -474,7 +542,7 @@ class LogEntryControllerTest {
     public void change_is_done_with_admin_role_success() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/log/change-done-status")
+                        .patch("/api/log/change-done-status")
                         .contentType("application/json")
                         .param("entryId", String.valueOf(1))
                         .accept("application/json"))
@@ -486,13 +554,17 @@ class LogEntryControllerTest {
         assertThat(entryOptional.get().isDone()).isFalse();
     }
 
+
+
+
+
     @Transactional
     @Test
     @WithMockUser(roles = "ADMIN")
     public void change_is_done_with_wrong_id() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/log/change-done-status")
+                        .patch("/api/log/change-done-status")
                         .contentType("application/json")
                         .param("entryId", String.valueOf(5))
                         .accept("application/json"))
@@ -501,16 +573,21 @@ class LogEntryControllerTest {
 
     }
 
+
+
+
+
     @Test
     public void change_is_done_without_authorization() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/log/change-done-status")
+                        .patch("/api/log/change-done-status")
                         .contentType("application/json")
                         .param("entryId", String.valueOf(5))
                         .accept("application/json"))
                 .andExpect(status().isUnauthorized());
     }
+
 
 
     private String writeObjectToJsonFormat(Object object) throws JsonProcessingException {
