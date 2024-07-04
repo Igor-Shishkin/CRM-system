@@ -23,11 +23,12 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.Set;
 
-@Slf4j
-@Tag(name = "Client controller", description = "Client management APIs")
-@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
+
 @RestController
 @RequestMapping("api/user-board")
+@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowCredentials = "true")
+@Tag(name = "Client controller", description = "Client management APIs")
+@Slf4j
 public class ClientController {
     private final ClientService clientService;
 
@@ -74,6 +75,9 @@ public class ClientController {
                             content = @Content(schema = @Schema())),
                     @ApiResponse(
                             responseCode = "401", description = "Unauthorized -  you must log in",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "400", description = "Request data is incorrect",
                             content = @Content(schema = @Schema()))
             })
     public ResponseEntity<Long> addNewClient(@Valid @RequestBody AddClientDTO addLeadRequest)
@@ -339,9 +343,12 @@ public class ClientController {
                             content = @Content(schema = @Schema())),
                     @ApiResponse(
                             responseCode = "401", description = "Unauthorized -  you must log in",
+                            content = @Content(schema = @Schema())),
+                    @ApiResponse(
+                            responseCode = "400", description = "Request data is incorrect",
                             content = @Content(schema = @Schema()))
             })
-    public ResponseEntity<MessageResponse> editClientInfo(@RequestBody EditClientDataDTO request) {
+    public ResponseEntity<MessageResponse> editClientInfo(@RequestBody @Valid EditClientDataDTO request) {
         clientService.editClientData(request);
         return ResponseEntity.ok(new MessageResponse("Changes are saved"));
     }

@@ -64,6 +64,7 @@ class EmailControllerTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
+
     @Container
     static MySQLContainer mySQLContainer = new MySQLContainer("mysql:8.0")
             .withUsername("root")
@@ -77,7 +78,7 @@ class EmailControllerTest {
         registry.add("spring.datasource.password", mySQLContainer::getPassword);
     }
 
-    @Before
+    @BeforeEach
     public void setup() {
         this.mockMvc = MockMvcBuilders
                 .standaloneSetup(EmailController.class)
