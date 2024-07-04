@@ -18,6 +18,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,6 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql({"/schema.sql", "/data.sql"})
 class ClientControllerTest {
 
+
     @Autowired
     MockMvc mockMvc;
     @Autowired
@@ -76,13 +78,6 @@ class ClientControllerTest {
         registry.add("spring.datasource.password", mySQLContainer::getPassword);
     }
 
-    @Before
-    public void setup() {
-        this.mockMvc = MockMvcBuilders
-                .standaloneSetup(ClientController.class)
-                .build();
-    }
-
     @BeforeEach
     public void initialize() throws UserPrincipalNotFoundException {
         when(userService.getActiveUserId()).thenReturn(1L);
@@ -91,11 +86,17 @@ class ClientControllerTest {
     }
 
     @BeforeAll
-    static void beforeAll() {  mySQLContainer.start(); }
+    static void beforeAll() {
+        mySQLContainer.start();
+    }
+
     @AfterAll
     static void afterAll() {
         mySQLContainer.stop();
     }
+
+
+
 
     @Test
     @WithMockUser(roles = "USER")
@@ -112,7 +113,7 @@ class ClientControllerTest {
                         .contentType("application/json")
                         .content(objectMapper.writeValueAsString(newClient))
                 .accept("application/json"))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andExpect(content().json("9"));
 
         Optional<Client> optionalClient = clientRepository.findById(9L);
@@ -124,10 +125,13 @@ class ClientControllerTest {
         Optional<LogEntry> optionalLogEntry = logEntryRepository.findById(6L);
 
         assertThat(optionalLogEntry).isNotEmpty();
-        assertThat(optionalLogEntry.get().getText()).isEqualTo("Client test name is created");
+        assertThat(optionalLogEntry.get().getText()).isEqualTo("Client 'test name' is created");
         assertThat(optionalLogEntry.get().getTagName()).isEqualTo(TagName.CLIENT);
         assertThat(optionalLogEntry.get().getTagId()).isEqualTo(9L);
     }
+
+
+
 
     @Test
     @WithMockUser(roles = "USER")
@@ -147,6 +151,10 @@ class ClientControllerTest {
                 .andExpect(jsonPath("$.message").value("Client with this email already exists"));
     }
 
+
+
+
+
     @Test
     @WithMockUser(roles = "USER")
     public void add_lead_with_empty_user_name() throws Exception {
@@ -164,11 +172,15 @@ class ClientControllerTest {
                 .andExpect(jsonPath("$.detail").value("Invalid request content."));
     }
 
+
+
+
     @Test
     @WithMockUser(roles = "USER")
     public void add_lead_with_empty_email() throws Exception {
         AddClientDTO newLead = new AddClientDTO();
         newLead.setFullName("test name");
+        newLead.setEmail("  ");
         newLead.setAddress("test address");
         newLead.setPhoneNumber("test +0 000 000 000");
 
@@ -180,6 +192,9 @@ class ClientControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.detail").value("Invalid request content."));
     }
+
+
+
 
     @Test
     @WithMockUser(roles = "ADMIN")
@@ -204,7 +219,7 @@ class ClientControllerTest {
         long clientId = 3L;
 
         mockMvc.perform(MockMvcRequestBuilders
-                .put("/api/user-board/send-client-to-black-list")
+                .patch("/api/user-board/send-client-to-black-list")
                 .contentType("application/json")
                         .param("clientId", String.valueOf(clientId))
                 .accept("application/json"))
@@ -220,7 +235,7 @@ class ClientControllerTest {
         assertThat(optionalLogEntry).isNotEmpty();
 
         assertThat(optionalLogEntry.get().getText())
-                .isEqualTo("Client Sara Bernard goes to blackList");
+                .isEqualTo("Client 'Sara Bernard' goes to blackList");
         assertThat(optionalLogEntry.get().getTagName()).isEqualTo(TagName.CLIENT);
         assertThat(optionalLogEntry.get().getTagId()).isEqualTo(clientId);
     }
@@ -230,7 +245,7 @@ class ClientControllerTest {
     public void sent_lead_to_blacklist_user_doesnt_have_client_with_this_id() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user-board/send-client-to-black-list")
+                        .patch("/api/user-board/send-client-to-black-list")
                         .contentType("application/json")
                         .param("clientId", String.valueOf(8L))
                         .accept("application/json"))
@@ -243,7 +258,7 @@ class ClientControllerTest {
     public void sent_lead_to_blacklist_with_wrong_role() throws Exception {
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user-board/send-client-to-black-list")
+                        .patch("/api/user-board/send-client-to-black-list")
                         .contentType("application/json")
                         .param("clientId", String.valueOf(3L))
                         .accept("application/json"))
@@ -256,7 +271,7 @@ class ClientControllerTest {
         long clientId = 5L;
 
         mockMvc.perform(MockMvcRequestBuilders
-                .put("/api/user-board/restore-client-from-black-list")
+                .patch("/api/user-board/restore-client-from-black-list")
                 .contentType("application/json")
                 .param("clientId", String.valueOf(clientId))
                 .accept("application/json"))
@@ -271,7 +286,7 @@ class ClientControllerTest {
         Optional<LogEntry> optionalLogEntry = logEntryRepository.findById(6L);
         assertThat(optionalLogEntry).isNotEmpty();
         assertThat(optionalLogEntry.get().getText())
-                .isEqualTo("Client Solomon Duda is restored from blackList");
+                .isEqualTo("Client 'Solomon Duda' is restored from blackList");
         assertThat(optionalLogEntry.get().getTagName()).isEqualTo(TagName.CLIENT);
         assertThat(optionalLogEntry.get().getTagId()).isEqualTo(clientId);
     }
@@ -281,7 +296,7 @@ class ClientControllerTest {
         long clientId = 4L;
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user-board/restore-client-from-black-list")
+                        .patch("/api/user-board/restore-client-from-black-list")
                         .contentType("application/json")
                         .param("clientId", String.valueOf(clientId))
                         .accept("application/json"))
@@ -296,7 +311,7 @@ class ClientControllerTest {
         Optional<LogEntry> optionalLogEntry = logEntryRepository.findById(6L);
         assertThat(optionalLogEntry).isNotEmpty();
         assertThat(optionalLogEntry.get().getText())
-                .isEqualTo("Client Marta Czajka is restored from blackList");
+                .isEqualTo("Client 'Marta Czajka' is restored from blackList");
         assertThat(optionalLogEntry.get().getTagName()).isEqualTo(TagName.CLIENT);
         assertThat(optionalLogEntry.get().getTagId()).isEqualTo(clientId);
     }
@@ -307,7 +322,7 @@ class ClientControllerTest {
         long clientId = 8L;
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user-board/restore-client-from-black-list")
+                        .patch("/api/user-board/restore-client-from-black-list")
                         .contentType("application/json")
                         .param("clientId", String.valueOf(clientId))
                         .accept("application/json"))
@@ -322,7 +337,7 @@ class ClientControllerTest {
         long clientId = 3L;
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user-board/restore-client-from-black-list")
+                        .patch("/api/user-board/restore-client-from-black-list")
                         .contentType("application/json")
                         .param("clientId", String.valueOf(clientId))
                         .accept("application/json"))
@@ -456,7 +471,7 @@ class ClientControllerTest {
         editClientDataDTO.setFullName("Changed name");
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user-board/edit-client-data")
+                        .patch("/api/user-board/edit-client-data")
                         .contentType("application/json")
                         .content(writeObjectToJsonFormat(editClientDataDTO))
                         .accept("application/json"))
@@ -483,12 +498,12 @@ class ClientControllerTest {
         editClientDataDTO.setFullName("Changed name");
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user-board/edit-client-data")
+                        .patch("/api/user-board/edit-client-data")
                         .contentType("application/json")
                         .content(writeObjectToJsonFormat(editClientDataDTO))
                         .accept("application/json"))
-                .andExpect(status().isConflict())
-                .andExpect(jsonPath("$.message").value("Could not commit JPA transaction"));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Invalid request content."));
     }
 
     @Test
@@ -502,12 +517,12 @@ class ClientControllerTest {
         editClientDataDTO.setFullName("");
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user-board/edit-client-data")
+                        .patch("/api/user-board/edit-client-data")
                         .contentType("application/json")
                         .content(writeObjectToJsonFormat(editClientDataDTO))
                         .accept("application/json"))
-                .andExpect(status().isIAmATeapot())
-                .andExpect(jsonPath("$.message").value("Name and email can't be empty"));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Invalid request content."));
     }
 
     @Test
@@ -521,12 +536,12 @@ class ClientControllerTest {
         editClientDataDTO.setFullName("Changed name");
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .put("/api/user-board/edit-client-data")
+                        .patch("/api/user-board/edit-client-data")
                         .contentType("application/json")
                         .content(writeObjectToJsonFormat(editClientDataDTO))
                         .accept("application/json"))
-                .andExpect(status().isIAmATeapot())
-                .andExpect(jsonPath("$.message").value("Name and email can't be empty"));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail").value("Invalid request content."));
     }
 
     private String writeObjectToJsonFormat(Object object) throws JsonProcessingException {
