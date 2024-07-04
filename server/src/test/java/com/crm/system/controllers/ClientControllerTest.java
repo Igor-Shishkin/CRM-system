@@ -175,6 +175,7 @@ class ClientControllerTest {
 
 
 
+
     @Test
     @WithMockUser(roles = "USER")
     public void add_lead_with_empty_email() throws Exception {
@@ -196,6 +197,7 @@ class ClientControllerTest {
 
 
 
+
     @Test
     @WithMockUser(roles = "ADMIN")
     public void add_lead_with_wrong_role() throws Exception {
@@ -212,6 +214,10 @@ class ClientControllerTest {
                         .accept("application/json"))
                 .andExpect(status().isForbidden());
     }
+
+
+
+
 
     @Test
     @WithMockUser(roles = "USER")
@@ -240,6 +246,10 @@ class ClientControllerTest {
         assertThat(optionalLogEntry.get().getTagId()).isEqualTo(clientId);
     }
 
+
+
+
+
     @Test
     @WithMockUser(roles = "USER")
     public void sent_lead_to_blacklist_user_doesnt_have_client_with_this_id() throws Exception {
@@ -253,6 +263,9 @@ class ClientControllerTest {
                 .andExpect(jsonPath("$.message").value("You do not have a client with ID=8"));
     }
 
+
+
+
     @Test
     @WithMockUser(roles = "ADMIN")
     public void sent_lead_to_blacklist_with_wrong_role() throws Exception {
@@ -264,6 +277,9 @@ class ClientControllerTest {
                         .accept("application/json"))
                 .andExpect(status().isForbidden());
     }
+
+
+
 
     @Test
     @WithMockUser(roles = "USER")
@@ -290,6 +306,10 @@ class ClientControllerTest {
         assertThat(optionalLogEntry.get().getTagName()).isEqualTo(TagName.CLIENT);
         assertThat(optionalLogEntry.get().getTagId()).isEqualTo(clientId);
     }
+
+
+
+
     @Test
     @WithMockUser(roles = "USER")
     public void restore_client_from_blackList_status_must_be_lead_success() throws Exception {
@@ -316,6 +336,10 @@ class ClientControllerTest {
         assertThat(optionalLogEntry.get().getTagId()).isEqualTo(clientId);
     }
 
+
+
+
+
     @Test
     @WithMockUser(roles = "USER")
     public void restore_client_from_blackList_user_doesnt_have_this_client() throws Exception {
@@ -331,6 +355,11 @@ class ClientControllerTest {
                         .value(String.format("You do not have a client with ID=%d", clientId)));
 
     }
+
+
+
+
+
     @Test
     @WithMockUser(roles = "ADMIN")
     public void restore_client_from_blackList_wrong_role() throws Exception {
@@ -344,6 +373,10 @@ class ClientControllerTest {
                 .andExpect(status().isForbidden());
     }
 
+
+
+
+
     @Test
     @WithMockUser(roles = "USER")
     public void get_all_clients_with_client_status_for_user_success() throws Exception {
@@ -356,6 +389,10 @@ class ClientControllerTest {
                         .value(containsInAnyOrder("Sara Bernard", "Jonny Depp", "Sauron")));
     }
 
+
+
+
+
     @Test
     @WithMockUser(roles = "ADMIN")
     public void get_all_clients_with_client_status_for_user_wrong_role() throws Exception {
@@ -365,6 +402,10 @@ class ClientControllerTest {
                         .accept("application/json"))
                 .andExpect(status().isForbidden());
     }
+
+
+
+
 
     @Test
     @WithMockUser(roles = "USER")
@@ -378,6 +419,10 @@ class ClientControllerTest {
                         .value(containsInAnyOrder("Piotr Kaczka", "Monika Bałut")));
     }
 
+
+
+
+
     @Test
     @WithMockUser(roles = "ADMIN")
     public void get_all_clients_with_lead_status_for_user_wrong_role() throws Exception {
@@ -387,6 +432,10 @@ class ClientControllerTest {
                         .accept("application/json"))
                 .andExpect(status().isForbidden());
     }
+
+
+
+
 
     @Test
     @WithMockUser(roles = "USER")
@@ -400,6 +449,10 @@ class ClientControllerTest {
                         .value(containsInAnyOrder("Marta Czajka", "Solomon Duda")));
     }
 
+
+
+
+
     @Test
     @WithMockUser(roles = "ADMIN")
     public void get_all_clients_with_blacklist_status_for_user_wrong_role() throws Exception {
@@ -409,6 +462,10 @@ class ClientControllerTest {
                         .accept("application/json"))
                 .andExpect(status().isForbidden());
     }
+
+
+
+
 
     @Test
     @WithMockUser(roles = "USER")
@@ -432,6 +489,10 @@ class ClientControllerTest {
                 .andExpect(jsonPath("$.orders[0].realNeed").value("Order a handmade table"));
     }
 
+
+
+
+
     @Test
     @WithMockUser(roles = "USER")
     public void get_client_info_dont_have_client_with_this_id() throws Exception {
@@ -447,6 +508,10 @@ class ClientControllerTest {
                         .value(String.format("You do not have a client with ID=%d", clientId)));
     }
 
+
+
+
+
     @Test
     @WithMockUser(roles = "ADMIN")
     public void get_client_info_with_wrong_role() throws Exception {
@@ -459,6 +524,10 @@ class ClientControllerTest {
                         .accept("application/json"))
                 .andExpect(status().isForbidden());
     }
+
+
+
+
 
     @Test
     @WithMockUser(roles = "USER")
@@ -487,6 +556,10 @@ class ClientControllerTest {
         assertThat(optionalClient.get().getDateOfLastChange().toString()).isNotEqualTo("2023-12-24 00:00:00");
     }
 
+
+
+
+
     @Test
     @WithMockUser(roles = "USER")
     public void edit_client_data_wrong_email() throws Exception {
@@ -505,6 +578,10 @@ class ClientControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.detail").value("Invalid request content."));
     }
+
+
+
+
 
     @Test
     @WithMockUser(roles = "USER")
@@ -525,6 +602,11 @@ class ClientControllerTest {
                 .andExpect(jsonPath("$.detail").value("Invalid request content."));
     }
 
+
+
+
+
+
     @Test
     @WithMockUser(roles = "USER")
     public void edit_client_data_empty_email() throws Exception {
@@ -543,6 +625,9 @@ class ClientControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.detail").value("Invalid request content."));
     }
+
+
+
 
     private String writeObjectToJsonFormat(Object object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object);

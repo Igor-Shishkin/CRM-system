@@ -71,6 +71,7 @@ class EmailControllerTest {
             .withPassword("00000000A!")
             .withDatabaseName("marton_db");
 
+
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
@@ -78,12 +79,6 @@ class EmailControllerTest {
         registry.add("spring.datasource.password", mySQLContainer::getPassword);
     }
 
-    @BeforeEach
-    public void setup() {
-        this.mockMvc = MockMvcBuilders
-                .standaloneSetup(EmailController.class)
-                .build();
-    }
 
     @BeforeEach
     public void initialize() throws UserPrincipalNotFoundException {
@@ -92,12 +87,18 @@ class EmailControllerTest {
                 .orElseThrow(() -> new UserPrincipalNotFoundException("Unauthorized - User not found")));
     }
 
+
     @BeforeAll
     static void beforeAll() {  mySQLContainer.start(); }
+
     @AfterAll
     static void afterAll() {
         mySQLContainer.stop();
     }
+
+
+
+
 
     @Test
     @WithMockUser(roles = "ADMIN")
@@ -127,6 +128,9 @@ class EmailControllerTest {
                 .isEqualTo(String.format("Message sent. Email address: %s",
                         sentEmailDTO.getEmail()));
     }
+
+
+
 
     @Test
     @WithMockUser(roles = "USER")
@@ -158,6 +162,10 @@ class EmailControllerTest {
                         sentEmailDTO.getEmail()));
     }
 
+
+
+
+
     @Test
     @WithMockUser(roles = "USER")
     public void sent_email_email_address_is_empty() throws Exception {
@@ -171,10 +179,14 @@ class EmailControllerTest {
                         .contentType("application/json")
                         .content(writeObjectToJsonFormat(sentEmailDTO))
                         .accept("application/json"))
-                .andExpect(status().isIAmATeapot())
-                .andExpect(jsonPath("$.message")
-                        .value("Email address or text of email is empty"));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail")
+                        .value("Invalid request content."));
     }
+
+
+
+
     @Test
     @WithMockUser(roles = "USER")
     public void sent_email_email_text_is_empty() throws Exception {
@@ -188,10 +200,12 @@ class EmailControllerTest {
                         .contentType("application/json")
                         .content(writeObjectToJsonFormat(sentEmailDTO))
                         .accept("application/json"))
-                .andExpect(status().isIAmATeapot())
-                .andExpect(jsonPath("$.message")
-                        .value("Email address or text of email is empty"));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.detail")
+                        .value("Invalid request content."));
     }
+
+
 
     private String writeObjectToJsonFormat(Object object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object);
